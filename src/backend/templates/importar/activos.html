@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+{%block title %}Import{%endblock%}
+
+
+{%block body %}
+
+<form action="{% url 'api-importar-activos' %}" method="POST" enctype="multipart/form-data" class="p-4">
+     {% csrf_token %}
+     {% if message %}   
+          <div class="my-3 p-2 d-flex align-items-center message {{error|yesno:"bg-danger, bg-success"}}">
+               <p class="form-text text-white p-0 m-0">{{ message }}</p>
+          </div>
+     {% endif %}
+     <div class="mb-3">
+          <label for="input-file" class="form-label">Ingrese el archivo de excel aquí</label>
+          <input id="input-file" name="file" type="file" class="form-control">
+     </div>
+
+     <button type="submit" class="btn btn-primary">Submit</button>
+    
+</form>
+{% endblock %}
