@@ -11,8 +11,8 @@
 3. instalar las dependencias de python con el comando, desde la carpeta raíz (misma carpeta donde está el requirements.txt)
 `pip install -r requirements.txt`
 4. Instalar las dependencias de nodejs
-⋅⋅1. ir a src/backend
-⋅⋅2. ejecutar el comando
+  1. ir a src/backend
+  2. ejecutar el comando
   `npm install`
 5. Probar si la app funciona ejecutando uno de los archivos init
     * Si está en un entorno windows, ejecutar el archivo init.bat dandole click o desde la terminal:
