@@ -1,23 +1,19 @@
-{% extends 'base.html' %} 
-
-{% load static %} 
-
-{% block head %}
-<link rel="stylesheet" href="{% static 'css/generar/traslados.css'%}" />
+{% extends 'base.html' %} {% load static %} {% block head %}
+<link rel="stylesheet" href="{% static 'dist/css/generar/traslados.css'%}" />
 <link
 	href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
 	rel="stylesheet"
 />
 
-{% endblock head %} 
-{% block body %}
-
-
-{% csrf_token %}
+{% endblock head %} {% block body %} {% csrf_token %}
 <div class="container w-50 my-4">
-	<div class="row header-controls justify-content-center flex-column align-items-center gap-4">
+	<div
+		class="row header-controls justify-content-center flex-column align-items-center gap-4"
+	>
 		{{form.tramite}}
-		<button class="btn btn-secondary col-2" data-action="load"> Cargar traslado</button>
+		<button class="btn btn-secondary col-2" data-action="load">
+			Cargar traslado
+		</button>
 		<button class="btn btn-primary col-2" data-action="pdf">Guardar pdf</button>
 	</div>
 </div>
@@ -38,7 +34,7 @@
 		</div>
 	</div>
 
-	<div class="row body-row gap-4">
+	<div class="row body-row gap-4 justify-content-center">
 		<div class="row localizacion">
 			<p>Ciudad Universitaria 'Arnoldo Ferreto Segura'</p>
 		</div>
@@ -78,9 +74,7 @@
 			>
 			{{form.motivo}}
 
-			<div id="motivo_for_pdf" class="motivoPdf">
-
-			</div>
+			<div id="motivo_for_pdf" class="motivoPdf"></div>
 		</div>
 
 		<div class="row justify-content-center controls">
@@ -122,27 +116,47 @@
 			</div>
 		</div>
 
-		<div class="row justify-content-center spacing" data-spacing>
+		<div class="row justify-content-center spacing" data-spacing="1">
 			<div class="col d-flex-inline flex-column text-center">
 				<p>-------------------------------------</p>
-				<p>V°B° M.C.I Julio Rayo - Encargado ATIC</p>
-			</div>
-		</div>
-		<div class="row justify-content-center controls gap-2">
-			<button data-action="add" class="col-2 h-fit btn btn-primary">
-				Añadir espacio
-			</button>
-			<button data-action="substract" class="col-2 h-fit btn btn-secondary">
-				Reducir espacio
-			</button>
-		</div>
-		<div class="row">
-			<div class="col">
-				<p>
-					Cc: Sra Yontil Villalobos Mora, Encargada de Bienes Institucionales
+				<p contenteditable>
+					{{config.TITULO_ATIC}} {{config.NOMBRE_ATIC}} - {{config.CARGO_ATIC}}
 				</p>
 			</div>
 		</div>
+		<div class="row justify-content-center controls gap-2">
+			<button data-action="add-1" class="col-2 h-fit btn btn-primary">
+				Añadir espacio
+			</button>
+			<button data-action="substract-1" class="col-2 h-fit btn btn-secondary">
+				Reducir espacio
+			</button>
+		</div>
+		<div class="row spacing" data-spacing="2">
+			<div class="col">
+				<p contenteditable>
+					Cc: {{config.TITULO_ENCARGADO_BIENES}}
+					{{config.NOMBRE_ENCARGADO_BIENES}}, {{config.CARGO_ENCARGADO_BIENES}}
+				</p>
+			</div>
+		</div>
+
+		<div class="row justify-content-center controls gap-2">
+			<button data-action="add-2" class="col-2 h-fit btn btn-primary">
+				Añadir espacio
+			</button>
+			<button data-action="substract-2" class="col-2 h-fit btn btn-secondary">
+				Reducir espacio
+			</button>
+		</div>
+		 
+			<div
+				class="row border-top border-dark d-flex flex-column align-items-center footer text-center"
+			>
+				<p class="col">TEL. 2511-7428 / FAX 2661-2501</p>
+				<p class="col">e-mail: atic.sp@ucr.ac.cr</p>
+			</div>
+ 
 	</div>
 </div>
 
@@ -154,26 +168,14 @@
 	</div>
 </div>
 {% endblock body %} {% block script %}
-<script
-	type="text/javascript"
-	src="https://cdn.datatables.net/v/bs5/dt-1.11.5/b-2.2.2/datatables.min.js"
-></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
-	integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
-	crossorigin="anonymous"
-	referrerpolicy="no-referrer"
-></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script language="javascript">
-
-	const tramitesView = "{% url 'tramites-list'%}"
-	const plaqueadosView = `{% url 'plaqueados-list' %}`
-	const trasladosView = `{% url 'traslados-list'%}`
-	const destinoSelect = `{{form.destino}}`
-	const userId = "{{request.user.id}}"
-
+	const tramitesView = "{% url 'tramites-list'%}";
+	const plaqueadosView = `{% url 'plaqueados-list' %}`;
+	const trasladosView = `{% url 'traslados-list'%}`;
+	const destinoSelect = `{{form.destino}}`;
+	const userId = "{{request.user.id}}";
 </script>
 
-<script src="{%static 'js/traslados.js'%}"></script>
+<script src="{%static 'dist/js/traslados.js'%}"></script>
 {% endblock script %}

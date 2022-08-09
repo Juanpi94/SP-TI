@@ -1,18 +1,21 @@
 {% extends 'base.html' %}
+{% load static%}
 
 {% block title %}Login{% endblock title %}
-
-{% block header %}{% endblock header %}
+{% block header%} {% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="{%static 'dist/css/registration/login.css' %}">
+{% endblock head %}
 
 {% block body %}
 
-    <div class="container h-100 d-flex justify-content-center mt-4">
-        <form method="post" action="#" class="form-group d-inline-flex flex-column p-5 bg-secondary rounded text-light gap-2">
+    <div class="d-flex justify-content-center login-container">
+        <form method="post" action="#" class="form-group d-inline-flex flex-column p-5 login-form rounded text-light gap-2 mt-4">
             {% csrf_token %}
             
             {{form}}
 
-            <input type="submit" value="submit" class="btn btn-primary">
+            <input type="submit" value="submit" class="btn btn-primary bg-red">
         </form>
     </div>
 {% endblock body %}

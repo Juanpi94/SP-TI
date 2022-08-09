@@ -1,34 +1,37 @@
 {% extends 'base.html' %}
 {% load static %}
-
-
+{% load auth_extras %}
+{% load utils_extras %}
 {%block title%}Activos{%endblock%}
 
 {% block head %}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.5/b-2.2.2/datatables.min.css"/>
 {% endblock %}
 
+{% if request.user|can_read%}
 {% block body %}
 
 {% csrf_token %}
 <div id="table-container" class="container py-4">
   
-    <table id="datatable" class="table table-striped table-responsive">
+    <table id="datatable" class="table table-striped table-responsive dynamic-datatable compact" width="70vw">
       <div class="container" id="table-buttons"></div>
     </table>
 </div>
 
 {% include 'components/formModal.html' with form=form modal_id="edit-modal" form_id="edit-form" modal_label="Editar el activo"%}
 
-{% if add == True%}
+{% if add == True and request.user|can_write %}
+  
   {% include 'components/formModal.html' with form=form modal_id="add-modal" form_id="add-form" modal_label="Añadir activo"%}
+  
 {% endif %}
 
 {% endblock %}
 
+{% endif %}
 {% block script %}
   
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.11.5/b-2.2.2/datatables.min.js"></script>
 <script language="javascript">
 
 
@@ -36,15 +39,16 @@
   const target_view = "{{target_view}}" //Esta es la dirección del api que utiliza esta vista
   const columns = [ //Aquí se renderizan las columnas de la tabla dinamicamente
   {% for column in columns %} 
-  {data: "{{column}}",title: "{{column|capfirst}}"}, //capfirst es un filtro para poner la primer letra de la columna en mayúscula
+  {data: "{{column}}",title: "{{column|capfirst}}", width: "10%"},  //capfirst es un filtro para poner la primer letra de la columna en mayúscula
   {%endfor%}
   ]
   
-  const add = {% if add %}true{% else %}false{% endif %}
+  const add = {{request.user|can_write|_and:add|strip_quotes}}
+  const controls = {{request.user|can_write|strip_quotes}}
 </script>
 
 {% comment %} Este es el archivo javascript que interactua con la tabla, está en la carpeta static/js/table.js {% endcomment %}
-<script language="javascript" src="{% static 'js/table.js'%}">
 </script>
 
+<script src="{% static 'dist/js/table.js'%}"></script>
 {% endblock %}

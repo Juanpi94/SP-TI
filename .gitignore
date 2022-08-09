@@ -1,2 +1,6 @@
 venv
 .env
+node_modules
+.parcel-cache
+.idea
+

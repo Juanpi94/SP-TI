@@ -1,0 +1,109 @@
+.pdf-container{
+    max-width: 50rem;
+    background-color: white;
+    border: .3rem solid black;
+}
+
+.pdf-container.export{
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+.pdf-container.export .controls{
+    display: none;
+}
+.identificador-container{
+    border-right: .1rem solid black;
+
+    padding: 1rem;
+}
+.identificador{
+    width: 100%;
+    height: 100%;    
+}
+
+.header-row{
+    border-bottom: .1rem solid black;
+}
+.departamento{
+    font-size: .8rem;
+}
+
+.textarea{
+    width: 35rem;
+    height: 7rem;
+}
+
+.h-fit{
+    height: fit-content;
+}
+
+.spacing{
+    --spacing: 0rem;
+    margin-bottom: var(--spacing);
+}
+
+.select2-container{
+    max-width: fit-content !important;
+    min-width: 12rem;
+}
+.select2-selection{
+    height: fit-content !important;
+}
+.select2-selection__rendered{
+    max-width: 11rem;
+    height: fit-content;
+    text-overflow: clip !important;
+    overflow-wrap: break-word;
+    white-space: break-spaces !important;
+}
+.select2-selection__arrow{
+    position: absolute;
+    right: 0.938rem !important;
+    top: 0;
+}
+.motivoPdf{
+    display: none;
+    width: 35rem;
+    text-overflow: clip;
+    overflow: hidden;
+    white-space: pre-wrap;
+    padding: 0 .2rem;
+    border: .1rem black solid;
+    line-break: normal;
+    word-wrap: break-word;
+    inline-size: 35rem;
+    min-height:7rem;
+    height: fit-content;
+    overflow: auto;
+    
+}
+
+tbody tr td{
+    max-width: 13rem; 
+    word-break: break-all;
+    min-height: fit-content;
+}
+
+thead {
+    font-size: medium;
+}
+tbody{
+    font-size: small;
+}
+
+.footer{
+    font-size: smaller;
+    vertical-align: bottom;
+}
+
+.invisible-textinput{
+    width: 100%;
+    min-width: fit-content;
+    border: none;
+}
+
+.traslados-control{
+    border: none;
+    background: none;
+}

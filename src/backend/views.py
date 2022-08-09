@@ -1,20 +1,25 @@
+from calendar import c
+from itertools import count
 from django.shortcuts import render
 from django.urls import reverse
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views.generic import TemplateView, RedirectView
 from backend import models
-from backend.forms import PlaqueadosForm, TramitesExportForm, TramitesForm
+from backend.exceptions import ArgMissingException
+from backend.forms import FuncionariosForm, NoPlaqueadosForm, PlaqueadosForm, TramitesExportForm, TramitesForm, UbicacionesForm
 
 
-class MyLoginRequiredMixin(LoginRequiredMixin):
+class PermissionsMixin(LoginRequiredMixin, PermissionRequiredMixin):
     login_url = "/login"
+    permission_required = "backend.escritura"
 
 
-class index(LoginRequiredMixin, TemplateView):
-    template_name = 'index.html'
+class index(RedirectView):
+    pattern_name = "plaqueados"
 
 
-class Table_View(LoginRequiredMixin, TemplateView):
+class Table_View(PermissionsMixin, TemplateView):
+
     """
     Clase utilizada para reciclar logica de tablas
     ...
@@ -42,6 +47,7 @@ class Table_View(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['target_view'] = reverse(self.target_view)
+        self.check_args()
         if (self.columns == "__all__" and self.model):
 
             self.columns = [
@@ -53,6 +59,14 @@ class Table_View(LoginRequiredMixin, TemplateView):
         context['form'] = self.form()
         context['add'] = self.add
         return context
+
+    def check_args(self):
+        keys = dir(self)
+        non_optional_args = ["columns", "model", "form", "target_view"]
+        missing_args = [arg for arg in non_optional_args if arg not in keys]
+
+        if (len(missing_args)):
+            raise ArgMissingException(*missing_args)
 
 
 class Activos_Plaqueados_View(Table_View):
@@ -67,13 +81,37 @@ class Activos_Plaqueados_View(Table_View):
 class Tramites_View(Table_View):
     target_view = "tramites-list"
     columns = "__all__"
-    exclude = ["id", "activos"]
+    exclude = ["id", "activos", "activos_sin_placa"]
     model = models.Tramites
     form = TramitesForm
     add = False
 
 
-class Generar_Tramite_View(TemplateView):
+class Activos_No_Plaqueados_View(Table_View):
+    target_view = "no_plaqueados-list"
+    columns = "__all__"
+    exclude = ["id"]
+    model = models.Activos_No_Plaqueados
+    form = NoPlaqueadosForm
+
+
+class Funcionarios_View(Table_View):
+    target_view = "funcionarios-list"
+    columns = "__all__"
+    exclude = ["id", "ubicaciones"]
+    model = models.Funcionarios
+    form = FuncionariosForm
+
+
+class Ubicaciones_View(Table_View):
+    target_view = "ubicaciones-list"
+    columns = "__all__"
+    exclude = ["id", "activos_plaqueados", "activos_no_plaqueados"]
+    model = models.Ubicaciones
+    form = UbicacionesForm
+
+
+class Generar_Tramite_View(PermissionsMixin, TemplateView):
     template_name = "generar/traslados.html"
 
     def get_context_data(self, **kwargs):
@@ -82,7 +120,7 @@ class Generar_Tramite_View(TemplateView):
         return context
 
 
-class Importar_Activos_View(TemplateView):
+class Importar_Activos_View(PermissionsMixin, TemplateView):
     template_name = "importar/activos.html"
 
     def get_context_data(self, **kwargs):

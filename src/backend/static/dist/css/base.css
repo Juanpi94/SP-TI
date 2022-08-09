@@ -1,0 +1,39 @@
+*, :after, :before {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #ededed;
+  margin: 0;
+  padding: 0;
+}
+
+.text-white {
+  color: azure;
+}
+
+.message {
+  width: fit-content;
+}
+
+.dynamic-datatable tr td {
+  max-width: 15rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.border-none {
+  border: none;
+}
+
+.plaqueadosTextarea {
+  height: 8rem;
+}
+
+.detalles-textarea {
+  height: 7rem;
+  padding-left: .4rem;
+}
+
+/*# sourceMappingURL=base.css.map */

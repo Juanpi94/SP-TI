@@ -12,11 +12,18 @@
                <p class="form-text text-white p-0 m-0">{{ message }}</p>
           </div>
      {% endif %}
+
+          <a href="{% get_media_prefix %}documents/plantilla_importar_activos_2022.xlsx" class="link">Descargar plantilla</a>
      <div class="mb-3">
           <label for="input-file" class="form-label">Ingrese el archivo de excel aquí</label>
-          <input id="input-file" name="file" type="file" class="form-control">
+          <input id="input-file" name="file" type="file" class="form-control" required>
      </div>
 
+     <div>
+          <p class="form-text fw-bold">Notas</p>
+          <p class="form-text">El formato para fechas es YYYY-MM-DD ejemplo = 2022-03-28</p>
+          <p class="form-text">El nombre de la ubicación tiene que existir en el sistema</p>
+     </div>
      <button type="submit" class="btn btn-primary">Submit</button>
     
 </form>

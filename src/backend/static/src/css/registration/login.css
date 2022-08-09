@@ -1,0 +1,15 @@
+.login-container{
+    background-color: #6d9ac4;
+    width: 100%;
+    height: 100vh;
+}
+
+.login-form{
+    background-color: aliceblue;
+    color: black !important;
+    height: fit-content;
+}
+
+.bg-red{
+    background-color: #ee5684;
+}

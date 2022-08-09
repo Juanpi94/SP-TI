@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+from collections import OrderedDict
 from pathlib import Path
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'django_filters',
+    'constance',
+    "constance.backends.database",
     'backend',
 ]
 
@@ -63,6 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'constance.context_processors.config',
                 'django.contrib.messages.context_processors.messages',
 
             ],
@@ -122,7 +126,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
@@ -131,3 +137,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = "/login"
 
 LOGOUT_REDIRECT_URL = "/"
+
+
+# Constance settings
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+
+
+CONSTANCE_CONFIG = OrderedDict({
+    'TITULO_ENCARGADO_BIENES': ("Sra", "Titulo de encargad@ de bienes"),
+    'NOMBRE_ENCARGADO_BIENES': ("Yontil Villalobos Mora", "Nombre de encargad@ de bienes"),
+    'CARGO_ENCARGADO_BIENES': ("Encargada de Bienes Institucionales", "Cargo de encargad@ de bienes"),
+
+    "TITULO_ATIC": ("V°B° M.C.I", "Titulo de encargad@ atic"),
+    "NOMBRE_ATIC": ("Julio Rayo", "Nombre de encargad@ atic"),
+    "CARGO_ATIC": ("Encargado ATIC", "Cargo de encargad@ atic"),
+})

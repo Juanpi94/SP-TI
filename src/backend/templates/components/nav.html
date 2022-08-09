@@ -1,58 +1,165 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="{%url 'index'%}">Atic</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse d-flex-inline" id="navbarNavDarkDropdown">
-      <ul class="navbar-nav">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="activos-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Activos
-          </a>
-          <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="activos-dropdown">
-            <li><a class="dropdown-item" href="{%url 'plaqueados'%}">Plaqueados</a></li>
-          </ul>
-        </li>
+	<div class="container-fluid">
+		<a class="navbar-brand" href="{%url 'index'%}">Atic</a>
+		<button
+			class="navbar-toggler"
+			type="button"
+			data-bs-toggle="collapse"
+			data-bs-target="#navbarNavDarkDropdown"
+			aria-controls="navbarNavDarkDropdown"
+			aria-expanded="false"
+			aria-label="Toggle navigation"
+		>
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div
+			class="collapse navbar-collapse d-flex-inline"
+			id="navbarNavDarkDropdown"
+		>
+			<ul class="navbar-nav">
+				<li class="nav-item dropdown">
+					<a
+						class="nav-link dropdown-toggle"
+						href="#"
+						id="activos-dropdown"
+						role="button"
+						data-bs-toggle="dropdown"
+						aria-expanded="false"
+					>
+						Activos
+					</a>
+					<ul
+						class="dropdown-menu dropdown-menu-dark"
+						aria-labelledby="activos-dropdown"
+					>
+						<li>
+							<a class="dropdown-item" href="{%url 'plaqueados'%}"
+								>Plaqueados</a
+							>
+						</li>
 
-          <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="reportes-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Reportes
-          </a>
-          <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="reportes-dropdown">
-            <li><a class="dropdown-item" href="{%url 'tramites'%}">Tramites</a></li>
-          </ul>
-          </li>
+						<li>
+							<a class="dropdown-item" href="{%url 'no_plaqueados'%}"
+								>No Plaqueados</a
+							>
+						</li>
+					</ul>
+				</li>
 
+				<li class="nav-item dropdown">
+					<a
+						class="nav-link dropdown-toggle"
+						href="#"
+						id="reportes-dropdown"
+						role="button"
+						data-bs-toggle="dropdown"
+						aria-expanded="false"
+					>
+						Reportes
+					</a>
+					<ul
+						class="dropdown-menu dropdown-menu-dark"
+						aria-labelledby="reportes-dropdown"
+					>
+						<li>
+							<a class="dropdown-item" href="{%url 'tramites'%}">Tramites</a>
+						</li>
+					</ul>
+				</li>
 
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="generar-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Generar
-        </a>
-        <ul class="dropdown-menu dropdown-menu-dark mr-auto" aria-labelledby="generar-dropdown">
-          <li><a class="dropdown-item" href="{% url 'generar-traslados'%}">Generar traslado</a></li>
-        </ul>
-        </li>
+				<li class="nav-item dropdown">
+					<a
+						class="nav-link dropdown-toggle"
+						href="#"
+						id="reportes-dropdown"
+						role="button"
+						data-bs-toggle="dropdown"
+						aria-expanded="false"
+					>
+						Administración
+					</a>
+					<ul
+						class="dropdown-menu dropdown-menu-dark"
+						aria-labelledby="reportes-dropdown"
+					>
+						<li>
+							<a class="dropdown-item" href="{%url 'funcionarios'%}"
+								>Funcionarios</a
+							>
+						</li>
+						<li>
+							<a class="dropdown-item" href="{%url 'ubicaciones'%}"
+								>Ubicaciones</a
+							>
+						</li>
+					</ul>
+				</li>
+				<li class="nav-item dropdown">
+					<a
+						class="nav-link dropdown-toggle"
+						href="#"
+						id="generar-dropdown"
+						role="button"
+						data-bs-toggle="dropdown"
+						aria-expanded="false"
+					>
+						Generar
+					</a>
+					<ul
+						class="dropdown-menu dropdown-menu-dark mr-auto"
+						aria-labelledby="generar-dropdown"
+					>
+						<li>
+							<a class="dropdown-item" href="{% url 'generar-traslados'%}"
+								>Generar traslado</a
+							>
+						</li>
+					</ul>
+				</li>
 
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="generar-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Importar
-        </a>
-        <ul class="dropdown-menu dropdown-menu-dark mr-auto" aria-labelledby="generar-dropdown">
-          <li><a class="dropdown-item" href="{% url 'importar-activos'%}">Importar activos</a></li>
-        </ul>
-        </li>
-
-      
-      </ul>
-      {% comment %}
-      Estos elementos se colocan a la derecha
-      {% endcomment %}
-      <ul class="navbar-nav ms-auto">
-        <li class="d-inline-flex align-items-center">
-          <a href="/logout" class="text-muted text-primary text-decoration-non">Logout</a>
-        </li>
-      </ul>
-    </div>
-  </div>
+				<li class="nav-item dropdown">
+					<a
+						class="nav-link dropdown-toggle"
+						href="#"
+						id="generar-dropdown"
+						role="button"
+						data-bs-toggle="dropdown"
+						aria-expanded="false"
+					>
+						Importar
+					</a>
+					<ul
+						class="dropdown-menu dropdown-menu-dark mr-auto"
+						aria-labelledby="generar-dropdown"
+					>
+						<li>
+							<a class="dropdown-item" href="{% url 'importar-activos'%}"
+								>Importar activos plaqueados</a
+							>
+						</li>
+						<li>
+							<a
+								class="dropdown-item"
+								href="{% url 'importar-activos-no-plaqueados'%}"
+								>Importar activos no plaqueados</a
+							>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			{% comment %} Estos elementos se colocan a la derecha {% endcomment %}
+			<ul class="navbar-nav ms-auto gap-3">
+				{% if user.is_staff %}
+				<li>
+					<a href="/admin" class="link-primary text-decoration-none"
+						>Ir a admin</a
+					>
+				</li>
+				{% endif %}
+				<li class="d-inline-flex align-items-center">
+					<a href="/logout" class="link-warning text-decoration-none">Logout</a>
+				</li>
+			</ul>
+		</div>
+	</div>
 </nav>
