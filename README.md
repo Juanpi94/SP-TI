@@ -13,12 +13,18 @@
 mkdir venv
 python -m venv ./venv
 ```
-4. instalar las dependencias de python con el comando, desde la carpeta raíz (misma carpeta donde está el requirements.txt)
+4. Asegurese que su terminal está utilizando el ambiente virtual creado previamente (Este paso tiene que realizarse cada vez que utilice el proyecto):
+```
+call ./venv/Scripts/activate.bat
+#O si está en un entorno linux o con wsl
+source ./venv/Scripts/activate
+```
+5. instalar las dependencias de python con el comando, desde la carpeta raíz (misma carpeta donde está el requirements.txt)
 `pip install -r requirements.txt`
-5. Instalar las dependencias de nodejs
+6. Instalar las dependencias de nodejs
       1. ir a src/backend
       2. ejecutar el comando `npm install`
-6. Probar si la app funciona ejecutando uno de los archivos init
+7. Probar si la app funciona ejecutando uno de los archivos init
     * Si está en un entorno windows, ejecutar el archivo init.bat dandole click o desde la terminal:
      `./init.bat`
      * Si está en un entorno linux, o está utilizando WSL (https://ubuntu.com/wsl) ejecute el archivo init.sh:
