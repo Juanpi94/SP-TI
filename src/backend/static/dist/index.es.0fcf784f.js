@@ -291,13 +291,13 @@ var process = require("process");
  * @param config.fetch - WHATWG-compatible `fetch` function.
  * @returns Preset object.
  */ function node(_ref) {
-    var { DOMParser , canvas , fetch  } = _ref;
+    var { DOMParser: DOMParser1 , canvas , fetch: fetch1  } = _ref;
     return {
         window: null,
         ignoreAnimation: true,
         ignoreMouse: true,
-        DOMParser,
-        fetch,
+        DOMParser: DOMParser1,
+        fetch: fetch1,
         createCanvas: canvas.createCanvas,
         createImage: canvas.loadImage
     };
@@ -461,19 +461,19 @@ function QB3(t) {
     return (1 - t) * (1 - t);
 }
 class Property {
-    constructor(document, name, value){
-        this.document = document;
+    constructor(document1, name, value){
+        this.document = document1;
         this.name = name;
         this.value = value;
         this.isNormalizedColor = false;
     }
-    static empty(document) {
-        return new Property(document, "EMPTY", "");
+    static empty(document1) {
+        return new Property(document1, "EMPTY", "");
     }
     split() {
         var separator = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : " ";
-        var { document , name  } = this;
-        return compressSpaces(this.getString()).trim().split(separator).map((value)=>new Property(document, name, value));
+        var { document: document1 , name  } = this;
+        return compressSpaces(this.getString()).trim().split(separator).map((value)=>new Property(document1, name, value));
     }
     hasValue(zeroIsValue) {
         var { value  } = this;
@@ -762,8 +762,8 @@ class Mouse {
     }
     runEvents() {
         if (!this.working) return;
-        var { screen: document , events , eventElements  } = this;
-        var { style  } = document.ctx.canvas;
+        var { screen: document1 , events , eventElements  } = this;
+        var { style  } = document1.ctx.canvas;
         if (style) style.cursor = "";
         events.forEach((_ref, i)=>{
             var { run  } = _ref;
@@ -793,7 +793,7 @@ class Mouse {
         });
     }
     mapXY(x, y) {
-        var { window , ctx  } = this.screen;
+        var { window: window1 , ctx  } = this.screen;
         var point = new Point(x, y);
         var element = ctx.canvas;
         while(element){
@@ -801,8 +801,8 @@ class Mouse {
             point.y -= element.offsetTop;
             element = element.offsetParent;
         }
-        if (window.scrollX) point.x += window.scrollX;
-        if (window.scrollY) point.y += window.scrollY;
+        if (window1.scrollX) point.x += window1.scrollX;
+        if (window1.scrollY) point.y += window1.scrollY;
         return point;
     }
     onClick(event) {
@@ -833,7 +833,7 @@ var defaultFetch$1 = typeof fetch !== "undefined" ? fetch.bind(undefined) // `fe
  : null;
 class Screen {
     constructor(ctx){
-        var { fetch =defaultFetch$1 , window =defaultWindow  } = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var { fetch: fetch1 = defaultFetch$1 , window: window1 = defaultWindow  } = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         this.ctx = ctx;
         this.FRAMERATE = 30;
         this.MAX_VIRTUAL_PIXELS = 30000;
@@ -847,8 +847,8 @@ class Screen {
         this.isReadyLock = false;
         this.isFirstRender = true;
         this.intervalId = null;
-        this.window = window;
-        this.fetch = fetch;
+        this.window = window1;
+        this.fetch = fetch1;
     }
     wait(checker) {
         this.waits.push(checker);
@@ -876,7 +876,7 @@ class Screen {
         ctx.miterLimit = 4;
     }
     setViewBox(_ref) {
-        var { document , ctx , aspectRatio , width , desiredWidth , height , desiredHeight , minX =0 , minY =0 , refX , refY , clip =false , clipX =0 , clipY =0  } = _ref;
+        var { document: document1 , ctx , aspectRatio , width , desiredWidth , height , desiredHeight , minX =0 , minY =0 , refX , refY , clip =false , clipX =0 , clipY =0  } = _ref;
         // aspect ratio - http://www.w3.org/TR/SVG/coords.html#PreserveAspectRatioAttribute
         var cleanAspectRatio = compressSpaces(aspectRatio).replace(/^defer\s/, ""); // ignore defer
         var [aspectRatioAlign, aspectRatioMeetOrSlice] = cleanAspectRatio.split(" ");
@@ -896,8 +896,8 @@ class Screen {
             finalDesiredWidth *= scaleMax;
             finalDesiredHeight *= scaleMax;
         }
-        var refXProp = new Property(document, "refX", refX);
-        var refYProp = new Property(document, "refY", refY);
+        var refXProp = new Property(document1, "refX", refX);
+        var refYProp = new Property(document1, "refY", refY);
         var hasRefs = refXProp.hasValue() && refYProp.hasValue();
         if (hasRefs) ctx.translate(-scaleMin * refXProp.getPixels("x"), -scaleMin * refYProp.getPixels("y"));
         if (clip) {
@@ -973,8 +973,8 @@ class Screen {
         // need update from animations?
         if (!ignoreAnimation) {
             var { frameDuration  } = this;
-            var shouldUpdate1 = this.animations.reduce((shouldUpdate, animation)=>animation.update(frameDuration) || shouldUpdate, false);
-            if (shouldUpdate1) return true;
+            var shouldUpdate = this.animations.reduce((shouldUpdate, animation)=>animation.update(frameDuration) || shouldUpdate, false);
+            if (shouldUpdate) return true;
         } // need update from redraw?
         if (typeof forceRedraw === "function" && forceRedraw()) return true;
         if (!this.isReadyLock && this.isReady()) return true;
@@ -1042,9 +1042,9 @@ var { defaultFetch  } = Screen;
 var DefaultDOMParser = typeof DOMParser !== "undefined" ? DOMParser : null;
 class Parser {
     constructor(){
-        var { fetch =defaultFetch , DOMParser =DefaultDOMParser  } = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        this.fetch = fetch;
-        this.DOMParser = DOMParser;
+        var { fetch: fetch1 = defaultFetch , DOMParser: DOMParser1 = DefaultDOMParser  } = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        this.fetch = fetch1;
+        this.DOMParser = DOMParser1;
     }
     parse(resource) {
         var _this = this;
@@ -1061,10 +1061,10 @@ class Parser {
             return this.checkDocument(parser.parseFromString(xml, "text/xml"));
         }
     }
-    checkDocument(document) {
-        var parserError = document.getElementsByTagName("parsererror")[0];
+    checkDocument(document1) {
+        var parserError = document1.getElementsByTagName("parsererror")[0];
         if (parserError) throw new Error(parserError.textContent);
-        return document;
+        return document1;
     }
     load(url) {
         var _this2 = this;
@@ -1102,7 +1102,7 @@ class Translate {
     }
 }
 class Rotate {
-    constructor(document, rotate, transformOrigin){
+    constructor(document1, rotate, transformOrigin){
         this.type = "rotate";
         this.angle = null;
         this.originX = null;
@@ -1110,7 +1110,7 @@ class Rotate {
         this.cx = 0;
         this.cy = 0;
         var numbers = toNumbers(rotate);
-        this.angle = new Property(document, "angle", numbers[0]);
+        this.angle = new Property(document1, "angle", numbers[0]);
         this.originX = transformOrigin[0];
         this.originY = transformOrigin[1];
         this.cx = numbers[1] || 0;
@@ -1226,18 +1226,18 @@ class Matrix {
         var { originX , originY , matrix  } = this;
         var a = matrix[0];
         var b = matrix[2];
-        var c1 = matrix[4];
+        var c = matrix[4];
         var d = matrix[1];
         var e = matrix[3];
         var f = matrix[5];
         var g = 0.0;
         var h = 0.0;
         var i = 1.0;
-        var det = 1 / (a * (e * i - f * h) - b * (d * i - f * g) + c1 * (d * h - e * g));
+        var det = 1 / (a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g));
         var tx = originX.getPixels("x");
         var ty = originY.getPixels("y");
         ctx.translate(tx, ty);
-        ctx.transform(det * (e * i - f * h), det * (f * g - d * i), det * (c1 * h - b * i), det * (a * i - c1 * g), det * (b * f - c1 * e), det * (c1 * d - a * f));
+        ctx.transform(det * (e * i - f * h), det * (f * g - d * i), det * (c * h - b * i), det * (a * i - c * g), det * (b * f - c * e), det * (c * d - a * f));
         ctx.translate(-tx, -ty);
     }
     applyToPoint(point) {
@@ -1245,16 +1245,16 @@ class Matrix {
     }
 }
 class Skew extends Matrix {
-    constructor(document, skew, transformOrigin){
-        super(document, skew, transformOrigin);
+    constructor(document1, skew, transformOrigin){
+        super(document1, skew, transformOrigin);
         this.type = "skew";
         this.angle = null;
-        this.angle = new Property(document, "angle", skew);
+        this.angle = new Property(document1, "angle", skew);
     }
 }
 class SkewX extends Skew {
-    constructor(document, skew, transformOrigin){
-        super(document, skew, transformOrigin);
+    constructor(document1, skew, transformOrigin){
+        super(document1, skew, transformOrigin);
         this.type = "skewX";
         this.matrix = [
             1,
@@ -1267,8 +1267,8 @@ class SkewX extends Skew {
     }
 }
 class SkewY extends Skew {
-    constructor(document, skew, transformOrigin){
-        super(document, skew, transformOrigin);
+    constructor(document1, skew, transformOrigin){
+        super(document1, skew, transformOrigin);
         this.type = "skewY";
         this.matrix = [
             1,
@@ -1291,10 +1291,10 @@ function parseTransform(transform) {
     ];
 }
 class Transform {
-    constructor(document, transform1, transformOrigin){
-        this.document = document;
+    constructor(document1, transform, transformOrigin){
+        this.document = document1;
         this.transforms = [];
-        var data = parseTransforms(transform1);
+        var data = parseTransforms(transform);
         data.forEach((transform)=>{
             if (transform === "none") return;
             var [type, value] = parseTransform(transform);
@@ -1302,14 +1302,14 @@ class Transform {
             if (typeof TransformType !== "undefined") this.transforms.push(new TransformType(this.document, value, transformOrigin));
         });
     }
-    static fromElement(document, element) {
+    static fromElement(document1, element) {
         var transformStyle = element.getStyle("transform", false, true);
         var [transformOriginXProperty, transformOriginYProperty = transformOriginXProperty] = element.getStyle("transform-origin", false, true).split();
         var transformOrigin = [
             transformOriginXProperty,
             transformOriginYProperty
         ];
-        if (transformStyle.hasValue()) return new Transform(document, transformStyle.getString(), transformOrigin);
+        if (transformStyle.hasValue()) return new Transform(document1, transformStyle.getString(), transformOrigin);
         return null;
     }
     apply(ctx) {
@@ -1337,10 +1337,10 @@ Transform.transformTypes = {
     skewY: SkewY
 };
 class Element {
-    constructor(document, node1){
+    constructor(document1, node){
         var captureTextNodes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-        this.document = document;
-        this.node = node1;
+        this.document = document1;
+        this.node = node;
         this.captureTextNodes = captureTextNodes;
         this.attributes = {};
         this.styles = {};
@@ -1349,12 +1349,12 @@ class Element {
         this.animationFrozenValue = "";
         this.parent = null;
         this.children = [];
-        if (!node1 || node1.nodeType !== 1) // ELEMENT_NODE
+        if (!node || node.nodeType !== 1) // ELEMENT_NODE
         return;
          // add attributes
-        Array.from(node1.attributes).forEach((attribute)=>{
+        Array.from(node.attributes).forEach((attribute)=>{
             var nodeName = normalizeAttributeName(attribute.nodeName);
-            this.attributes[nodeName] = new Property(document, nodeName, attribute.value);
+            this.attributes[nodeName] = new Property(document1, nodeName, attribute.value);
         });
         this.addStylesFromStyleDefinition(); // add inline styles
         if (this.getAttribute("style").hasValue()) {
@@ -1362,18 +1362,18 @@ class Element {
             styles.forEach((style)=>{
                 if (!style) return;
                 var [name, value] = style.split(":").map((_)=>_.trim());
-                this.styles[name] = new Property(document, name, value);
+                this.styles[name] = new Property(document1, name, value);
             });
         }
-        var { definitions  } = document;
+        var { definitions  } = document1;
         var id = this.getAttribute("id"); // add id
         if (id.hasValue()) {
             if (!definitions[id.getString()]) definitions[id.getString()] = this;
         }
-        Array.from(node1.childNodes).forEach((childNode)=>{
+        Array.from(node.childNodes).forEach((childNode)=>{
             if (childNode.nodeType === 1) this.addChild(childNode); // ELEMENT_NODE
             else if (captureTextNodes && (childNode.nodeType === 3 || childNode.nodeType === 4)) {
-                var textNode = document.createTextNode(childNode);
+                var textNode = document1.createTextNode(childNode);
                 if (textNode.getText().length > 0) this.addChild(textNode); // TEXT_NODE
             }
         });
@@ -1469,9 +1469,9 @@ class Element {
     }
     matchesSelector(selector) {
         var _node$getAttribute;
-        var { node: node2  } = this;
-        if (typeof node2.matches === "function") return node2.matches(selector);
-        var styleClasses = (_node$getAttribute = node2.getAttribute) === null || _node$getAttribute === void 0 ? void 0 : _node$getAttribute.call(node2, "class");
+        var { node  } = this;
+        if (typeof node.matches === "function") return node.matches(selector);
+        var styleClasses = (_node$getAttribute = node.getAttribute) === null || _node$getAttribute === void 0 ? void 0 : _node$getAttribute.call(node, "class");
         if (!styleClasses || styleClasses === "") return false;
         return styleClasses.split(" ").some((styleClass)=>".".concat(styleClass) === selector);
     }
@@ -1491,7 +1491,7 @@ class Element {
         }
     }
     removeStyles(element, ignoreStyles) {
-        var toRestore1 = ignoreStyles.reduce((toRestore, name)=>{
+        var toRestore = ignoreStyles.reduce((toRestore, name)=>{
             var styleProp = element.getStyle(name);
             if (!styleProp.hasValue()) return toRestore;
             var value = styleProp.getString();
@@ -1504,7 +1504,7 @@ class Element {
                 ]
             ];
         }, []);
-        return toRestore1;
+        return toRestore;
     }
     restoreStyles(element, styles) {
         styles.forEach((_ref)=>{
@@ -1521,8 +1521,8 @@ Element.ignoreChildTypes = [
     "title"
 ];
 class UnknownElement extends Element {
-    constructor(document, node3, captureTextNodes){
-        super(document, node3, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
     }
 }
 function wrapFontFamily(fontFamily) {
@@ -1701,17 +1701,17 @@ class BoundingBox {
     bezierCurveAdd(forX, p0, p1, p2, p3) {
         var b = 6 * p0 - 12 * p1 + 6 * p2;
         var a = -3 * p0 + 9 * p1 - 9 * p2 + 3 * p3;
-        var c2 = 3 * p1 - 3 * p0;
+        var c = 3 * p1 - 3 * p0;
         if (a === 0) {
             if (b === 0) return;
-            var t = -c2 / b;
+            var t = -c / b;
             if (0 < t && t < 1) {
                 if (forX) this.addX(this.sumCubic(t, p0, p1, p2, p3));
                 else this.addY(this.sumCubic(t, p0, p1, p2, p3));
             }
             return;
         }
-        var b2ac = Math.pow(b, 2) - 4 * c2 * a;
+        var b2ac = Math.pow(b, 2) - 4 * c * a;
         if (b2ac < 0) return;
         var t1 = (-b + Math.sqrt(b2ac)) / (2 * a);
         if (0 < t1 && t1 < 1) {
@@ -1948,8 +1948,8 @@ class RenderedElement extends Element {
     }
 }
 class PathElement extends RenderedElement {
-    constructor(document, node4, captureTextNodes){
-        super(document, node4, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.type = "path";
         this.pathParser = null;
         this.pathParser = new PathParser(this.getAttribute("d").getString());
@@ -2266,8 +2266,8 @@ class PathElement extends RenderedElement {
     }
 }
 class GlyphElement extends PathElement {
-    constructor(document, node5, captureTextNodes){
-        super(document, node5, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.type = "glyph";
         this.horizAdvX = this.getAttribute("horiz-adv-x").getNumber();
         this.unicode = this.getAttribute("unicode").getString();
@@ -2275,8 +2275,8 @@ class GlyphElement extends PathElement {
     }
 }
 class TextElement extends RenderedElement {
-    constructor(document, node6, captureTextNodes){
-        super(document, node6, new.target === TextElement ? true : captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, new.target === TextElement ? true : captureTextNodes);
         this.type = "text";
         this.x = 0;
         this.y = 0;
@@ -2310,8 +2310,8 @@ class TextElement extends RenderedElement {
         return boundingBox;
     }
     getFontSize() {
-        var { document , parent  } = this;
-        var inheritFontSize = Font.parse(document.ctx.font).fontSize;
+        var { document: document1 , parent  } = this;
+        var inheritFontSize = Font.parse(document1.ctx.font).fontSize;
         var fontSize = parent.getStyle("font-size").getNumber(inheritFontSize);
         return fontSize;
     }
@@ -2342,15 +2342,15 @@ class TextElement extends RenderedElement {
     getText() {
         return "";
     }
-    getTextFromNode(node7) {
-        var textNode = node7 || this.node;
+    getTextFromNode(node) {
+        var textNode = node || this.node;
         var childNodes = Array.from(textNode.parentNode.childNodes);
-        var index1 = childNodes.indexOf(textNode);
+        var index = childNodes.indexOf(textNode);
         var lastIndex = childNodes.length - 1;
         var text = compressSpaces(// || textNode.text
         textNode.textContent || "");
-        if (index1 === 0) text = trimLeft(text);
-        if (index1 === lastIndex) text = trimRight(text);
+        if (index === 0) text = trimLeft(text);
+        if (index === lastIndex) text = trimRight(text);
         return text;
     }
     renderChildren(ctx) {
@@ -2367,12 +2367,12 @@ class TextElement extends RenderedElement {
         if (mouse.isWorking()) mouse.checkBoundingBox(this, this.getBoundingBox(ctx));
     }
     renderTElementChildren(ctx) {
-        var { document , parent  } = this;
+        var { document: document1 , parent  } = this;
         var renderText = this.getText();
         var customFont = parent.getStyle("font-family").getDefinition();
         if (customFont) {
             var { unitsPerEm  } = customFont.fontFace;
-            var ctxFont = Font.parse(document.ctx.font);
+            var ctxFont = Font.parse(document1.ctx.font);
             var fontSize = parent.getStyle("font-size").getNumber(ctxFont.fontSize);
             var fontStyle = parent.getStyle("font-style").getString(ctxFont.fontStyle);
             var scale = fontSize / unitsPerEm;
@@ -2433,13 +2433,13 @@ class TextElement extends RenderedElement {
         });
         this.applyAnchoring();
     }
-    adjustChildCoordinatesRecursiveCore(ctx, textParent, parent, i1) {
-        var child = parent.children[i1];
+    adjustChildCoordinatesRecursiveCore(ctx, textParent, parent, i) {
+        var child = parent.children[i];
         if (child.children.length > 0) child.children.forEach((_, i)=>{
             textParent.adjustChildCoordinatesRecursiveCore(ctx, textParent, child, i);
         });
         else // only leafs are relevant
-        this.adjustChildCoordinates(ctx, textParent, parent, i1);
+        this.adjustChildCoordinates(ctx, textParent, parent, i);
     }
     adjustChildCoordinates(ctx, textParent, parent, i) {
         var child = parent.children[i];
@@ -2488,8 +2488,8 @@ class TextElement extends RenderedElement {
         ctx.restore();
         return child;
     }
-    getChildBoundingBox(ctx, textParent, parent, i2) {
-        var child = parent.children[i2]; // not a text node?
+    getChildBoundingBox(ctx, textParent, parent, i) {
+        var child = parent.children[i]; // not a text node?
         if (typeof child.getBoundingBox !== "function") return null;
         var boundingBox = child.getBoundingBox(ctx);
         if (!boundingBox) return null;
@@ -2499,8 +2499,8 @@ class TextElement extends RenderedElement {
         });
         return boundingBox;
     }
-    renderChild(ctx, textParent, parent, i3) {
-        var child = parent.children[i3];
+    renderChild(ctx, textParent, parent, i) {
+        var child = parent.children[i];
         child.render(ctx);
         child.children.forEach((_, i)=>{
             textParent.renderChild(ctx, textParent, child, i);
@@ -2556,8 +2556,8 @@ class TextElement extends RenderedElement {
     }
 }
 class TSpanElement extends TextElement {
-    constructor(document, node8, captureTextNodes){
-        super(document, node8, new.target === TSpanElement ? true : captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, new.target === TSpanElement ? true : captureTextNodes);
         this.type = "tspan"; // if this node has children, then they own the text
         this.text = this.children.length > 0 ? "" : this.getTextFromNode();
     }
@@ -2579,16 +2579,16 @@ class SVGElement extends RenderedElement {
     }
     setContext(ctx) {
         var _this$node$parentNode;
-        var { document  } = this;
-        var { screen , window  } = document;
+        var { document: document1  } = this;
+        var { screen , window: window1  } = document1;
         var canvas = ctx.canvas;
         screen.setDefaults(ctx);
-        if (canvas.style && typeof ctx.font !== "undefined" && window && typeof window.getComputedStyle !== "undefined") {
-            ctx.font = window.getComputedStyle(canvas).getPropertyValue("font");
-            var fontSizeProp = new Property(document, "fontSize", Font.parse(ctx.font).fontSize);
+        if (canvas.style && typeof ctx.font !== "undefined" && window1 && typeof window1.getComputedStyle !== "undefined") {
+            ctx.font = window1.getComputedStyle(canvas).getPropertyValue("font");
+            var fontSizeProp = new Property(document1, "fontSize", Font.parse(ctx.font).fontSize);
             if (fontSizeProp.hasValue()) {
-                document.rootEmSize = fontSizeProp.getPixels("y");
-                document.emSize = document.rootEmSize;
+                document1.rootEmSize = fontSizeProp.getPixels("y");
+                document1.emSize = document1.rootEmSize;
             }
         } // create new view port
         if (!this.getAttribute("x").hasValue()) this.getAttribute("x", true).setValue(0);
@@ -2630,7 +2630,7 @@ class SVGElement extends RenderedElement {
             width = viewBox[2];
             height = viewBox[3];
         }
-        document.setViewBox({
+        document1.setViewBox({
             ctx,
             aspectRatio: this.getAttribute("preserveAspectRatio").getString(),
             width: screen.viewPort.width,
@@ -2808,8 +2808,8 @@ class LineElement extends PathElement {
     }
 }
 class PolylineElement extends PathElement {
-    constructor(document, node9, captureTextNodes){
-        super(document, node9, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.type = "polyline";
         this.points = [];
         this.points = Point.parsePath(this.getAttribute("points").getString());
@@ -2948,8 +2948,8 @@ class GElement extends RenderedElement {
     }
 }
 class GradientElement extends Element {
-    constructor(document, node10, captureTextNodes){
-        super(document, node10, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.attributesToInherit = [
             "gradientUnits"
         ];
@@ -2977,28 +2977,28 @@ class GradientElement extends Element {
         });
         if (this.getAttribute("gradientTransform").hasValue()) {
             // render as transformed pattern on temporary canvas
-            var { document  } = this;
-            var { MAX_VIRTUAL_PIXELS , viewPort  } = document.screen;
+            var { document: document1  } = this;
+            var { MAX_VIRTUAL_PIXELS , viewPort  } = document1.screen;
             var [rootView] = viewPort.viewPorts;
-            var rect = new RectElement(document, null);
-            rect.attributes.x = new Property(document, "x", -MAX_VIRTUAL_PIXELS / 3.0);
-            rect.attributes.y = new Property(document, "y", -MAX_VIRTUAL_PIXELS / 3.0);
-            rect.attributes.width = new Property(document, "width", MAX_VIRTUAL_PIXELS);
-            rect.attributes.height = new Property(document, "height", MAX_VIRTUAL_PIXELS);
-            var group = new GElement(document, null);
-            group.attributes.transform = new Property(document, "transform", this.getAttribute("gradientTransform").getValue());
+            var rect = new RectElement(document1, null);
+            rect.attributes.x = new Property(document1, "x", -MAX_VIRTUAL_PIXELS / 3.0);
+            rect.attributes.y = new Property(document1, "y", -MAX_VIRTUAL_PIXELS / 3.0);
+            rect.attributes.width = new Property(document1, "width", MAX_VIRTUAL_PIXELS);
+            rect.attributes.height = new Property(document1, "height", MAX_VIRTUAL_PIXELS);
+            var group = new GElement(document1, null);
+            group.attributes.transform = new Property(document1, "transform", this.getAttribute("gradientTransform").getValue());
             group.children = [
                 rect
             ];
-            var patternSvg = new SVGElement(document, null);
-            patternSvg.attributes.x = new Property(document, "x", 0);
-            patternSvg.attributes.y = new Property(document, "y", 0);
-            patternSvg.attributes.width = new Property(document, "width", rootView.width);
-            patternSvg.attributes.height = new Property(document, "height", rootView.height);
+            var patternSvg = new SVGElement(document1, null);
+            patternSvg.attributes.x = new Property(document1, "x", 0);
+            patternSvg.attributes.y = new Property(document1, "y", 0);
+            patternSvg.attributes.width = new Property(document1, "width", rootView.width);
+            patternSvg.attributes.height = new Property(document1, "height", rootView.height);
             patternSvg.children = [
                 group
             ];
-            var patternCanvas = document.createCanvas(rootView.width, rootView.height);
+            var patternCanvas = document1.createCanvas(rootView.width, rootView.height);
             var patternCtx = patternCanvas.getContext("2d");
             patternCtx.fillStyle = gradient;
             patternSvg.render(patternCtx);
@@ -3020,8 +3020,8 @@ class GradientElement extends Element {
     }
 }
 class LinearGradientElement extends GradientElement {
-    constructor(document, node11, captureTextNodes){
-        super(document, node11, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.type = "linearGradient";
         this.attributesToInherit.push("x1", "y1", "x2", "y2");
     }
@@ -3044,8 +3044,8 @@ class LinearGradientElement extends GradientElement {
     }
 }
 class RadialGradientElement extends GradientElement {
-    constructor(document, node12, captureTextNodes){
-        super(document, node12, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.type = "radialGradient";
         this.attributesToInherit.push("cx", "cy", "r", "fx", "fy", "fr");
     }
@@ -3068,8 +3068,8 @@ class RadialGradientElement extends GradientElement {
     }
 }
 class StopElement extends Element {
-    constructor(document, node13, captureTextNodes){
-        super(document, node13, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.type = "stop";
         var offset = Math.max(0, Math.min(1, this.getAttribute("offset").getNumber()));
         var stopOpacity = this.getStyle("stop-opacity");
@@ -3081,20 +3081,20 @@ class StopElement extends Element {
     }
 }
 class AnimateElement extends Element {
-    constructor(document, node14, captureTextNodes){
-        super(document, node14, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.type = "animate";
         this.duration = 0;
         this.initialValue = null;
         this.initialUnits = "";
         this.removed = false;
         this.frozen = false;
-        document.screen.animations.push(this);
+        document1.screen.animations.push(this);
         this.begin = this.getAttribute("begin").getMilliseconds();
         this.maxDuration = this.begin + this.getAttribute("dur").getMilliseconds();
         this.from = this.getAttribute("from");
         this.to = this.getAttribute("to");
-        this.values = new Property(document, "values", null);
+        this.values = new Property(document1, "values", null);
         var valuesAttr = this.getAttribute("values");
         if (valuesAttr.hasValue()) this.values.setValue(valuesAttr.getString().split(";"));
     }
@@ -3148,7 +3148,7 @@ class AnimateElement extends Element {
         return updated;
     }
     getProgress() {
-        var { document , values  } = this;
+        var { document: document1 , values  } = this;
         var result = {
             progress: (this.duration - this.begin) / (this.maxDuration - this.begin)
         };
@@ -3156,8 +3156,8 @@ class AnimateElement extends Element {
             var p = result.progress * (values.getValue().length - 1);
             var lb = Math.floor(p);
             var ub = Math.ceil(p);
-            result.from = new Property(document, "from", parseFloat(values.getValue()[lb]));
-            result.to = new Property(document, "to", parseFloat(values.getValue()[ub]));
+            result.from = new Property(document1, "from", parseFloat(values.getValue()[lb]));
+            result.to = new Property(document1, "to", parseFloat(values.getValue()[ub]));
             result.progress = (p - lb) / (ub - lb);
         } else {
             result.from = this.from;
@@ -3191,9 +3191,9 @@ class AnimateTransformElement extends AnimateElement {
         this.type = "animateTransform";
     }
     calcValue() {
-        var { progress , from: from1 , to: to1  } = this.getProgress(); // tween value linearly
-        var transformFrom = toNumbers(from1.getString());
-        var transformTo = toNumbers(to1.getString());
+        var { progress , from , to  } = this.getProgress(); // tween value linearly
+        var transformFrom = toNumbers(from.getString());
+        var transformTo = toNumbers(to.getString());
         var newValue = transformFrom.map((from, i)=>{
             var to = transformTo[i];
             return from + (to - from) * progress;
@@ -3202,12 +3202,12 @@ class AnimateTransformElement extends AnimateElement {
     }
 }
 class FontElement extends Element {
-    constructor(document, node15, captureTextNodes){
-        super(document, node15, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.type = "font";
         this.glyphs = {};
         this.horizAdvX = this.getAttribute("horiz-adv-x").getNumber();
-        var { definitions  } = document;
+        var { definitions  } = document1;
         var { children  } = this;
         for (var child of children)switch(child.type){
             case "font-face":
@@ -3232,8 +3232,8 @@ class FontElement extends Element {
     render() {}
 }
 class FontFaceElement extends Element {
-    constructor(document, node16, captureTextNodes){
-        super(document, node16, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.type = "font-face";
         this.ascent = this.getAttribute("ascent").getNumber();
         this.descent = this.getAttribute("descent").getNumber();
@@ -3262,12 +3262,12 @@ class TRefElement extends TextElement {
     }
 }
 class AElement extends TextElement {
-    constructor(document, node17, captureTextNodes){
-        super(document, node17, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.type = "a";
-        var { childNodes  } = node17;
+        var { childNodes  } = node;
         var firstChild = childNodes[0];
-        var hasText = childNodes.length > 0 && Array.from(childNodes).every((node18)=>node18.nodeType === 3);
+        var hasText = childNodes.length > 0 && Array.from(childNodes).every((node)=>node.nodeType === 3);
         this.hasText = hasText;
         this.text = hasText ? this.getTextFromNode(firstChild) : "";
     }
@@ -3278,9 +3278,9 @@ class AElement extends TextElement {
         if (this.hasText) {
             // render as text element
             super.renderChildren(ctx);
-            var { document , x , y  } = this;
-            var { mouse  } = document.screen;
-            var fontSize = new Property(document, "fontSize", Font.parse(document.ctx.font).fontSize); // Do not calc bounding box if mouse is not working.
+            var { document: document1 , x , y  } = this;
+            var { mouse  } = document1.screen;
+            var fontSize = new Property(document1, "fontSize", Font.parse(document1.ctx.font).fontSize); // Do not calc bounding box if mouse is not working.
             if (mouse.isWorking()) mouse.checkBoundingBox(this, new BoundingBox(x, y - fontSize.getPixels("y"), x + this.measureText(ctx), y));
         } else if (this.children.length > 0) {
             // render as temporary group
@@ -3291,8 +3291,8 @@ class AElement extends TextElement {
         }
     }
     onClick() {
-        var { window  } = this.document;
-        if (window) window.open(this.getHrefAttribute().getString());
+        var { window: window1  } = this.document;
+        if (window1) window1.open(this.getHrefAttribute().getString());
     }
     onMouseMove() {
         var ctx = this.document.ctx;
@@ -3324,8 +3324,8 @@ function _objectSpread$2(target) {
     return target;
 }
 class TextPathElement extends TextElement {
-    constructor(document, node19, captureTextNodes){
-        super(document, node19, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.type = "textPath";
         this.textWidth = 0;
         this.textHeight = 0;
@@ -3427,10 +3427,10 @@ class TextPathElement extends TextElement {
         var idx = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
         return this.letterSpacingCache[idx] || 0;
     }
-    findSegmentToFitChar(ctx, anchor, textFullWidth, fullPathWidth, spacesNumber, inputOffset, dy, c3, charI) {
+    findSegmentToFitChar(ctx, anchor, textFullWidth, fullPathWidth, spacesNumber, inputOffset, dy, c, charI) {
         var offset = inputOffset;
-        var glyphWidth = this.measureText(ctx, c3);
-        if (c3 === " " && anchor === "justify" && textFullWidth < fullPathWidth) glyphWidth += (fullPathWidth - textFullWidth) / spacesNumber;
+        var glyphWidth = this.measureText(ctx, c);
+        if (c === " " && anchor === "justify" && textFullWidth < fullPathWidth) glyphWidth += (fullPathWidth - textFullWidth) / spacesNumber;
         if (charI > -1) offset += this.getLetterSpacingAt(charI);
         var splineStep = this.textHeight / 20;
         var p0 = this.getEquidistantPointOnPath(offset, splineStep, 0);
@@ -3487,7 +3487,7 @@ class TextPathElement extends TextElement {
         var letterSpacingCache = [];
         var textLen = renderText.length;
         this.letterSpacingCache = letterSpacingCache;
-        for(var i4 = 0; i4 < textLen; i4++)letterSpacingCache.push(typeof dx[i4] !== "undefined" ? dx[i4] : letterSpacing);
+        for(var i = 0; i < textLen; i++)letterSpacingCache.push(typeof dx[i] !== "undefined" ? dx[i] : letterSpacing);
         var dxSum = letterSpacingCache.reduce((acc, cur, i)=>i === 0 ? 0 : acc + cur || 0, 0);
         var textWidth = this.measureText(ctx);
         var textFullWidth = Math.max(textWidth + dxSum, 0);
@@ -3703,17 +3703,17 @@ class TextPathElement extends TextElement {
     getPointOnLine(dist, p1x, p1y, p2x, p2y) {
         var fromX = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : p1x;
         var fromY = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : p1y;
-        var m1 = (p2y - p1y) / (p2x - p1x + PSEUDO_ZERO);
-        var run = Math.sqrt(dist * dist / (1 + m1 * m1));
+        var m = (p2y - p1y) / (p2x - p1x + PSEUDO_ZERO);
+        var run = Math.sqrt(dist * dist / (1 + m * m));
         if (p2x < p1x) run *= -1;
-        var rise = m1 * run;
+        var rise = m * run;
         var pt = null;
         if (p2x === p1x) // vertical line
         pt = {
             x: fromX,
             y: fromY + rise
         };
-        else if ((fromY - p1y) / (fromX - p1x + PSEUDO_ZERO) === m1) pt = {
+        else if ((fromY - p1y) / (fromX - p1x + PSEUDO_ZERO) === m) pt = {
             x: fromX + run,
             y: fromY + rise
         };
@@ -3728,9 +3728,9 @@ class TextPathElement extends TextElement {
             iy = p1y + u * (p2y - p1y);
             var pRise = this.getLineLength(fromX, fromY, ix, iy);
             var pRun = Math.sqrt(dist * dist - pRise * pRise);
-            run = Math.sqrt(pRun * pRun / (1 + m1 * m1));
+            run = Math.sqrt(pRun * pRun / (1 + m * m));
             if (p2x < p1x) run *= -1;
-            rise = m1 * run;
+            rise = m * run;
             pt = {
                 x: ix + run,
                 y: iy + rise
@@ -3851,14 +3851,14 @@ class TextPathElement extends TextElement {
 }
 var dataUriRegex = /^\s*data:(([^/,;]+\/[^/,;]+)(?:;([^,;=]+=[^,;=]+))?)?(?:;(base64))?,(.*)$/i;
 class ImageElement extends RenderedElement {
-    constructor(document, node20, captureTextNodes){
-        super(document, node20, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.type = "image";
         this.loaded = false;
         var href = this.getHrefAttribute().getString();
         if (!href) return;
         var isSvg = href.endsWith(".svg") || /^\s*data:image\/svg\+xml/i.test(href);
-        document.images.push(this);
+        document1.images.push(this);
         if (!isSvg) this.loadImage(href);
         else this.loadSvg(href);
         this.isSvg = isSvg;
@@ -3894,7 +3894,7 @@ class ImageElement extends RenderedElement {
         })();
     }
     renderChildren(ctx) {
-        var { document , image , loaded  } = this;
+        var { document: document1 , image , loaded  } = this;
         var x = this.getAttribute("x").getPixels("x");
         var y = this.getAttribute("y").getPixels("y");
         var width = this.getStyle("width").getPixels("x");
@@ -3903,7 +3903,7 @@ class ImageElement extends RenderedElement {
         ctx.save();
         ctx.translate(x, y);
         if (this.isSvg) {
-            var subDocument = document.canvg.forkString(ctx, this.image, {
+            var subDocument = document1.canvg.forkString(ctx, this.image, {
                 ignoreMouse: true,
                 ignoreAnimation: true,
                 ignoreDimensions: true,
@@ -3917,7 +3917,7 @@ class ImageElement extends RenderedElement {
             subDocument.render();
         } else {
             var _image = this.image;
-            document.setViewBox({
+            document1.setViewBox({
                 ctx,
                 aspectRatio: this.getAttribute("preserveAspectRatio").getString(),
                 width,
@@ -3947,21 +3947,21 @@ class SymbolElement extends RenderedElement {
     render(_) {}
 }
 class SVGFontLoader {
-    constructor(document){
-        this.document = document;
+    constructor(document1){
+        this.document = document1;
         this.loaded = false;
-        document.fonts.push(this);
+        document1.fonts.push(this);
     }
     load(fontFamily, url) {
         var _this = this;
         return (0, _asyncToGeneratorDefault.default)(function*() {
             try {
-                var { document  } = _this;
-                var svgDocument = yield document.canvg.parser.load(url);
+                var { document: document1  } = _this;
+                var svgDocument = yield document1.canvg.parser.load(url);
                 var fonts = svgDocument.getElementsByTagName("font");
                 Array.from(fonts).forEach((fontNode)=>{
-                    var font = document.createElement(fontNode);
-                    document.definitions[fontFamily] = font;
+                    var font = document1.createElement(fontNode);
+                    document1.definitions[fontFamily] = font;
                 });
             } catch (err) {
                 console.error('Error while loading font "'.concat(url, '":'), err);
@@ -3971,16 +3971,16 @@ class SVGFontLoader {
     }
 }
 class StyleElement extends Element {
-    constructor(document, node21, captureTextNodes){
-        super(document, node21, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.type = "style";
-        var css = compressSpaces(Array.from(node21.childNodes) // NEED TEST
+        var css = compressSpaces(Array.from(node.childNodes) // NEED TEST
         .map((_)=>_.textContent).join("").replace(/(\/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/)|(^[\s]*\/\/.*)/gm, "") // remove comments
         .replace(/@import.*;/g, "") // remove imports
         );
         var cssDefs = css.split("}");
-        cssDefs.forEach((_1)=>{
-            var def = _1.trim();
+        cssDefs.forEach((_)=>{
+            var def = _.trim();
             if (!def) return;
             var cssParts = def.split("{");
             var cssClasses = cssParts[0].split(",");
@@ -3988,15 +3988,15 @@ class StyleElement extends Element {
             cssClasses.forEach((_)=>{
                 var cssClass = _.trim();
                 if (!cssClass) return;
-                var props = document.styles[cssClass] || {};
+                var props = document1.styles[cssClass] || {};
                 cssProps.forEach((cssProp)=>{
                     var prop = cssProp.indexOf(":");
                     var name = cssProp.substr(0, prop).trim();
                     var value = cssProp.substr(prop + 1, cssProp.length - prop).trim();
-                    if (name && value) props[name] = new Property(document, name, value);
+                    if (name && value) props[name] = new Property(document1, name, value);
                 });
-                document.styles[cssClass] = props;
-                document.stylesSpecificity[cssClass] = getSelectorSpecificity(cssClass);
+                document1.styles[cssClass] = props;
+                document1.stylesSpecificity[cssClass] = getSelectorSpecificity(cssClass);
                 if (cssClass === "@font-face") {
                     //  && !nodeEnv
                     var fontFamily = props["font-family"].getString().replace(/"|'/g, "");
@@ -4004,7 +4004,7 @@ class StyleElement extends Element {
                     srcs.forEach((src)=>{
                         if (src.indexOf('format("svg")') > 0) {
                             var url = parseExternalUrl(src);
-                            if (url) new SVGFontLoader(document).load(fontFamily, url);
+                            if (url) new SVGFontLoader(document1).load(fontFamily, url);
                         }
                     });
                 }
@@ -4030,23 +4030,23 @@ class UseElement extends RenderedElement {
         if (element) element.path(ctx);
     }
     renderChildren(ctx) {
-        var { document , element  } = this;
+        var { document: document1 , element  } = this;
         if (element) {
             var tempSvg = element;
             if (element.type === "symbol") {
                 // render me using a temporary svg element in symbol cases (http://www.w3.org/TR/SVG/struct.html#UseElement)
-                tempSvg = new SVGElement(document, null);
-                tempSvg.attributes.viewBox = new Property(document, "viewBox", element.getAttribute("viewBox").getString());
-                tempSvg.attributes.preserveAspectRatio = new Property(document, "preserveAspectRatio", element.getAttribute("preserveAspectRatio").getString());
-                tempSvg.attributes.overflow = new Property(document, "overflow", element.getAttribute("overflow").getString());
+                tempSvg = new SVGElement(document1, null);
+                tempSvg.attributes.viewBox = new Property(document1, "viewBox", element.getAttribute("viewBox").getString());
+                tempSvg.attributes.preserveAspectRatio = new Property(document1, "preserveAspectRatio", element.getAttribute("preserveAspectRatio").getString());
+                tempSvg.attributes.overflow = new Property(document1, "overflow", element.getAttribute("overflow").getString());
                 tempSvg.children = element.children; // element is still the parent of the children
-                element.styles.opacity = new Property(document, "opacity", this.calculateOpacity());
+                element.styles.opacity = new Property(document1, "opacity", this.calculateOpacity());
             }
             if (tempSvg.type === "svg") {
                 var widthStyle = this.getStyle("width", false, true);
                 var heightStyle = this.getStyle("height", false, true); // if symbol or svg, inherit width/height from me
-                if (widthStyle.hasValue()) tempSvg.attributes.width = new Property(document, "width", widthStyle.getString());
-                if (heightStyle.hasValue()) tempSvg.attributes.height = new Property(document, "height", heightStyle.getString());
+                if (widthStyle.hasValue()) tempSvg.attributes.width = new Property(document1, "width", widthStyle.getString());
+                if (heightStyle.hasValue()) tempSvg.attributes.height = new Property(document1, "height", heightStyle.getString());
             }
             var oldParent = tempSvg.parent;
             tempSvg.parent = this;
@@ -4060,8 +4060,8 @@ class UseElement extends RenderedElement {
         return null;
     }
     elementTransform() {
-        var { document , element  } = this;
-        return Transform.fromElement(document, element);
+        var { document: document1 , element  } = this;
+        return Transform.fromElement(document1, element);
     }
     get element() {
         if (!this.cachedElement) this.cachedElement = this.getHrefAttribute().getDefinition();
@@ -4082,8 +4082,8 @@ function c(a, m1, m2, m3) {
     return m1 + Math.cos(a) * m2 + Math.sin(a) * m3;
 }
 class FeColorMatrixElement extends Element {
-    constructor(document, node22, captureTextNodes){
-        super(document, node22, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.type = "feColorMatrix";
         var matrix = toNumbers(this.getAttribute("values").getString());
         switch(this.getAttribute("type").getString("matrix")){
@@ -4215,7 +4215,7 @@ class MaskElement extends Element {
         this.type = "mask";
     }
     apply(ctx, element) {
-        var { document  } = this; // render as temp svg
+        var { document: document1  } = this; // render as temp svg
         var x = this.getAttribute("x").getPixels("x");
         var y = this.getAttribute("y").getPixels("y");
         var width = this.getStyle("width").getPixels("x");
@@ -4231,12 +4231,12 @@ class MaskElement extends Element {
             height = Math.floor(boundingBox.height);
         }
         var ignoredStyles = this.removeStyles(element, MaskElement.ignoreStyles);
-        var maskCanvas = document.createCanvas(x + width, y + height);
+        var maskCanvas = document1.createCanvas(x + width, y + height);
         var maskCtx = maskCanvas.getContext("2d");
-        document.screen.setDefaults(maskCtx);
+        document1.screen.setDefaults(maskCtx);
         this.renderChildren(maskCtx); // convert mask to alpha with a fake node
         // TODO: refactor out apply from feColorMatrix
-        new FeColorMatrixElement(document, {
+        new FeColorMatrixElement(document1, {
             nodeType: 1,
             childNodes: [],
             attributes: [
@@ -4250,9 +4250,9 @@ class MaskElement extends Element {
                 }
             ]
         }).apply(maskCtx, 0, 0, x + width, y + height);
-        var tmpCanvas = document.createCanvas(x + width, y + height);
+        var tmpCanvas = document1.createCanvas(x + width, y + height);
         var tmpCtx = tmpCanvas.getContext("2d");
-        document.screen.setDefaults(tmpCtx);
+        document1.screen.setDefaults(tmpCtx);
         element.render(tmpCtx);
         tmpCtx.globalCompositeOperation = "destination-in";
         tmpCtx.fillStyle = maskCtx.createPattern(maskCanvas, "no-repeat");
@@ -4275,7 +4275,7 @@ class ClipPathElement extends Element {
         this.type = "clipPath";
     }
     apply(ctx) {
-        var { document  } = this;
+        var { document: document1  } = this;
         var contextProto = Reflect.getPrototypeOf(ctx);
         var { beginPath , closePath  } = ctx;
         if (contextProto) {
@@ -4286,7 +4286,7 @@ class ClipPathElement extends Element {
         this.children.forEach((child)=>{
             if (typeof child.path === "undefined") return;
             var transform = typeof child.elementTransform !== "undefined" ? child.elementTransform() : null; // handle <use />
-            if (!transform) transform = Transform.fromElement(document, child);
+            if (!transform) transform = Transform.fromElement(document1, child);
             if (transform) transform.apply(ctx);
             child.path(ctx);
             if (contextProto) contextProto.closePath = closePath;
@@ -4308,7 +4308,7 @@ class FilterElement extends Element {
     }
     apply(ctx, element) {
         // render as temp svg
-        var { document , children  } = this;
+        var { document: document1 , children  } = this;
         var boundingBox = element.getBoundingBox(ctx);
         if (!boundingBox) return;
         var px = 0;
@@ -4326,9 +4326,9 @@ class FilterElement extends Element {
         var x = Math.floor(boundingBox.x);
         var y = Math.floor(boundingBox.y);
         var ignoredStyles = this.removeStyles(element, FilterElement.ignoreStyles);
-        var tmpCanvas = document.createCanvas(tmpCanvasWidth, tmpCanvasHeight);
+        var tmpCanvas = document1.createCanvas(tmpCanvasWidth, tmpCanvasHeight);
         var tmpCtx = tmpCanvas.getContext("2d");
-        document.screen.setDefaults(tmpCtx);
+        document1.screen.setDefaults(tmpCtx);
         tmpCtx.translate(-x + px, -y + py);
         element.render(tmpCtx); // apply filters
         children.forEach((child)=>{
@@ -4345,8 +4345,8 @@ FilterElement.ignoreStyles = [
     "clip-path"
 ];
 class FeDropShadowElement extends Element {
-    constructor(document, node23, captureTextNodes){
-        super(document, node23, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.type = "feDropShadow";
         this.addStylesFromStyleDefinition();
     }
@@ -4367,17 +4367,17 @@ class FeCompositeElement extends Element {
     apply(_, _x, _y, _width, _height) {}
 }
 class FeGaussianBlurElement extends Element {
-    constructor(document, node24, captureTextNodes){
-        super(document, node24, captureTextNodes);
+    constructor(document1, node, captureTextNodes){
+        super(document1, node, captureTextNodes);
         this.type = "feGaussianBlur";
         this.blurRadius = Math.floor(this.getAttribute("stdDeviation").getNumber());
         this.extraFilterDistance = this.blurRadius;
     }
     apply(ctx, x, y, width, height) {
-        var { document , blurRadius  } = this;
-        var body = document.window ? document.window.document.body : null;
+        var { document: document1 , blurRadius  } = this;
+        var body = document1.window ? document1.window.document.body : null;
         var canvas = ctx.canvas; // StackBlur requires canvas be on document
-        canvas.id = document.getUniqueId();
+        canvas.id = document1.getUniqueId();
         if (body) {
             canvas.style.display = "none";
             body.appendChild(canvas);
@@ -4493,7 +4493,7 @@ function _createImage() {
 }
 class Document {
     constructor(canvg){
-        var { rootEmSize =12 , emSize =12 , createCanvas: createCanvas1 = Document.createCanvas , createImage: createImage1 = Document.createImage , anonymousCrossOrigin  } = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var { rootEmSize =12 , emSize =12 , createCanvas =Document.createCanvas , createImage =Document.createImage , anonymousCrossOrigin  } = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         this.canvg = canvg;
         this.definitions = {};
         this.styles = {};
@@ -4505,14 +4505,14 @@ class Document {
         this.screen = canvg.screen;
         this.rootEmSize = rootEmSize;
         this.emSize = emSize;
-        this.createCanvas = createCanvas1;
-        this.createImage = this.bindCreateImage(createImage1, anonymousCrossOrigin);
+        this.createCanvas = createCanvas;
+        this.createImage = this.bindCreateImage(createImage, anonymousCrossOrigin);
         this.screen.wait(this.isImagesLoaded.bind(this));
         this.screen.wait(this.isFontsLoaded.bind(this));
     }
-    bindCreateImage(createImage2, anonymousCrossOrigin) {
-        if (typeof anonymousCrossOrigin === "boolean") return (source, forceAnonymousCrossOrigin)=>createImage2(source, typeof forceAnonymousCrossOrigin === "boolean" ? forceAnonymousCrossOrigin : anonymousCrossOrigin);
-        return createImage2;
+    bindCreateImage(createImage, anonymousCrossOrigin) {
+        if (typeof anonymousCrossOrigin === "boolean") return (source, forceAnonymousCrossOrigin)=>createImage(source, typeof forceAnonymousCrossOrigin === "boolean" ? forceAnonymousCrossOrigin : anonymousCrossOrigin);
+        return createImage;
     }
     get window() {
         return this.screen.window;
@@ -4544,21 +4544,21 @@ class Document {
     isFontsLoaded() {
         return this.fonts.every((_)=>_.loaded);
     }
-    createDocumentElement(document) {
-        var documentElement = this.createElement(document.documentElement);
+    createDocumentElement(document1) {
+        var documentElement = this.createElement(document1.documentElement);
         documentElement.root = true;
         documentElement.addStylesFromStyleDefinition();
         this.documentElement = documentElement;
         return documentElement;
     }
-    createElement(node25) {
-        var elementType = node25.nodeName.replace(/^[^:]+:/, "");
+    createElement(node) {
+        var elementType = node.nodeName.replace(/^[^:]+:/, "");
         var ElementType = Document.elementTypes[elementType];
-        if (typeof ElementType !== "undefined") return new ElementType(this, node25);
-        return new UnknownElement(this, node25);
+        if (typeof ElementType !== "undefined") return new ElementType(this, node);
+        return new UnknownElement(this, node);
     }
-    createTextNode(node26) {
-        return new TextNode(this, node26);
+    createTextNode(node) {
+        return new TextNode(this, node);
     }
     setViewBox(config) {
         this.screen.setViewBox(_objectSpread$1({
@@ -4606,9 +4606,9 @@ function _objectSpread(target) {
         this.parser = new Parser(options);
         this.screen = new Screen(ctx, options);
         this.options = options;
-        var document = new Document(this, options);
-        var documentElement = document.createDocumentElement(svg);
-        this.document = document;
+        var document1 = new Document(this, options);
+        var documentElement = document1.createDocumentElement(svg);
+        this.document = document1;
         this.documentElement = documentElement;
     }
     /**
@@ -4713,7 +4713,7 @@ function _objectSpread(target) {
     }
 }
 
-},{"core-js/modules/es.promise.js":"9lvo1","@babel/runtime/helpers/asyncToGenerator":"jxKg8","core-js/modules/es.string.match.js":"dhI0U","core-js/modules/es.string.replace.js":"bE0gl","core-js/modules/es.string.starts-with.js":"jBAVV","core-js/modules/es.array.iterator.js":"dFlRN","core-js/modules/web.dom-collections.iterator.js":"3YhYU","@babel/runtime/helpers/defineProperty":"4x6r7","core-js/modules/es.array.reduce.js":"4JP9y","core-js/modules/es.string.ends-with.js":"jGTSU","core-js/modules/es.string.split.js":"c6es8","raf":"ba7ov","core-js/modules/es.string.trim.js":"8KjjF","rgbcolor":"iVlt2","core-js/modules/es.array.index-of.js":"jWtjc","core-js/modules/es.string.includes.js":"iQrGk","core-js/modules/es.array.reverse.js":"fcRaU","svg-pathdata":"8cZl0","core-js/modules/es.regexp.to-string.js":"8bEcW","stackblur-canvas":"imAgF","process":"d5jf4","@parcel/transformer-js/src/esmodule-helpers.js":"cEE7i"}],"9lvo1":[function(require,module,exports) {
+},{"core-js/modules/es.promise.js":"9lvo1","@babel/runtime/helpers/asyncToGenerator":"jxKg8","core-js/modules/es.string.match.js":"dhI0U","core-js/modules/es.string.replace.js":"bE0gl","core-js/modules/es.string.starts-with.js":"jBAVV","core-js/modules/es.array.iterator.js":"dFlRN","core-js/modules/web.dom-collections.iterator.js":"3YhYU","@babel/runtime/helpers/defineProperty":"4x6r7","core-js/modules/es.array.reduce.js":"4JP9y","core-js/modules/es.string.ends-with.js":"jGTSU","core-js/modules/es.string.split.js":"c6es8","raf":"ba7ov","core-js/modules/es.string.trim.js":"8KjjF","rgbcolor":"iVlt2","core-js/modules/es.array.index-of.js":"jWtjc","core-js/modules/es.string.includes.js":"iQrGk","core-js/modules/es.array.reverse.js":"fcRaU","svg-pathdata":"8cZl0","core-js/modules/es.regexp.to-string.js":"8bEcW","stackblur-canvas":"imAgF","process":"58IdK","@parcel/transformer-js/src/esmodule-helpers.js":"cEE7i"}],"9lvo1":[function(require,module,exports) {
 // TODO: Remove this module from `core-js@4` since it's split to modules listed below
 require("../modules/es.promise.constructor");
 require("../modules/es.promise.all");
@@ -7085,11 +7085,11 @@ var scriptTag = function(content) {
     return LT + SCRIPT + GT + content + LT + "/" + SCRIPT + GT;
 };
 // Create object with fake `null` prototype: use ActiveX Object with cleared prototype
-var NullProtoObjectViaActiveX = function(activeXDocument1) {
-    activeXDocument1.write(scriptTag(""));
-    activeXDocument1.close();
-    var temp = activeXDocument1.parentWindow.Object;
-    activeXDocument1 = null; // avoid memory leak
+var NullProtoObjectViaActiveX = function(activeXDocument) {
+    activeXDocument.write(scriptTag(""));
+    activeXDocument.close();
+    var temp = activeXDocument.parentWindow.Object;
+    activeXDocument = null; // avoid memory leak
     return temp;
 };
 // Create object with fake `null` prototype: use iframe Object with cleared prototype
@@ -7781,7 +7781,7 @@ var wellKnownSymbol = require("../internals/well-known-symbol");
 var ITERATOR = wellKnownSymbol("iterator");
 var TO_STRING_TAG = wellKnownSymbol("toStringTag");
 var ArrayValues = ArrayIteratorMethods.values;
-var handlePrototype = function(CollectionPrototype, COLLECTION_NAME1) {
+var handlePrototype = function(CollectionPrototype, COLLECTION_NAME) {
     if (CollectionPrototype) {
         // some Chrome versions have non-configurable methods on DOMTokenList
         if (CollectionPrototype[ITERATOR] !== ArrayValues) try {
@@ -7789,12 +7789,12 @@ var handlePrototype = function(CollectionPrototype, COLLECTION_NAME1) {
         } catch (error) {
             CollectionPrototype[ITERATOR] = ArrayValues;
         }
-        if (!CollectionPrototype[TO_STRING_TAG]) createNonEnumerableProperty(CollectionPrototype, TO_STRING_TAG, COLLECTION_NAME1);
-        if (DOMIterables[COLLECTION_NAME1]) for(var METHOD_NAME in ArrayIteratorMethods){
+        if (!CollectionPrototype[TO_STRING_TAG]) createNonEnumerableProperty(CollectionPrototype, TO_STRING_TAG, COLLECTION_NAME);
+        if (DOMIterables[COLLECTION_NAME]) for(var METHOD_NAME in ArrayIteratorMethods){
             // some Chrome versions have non-configurable methods on DOMTokenList
             if (CollectionPrototype[METHOD_NAME] !== ArrayIteratorMethods[METHOD_NAME]) try {
                 createNonEnumerableProperty(CollectionPrototype, METHOD_NAME, ArrayIteratorMethods[METHOD_NAME]);
-            } catch (error) {
+            } catch (error1) {
                 CollectionPrototype[METHOD_NAME] = ArrayIteratorMethods[METHOD_NAME];
             }
         }
@@ -8155,9 +8155,9 @@ if (!raf || !caf) {
                 // callbacks from appending listeners
                 // to the current frame's queue
                 queue.length = 0;
-                for(var i1 = 0; i1 < cp.length; i1++){
-                    if (!cp[i1].cancelled) try {
-                        cp[i1].callback(last);
+                for(var i = 0; i < cp.length; i++){
+                    if (!cp[i].cancelled) try {
+                        cp[i].callback(last);
                     } catch (e) {
                         setTimeout(function() {
                             throw e;
@@ -8174,7 +8174,7 @@ if (!raf || !caf) {
         return id;
     };
     caf = function(handle) {
-        for(var i2 = 0; i2 < queue.length; i2++)if (queue[i2].handle === handle) queue[i2].cancelled = true;
+        for(var i = 0; i < queue.length; i++)if (queue[i].handle === handle) queue[i].cancelled = true;
     };
 }
 module.exports = function(fn) {
@@ -8226,7 +8226,7 @@ var process = require("process");
     }
 }).call(this);
 
-},{"process":"d5jf4"}],"8KjjF":[function(require,module,exports) {
+},{"process":"58IdK"}],"8KjjF":[function(require,module,exports) {
 "use strict";
 var $ = require("../internals/export");
 var $trim = require("../internals/string-trim").trim;
@@ -8275,13 +8275,13 @@ module.exports = {
 
 },{"../internals/function-uncurry-this":"7GlkT","../internals/require-object-coercible":"fOR0B","../internals/to-string":"a1yl4","../internals/whitespaces":"6zEfU"}],"6zEfU":[function(require,module,exports) {
 // a string of all valid unicode whitespaces
-module.exports = "	\n\v\f\r \xa0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF";
+module.exports = "	\n\v\f\r \xa0              　\u2028\u2029\uFEFF";
 
 },{}],"l81KZ":[function(require,module,exports) {
 var PROPER_FUNCTION_NAME = require("../internals/function-name").PROPER;
 var fails = require("../internals/fails");
 var whitespaces = require("../internals/whitespaces");
-var non = "\u200B\x85\u180E";
+var non = "​\x85᠎";
 // check that a method works with the correct list
 // of whitespaces and has a correct name
 module.exports = function(METHOD_NAME) {
@@ -8512,12 +8512,12 @@ module.exports = function(METHOD_NAME) {
         }
     ];
     // search through the definitions to find a match
-    for(var i1 = 0; i1 < color_defs.length; i1++){
-        var re = color_defs[i1].re;
-        var processor = color_defs[i1].process;
-        var bits1 = re.exec(color_string);
-        if (bits1) {
-            var channels = processor(bits1);
+    for(var i = 0; i < color_defs.length; i++){
+        var re = color_defs[i].re;
+        var processor = color_defs[i].process;
+        var bits = re.exec(color_string);
+        if (bits) {
+            var channels = processor(bits);
             this.r = channels[0];
             this.g = channels[1];
             this.b = channels[2];
@@ -8674,392 +8674,392 @@ INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
 LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */ var t = function(r1, e1) {
+***************************************************************************** */ var t = function(r, e) {
     return (t = Object.setPrototypeOf || ({
         __proto__: []
-    }) instanceof Array && function(t1, r2) {
-        t1.__proto__ = r2;
-    } || function(t2, r3) {
-        for(var e2 in r3)Object.prototype.hasOwnProperty.call(r3, e2) && (t2[e2] = r3[e2]);
-    })(r1, e1);
+    }) instanceof Array && function(t, r) {
+        t.__proto__ = r;
+    } || function(t, r) {
+        for(var e in r)Object.prototype.hasOwnProperty.call(r, e) && (t[e] = r[e]);
+    })(r, e);
 };
-function r(r4, e3) {
-    if ("function" != typeof e3 && null !== e3) throw new TypeError("Class extends value " + String(e3) + " is not a constructor or null");
-    function i1() {
-        this.constructor = r4;
+function r(r, e) {
+    if ("function" != typeof e && null !== e) throw new TypeError("Class extends value " + String(e) + " is not a constructor or null");
+    function i() {
+        this.constructor = r;
     }
-    t(r4, e3), r4.prototype = null === e3 ? Object.create(e3) : (i1.prototype = e3.prototype, new i1);
+    t(r, e), r.prototype = null === e ? Object.create(e) : (i.prototype = e.prototype, new i);
 }
-function e(t3) {
-    var r5 = "";
-    Array.isArray(t3) || (t3 = [
-        t3
+function e(t) {
+    var r = "";
+    Array.isArray(t) || (t = [
+        t
     ]);
-    for(var e4 = 0; e4 < t3.length; e4++){
-        var i2 = t3[e4];
-        if (i2.type === _.CLOSE_PATH) r5 += "z";
-        else if (i2.type === _.HORIZ_LINE_TO) r5 += (i2.relative ? "h" : "H") + i2.x;
-        else if (i2.type === _.VERT_LINE_TO) r5 += (i2.relative ? "v" : "V") + i2.y;
-        else if (i2.type === _.MOVE_TO) r5 += (i2.relative ? "m" : "M") + i2.x + " " + i2.y;
-        else if (i2.type === _.LINE_TO) r5 += (i2.relative ? "l" : "L") + i2.x + " " + i2.y;
-        else if (i2.type === _.CURVE_TO) r5 += (i2.relative ? "c" : "C") + i2.x1 + " " + i2.y1 + " " + i2.x2 + " " + i2.y2 + " " + i2.x + " " + i2.y;
-        else if (i2.type === _.SMOOTH_CURVE_TO) r5 += (i2.relative ? "s" : "S") + i2.x2 + " " + i2.y2 + " " + i2.x + " " + i2.y;
-        else if (i2.type === _.QUAD_TO) r5 += (i2.relative ? "q" : "Q") + i2.x1 + " " + i2.y1 + " " + i2.x + " " + i2.y;
-        else if (i2.type === _.SMOOTH_QUAD_TO) r5 += (i2.relative ? "t" : "T") + i2.x + " " + i2.y;
+    for(var e = 0; e < t.length; e++){
+        var i = t[e];
+        if (i.type === _.CLOSE_PATH) r += "z";
+        else if (i.type === _.HORIZ_LINE_TO) r += (i.relative ? "h" : "H") + i.x;
+        else if (i.type === _.VERT_LINE_TO) r += (i.relative ? "v" : "V") + i.y;
+        else if (i.type === _.MOVE_TO) r += (i.relative ? "m" : "M") + i.x + " " + i.y;
+        else if (i.type === _.LINE_TO) r += (i.relative ? "l" : "L") + i.x + " " + i.y;
+        else if (i.type === _.CURVE_TO) r += (i.relative ? "c" : "C") + i.x1 + " " + i.y1 + " " + i.x2 + " " + i.y2 + " " + i.x + " " + i.y;
+        else if (i.type === _.SMOOTH_CURVE_TO) r += (i.relative ? "s" : "S") + i.x2 + " " + i.y2 + " " + i.x + " " + i.y;
+        else if (i.type === _.QUAD_TO) r += (i.relative ? "q" : "Q") + i.x1 + " " + i.y1 + " " + i.x + " " + i.y;
+        else if (i.type === _.SMOOTH_QUAD_TO) r += (i.relative ? "t" : "T") + i.x + " " + i.y;
         else {
-            if (i2.type !== _.ARC) throw new Error('Unexpected command type "' + i2.type + '" at index ' + e4 + ".");
-            r5 += (i2.relative ? "a" : "A") + i2.rX + " " + i2.rY + " " + i2.xRot + " " + +i2.lArcFlag + " " + +i2.sweepFlag + " " + i2.x + " " + i2.y;
+            if (i.type !== _.ARC) throw new Error('Unexpected command type "' + i.type + '" at index ' + e + ".");
+            r += (i.relative ? "a" : "A") + i.rX + " " + i.rY + " " + i.xRot + " " + +i.lArcFlag + " " + +i.sweepFlag + " " + i.x + " " + i.y;
         }
     }
-    return r5;
+    return r;
 }
-function i(t4, r6) {
-    var e5 = t4[0], i3 = t4[1];
+function i(t, r) {
+    var e = t[0], i = t[1];
     return [
-        e5 * Math.cos(r6) - i3 * Math.sin(r6),
-        e5 * Math.sin(r6) + i3 * Math.cos(r6)
+        e * Math.cos(r) - i * Math.sin(r),
+        e * Math.sin(r) + i * Math.cos(r)
     ];
 }
 function a() {
-    for(var t5 = [], r7 = 0; r7 < arguments.length; r7++)t5[r7] = arguments[r7];
-    for(var e6 = 0; e6 < t5.length; e6++)if ("number" != typeof t5[e6]) throw new Error("assertNumbers arguments[" + e6 + "] is not a number. " + typeof t5[e6] + " == typeof " + t5[e6]);
+    for(var t = [], r = 0; r < arguments.length; r++)t[r] = arguments[r];
+    for(var e = 0; e < t.length; e++)if ("number" != typeof t[e]) throw new Error("assertNumbers arguments[" + e + "] is not a number. " + typeof t[e] + " == typeof " + t[e]);
     return !0;
 }
 var n = Math.PI;
-function o(t6, r8, e7) {
-    t6.lArcFlag = 0 === t6.lArcFlag ? 0 : 1, t6.sweepFlag = 0 === t6.sweepFlag ? 0 : 1;
-    var a1 = t6.rX, o1 = t6.rY, s1 = t6.x, u1 = t6.y;
-    a1 = Math.abs(t6.rX), o1 = Math.abs(t6.rY);
-    var h1 = i([
-        (r8 - s1) / 2,
-        (e7 - u1) / 2
-    ], -t6.xRot / 180 * n), c1 = h1[0], y1 = h1[1], p1 = Math.pow(c1, 2) / Math.pow(a1, 2) + Math.pow(y1, 2) / Math.pow(o1, 2);
-    1 < p1 && (a1 *= Math.sqrt(p1), o1 *= Math.sqrt(p1)), t6.rX = a1, t6.rY = o1;
-    var m1 = Math.pow(a1, 2) * Math.pow(y1, 2) + Math.pow(o1, 2) * Math.pow(c1, 2), O1 = (t6.lArcFlag !== t6.sweepFlag ? 1 : -1) * Math.sqrt(Math.max(0, (Math.pow(a1, 2) * Math.pow(o1, 2) - m1) / m1)), l1 = a1 * y1 / o1 * O1, T1 = -o1 * c1 / a1 * O1, v1 = i([
-        l1,
-        T1
-    ], t6.xRot / 180 * n);
-    t6.cX = v1[0] + (r8 + s1) / 2, t6.cY = v1[1] + (e7 + u1) / 2, t6.phi1 = Math.atan2((y1 - T1) / o1, (c1 - l1) / a1), t6.phi2 = Math.atan2((-y1 - T1) / o1, (-c1 - l1) / a1), 0 === t6.sweepFlag && t6.phi2 > t6.phi1 && (t6.phi2 -= 2 * n), 1 === t6.sweepFlag && t6.phi2 < t6.phi1 && (t6.phi2 += 2 * n), t6.phi1 *= 180 / n, t6.phi2 *= 180 / n;
+function o(t, r, e) {
+    t.lArcFlag = 0 === t.lArcFlag ? 0 : 1, t.sweepFlag = 0 === t.sweepFlag ? 0 : 1;
+    var a = t.rX, o = t.rY, s = t.x, u = t.y;
+    a = Math.abs(t.rX), o = Math.abs(t.rY);
+    var h = i([
+        (r - s) / 2,
+        (e - u) / 2
+    ], -t.xRot / 180 * n), c = h[0], y = h[1], p = Math.pow(c, 2) / Math.pow(a, 2) + Math.pow(y, 2) / Math.pow(o, 2);
+    1 < p && (a *= Math.sqrt(p), o *= Math.sqrt(p)), t.rX = a, t.rY = o;
+    var m = Math.pow(a, 2) * Math.pow(y, 2) + Math.pow(o, 2) * Math.pow(c, 2), O = (t.lArcFlag !== t.sweepFlag ? 1 : -1) * Math.sqrt(Math.max(0, (Math.pow(a, 2) * Math.pow(o, 2) - m) / m)), l = a * y / o * O, T = -o * c / a * O, v = i([
+        l,
+        T
+    ], t.xRot / 180 * n);
+    t.cX = v[0] + (r + s) / 2, t.cY = v[1] + (e + u) / 2, t.phi1 = Math.atan2((y - T) / o, (c - l) / a), t.phi2 = Math.atan2((-y - T) / o, (-c - l) / a), 0 === t.sweepFlag && t.phi2 > t.phi1 && (t.phi2 -= 2 * n), 1 === t.sweepFlag && t.phi2 < t.phi1 && (t.phi2 += 2 * n), t.phi1 *= 180 / n, t.phi2 *= 180 / n;
 }
-function s(t7, r9, e8) {
-    a(t7, r9, e8);
-    var i4 = t7 * t7 + r9 * r9 - e8 * e8;
-    if (0 > i4) return [];
-    if (0 === i4) return [
+function s(t, r, e) {
+    a(t, r, e);
+    var i = t * t + r * r - e * e;
+    if (0 > i) return [];
+    if (0 === i) return [
         [
-            t7 * e8 / (t7 * t7 + r9 * r9),
-            r9 * e8 / (t7 * t7 + r9 * r9)
+            t * e / (t * t + r * r),
+            r * e / (t * t + r * r)
         ]
     ];
-    var n1 = Math.sqrt(i4);
+    var n = Math.sqrt(i);
     return [
         [
-            (t7 * e8 + r9 * n1) / (t7 * t7 + r9 * r9),
-            (r9 * e8 - t7 * n1) / (t7 * t7 + r9 * r9)
+            (t * e + r * n) / (t * t + r * r),
+            (r * e - t * n) / (t * t + r * r)
         ],
         [
-            (t7 * e8 - r9 * n1) / (t7 * t7 + r9 * r9),
-            (r9 * e8 + t7 * n1) / (t7 * t7 + r9 * r9)
+            (t * e - r * n) / (t * t + r * r),
+            (r * e + t * n) / (t * t + r * r)
         ]
     ];
 }
 var u, h = Math.PI / 180;
-function c(t8, r10, e9) {
-    return (1 - e9) * t8 + e9 * r10;
+function c(t, r, e) {
+    return (1 - e) * t + e * r;
 }
-function y(t9, r11, e10, i5) {
-    return t9 + Math.cos(i5 / 180 * n) * r11 + Math.sin(i5 / 180 * n) * e10;
+function y(t, r, e, i) {
+    return t + Math.cos(i / 180 * n) * r + Math.sin(i / 180 * n) * e;
 }
-function p(t10, r12, e11, i6) {
-    var a2 = 1e-6, n2 = r12 - t10, o2 = e11 - r12, s2 = 3 * n2 + 3 * (i6 - e11) - 6 * o2, u2 = 6 * (o2 - n2), h2 = 3 * n2;
-    return Math.abs(s2) < a2 ? [
-        -h2 / u2
-    ] : function(t11, r13, e12) {
-        void 0 === e12 && (e12 = 1e-6);
-        var i7 = t11 * t11 / 4 - r13;
-        if (i7 < -e12) return [];
-        if (i7 <= e12) return [
-            -t11 / 2
+function p(t, r, e, i) {
+    var a = 1e-6, n = r - t, o = e - r, s = 3 * n + 3 * (i - e) - 6 * o, u = 6 * (o - n), h = 3 * n;
+    return Math.abs(s) < a ? [
+        -h / u
+    ] : function(t, r, e) {
+        void 0 === e && (e = 1e-6);
+        var i = t * t / 4 - r;
+        if (i < -e) return [];
+        if (i <= e) return [
+            -t / 2
         ];
-        var a3 = Math.sqrt(i7);
+        var a = Math.sqrt(i);
         return [
-            -t11 / 2 - a3,
-            -t11 / 2 + a3
+            -t / 2 - a,
+            -t / 2 + a
         ];
-    }(u2 / s2, h2 / s2, a2);
+    }(u / s, h / s, a);
 }
-function m(t12, r14, e13, i8, a4) {
-    var n3 = 1 - a4;
-    return t12 * (n3 * n3 * n3) + r14 * (3 * n3 * n3 * a4) + e13 * (3 * n3 * a4 * a4) + i8 * (a4 * a4 * a4);
+function m(t, r, e, i, a) {
+    var n = 1 - a;
+    return t * (n * n * n) + r * (3 * n * n * a) + e * (3 * n * a * a) + i * (a * a * a);
 }
-!function(t13) {
-    function r15() {
-        return u3(function(t14, r16, e15) {
-            return t14.relative && (void 0 !== t14.x1 && (t14.x1 += r16), void 0 !== t14.y1 && (t14.y1 += e15), void 0 !== t14.x2 && (t14.x2 += r16), void 0 !== t14.y2 && (t14.y2 += e15), void 0 !== t14.x && (t14.x += r16), void 0 !== t14.y && (t14.y += e15), t14.relative = !1), t14;
+!function(t) {
+    function r() {
+        return u(function(t, r, e) {
+            return t.relative && (void 0 !== t.x1 && (t.x1 += r), void 0 !== t.y1 && (t.y1 += e), void 0 !== t.x2 && (t.x2 += r), void 0 !== t.y2 && (t.y2 += e), void 0 !== t.x && (t.x += r), void 0 !== t.y && (t.y += e), t.relative = !1), t;
         });
     }
-    function e14() {
-        var t15 = NaN, r17 = NaN, e16 = NaN, i9 = NaN;
-        return u3(function(a5, n5, o3) {
-            return a5.type & _.SMOOTH_CURVE_TO && (a5.type = _.CURVE_TO, t15 = isNaN(t15) ? n5 : t15, r17 = isNaN(r17) ? o3 : r17, a5.x1 = a5.relative ? n5 - t15 : 2 * n5 - t15, a5.y1 = a5.relative ? o3 - r17 : 2 * o3 - r17), a5.type & _.CURVE_TO ? (t15 = a5.relative ? n5 + a5.x2 : a5.x2, r17 = a5.relative ? o3 + a5.y2 : a5.y2) : (t15 = NaN, r17 = NaN), a5.type & _.SMOOTH_QUAD_TO && (a5.type = _.QUAD_TO, e16 = isNaN(e16) ? n5 : e16, i9 = isNaN(i9) ? o3 : i9, a5.x1 = a5.relative ? n5 - e16 : 2 * n5 - e16, a5.y1 = a5.relative ? o3 - i9 : 2 * o3 - i9), a5.type & _.QUAD_TO ? (e16 = a5.relative ? n5 + a5.x1 : a5.x1, i9 = a5.relative ? o3 + a5.y1 : a5.y1) : (e16 = NaN, i9 = NaN), a5;
+    function e() {
+        var t = NaN, r = NaN, e = NaN, i = NaN;
+        return u(function(a, n, o) {
+            return a.type & _.SMOOTH_CURVE_TO && (a.type = _.CURVE_TO, t = isNaN(t) ? n : t, r = isNaN(r) ? o : r, a.x1 = a.relative ? n - t : 2 * n - t, a.y1 = a.relative ? o - r : 2 * o - r), a.type & _.CURVE_TO ? (t = a.relative ? n + a.x2 : a.x2, r = a.relative ? o + a.y2 : a.y2) : (t = NaN, r = NaN), a.type & _.SMOOTH_QUAD_TO && (a.type = _.QUAD_TO, e = isNaN(e) ? n : e, i = isNaN(i) ? o : i, a.x1 = a.relative ? n - e : 2 * n - e, a.y1 = a.relative ? o - i : 2 * o - i), a.type & _.QUAD_TO ? (e = a.relative ? n + a.x1 : a.x1, i = a.relative ? o + a.y1 : a.y1) : (e = NaN, i = NaN), a;
         });
     }
-    function n4() {
-        var t16 = NaN, r18 = NaN;
-        return u3(function(e17, i10, a6) {
-            if (e17.type & _.SMOOTH_QUAD_TO && (e17.type = _.QUAD_TO, t16 = isNaN(t16) ? i10 : t16, r18 = isNaN(r18) ? a6 : r18, e17.x1 = e17.relative ? i10 - t16 : 2 * i10 - t16, e17.y1 = e17.relative ? a6 - r18 : 2 * a6 - r18), e17.type & _.QUAD_TO) {
-                t16 = e17.relative ? i10 + e17.x1 : e17.x1, r18 = e17.relative ? a6 + e17.y1 : e17.y1;
-                var n6 = e17.x1, o4 = e17.y1;
-                e17.type = _.CURVE_TO, e17.x1 = ((e17.relative ? 0 : i10) + 2 * n6) / 3, e17.y1 = ((e17.relative ? 0 : a6) + 2 * o4) / 3, e17.x2 = (e17.x + 2 * n6) / 3, e17.y2 = (e17.y + 2 * o4) / 3;
-            } else t16 = NaN, r18 = NaN;
-            return e17;
+    function n() {
+        var t = NaN, r = NaN;
+        return u(function(e, i, a) {
+            if (e.type & _.SMOOTH_QUAD_TO && (e.type = _.QUAD_TO, t = isNaN(t) ? i : t, r = isNaN(r) ? a : r, e.x1 = e.relative ? i - t : 2 * i - t, e.y1 = e.relative ? a - r : 2 * a - r), e.type & _.QUAD_TO) {
+                t = e.relative ? i + e.x1 : e.x1, r = e.relative ? a + e.y1 : e.y1;
+                var n = e.x1, o = e.y1;
+                e.type = _.CURVE_TO, e.x1 = ((e.relative ? 0 : i) + 2 * n) / 3, e.y1 = ((e.relative ? 0 : a) + 2 * o) / 3, e.x2 = (e.x + 2 * n) / 3, e.y2 = (e.y + 2 * o) / 3;
+            } else t = NaN, r = NaN;
+            return e;
         });
     }
-    function u3(t17) {
-        var r19 = 0, e18 = 0, i11 = NaN, a7 = NaN;
-        return function(n7) {
-            if (isNaN(i11) && !(n7.type & _.MOVE_TO)) throw new Error("path must start with moveto");
-            var o5 = t17(n7, r19, e18, i11, a7);
-            return n7.type & _.CLOSE_PATH && (r19 = i11, e18 = a7), void 0 !== n7.x && (r19 = n7.relative ? r19 + n7.x : n7.x), void 0 !== n7.y && (e18 = n7.relative ? e18 + n7.y : n7.y), n7.type & _.MOVE_TO && (i11 = r19, a7 = e18), o5;
+    function u(t) {
+        var r = 0, e = 0, i = NaN, a = NaN;
+        return function(n) {
+            if (isNaN(i) && !(n.type & _.MOVE_TO)) throw new Error("path must start with moveto");
+            var o = t(n, r, e, i, a);
+            return n.type & _.CLOSE_PATH && (r = i, e = a), void 0 !== n.x && (r = n.relative ? r + n.x : n.x), void 0 !== n.y && (e = n.relative ? e + n.y : n.y), n.type & _.MOVE_TO && (i = r, a = e), o;
         };
     }
-    function O2(t18, r20, e19, i12, n8, o6) {
-        return a(t18, r20, e19, i12, n8, o6), u3(function(a8, s3, u4, h3) {
-            var c2 = a8.x1, y2 = a8.x2, p2 = a8.relative && !isNaN(h3), m2 = void 0 !== a8.x ? a8.x : p2 ? 0 : s3, O3 = void 0 !== a8.y ? a8.y : p2 ? 0 : u4;
-            function l3(t19) {
-                return t19 * t19;
+    function O(t, r, e, i, n, o) {
+        return a(t, r, e, i, n, o), u(function(a, s, u, h) {
+            var c = a.x1, y = a.x2, p = a.relative && !isNaN(h), m = void 0 !== a.x ? a.x : p ? 0 : s, O = void 0 !== a.y ? a.y : p ? 0 : u;
+            function l(t) {
+                return t * t;
             }
-            a8.type & _.HORIZ_LINE_TO && 0 !== r20 && (a8.type = _.LINE_TO, a8.y = a8.relative ? 0 : u4), a8.type & _.VERT_LINE_TO && 0 !== e19 && (a8.type = _.LINE_TO, a8.x = a8.relative ? 0 : s3), void 0 !== a8.x && (a8.x = a8.x * t18 + O3 * e19 + (p2 ? 0 : n8)), void 0 !== a8.y && (a8.y = m2 * r20 + a8.y * i12 + (p2 ? 0 : o6)), void 0 !== a8.x1 && (a8.x1 = a8.x1 * t18 + a8.y1 * e19 + (p2 ? 0 : n8)), void 0 !== a8.y1 && (a8.y1 = c2 * r20 + a8.y1 * i12 + (p2 ? 0 : o6)), void 0 !== a8.x2 && (a8.x2 = a8.x2 * t18 + a8.y2 * e19 + (p2 ? 0 : n8)), void 0 !== a8.y2 && (a8.y2 = y2 * r20 + a8.y2 * i12 + (p2 ? 0 : o6));
-            var T2 = t18 * i12 - r20 * e19;
-            if (void 0 !== a8.xRot && (1 !== t18 || 0 !== r20 || 0 !== e19 || 1 !== i12)) {
-                if (0 === T2) delete a8.rX, delete a8.rY, delete a8.xRot, delete a8.lArcFlag, delete a8.sweepFlag, a8.type = _.LINE_TO;
+            a.type & _.HORIZ_LINE_TO && 0 !== r && (a.type = _.LINE_TO, a.y = a.relative ? 0 : u), a.type & _.VERT_LINE_TO && 0 !== e && (a.type = _.LINE_TO, a.x = a.relative ? 0 : s), void 0 !== a.x && (a.x = a.x * t + O * e + (p ? 0 : n)), void 0 !== a.y && (a.y = m * r + a.y * i + (p ? 0 : o)), void 0 !== a.x1 && (a.x1 = a.x1 * t + a.y1 * e + (p ? 0 : n)), void 0 !== a.y1 && (a.y1 = c * r + a.y1 * i + (p ? 0 : o)), void 0 !== a.x2 && (a.x2 = a.x2 * t + a.y2 * e + (p ? 0 : n)), void 0 !== a.y2 && (a.y2 = y * r + a.y2 * i + (p ? 0 : o));
+            var T = t * i - r * e;
+            if (void 0 !== a.xRot && (1 !== t || 0 !== r || 0 !== e || 1 !== i)) {
+                if (0 === T) delete a.rX, delete a.rY, delete a.xRot, delete a.lArcFlag, delete a.sweepFlag, a.type = _.LINE_TO;
                 else {
-                    var v2 = a8.xRot * Math.PI / 180, f1 = Math.sin(v2), N1 = Math.cos(v2), x = 1 / l3(a8.rX), d = 1 / l3(a8.rY), E = l3(N1) * x + l3(f1) * d, A = 2 * f1 * N1 * (x - d), C = l3(f1) * x + l3(N1) * d, M = E * i12 * i12 - A * r20 * i12 + C * r20 * r20, R = A * (t18 * i12 + r20 * e19) - 2 * (E * e19 * i12 + C * t18 * r20), g = E * e19 * e19 - A * t18 * e19 + C * t18 * t18, I = (Math.atan2(R, M - g) + Math.PI) % Math.PI / 2, S = Math.sin(I), L = Math.cos(I);
-                    a8.rX = Math.abs(T2) / Math.sqrt(M * l3(L) + R * S * L + g * l3(S)), a8.rY = Math.abs(T2) / Math.sqrt(M * l3(S) - R * S * L + g * l3(L)), a8.xRot = 180 * I / Math.PI;
+                    var v = a.xRot * Math.PI / 180, f = Math.sin(v), N = Math.cos(v), x = 1 / l(a.rX), d = 1 / l(a.rY), E = l(N) * x + l(f) * d, A = 2 * f * N * (x - d), C = l(f) * x + l(N) * d, M = E * i * i - A * r * i + C * r * r, R = A * (t * i + r * e) - 2 * (E * e * i + C * t * r), g = E * e * e - A * t * e + C * t * t, I = (Math.atan2(R, M - g) + Math.PI) % Math.PI / 2, S = Math.sin(I), L = Math.cos(I);
+                    a.rX = Math.abs(T) / Math.sqrt(M * l(L) + R * S * L + g * l(S)), a.rY = Math.abs(T) / Math.sqrt(M * l(S) - R * S * L + g * l(L)), a.xRot = 180 * I / Math.PI;
                 }
             }
-            return void 0 !== a8.sweepFlag && 0 > T2 && (a8.sweepFlag = +!a8.sweepFlag), a8;
+            return void 0 !== a.sweepFlag && 0 > T && (a.sweepFlag = +!a.sweepFlag), a;
         });
     }
-    function l2() {
-        return function(t20) {
-            var r21 = {};
-            for(var e20 in t20)r21[e20] = t20[e20];
-            return r21;
+    function l() {
+        return function(t) {
+            var r = {};
+            for(var e in t)r[e] = t[e];
+            return r;
         };
     }
-    t13.ROUND = function(t21) {
-        function r22(r23) {
-            return Math.round(r23 * t21) / t21;
+    t.ROUND = function(t) {
+        function r(r) {
+            return Math.round(r * t) / t;
         }
-        return void 0 === t21 && (t21 = 1e13), a(t21), function(t22) {
-            return void 0 !== t22.x1 && (t22.x1 = r22(t22.x1)), void 0 !== t22.y1 && (t22.y1 = r22(t22.y1)), void 0 !== t22.x2 && (t22.x2 = r22(t22.x2)), void 0 !== t22.y2 && (t22.y2 = r22(t22.y2)), void 0 !== t22.x && (t22.x = r22(t22.x)), void 0 !== t22.y && (t22.y = r22(t22.y)), void 0 !== t22.rX && (t22.rX = r22(t22.rX)), void 0 !== t22.rY && (t22.rY = r22(t22.rY)), t22;
+        return void 0 === t && (t = 1e13), a(t), function(t) {
+            return void 0 !== t.x1 && (t.x1 = r(t.x1)), void 0 !== t.y1 && (t.y1 = r(t.y1)), void 0 !== t.x2 && (t.x2 = r(t.x2)), void 0 !== t.y2 && (t.y2 = r(t.y2)), void 0 !== t.x && (t.x = r(t.x)), void 0 !== t.y && (t.y = r(t.y)), void 0 !== t.rX && (t.rX = r(t.rX)), void 0 !== t.rY && (t.rY = r(t.rY)), t;
         };
-    }, t13.TO_ABS = r15, t13.TO_REL = function() {
-        return u3(function(t23, r24, e21) {
-            return t23.relative || (void 0 !== t23.x1 && (t23.x1 -= r24), void 0 !== t23.y1 && (t23.y1 -= e21), void 0 !== t23.x2 && (t23.x2 -= r24), void 0 !== t23.y2 && (t23.y2 -= e21), void 0 !== t23.x && (t23.x -= r24), void 0 !== t23.y && (t23.y -= e21), t23.relative = !0), t23;
+    }, t.TO_ABS = r, t.TO_REL = function() {
+        return u(function(t, r, e) {
+            return t.relative || (void 0 !== t.x1 && (t.x1 -= r), void 0 !== t.y1 && (t.y1 -= e), void 0 !== t.x2 && (t.x2 -= r), void 0 !== t.y2 && (t.y2 -= e), void 0 !== t.x && (t.x -= r), void 0 !== t.y && (t.y -= e), t.relative = !0), t;
         });
-    }, t13.NORMALIZE_HVZ = function(t24, r25, e22) {
-        return void 0 === t24 && (t24 = !0), void 0 === r25 && (r25 = !0), void 0 === e22 && (e22 = !0), u3(function(i13, a9, n9, o7, s4) {
-            if (isNaN(o7) && !(i13.type & _.MOVE_TO)) throw new Error("path must start with moveto");
-            return r25 && i13.type & _.HORIZ_LINE_TO && (i13.type = _.LINE_TO, i13.y = i13.relative ? 0 : n9), e22 && i13.type & _.VERT_LINE_TO && (i13.type = _.LINE_TO, i13.x = i13.relative ? 0 : a9), t24 && i13.type & _.CLOSE_PATH && (i13.type = _.LINE_TO, i13.x = i13.relative ? o7 - a9 : o7, i13.y = i13.relative ? s4 - n9 : s4), i13.type & _.ARC && (0 === i13.rX || 0 === i13.rY) && (i13.type = _.LINE_TO, delete i13.rX, delete i13.rY, delete i13.xRot, delete i13.lArcFlag, delete i13.sweepFlag), i13;
+    }, t.NORMALIZE_HVZ = function(t, r, e) {
+        return void 0 === t && (t = !0), void 0 === r && (r = !0), void 0 === e && (e = !0), u(function(i, a, n, o, s) {
+            if (isNaN(o) && !(i.type & _.MOVE_TO)) throw new Error("path must start with moveto");
+            return r && i.type & _.HORIZ_LINE_TO && (i.type = _.LINE_TO, i.y = i.relative ? 0 : n), e && i.type & _.VERT_LINE_TO && (i.type = _.LINE_TO, i.x = i.relative ? 0 : a), t && i.type & _.CLOSE_PATH && (i.type = _.LINE_TO, i.x = i.relative ? o - a : o, i.y = i.relative ? s - n : s), i.type & _.ARC && (0 === i.rX || 0 === i.rY) && (i.type = _.LINE_TO, delete i.rX, delete i.rY, delete i.xRot, delete i.lArcFlag, delete i.sweepFlag), i;
         });
-    }, t13.NORMALIZE_ST = e14, t13.QT_TO_C = n4, t13.INFO = u3, t13.SANITIZE = function(t25) {
-        void 0 === t25 && (t25 = 0), a(t25);
-        var r26 = NaN, e23 = NaN, i14 = NaN, n10 = NaN;
-        return u3(function(a10, o8, s5, u5, h4) {
-            var c3 = Math.abs, y3 = !1, p3 = 0, m3 = 0;
-            if (a10.type & _.SMOOTH_CURVE_TO && (p3 = isNaN(r26) ? 0 : o8 - r26, m3 = isNaN(e23) ? 0 : s5 - e23), a10.type & (_.CURVE_TO | _.SMOOTH_CURVE_TO) ? (r26 = a10.relative ? o8 + a10.x2 : a10.x2, e23 = a10.relative ? s5 + a10.y2 : a10.y2) : (r26 = NaN, e23 = NaN), a10.type & _.SMOOTH_QUAD_TO ? (i14 = isNaN(i14) ? o8 : 2 * o8 - i14, n10 = isNaN(n10) ? s5 : 2 * s5 - n10) : a10.type & _.QUAD_TO ? (i14 = a10.relative ? o8 + a10.x1 : a10.x1, n10 = a10.relative ? s5 + a10.y1 : a10.y2) : (i14 = NaN, n10 = NaN), a10.type & _.LINE_COMMANDS || a10.type & _.ARC && (0 === a10.rX || 0 === a10.rY || !a10.lArcFlag) || a10.type & _.CURVE_TO || a10.type & _.SMOOTH_CURVE_TO || a10.type & _.QUAD_TO || a10.type & _.SMOOTH_QUAD_TO) {
-                var O4 = void 0 === a10.x ? 0 : a10.relative ? a10.x : a10.x - o8, l4 = void 0 === a10.y ? 0 : a10.relative ? a10.y : a10.y - s5;
-                p3 = isNaN(i14) ? void 0 === a10.x1 ? p3 : a10.relative ? a10.x : a10.x1 - o8 : i14 - o8, m3 = isNaN(n10) ? void 0 === a10.y1 ? m3 : a10.relative ? a10.y : a10.y1 - s5 : n10 - s5;
-                var T3 = void 0 === a10.x2 ? 0 : a10.relative ? a10.x : a10.x2 - o8, v3 = void 0 === a10.y2 ? 0 : a10.relative ? a10.y : a10.y2 - s5;
-                c3(O4) <= t25 && c3(l4) <= t25 && c3(p3) <= t25 && c3(m3) <= t25 && c3(T3) <= t25 && c3(v3) <= t25 && (y3 = !0);
+    }, t.NORMALIZE_ST = e, t.QT_TO_C = n, t.INFO = u, t.SANITIZE = function(t) {
+        void 0 === t && (t = 0), a(t);
+        var r = NaN, e = NaN, i = NaN, n = NaN;
+        return u(function(a, o, s, u, h) {
+            var c = Math.abs, y = !1, p = 0, m = 0;
+            if (a.type & _.SMOOTH_CURVE_TO && (p = isNaN(r) ? 0 : o - r, m = isNaN(e) ? 0 : s - e), a.type & (_.CURVE_TO | _.SMOOTH_CURVE_TO) ? (r = a.relative ? o + a.x2 : a.x2, e = a.relative ? s + a.y2 : a.y2) : (r = NaN, e = NaN), a.type & _.SMOOTH_QUAD_TO ? (i = isNaN(i) ? o : 2 * o - i, n = isNaN(n) ? s : 2 * s - n) : a.type & _.QUAD_TO ? (i = a.relative ? o + a.x1 : a.x1, n = a.relative ? s + a.y1 : a.y2) : (i = NaN, n = NaN), a.type & _.LINE_COMMANDS || a.type & _.ARC && (0 === a.rX || 0 === a.rY || !a.lArcFlag) || a.type & _.CURVE_TO || a.type & _.SMOOTH_CURVE_TO || a.type & _.QUAD_TO || a.type & _.SMOOTH_QUAD_TO) {
+                var O = void 0 === a.x ? 0 : a.relative ? a.x : a.x - o, l = void 0 === a.y ? 0 : a.relative ? a.y : a.y - s;
+                p = isNaN(i) ? void 0 === a.x1 ? p : a.relative ? a.x : a.x1 - o : i - o, m = isNaN(n) ? void 0 === a.y1 ? m : a.relative ? a.y : a.y1 - s : n - s;
+                var T = void 0 === a.x2 ? 0 : a.relative ? a.x : a.x2 - o, v = void 0 === a.y2 ? 0 : a.relative ? a.y : a.y2 - s;
+                c(O) <= t && c(l) <= t && c(p) <= t && c(m) <= t && c(T) <= t && c(v) <= t && (y = !0);
             }
-            return a10.type & _.CLOSE_PATH && c3(o8 - u5) <= t25 && c3(s5 - h4) <= t25 && (y3 = !0), y3 ? [] : a10;
+            return a.type & _.CLOSE_PATH && c(o - u) <= t && c(s - h) <= t && (y = !0), y ? [] : a;
         });
-    }, t13.MATRIX = O2, t13.ROTATE = function(t26, r27, e24) {
-        void 0 === r27 && (r27 = 0), void 0 === e24 && (e24 = 0), a(t26, r27, e24);
-        var i15 = Math.sin(t26), n11 = Math.cos(t26);
-        return O2(n11, i15, -i15, n11, r27 - r27 * n11 + e24 * i15, e24 - r27 * i15 - e24 * n11);
-    }, t13.TRANSLATE = function(t27, r28) {
-        return void 0 === r28 && (r28 = 0), a(t27, r28), O2(1, 0, 0, 1, t27, r28);
-    }, t13.SCALE = function(t28, r29) {
-        return void 0 === r29 && (r29 = t28), a(t28, r29), O2(t28, 0, 0, r29, 0, 0);
-    }, t13.SKEW_X = function(t29) {
-        return a(t29), O2(1, 0, Math.atan(t29), 1, 0, 0);
-    }, t13.SKEW_Y = function(t30) {
-        return a(t30), O2(1, Math.atan(t30), 0, 1, 0, 0);
-    }, t13.X_AXIS_SYMMETRY = function(t31) {
-        return void 0 === t31 && (t31 = 0), a(t31), O2(-1, 0, 0, 1, t31, 0);
-    }, t13.Y_AXIS_SYMMETRY = function(t32) {
-        return void 0 === t32 && (t32 = 0), a(t32), O2(1, 0, 0, -1, 0, t32);
-    }, t13.A_TO_C = function() {
-        return u3(function(t33, r30, e25) {
-            return _.ARC === t33.type ? function(t34, r31, e26) {
-                var a11, n12, s6, u6;
-                t34.cX || o(t34, r31, e26);
-                for(var y4 = Math.min(t34.phi1, t34.phi2), p4 = Math.max(t34.phi1, t34.phi2) - y4, m4 = Math.ceil(p4 / 90), O5 = new Array(m4), l5 = r31, T4 = e26, v4 = 0; v4 < m4; v4++){
-                    var f2 = c(t34.phi1, t34.phi2, v4 / m4), N2 = c(t34.phi1, t34.phi2, (v4 + 1) / m4), x = N2 - f2, d = 4 / 3 * Math.tan(x * h / 4), E = [
-                        Math.cos(f2 * h) - d * Math.sin(f2 * h),
-                        Math.sin(f2 * h) + d * Math.cos(f2 * h)
+    }, t.MATRIX = O, t.ROTATE = function(t, r, e) {
+        void 0 === r && (r = 0), void 0 === e && (e = 0), a(t, r, e);
+        var i = Math.sin(t), n = Math.cos(t);
+        return O(n, i, -i, n, r - r * n + e * i, e - r * i - e * n);
+    }, t.TRANSLATE = function(t, r) {
+        return void 0 === r && (r = 0), a(t, r), O(1, 0, 0, 1, t, r);
+    }, t.SCALE = function(t, r) {
+        return void 0 === r && (r = t), a(t, r), O(t, 0, 0, r, 0, 0);
+    }, t.SKEW_X = function(t) {
+        return a(t), O(1, 0, Math.atan(t), 1, 0, 0);
+    }, t.SKEW_Y = function(t) {
+        return a(t), O(1, Math.atan(t), 0, 1, 0, 0);
+    }, t.X_AXIS_SYMMETRY = function(t) {
+        return void 0 === t && (t = 0), a(t), O(-1, 0, 0, 1, t, 0);
+    }, t.Y_AXIS_SYMMETRY = function(t) {
+        return void 0 === t && (t = 0), a(t), O(1, 0, 0, -1, 0, t);
+    }, t.A_TO_C = function() {
+        return u(function(t, r, e) {
+            return _.ARC === t.type ? function(t, r, e) {
+                var a, n, s, u;
+                t.cX || o(t, r, e);
+                for(var y = Math.min(t.phi1, t.phi2), p = Math.max(t.phi1, t.phi2) - y, m = Math.ceil(p / 90), O = new Array(m), l = r, T = e, v = 0; v < m; v++){
+                    var f = c(t.phi1, t.phi2, v / m), N = c(t.phi1, t.phi2, (v + 1) / m), x = N - f, d = 4 / 3 * Math.tan(x * h / 4), E = [
+                        Math.cos(f * h) - d * Math.sin(f * h),
+                        Math.sin(f * h) + d * Math.cos(f * h)
                     ], A = E[0], C = E[1], M = [
-                        Math.cos(N2 * h),
-                        Math.sin(N2 * h)
+                        Math.cos(N * h),
+                        Math.sin(N * h)
                     ], R = M[0], g = M[1], I = [
-                        R + d * Math.sin(N2 * h),
-                        g - d * Math.cos(N2 * h)
+                        R + d * Math.sin(N * h),
+                        g - d * Math.cos(N * h)
                     ], S = I[0], L = I[1];
-                    O5[v4] = {
-                        relative: t34.relative,
+                    O[v] = {
+                        relative: t.relative,
                         type: _.CURVE_TO
                     };
-                    var H = function(r32, e27) {
-                        var a12 = i([
-                            r32 * t34.rX,
-                            e27 * t34.rY
-                        ], t34.xRot), n13 = a12[0], o9 = a12[1];
+                    var H = function(r, e) {
+                        var a = i([
+                            r * t.rX,
+                            e * t.rY
+                        ], t.xRot), n = a[0], o = a[1];
                         return [
-                            t34.cX + n13,
-                            t34.cY + o9
+                            t.cX + n,
+                            t.cY + o
                         ];
                     };
-                    a11 = H(A, C), O5[v4].x1 = a11[0], O5[v4].y1 = a11[1], n12 = H(S, L), O5[v4].x2 = n12[0], O5[v4].y2 = n12[1], s6 = H(R, g), O5[v4].x = s6[0], O5[v4].y = s6[1], t34.relative && (O5[v4].x1 -= l5, O5[v4].y1 -= T4, O5[v4].x2 -= l5, O5[v4].y2 -= T4, O5[v4].x -= l5, O5[v4].y -= T4), l5 = (u6 = [
-                        O5[v4].x,
-                        O5[v4].y
-                    ])[0], T4 = u6[1];
+                    a = H(A, C), O[v].x1 = a[0], O[v].y1 = a[1], n = H(S, L), O[v].x2 = n[0], O[v].y2 = n[1], s = H(R, g), O[v].x = s[0], O[v].y = s[1], t.relative && (O[v].x1 -= l, O[v].y1 -= T, O[v].x2 -= l, O[v].y2 -= T, O[v].x -= l, O[v].y -= T), l = (u = [
+                        O[v].x,
+                        O[v].y
+                    ])[0], T = u[1];
                 }
-                return O5;
-            }(t33, t33.relative ? 0 : r30, t33.relative ? 0 : e25) : t33;
+                return O;
+            }(t, t.relative ? 0 : r, t.relative ? 0 : e) : t;
         });
-    }, t13.ANNOTATE_ARCS = function() {
-        return u3(function(t35, r33, e28) {
-            return t35.relative && (r33 = 0, e28 = 0), _.ARC === t35.type && o(t35, r33, e28), t35;
+    }, t.ANNOTATE_ARCS = function() {
+        return u(function(t, r, e) {
+            return t.relative && (r = 0, e = 0), _.ARC === t.type && o(t, r, e), t;
         });
-    }, t13.CLONE = l2, t13.CALCULATE_BOUNDS = function() {
-        var t36 = function(t37) {
-            var r34 = {};
-            for(var e29 in t37)r34[e29] = t37[e29];
-            return r34;
-        }, i16 = r15(), a13 = n4(), h5 = e14(), c4 = u3(function(r35, e30, n14) {
-            var u7 = h5(a13(i16(t36(r35))));
-            function O6(t38) {
-                t38 > c4.maxX && (c4.maxX = t38), t38 < c4.minX && (c4.minX = t38);
+    }, t.CLONE = l, t.CALCULATE_BOUNDS = function() {
+        var t = function(t) {
+            var r = {};
+            for(var e in t)r[e] = t[e];
+            return r;
+        }, i = r(), a = n(), h = e(), c = u(function(r, e, n) {
+            var u = h(a(i(t(r))));
+            function O(t) {
+                t > c.maxX && (c.maxX = t), t < c.minX && (c.minX = t);
             }
-            function l6(t39) {
-                t39 > c4.maxY && (c4.maxY = t39), t39 < c4.minY && (c4.minY = t39);
+            function l(t) {
+                t > c.maxY && (c.maxY = t), t < c.minY && (c.minY = t);
             }
-            if (u7.type & _.DRAWING_COMMANDS && (O6(e30), l6(n14)), u7.type & _.HORIZ_LINE_TO && O6(u7.x), u7.type & _.VERT_LINE_TO && l6(u7.y), u7.type & _.LINE_TO && (O6(u7.x), l6(u7.y)), u7.type & _.CURVE_TO) {
-                O6(u7.x), l6(u7.y);
-                for(var T5 = 0, v5 = p(e30, u7.x1, u7.x2, u7.x); T5 < v5.length; T5++)0 < (w = v5[T5]) && 1 > w && O6(m(e30, u7.x1, u7.x2, u7.x, w));
-                for(var f3 = 0, N3 = p(n14, u7.y1, u7.y2, u7.y); f3 < N3.length; f3++)0 < (w = N3[f3]) && 1 > w && l6(m(n14, u7.y1, u7.y2, u7.y, w));
+            if (u.type & _.DRAWING_COMMANDS && (O(e), l(n)), u.type & _.HORIZ_LINE_TO && O(u.x), u.type & _.VERT_LINE_TO && l(u.y), u.type & _.LINE_TO && (O(u.x), l(u.y)), u.type & _.CURVE_TO) {
+                O(u.x), l(u.y);
+                for(var T = 0, v = p(e, u.x1, u.x2, u.x); T < v.length; T++)0 < (w = v[T]) && 1 > w && O(m(e, u.x1, u.x2, u.x, w));
+                for(var f = 0, N = p(n, u.y1, u.y2, u.y); f < N.length; f++)0 < (w = N[f]) && 1 > w && l(m(n, u.y1, u.y2, u.y, w));
             }
-            if (u7.type & _.ARC) {
-                O6(u7.x), l6(u7.y), o(u7, e30, n14);
-                for(var x = u7.xRot / 180 * Math.PI, d = Math.cos(x) * u7.rX, E = Math.sin(x) * u7.rX, A = -Math.sin(x) * u7.rY, C = Math.cos(x) * u7.rY, M = u7.phi1 < u7.phi2 ? [
-                    u7.phi1,
-                    u7.phi2
-                ] : -180 > u7.phi2 ? [
-                    u7.phi2 + 360,
-                    u7.phi1 + 360
+            if (u.type & _.ARC) {
+                O(u.x), l(u.y), o(u, e, n);
+                for(var x = u.xRot / 180 * Math.PI, d = Math.cos(x) * u.rX, E = Math.sin(x) * u.rX, A = -Math.sin(x) * u.rY, C = Math.cos(x) * u.rY, M = u.phi1 < u.phi2 ? [
+                    u.phi1,
+                    u.phi2
+                ] : -180 > u.phi2 ? [
+                    u.phi2 + 360,
+                    u.phi1 + 360
                 ] : [
-                    u7.phi2,
-                    u7.phi1
-                ], R = M[0], g = M[1], I = function(t40) {
-                    var r36 = t40[0], e31 = t40[1], i17 = 180 * Math.atan2(e31, r36) / Math.PI;
-                    return i17 < R ? i17 + 360 : i17;
-                }, S = 0, L = s(A, -d, 0).map(I); S < L.length; S++)(w = L[S]) > R && w < g && O6(y(u7.cX, d, A, w));
+                    u.phi2,
+                    u.phi1
+                ], R = M[0], g = M[1], I = function(t) {
+                    var r = t[0], e = t[1], i = 180 * Math.atan2(e, r) / Math.PI;
+                    return i < R ? i + 360 : i;
+                }, S = 0, L = s(A, -d, 0).map(I); S < L.length; S++)(w = L[S]) > R && w < g && O(y(u.cX, d, A, w));
                 for(var H = 0, U = s(C, -E, 0).map(I); H < U.length; H++){
                     var w;
-                    (w = U[H]) > R && w < g && l6(y(u7.cY, E, C, w));
+                    (w = U[H]) > R && w < g && l(y(u.cY, E, C, w));
                 }
             }
-            return r35;
+            return r;
         });
-        return c4.minX = 1 / 0, c4.maxX = -1 / 0, c4.minY = 1 / 0, c4.maxY = -1 / 0, c4;
+        return c.minX = 1 / 0, c.maxX = -1 / 0, c.minY = 1 / 0, c.maxY = -1 / 0, c;
     };
 }(u || (u = {}));
 var O, l = function() {
-    function t41() {}
-    return t41.prototype.round = function(t42) {
-        return this.transform(u.ROUND(t42));
-    }, t41.prototype.toAbs = function() {
+    function t() {}
+    return t.prototype.round = function(t) {
+        return this.transform(u.ROUND(t));
+    }, t.prototype.toAbs = function() {
         return this.transform(u.TO_ABS());
-    }, t41.prototype.toRel = function() {
+    }, t.prototype.toRel = function() {
         return this.transform(u.TO_REL());
-    }, t41.prototype.normalizeHVZ = function(t43, r37, e32) {
-        return this.transform(u.NORMALIZE_HVZ(t43, r37, e32));
-    }, t41.prototype.normalizeST = function() {
+    }, t.prototype.normalizeHVZ = function(t, r, e) {
+        return this.transform(u.NORMALIZE_HVZ(t, r, e));
+    }, t.prototype.normalizeST = function() {
         return this.transform(u.NORMALIZE_ST());
-    }, t41.prototype.qtToC = function() {
+    }, t.prototype.qtToC = function() {
         return this.transform(u.QT_TO_C());
-    }, t41.prototype.aToC = function() {
+    }, t.prototype.aToC = function() {
         return this.transform(u.A_TO_C());
-    }, t41.prototype.sanitize = function(t44) {
-        return this.transform(u.SANITIZE(t44));
-    }, t41.prototype.translate = function(t45, r38) {
-        return this.transform(u.TRANSLATE(t45, r38));
-    }, t41.prototype.scale = function(t46, r39) {
-        return this.transform(u.SCALE(t46, r39));
-    }, t41.prototype.rotate = function(t47, r40, e33) {
-        return this.transform(u.ROTATE(t47, r40, e33));
-    }, t41.prototype.matrix = function(t48, r41, e34, i18, a14, n15) {
-        return this.transform(u.MATRIX(t48, r41, e34, i18, a14, n15));
-    }, t41.prototype.skewX = function(t49) {
-        return this.transform(u.SKEW_X(t49));
-    }, t41.prototype.skewY = function(t50) {
-        return this.transform(u.SKEW_Y(t50));
-    }, t41.prototype.xSymmetry = function(t51) {
-        return this.transform(u.X_AXIS_SYMMETRY(t51));
-    }, t41.prototype.ySymmetry = function(t52) {
-        return this.transform(u.Y_AXIS_SYMMETRY(t52));
-    }, t41.prototype.annotateArcs = function() {
+    }, t.prototype.sanitize = function(t) {
+        return this.transform(u.SANITIZE(t));
+    }, t.prototype.translate = function(t, r) {
+        return this.transform(u.TRANSLATE(t, r));
+    }, t.prototype.scale = function(t, r) {
+        return this.transform(u.SCALE(t, r));
+    }, t.prototype.rotate = function(t, r, e) {
+        return this.transform(u.ROTATE(t, r, e));
+    }, t.prototype.matrix = function(t, r, e, i, a, n) {
+        return this.transform(u.MATRIX(t, r, e, i, a, n));
+    }, t.prototype.skewX = function(t) {
+        return this.transform(u.SKEW_X(t));
+    }, t.prototype.skewY = function(t) {
+        return this.transform(u.SKEW_Y(t));
+    }, t.prototype.xSymmetry = function(t) {
+        return this.transform(u.X_AXIS_SYMMETRY(t));
+    }, t.prototype.ySymmetry = function(t) {
+        return this.transform(u.Y_AXIS_SYMMETRY(t));
+    }, t.prototype.annotateArcs = function() {
         return this.transform(u.ANNOTATE_ARCS());
-    }, t41;
-}(), T = function(t53) {
-    return " " === t53 || "	" === t53 || "\r" === t53 || "\n" === t53;
-}, v = function(t54) {
-    return "0".charCodeAt(0) <= t54.charCodeAt(0) && t54.charCodeAt(0) <= "9".charCodeAt(0);
-}, f = function(t55) {
-    function e35() {
-        var r42 = t55.call(this) || this;
-        return r42.curNumber = "", r42.curCommandType = -1, r42.curCommandRelative = !1, r42.canParseCommandOrComma = !0, r42.curNumberHasExp = !1, r42.curNumberHasExpDigits = !1, r42.curNumberHasDecimal = !1, r42.curArgs = [], r42;
+    }, t;
+}(), T = function(t) {
+    return " " === t || "	" === t || "\r" === t || "\n" === t;
+}, v = function(t) {
+    return "0".charCodeAt(0) <= t.charCodeAt(0) && t.charCodeAt(0) <= "9".charCodeAt(0);
+}, f = function(t) {
+    function e() {
+        var r = t.call(this) || this;
+        return r.curNumber = "", r.curCommandType = -1, r.curCommandRelative = !1, r.canParseCommandOrComma = !0, r.curNumberHasExp = !1, r.curNumberHasExpDigits = !1, r.curNumberHasDecimal = !1, r.curArgs = [], r;
     }
-    return r(e35, t55), e35.prototype.finish = function(t56) {
-        if (void 0 === t56 && (t56 = []), this.parse(" ", t56), 0 !== this.curArgs.length || !this.canParseCommandOrComma) throw new SyntaxError("Unterminated command at the path end.");
-        return t56;
-    }, e35.prototype.parse = function(t57, r43) {
-        var e36 = this;
-        void 0 === r43 && (r43 = []);
-        for(var i19 = function(t58) {
-            r43.push(t58), e36.curArgs.length = 0, e36.canParseCommandOrComma = !0;
-        }, a15 = 0; a15 < t57.length; a15++){
-            var n16 = t57[a15], o10 = !(this.curCommandType !== _.ARC || 3 !== this.curArgs.length && 4 !== this.curArgs.length || 1 !== this.curNumber.length || "0" !== this.curNumber && "1" !== this.curNumber), s7 = v(n16) && ("0" === this.curNumber && "0" === n16 || o10);
-            if (!v(n16) || s7) {
-                if ("e" !== n16 && "E" !== n16) {
-                    if ("-" !== n16 && "+" !== n16 || !this.curNumberHasExp || this.curNumberHasExpDigits) {
-                        if ("." !== n16 || this.curNumberHasExp || this.curNumberHasDecimal || o10) {
+    return r(e, t), e.prototype.finish = function(t) {
+        if (void 0 === t && (t = []), this.parse(" ", t), 0 !== this.curArgs.length || !this.canParseCommandOrComma) throw new SyntaxError("Unterminated command at the path end.");
+        return t;
+    }, e.prototype.parse = function(t, r) {
+        var e = this;
+        void 0 === r && (r = []);
+        for(var i = function(t) {
+            r.push(t), e.curArgs.length = 0, e.canParseCommandOrComma = !0;
+        }, a = 0; a < t.length; a++){
+            var n = t[a], o = !(this.curCommandType !== _.ARC || 3 !== this.curArgs.length && 4 !== this.curArgs.length || 1 !== this.curNumber.length || "0" !== this.curNumber && "1" !== this.curNumber), s = v(n) && ("0" === this.curNumber && "0" === n || o);
+            if (!v(n) || s) {
+                if ("e" !== n && "E" !== n) {
+                    if ("-" !== n && "+" !== n || !this.curNumberHasExp || this.curNumberHasExpDigits) {
+                        if ("." !== n || this.curNumberHasExp || this.curNumberHasDecimal || o) {
                             if (this.curNumber && -1 !== this.curCommandType) {
-                                var u8 = Number(this.curNumber);
-                                if (isNaN(u8)) throw new SyntaxError("Invalid number ending at " + a15);
+                                var u = Number(this.curNumber);
+                                if (isNaN(u)) throw new SyntaxError("Invalid number ending at " + a);
                                 if (this.curCommandType === _.ARC) {
                                     if (0 === this.curArgs.length || 1 === this.curArgs.length) {
-                                        if (0 > u8) throw new SyntaxError('Expected positive number, got "' + u8 + '" at index "' + a15 + '"');
-                                    } else if ((3 === this.curArgs.length || 4 === this.curArgs.length) && "0" !== this.curNumber && "1" !== this.curNumber) throw new SyntaxError('Expected a flag, got "' + this.curNumber + '" at index "' + a15 + '"');
+                                        if (0 > u) throw new SyntaxError('Expected positive number, got "' + u + '" at index "' + a + '"');
+                                    } else if ((3 === this.curArgs.length || 4 === this.curArgs.length) && "0" !== this.curNumber && "1" !== this.curNumber) throw new SyntaxError('Expected a flag, got "' + this.curNumber + '" at index "' + a + '"');
                                 }
-                                this.curArgs.push(u8), this.curArgs.length === N[this.curCommandType] && (_.HORIZ_LINE_TO === this.curCommandType ? i19({
+                                this.curArgs.push(u), this.curArgs.length === N[this.curCommandType] && (_.HORIZ_LINE_TO === this.curCommandType ? i({
                                     type: _.HORIZ_LINE_TO,
                                     relative: this.curCommandRelative,
-                                    x: u8
-                                }) : _.VERT_LINE_TO === this.curCommandType ? i19({
+                                    x: u
+                                }) : _.VERT_LINE_TO === this.curCommandType ? i({
                                     type: _.VERT_LINE_TO,
                                     relative: this.curCommandRelative,
-                                    y: u8
-                                }) : this.curCommandType === _.MOVE_TO || this.curCommandType === _.LINE_TO || this.curCommandType === _.SMOOTH_QUAD_TO ? (i19({
+                                    y: u
+                                }) : this.curCommandType === _.MOVE_TO || this.curCommandType === _.LINE_TO || this.curCommandType === _.SMOOTH_QUAD_TO ? (i({
                                     type: this.curCommandType,
                                     relative: this.curCommandRelative,
                                     x: this.curArgs[0],
                                     y: this.curArgs[1]
-                                }), _.MOVE_TO === this.curCommandType && (this.curCommandType = _.LINE_TO)) : this.curCommandType === _.CURVE_TO ? i19({
+                                }), _.MOVE_TO === this.curCommandType && (this.curCommandType = _.LINE_TO)) : this.curCommandType === _.CURVE_TO ? i({
                                     type: _.CURVE_TO,
                                     relative: this.curCommandRelative,
                                     x1: this.curArgs[0],
@@ -9068,21 +9068,21 @@ var O, l = function() {
                                     y2: this.curArgs[3],
                                     x: this.curArgs[4],
                                     y: this.curArgs[5]
-                                }) : this.curCommandType === _.SMOOTH_CURVE_TO ? i19({
+                                }) : this.curCommandType === _.SMOOTH_CURVE_TO ? i({
                                     type: _.SMOOTH_CURVE_TO,
                                     relative: this.curCommandRelative,
                                     x2: this.curArgs[0],
                                     y2: this.curArgs[1],
                                     x: this.curArgs[2],
                                     y: this.curArgs[3]
-                                }) : this.curCommandType === _.QUAD_TO ? i19({
+                                }) : this.curCommandType === _.QUAD_TO ? i({
                                     type: _.QUAD_TO,
                                     relative: this.curCommandRelative,
                                     x1: this.curArgs[0],
                                     y1: this.curArgs[1],
                                     x: this.curArgs[2],
                                     y: this.curArgs[3]
-                                }) : this.curCommandType === _.ARC && i19({
+                                }) : this.curCommandType === _.ARC && i({
                                     type: _.ARC,
                                     relative: this.curCommandRelative,
                                     rX: this.curArgs[0],
@@ -9094,74 +9094,74 @@ var O, l = function() {
                                     y: this.curArgs[6]
                                 })), this.curNumber = "", this.curNumberHasExpDigits = !1, this.curNumberHasExp = !1, this.curNumberHasDecimal = !1, this.canParseCommandOrComma = !0;
                             }
-                            if (!T(n16)) {
-                                if ("," === n16 && this.canParseCommandOrComma) this.canParseCommandOrComma = !1;
-                                else if ("+" !== n16 && "-" !== n16 && "." !== n16) {
-                                    if (s7) this.curNumber = n16, this.curNumberHasDecimal = !1;
+                            if (!T(n)) {
+                                if ("," === n && this.canParseCommandOrComma) this.canParseCommandOrComma = !1;
+                                else if ("+" !== n && "-" !== n && "." !== n) {
+                                    if (s) this.curNumber = n, this.curNumberHasDecimal = !1;
                                     else {
-                                        if (0 !== this.curArgs.length) throw new SyntaxError("Unterminated command at index " + a15 + ".");
-                                        if (!this.canParseCommandOrComma) throw new SyntaxError('Unexpected character "' + n16 + '" at index ' + a15 + ". Command cannot follow comma");
-                                        if (this.canParseCommandOrComma = !1, "z" !== n16 && "Z" !== n16) {
-                                            if ("h" === n16 || "H" === n16) this.curCommandType = _.HORIZ_LINE_TO, this.curCommandRelative = "h" === n16;
-                                            else if ("v" === n16 || "V" === n16) this.curCommandType = _.VERT_LINE_TO, this.curCommandRelative = "v" === n16;
-                                            else if ("m" === n16 || "M" === n16) this.curCommandType = _.MOVE_TO, this.curCommandRelative = "m" === n16;
-                                            else if ("l" === n16 || "L" === n16) this.curCommandType = _.LINE_TO, this.curCommandRelative = "l" === n16;
-                                            else if ("c" === n16 || "C" === n16) this.curCommandType = _.CURVE_TO, this.curCommandRelative = "c" === n16;
-                                            else if ("s" === n16 || "S" === n16) this.curCommandType = _.SMOOTH_CURVE_TO, this.curCommandRelative = "s" === n16;
-                                            else if ("q" === n16 || "Q" === n16) this.curCommandType = _.QUAD_TO, this.curCommandRelative = "q" === n16;
-                                            else if ("t" === n16 || "T" === n16) this.curCommandType = _.SMOOTH_QUAD_TO, this.curCommandRelative = "t" === n16;
+                                        if (0 !== this.curArgs.length) throw new SyntaxError("Unterminated command at index " + a + ".");
+                                        if (!this.canParseCommandOrComma) throw new SyntaxError('Unexpected character "' + n + '" at index ' + a + ". Command cannot follow comma");
+                                        if (this.canParseCommandOrComma = !1, "z" !== n && "Z" !== n) {
+                                            if ("h" === n || "H" === n) this.curCommandType = _.HORIZ_LINE_TO, this.curCommandRelative = "h" === n;
+                                            else if ("v" === n || "V" === n) this.curCommandType = _.VERT_LINE_TO, this.curCommandRelative = "v" === n;
+                                            else if ("m" === n || "M" === n) this.curCommandType = _.MOVE_TO, this.curCommandRelative = "m" === n;
+                                            else if ("l" === n || "L" === n) this.curCommandType = _.LINE_TO, this.curCommandRelative = "l" === n;
+                                            else if ("c" === n || "C" === n) this.curCommandType = _.CURVE_TO, this.curCommandRelative = "c" === n;
+                                            else if ("s" === n || "S" === n) this.curCommandType = _.SMOOTH_CURVE_TO, this.curCommandRelative = "s" === n;
+                                            else if ("q" === n || "Q" === n) this.curCommandType = _.QUAD_TO, this.curCommandRelative = "q" === n;
+                                            else if ("t" === n || "T" === n) this.curCommandType = _.SMOOTH_QUAD_TO, this.curCommandRelative = "t" === n;
                                             else {
-                                                if ("a" !== n16 && "A" !== n16) throw new SyntaxError('Unexpected character "' + n16 + '" at index ' + a15 + ".");
-                                                this.curCommandType = _.ARC, this.curCommandRelative = "a" === n16;
+                                                if ("a" !== n && "A" !== n) throw new SyntaxError('Unexpected character "' + n + '" at index ' + a + ".");
+                                                this.curCommandType = _.ARC, this.curCommandRelative = "a" === n;
                                             }
-                                        } else r43.push({
+                                        } else r.push({
                                             type: _.CLOSE_PATH
                                         }), this.canParseCommandOrComma = !0, this.curCommandType = -1;
                                     }
-                                } else this.curNumber = n16, this.curNumberHasDecimal = "." === n16;
+                                } else this.curNumber = n, this.curNumberHasDecimal = "." === n;
                             }
-                        } else this.curNumber += n16, this.curNumberHasDecimal = !0;
-                    } else this.curNumber += n16;
-                } else this.curNumber += n16, this.curNumberHasExp = !0;
-            } else this.curNumber += n16, this.curNumberHasExpDigits = this.curNumberHasExp;
+                        } else this.curNumber += n, this.curNumberHasDecimal = !0;
+                    } else this.curNumber += n;
+                } else this.curNumber += n, this.curNumberHasExp = !0;
+            } else this.curNumber += n, this.curNumberHasExpDigits = this.curNumberHasExp;
         }
-        return r43;
-    }, e35.prototype.transform = function(t59) {
+        return r;
+    }, e.prototype.transform = function(t) {
         return Object.create(this, {
             parse: {
-                value: function(r44, e37) {
-                    void 0 === e37 && (e37 = []);
-                    for(var i20 = 0, a16 = Object.getPrototypeOf(this).parse.call(this, r44); i20 < a16.length; i20++){
-                        var n17 = a16[i20], o11 = t59(n17);
-                        Array.isArray(o11) ? e37.push.apply(e37, o11) : e37.push(o11);
+                value: function(r, e) {
+                    void 0 === e && (e = []);
+                    for(var i = 0, a = Object.getPrototypeOf(this).parse.call(this, r); i < a.length; i++){
+                        var n = a[i], o = t(n);
+                        Array.isArray(o) ? e.push.apply(e, o) : e.push(o);
                     }
-                    return e37;
+                    return e;
                 }
             }
         });
-    }, e35;
-}(l), _ = function(t60) {
-    function i21(r45) {
-        var e38 = t60.call(this) || this;
-        return e38.commands = "string" == typeof r45 ? i21.parse(r45) : r45, e38;
+    }, e;
+}(l), _ = function(t) {
+    function i(r) {
+        var e = t.call(this) || this;
+        return e.commands = "string" == typeof r ? i.parse(r) : r, e;
     }
-    return r(i21, t60), i21.prototype.encode = function() {
-        return i21.encode(this.commands);
-    }, i21.prototype.getBounds = function() {
-        var t61 = u.CALCULATE_BOUNDS();
-        return this.transform(t61), t61;
-    }, i21.prototype.transform = function(t62) {
-        for(var r46 = [], e39 = 0, i22 = this.commands; e39 < i22.length; e39++){
-            var a17 = t62(i22[e39]);
-            Array.isArray(a17) ? r46.push.apply(r46, a17) : r46.push(a17);
+    return r(i, t), i.prototype.encode = function() {
+        return i.encode(this.commands);
+    }, i.prototype.getBounds = function() {
+        var t = u.CALCULATE_BOUNDS();
+        return this.transform(t), t;
+    }, i.prototype.transform = function(t) {
+        for(var r = [], e = 0, i = this.commands; e < i.length; e++){
+            var a = t(i[e]);
+            Array.isArray(a) ? r.push.apply(r, a) : r.push(a);
         }
-        return this.commands = r46, this;
-    }, i21.encode = function(t63) {
-        return e(t63);
-    }, i21.parse = function(t64) {
-        var r47 = new f, e40 = [];
-        return r47.parse(t64, e40), r47.finish(e40), e40;
-    }, i21.CLOSE_PATH = 1, i21.MOVE_TO = 2, i21.HORIZ_LINE_TO = 4, i21.VERT_LINE_TO = 8, i21.LINE_TO = 16, i21.CURVE_TO = 32, i21.SMOOTH_CURVE_TO = 64, i21.QUAD_TO = 128, i21.SMOOTH_QUAD_TO = 256, i21.ARC = 512, i21.LINE_COMMANDS = i21.LINE_TO | i21.HORIZ_LINE_TO | i21.VERT_LINE_TO, i21.DRAWING_COMMANDS = i21.HORIZ_LINE_TO | i21.VERT_LINE_TO | i21.LINE_TO | i21.CURVE_TO | i21.SMOOTH_CURVE_TO | i21.QUAD_TO | i21.SMOOTH_QUAD_TO | i21.ARC, i21;
+        return this.commands = r, this;
+    }, i.encode = function(t) {
+        return e(t);
+    }, i.parse = function(t) {
+        var r = new f, e = [];
+        return r.parse(t, e), r.finish(e), e;
+    }, i.CLOSE_PATH = 1, i.MOVE_TO = 2, i.HORIZ_LINE_TO = 4, i.VERT_LINE_TO = 8, i.LINE_TO = 16, i.CURVE_TO = 32, i.SMOOTH_CURVE_TO = 64, i.QUAD_TO = 128, i.SMOOTH_QUAD_TO = 256, i.ARC = 512, i.LINE_COMMANDS = i.LINE_TO | i.HORIZ_LINE_TO | i.VERT_LINE_TO, i.DRAWING_COMMANDS = i.HORIZ_LINE_TO | i.VERT_LINE_TO | i.LINE_TO | i.CURVE_TO | i.SMOOTH_CURVE_TO | i.QUAD_TO | i.SMOOTH_QUAD_TO | i.ARC, i;
 }(l), N = ((O = {})[_.MOVE_TO] = 2, O[_.LINE_TO] = 2, O[_.HORIZ_LINE_TO] = 1, O[_.VERT_LINE_TO] = 1, O[_.CLOSE_PATH] = 0, O[_.QUAD_TO] = 4, O[_.SMOOTH_QUAD_TO] = 2, O[_.CURVE_TO] = 6, O[_.SMOOTH_CURVE_TO] = 4, O[_.ARC] = 7, O);
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"cEE7i"}],"8bEcW":[function(require,module,exports) {
@@ -9214,7 +9214,7 @@ parcelHelpers.export(exports, "canvasRGBA", ()=>processCanvasRGBA);
 parcelHelpers.export(exports, "image", ()=>processImage);
 parcelHelpers.export(exports, "imageDataRGB", ()=>processImageDataRGB);
 parcelHelpers.export(exports, "imageDataRGBA", ()=>processImageDataRGBA);
-function _typeof(obj1) {
+function _typeof(obj) {
     "@babel/helpers - typeof";
     if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") _typeof = function(obj) {
         return typeof obj;
@@ -9222,7 +9222,7 @@ function _typeof(obj1) {
     else _typeof = function(obj) {
         return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
     };
-    return _typeof(obj1);
+    return _typeof(obj);
 }
 function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) throw new TypeError("Cannot call a class as a function");
@@ -10156,8 +10156,8 @@ var shgTable = [
  *
  */ var BlurStack = /**
  * Set properties.
- */ function BlurStack1() {
-    _classCallCheck(this, BlurStack1);
+ */ function BlurStack() {
+    _classCallCheck(this, BlurStack);
     this.r = 0;
     this.g = 0;
     this.b = 0;

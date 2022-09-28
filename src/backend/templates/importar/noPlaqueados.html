@@ -5,7 +5,7 @@
 
 {%block body %}
 
-<form action="{% url 'api-importar-activos' %}" method="POST" enctype="multipart/form-data" class="p-4 ms-6">
+<form action="{% url 'api-importar-no-plaqueados' %}" method="POST" enctype="multipart/form-data" class="p-4 ms-6">
      {% csrf_token %}
      {% if message %}   
           <div class="my-3 p-2 d-flex align-items-center message {{error|yesno:"bg-danger, bg-success"}}">
@@ -13,7 +13,7 @@
           </div>
      {% endif %}
 
-          <a href="{% get_media_prefix %}documents/plantilla_importar_activos_2022.xlsx" class="link">Descargar plantilla</a>
+          <a href="{% get_media_prefix %}documents/plantilla_importar_no_plaqueados_2022.xlsx" class="link">Descargar plantilla</a>
      <div class="mb-3">
           <label for="input-file" class="form-label">Ingrese el archivo de excel aquí</label>
           <input id="input-file" name="file" type="file" class="form-control" required>

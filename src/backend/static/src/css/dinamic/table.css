@@ -1,0 +1,39 @@
+.btn-add{
+    --btn-color: #1976D2;
+    background-color: var(--btn-color)!important;
+    border-color: var(--btn-color);
+    color: white;
+}
+.btn-export-visibles{
+    --btn-color: #388E3C;
+    background-color: var(--btn-color)!important;
+    border-color: var(--btn-color);
+    color: white;
+}
+
+.btn-export-all{
+    --btn-color: #FBC02D;
+    background-color: var(--btn-color)!important;
+    border-color: var(--btn-color);
+    color: white;
+}
+ 
+.btn:hover{
+    color: white;
+    background: linear-gradient(rgba(0, 0, 0, .2), rgba(0, 0, 0, .2));
+
+}
+
+.odd{
+    background-color: ;
+}  
+
+.even{
+
+}
+
+td{
+    font-size: .9rem;
+}
+
+ 

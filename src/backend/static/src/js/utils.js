@@ -1,3 +1,4 @@
+import axios from "axios";
 import Swal from "sweetalert2";
 
 //Esta clase es utilizada para evitar repetir la misma declaración fetch
@@ -54,4 +55,24 @@ export const Warning = Swal.mixin({
 	icon: "warning",
 });
 
-export const getTableRowData = (table, row) => {};
+export const download = (blob, filename) => {
+	const url = window.URL.createObjectURL(blob);
+	const a = document.createElement("a");
+	a.href = url;
+	a.download = filename;
+	a.click();
+	window.URL.revokeObjectURL(url);
+};
+
+export const toExcel = (data) => {
+	parsedData = JSON.stringify(data);
+	return axios({
+		url: "/api/exportar/",
+		method: "POST",
+		responseType: "json",
+		data: { data: parsedData },
+		headers: {
+			"X-CSRFToken": getCsrf(),
+		},
+	});
+};

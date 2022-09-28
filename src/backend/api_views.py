@@ -1,5 +1,10 @@
+from http.client import HTTPResponse
+from io import BytesIO
 import json
 from math import isnan
+import os
+import tempfile
+from time import sleep
 from urllib import request
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -14,9 +19,10 @@ from backend import models
 from backend import serializers
 from backend.serializers import FuncionariosSerializer, NoPlaqueadosSerializer, PlaqueadosSerializer, TramitesCreateSerializer, TramitesSerializer, TrasladosSerializer, UbicacionesSerializer
 from rest_framework.decorators import action
-from pandas import isna, read_excel
+import pandas as pd
 from django.db.models import Model
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import FileResponse
 # ModelViewset con la capacidad de especificar más de un serializador, dependiendo de la acción
 
 
@@ -113,6 +119,7 @@ class UbicacionesApiViewset(ModelViewSet):
     queryset = models.Ubicaciones.objects.all()
     serializer_class = UbicacionesSerializer
 
+
 class ImportarActivosApiView(APIView):
     permission_classes = [AllowAny]
     columns = ["nombre", "placa", "detalle", "marca",
@@ -123,7 +130,7 @@ class ImportarActivosApiView(APIView):
 
     def post(self, request, format=None):
         file = request.FILES['file']
-        excel_file = read_excel(file, usecols=self.columns)
+        excel_file = pd.read_excel(file, usecols=self.columns)
         activos_erroneos = []
         redirect_url = reverse("importar-activos")
         success_number = 0
@@ -157,3 +164,64 @@ class ImportarActivosApiView(APIView):
         error = False
         message = f"{success_number} activos importados con éxito, {activos_erroneos.__len__()} activos érroneos: {', '.join(activos_erroneos) if activos_erroneos.__len__() else 'No hubieron errores'}"
         return redirect(f"{redirect_url}?message={message}&error={error}")
+
+
+class ImportarActivosNoPlaqueadosApiView(APIView):
+    permission_classes = [AllowAny]
+    columns = ["nombre", "detalle", "marca",
+               "serie",	"valor", "modelo", "garantia", "ubicacion"]
+
+    optional_columns = ['ubicacion', 'garantia']
+    model = models.Activos_No_Plaqueados
+
+    def post(self, request, format=None):
+        file = request.FILES['file']
+        excel_file = pd.read_excel(file, usecols=self.columns)
+        activos_erroneos = []
+        redirect_url = reverse("importar-activos")
+        success_number = 0
+        skip_current = False
+        for row in excel_file.itertuples(index=False):
+            row_dict = row._asdict()
+            for item in row_dict:
+                value = row_dict[item]
+                if(type(value) == float and isnan(value) and item not in self.optional_columns):
+                    message = f'Error al importar activos, asegurese que el campo {item} tenga valores'
+                    error = True
+                    return redirect(f"{redirect_url}?message={message}&error={error}")
+
+            if(row_dict['ubicacion']):
+                try:
+                    row_dict['ubicacion'] = models.Ubicaciones.objects.get(
+                        lugar__icontains=row_dict['ubicacion'])
+                except ObjectDoesNotExist:
+                    activos_erroneos.append(
+                        f"{row_dict['nombre']} : {row_dict['placa']}")
+                    print("printed")
+                    skip_current = True
+            for optional_column in self.optional_columns:
+                if(type(row_dict[optional_column]) == float and isnan(row_dict[optional_column])):
+                    row_dict.pop(optional_column)
+
+            if (not skip_current):
+                self.model.objects.create(**row_dict)
+                success_number += 1
+            skip_current = False
+        error = False
+        message = f"{success_number} activos importados con éxito, {activos_erroneos.__len__()} activos érroneos: {', '.join(activos_erroneos) if activos_erroneos.__len__() else 'No hubieron errores'}"
+        return redirect(f"{redirect_url}?message={message}&error={error}")
+
+
+class ExportarHojaDeCalculo(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, format=None):
+
+        json_data = request.data
+
+        parsed_json = pd.DataFrame(json.loads(json_data['data']))
+        with BytesIO() as b:
+            writer = pd.ExcelWriter(b, engine="openpyxl", mode="xlswriter")
+            parsed_json.to_excel(writer)
+            writer.save()
+            return Response({"data": b.getbuffer().hex()})

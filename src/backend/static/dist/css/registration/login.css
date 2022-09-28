@@ -1,17 +1,51 @@
-.login-container {
-  width: 100%;
+body {
+  overflow-x: hidden !important;
+}
+
+.login_container {
   height: 100vh;
-  background-color: #6d9ac4;
 }
 
-.login-form {
-  height: fit-content;
-  background-color: #f0f8ff;
-  color: #000 !important;
+.login_form {
+  flex-direction: column;
+  display: flex;
 }
 
-.bg-red {
-  background-color: #ee5684;
+.login_form > input {
+  width: 20rem;
+  padding: .2rem;
+}
+
+.nota_form {
+  color: gray;
+  font-size: smaller;
+}
+
+.form_side {
+  height: 100vh;
+  background-color: #005da4;
+  animation: fade-in .9s ease-in-out both;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.login_img {
+  width: 30rem;
+}
+
+.errorlist {
+  width: 30rem;
+  text-align: center;
+  color: #dd2525;
+  list-style: none;
 }
 
 /*# sourceMappingURL=login.css.map */

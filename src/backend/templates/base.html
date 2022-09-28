@@ -34,11 +34,13 @@
 
 	{% if user.is_authenticated or request.path == "/login/" %}
 	<body>
-		<header>
-			{% block header %} {% include 'components/nav.html' %} {% endblock%}
-		</header>
+		<div class="main-section">
+			<header class="position-relative">
+				{% block header %} {% include 'components/nav.html' %} {% endblock%}
+			</header>
 
-		{% block body %}{% endblock %}
+			{% block body %}{% endblock %}
+		</div>
 
 		<script src="{% static 'dist/main.js'%}"></script>
 		{% block script %}{% endblock %}

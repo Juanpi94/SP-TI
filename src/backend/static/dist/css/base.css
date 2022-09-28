@@ -13,6 +13,7 @@ body {
 }
 
 .message {
+  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -34,6 +35,14 @@ body {
 .detalles-textarea {
   height: 7rem;
   padding-left: .4rem;
+}
+
+.main-section {
+  display: flex;
+}
+
+.ms-6 {
+  margin-inline-start: 5rem;
 }
 
 /*# sourceMappingURL=base.css.map */

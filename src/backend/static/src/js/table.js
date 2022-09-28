@@ -1,5 +1,8 @@
-import { Fetcher, getCsrf } from "./utils";
+import { download, Fetcher, getCsrf, toExcel } from "./utils";
 import Swal from "sweetalert2";
+import { parse } from "marked";
+import axios from "axios";
+import { Buffer } from "buffer";
 
 //Este archivo utiliza variables que se declaran en table.html
 const swalAlertTimer = 1200; //El tiempo en que las alertas de sweetAlert tardan en estar visibles: https://sweetalert2.github.io/
@@ -20,10 +23,40 @@ let table = $("#datatable").DataTable({
 	buttons: [
 		{
 			text: "Añadir",
-			className: "btn-primary mt-3",
+			className: "btn mt-3 btn-add",
 			action: () => {
 				const addModal = new bootstrap.Modal($("#add-modal"));
 				addModal.show();
+			},
+		},
+		{
+			text: "Exportar visibles a excel",
+			className: "btn  mt-3 btn-export-visibles",
+			action: () => {
+				const data = table.rows({ page: "current" }).data();
+				const parsedData = [];
+				for (let iterator = 0; iterator < data.length; iterator++) {
+					parsedData.push(data[iterator]);
+				}
+				toExcel(parsedData).then((res) => {
+					download(
+						new Blob([Buffer.from(res.data["data"], "hex")]),
+						`exported-${Date.now()}.xlsx`
+					);
+				});
+			},
+		},
+		{
+			text: "Exportar tabla a excel",
+			className: "btn mt-3 text-light btn-export-all",
+			action: () => {
+				const data = table.rows().data().toArray();
+				toExcel(data).then((res) => {
+					download(
+						new Blob([Buffer.from(res.data["data"], "hex")]),
+						`exportedTable-${Date.now()}.xlsx`
+					);
+				});
 			},
 		},
 	],
@@ -75,7 +108,6 @@ async function editHandler(event) {
 
 		//Si el input existe se le incluye la información
 		if (input) {
-			 
 			input.val(jsonData[key]);
 		}
 	}

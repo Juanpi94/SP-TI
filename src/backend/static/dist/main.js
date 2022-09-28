@@ -178,39 +178,39 @@ window.feather = (0, _featherIconsDefault.default);
         "jquery"
     ], factory);
     else if (module.exports) // Node/CommonJS
-    module.exports = function(root, jQuery) {
-        if (jQuery === undefined) {
+    module.exports = function(root, jQuery1) {
+        if (jQuery1 === undefined) {
             // require('jQuery') returns a factory that requires window to
             // build a jQuery instance, we normalize how we use modules
             // that require this pattern but the window provided is a noop
             // if it's defined (how jquery works)
-            if (typeof window !== "undefined") jQuery = require("jquery");
-            else jQuery = require("jquery")(root);
+            if (typeof window !== "undefined") jQuery1 = require("jquery");
+            else jQuery1 = require("jquery")(root);
         }
-        factory(jQuery);
-        return jQuery;
+        factory(jQuery1);
+        return jQuery1;
     };
     else // Browser globals
     factory(jQuery);
-})(function(jQuery) {
+})(function(jQuery1) {
     // This is needed so we can catch the AMD loader configuration and use it
     // The inner file should be wrapped (by `banner.start.js`) in a function that
     // returns the AMD loader references.
-    var S21 = function() {
+    var S2 = function() {
         // Restore the Select2 AMD loader so it can be used
         // Needed mostly in the language files, where the loader is not inserted
-        if (jQuery && jQuery.fn && jQuery.fn.select2 && jQuery.fn.select2.amd) var S2 = jQuery.fn.select2.amd;
+        if (jQuery1 && jQuery1.fn && jQuery1.fn.select2 && jQuery1.fn.select2.amd) var S2 = jQuery1.fn.select2.amd;
         var S2;
         (function() {
             if (!S2 || !S2.requirejs) {
                 if (!S2) S2 = {};
-                else require = S2;
+                else require1 = S2;
                 /**
  * @license almond 0.3.3 Copyright jQuery Foundation and other contributors.
  * Released under MIT license, http://github.com/requirejs/almond/LICENSE
  */ //Going sloppy to avoid 'use strict' string cost, but strict practices should
                 //be followed.
-                /*global setTimeout: false */ var requirejs, require, define;
+                /*global setTimeout: false */ var requirejs, require1, define1;
                 (function(undef) {
                     var main, req, makeMap, handlers, defined = {}, waiting = {}, config = {}, defining = {}, hasOwn = Object.prototype.hasOwnProperty, aps = [].slice, jsSuffixRegExp = /\.js$/;
                     function hasProp(obj, prop) {
@@ -460,7 +460,7 @@ window.feather = (0, _featherIconsDefault.default);
                         //worry about defining if have a module name.
                         defined[name] = callback;
                     };
-                    requirejs = require = req = function(deps, callback, relName, forceSync, alt) {
+                    requirejs = require1 = req = function(deps, callback, relName, forceSync, alt) {
                         if (typeof deps === "string") {
                             if (handlers[deps]) //callback in this case is really relName
                             return handlers[deps](callback);
@@ -512,7 +512,7 @@ window.feather = (0, _featherIconsDefault.default);
                     /**
      * Expose module registry for debugging and tooling
      */ requirejs._defined = defined;
-                    define = function(name, deps, callback) {
+                    define1 = function(name, deps, callback) {
                         if (typeof name !== "string") throw new Error("See almond README: incorrect module build, no module name");
                         //This module may not have dependencies
                         if (!deps.splice) {
@@ -528,24 +528,24 @@ window.feather = (0, _featherIconsDefault.default);
                             callback
                         ];
                     };
-                    define.amd = {
+                    define1.amd = {
                         jQuery: true
                     };
                 })();
                 S2.requirejs = requirejs;
-                S2.require = require;
-                S2.define = define;
+                S2.require = require1;
+                S2.define = define1;
             }
         })();
         S2.define("almond", function() {});
         /* global jQuery:false, $:false */ S2.define("jquery", [], function() {
-            var _$ = jQuery || $;
+            var _$ = jQuery1 || $;
             if (_$ == null && console && console.error) console.error("Select2: An instance of jQuery or a jQuery-compatible library was not found. Make sure that you are including jQuery before Select2 on your web page.");
             return _$;
         });
         S2.define("select2/utils", [
             "jquery"
-        ], function($) {
+        ], function($1) {
             var Utils = {};
             Utils.Extend = function(ChildClass, SuperClass) {
                 var __hasProp = {}.hasOwnProperty;
@@ -603,8 +603,8 @@ window.feather = (0, _featherIconsDefault.default);
                     };
                 };
                 for(var d = 0; d < decoratedMethods.length; d++){
-                    var decoratedMethod1 = decoratedMethods[d];
-                    DecoratedClass.prototype[decoratedMethod1] = calledMethod(decoratedMethod1);
+                    var decoratedMethod = decoratedMethods[d];
+                    DecoratedClass.prototype[decoratedMethod] = calledMethod(decoratedMethod);
                 }
                 return DecoratedClass;
             };
@@ -672,7 +672,7 @@ window.feather = (0, _featherIconsDefault.default);
                 // The original code can be found at
                 // http://codereview.stackexchange.com/q/13338
                 // and was designed to be used with the Sizzle selector engine.
-                var $el = $(el);
+                var $el = $1(el);
                 var overflowX = el.style.overflowX;
                 var overflowY = el.style.overflowY;
                 //Check both x and y declarations
@@ -698,7 +698,7 @@ window.feather = (0, _featherIconsDefault.default);
             };
             // Cache objects in Utils.__cache instead of $.data (see #4346)
             Utils.__cache = {};
-            var id1 = 0;
+            var id = 0;
             Utils.GetUniqueElementId = function(element) {
                 // Get a unique element Id. If element has no id,
                 // creates a new unique number, stores it in the id
@@ -708,7 +708,7 @@ window.feather = (0, _featherIconsDefault.default);
                 if (select2Id != null) return select2Id;
                 // If element has id, use it.
                 if (element.id) select2Id = "select2-data-" + element.id;
-                else select2Id = "select2-data-" + (++id1).toString() + "-" + Utils.generateChars(4);
+                else select2Id = "select2-data-" + (++id).toString() + "-" + Utils.generateChars(4);
                 element.setAttribute("data-select2-id", select2Id);
                 return select2Id;
             };
@@ -728,9 +728,9 @@ window.feather = (0, _featherIconsDefault.default);
                 if (name) {
                     if (Utils.__cache[id]) {
                         if (Utils.__cache[id][name] != null) return Utils.__cache[id][name];
-                        return $(element).data(name); // Fallback to HTML5 data attribs.
+                        return $1(element).data(name); // Fallback to HTML5 data attribs.
                     }
-                    return $(element).data(name); // Fallback to HTML5 data attribs.
+                    return $1(element).data(name); // Fallback to HTML5 data attribs.
                 } else return Utils.__cache[id];
             };
             Utils.RemoveData = function(element) {
@@ -759,7 +759,7 @@ window.feather = (0, _featherIconsDefault.default);
         S2.define("select2/results", [
             "jquery",
             "./utils"
-        ], function($, Utils) {
+        ], function($1, Utils) {
             function Results($element, options, dataAdapter) {
                 this.$element = $element;
                 this.data = dataAdapter;
@@ -768,7 +768,7 @@ window.feather = (0, _featherIconsDefault.default);
             }
             Utils.Extend(Results, Utils.Observable);
             Results.prototype.render = function() {
-                var $results = $('<ul class="select2-results__options" role="listbox"></ul>');
+                var $results = $1('<ul class="select2-results__options" role="listbox"></ul>');
                 if (this.options.get("multiple")) $results.attr("aria-multiselectable", "true");
                 this.$results = $results;
                 return $results;
@@ -780,7 +780,7 @@ window.feather = (0, _featherIconsDefault.default);
                 var escapeMarkup = this.options.get("escapeMarkup");
                 this.clear();
                 this.hideLoading();
-                var $message = $('<li role="alert" aria-live="assertive" class="select2-results__option"></li>');
+                var $message = $1('<li role="alert" aria-live="assertive" class="select2-results__option"></li>');
                 var message = this.options.get("translations").get(params.message);
                 $message.append(escapeMarkup(message(params.args)));
                 $message[0].className += " select2-results__message";
@@ -833,7 +833,7 @@ window.feather = (0, _featherIconsDefault.default);
                     });
                     var $options = self.$results.find(".select2-results__option--selectable");
                     $options.each(function() {
-                        var $option = $(this);
+                        var $option = $1(this);
                         var item = Utils.GetData(this, "data");
                         // id needs to be converted to a string when comparing
                         var id = "" + item.id;
@@ -889,7 +889,7 @@ window.feather = (0, _featherIconsDefault.default);
                     option.setAttribute(attr, val);
                 }
                 if (data.children) {
-                    var $option = $(option);
+                    var $option = $1(option);
                     var label = document.createElement("strong");
                     label.className = "select2-results__group";
                     this.template(data, label);
@@ -899,7 +899,7 @@ window.feather = (0, _featherIconsDefault.default);
                         var $child = this.option(child);
                         $children.push($child);
                     }
-                    var $childrenContainer = $("<ul></ul>", {
+                    var $childrenContainer = $1("<ul></ul>", {
                         "class": "select2-results__options select2-results__options--nested",
                         "role": "none"
                     });
@@ -1007,7 +1007,7 @@ window.feather = (0, _featherIconsDefault.default);
                 container.on("results:message", function(params) {
                     self.displayMessage(params);
                 });
-                if ($.fn.mousewheel) this.$results.on("mousewheel", function(e) {
+                if ($1.fn.mousewheel) this.$results.on("mousewheel", function(e) {
                     var top = self.$results.scrollTop();
                     var bottom = self.$results.get(0).scrollHeight - top + e.deltaY;
                     var isAtTop = e.deltaY > 0 && top - e.deltaY <= 0;
@@ -1023,7 +1023,7 @@ window.feather = (0, _featherIconsDefault.default);
                     }
                 });
                 this.$results.on("mouseup", ".select2-results__option--selectable", function(evt) {
-                    var $this = $(this);
+                    var $this = $1(this);
                     var data = Utils.GetData(this, "data");
                     if ($this.hasClass("select2-results__option--selected")) {
                         if (self.options.get("multiple")) self.trigger("unselect", {
@@ -1043,7 +1043,7 @@ window.feather = (0, _featherIconsDefault.default);
                     self.getHighlightedResults().removeClass("select2-results__option--highlighted").attr("aria-selected", "false");
                     self.trigger("results:focus", {
                         data: data,
-                        element: $(this)
+                        element: $1(this)
                     });
                 });
             };
@@ -1073,7 +1073,7 @@ window.feather = (0, _featherIconsDefault.default);
                 var content = template(result, container);
                 if (content == null) container.style.display = "none";
                 else if (typeof content === "string") container.innerHTML = escapeMarkup(content);
-                else $(container).append(content);
+                else $1(container).append(content);
             };
             return Results;
         });
@@ -1103,7 +1103,7 @@ window.feather = (0, _featherIconsDefault.default);
             "jquery",
             "../utils",
             "../keys"
-        ], function($, Utils, KEYS) {
+        ], function($1, Utils, KEYS) {
             function BaseSelection($element, options) {
                 this.$element = $element;
                 this.options = options;
@@ -1111,7 +1111,7 @@ window.feather = (0, _featherIconsDefault.default);
             }
             Utils.Extend(BaseSelection, Utils.Observable);
             BaseSelection.prototype.render = function() {
-                var $selection = $('<span class="select2-selection" role="combobox"  aria-haspopup="true" aria-expanded="false"></span>');
+                var $selection = $1('<span class="select2-selection" role="combobox"  aria-haspopup="true" aria-expanded="false"></span>');
                 this._tabindex = 0;
                 if (Utils.GetData(this.$element[0], "old-tabindex") != null) this._tabindex = Utils.GetData(this.$element[0], "old-tabindex");
                 else if (this.$element.attr("tabindex") != null) this._tabindex = this.$element.attr("tabindex");
@@ -1170,15 +1170,15 @@ window.feather = (0, _featherIconsDefault.default);
                 // key is pressed, possibly along with others.
                 window.setTimeout(function() {
                     // Don't trigger `blur` if the focus is still in the selection
-                    if (document.activeElement == self.$selection[0] || $.contains(self.$selection[0], document.activeElement)) return;
+                    if (document.activeElement == self.$selection[0] || $1.contains(self.$selection[0], document.activeElement)) return;
                     self.trigger("blur", evt);
                 }, 1);
             };
             BaseSelection.prototype._attachCloseHandler = function(container) {
-                $(document.body).on("mousedown.select2." + container.id, function(e) {
-                    var $target = $(e.target);
+                $1(document.body).on("mousedown.select2." + container.id, function(e) {
+                    var $target = $1(e.target);
                     var $select = $target.closest(".select2");
-                    var $all = $(".select2.select2-container--open");
+                    var $all = $1(".select2.select2-container--open");
                     $all.each(function() {
                         if (this == $select[0]) return;
                         var $element = Utils.GetData(this, "element");
@@ -1187,7 +1187,7 @@ window.feather = (0, _featherIconsDefault.default);
                 });
             };
             BaseSelection.prototype._detachCloseHandler = function(container) {
-                $(document.body).off("mousedown.select2." + container.id);
+                $1(document.body).off("mousedown.select2." + container.id);
             };
             BaseSelection.prototype.position = function($selection, $container) {
                 var $selectionContainer = $container.find(".selection");
@@ -1223,7 +1223,7 @@ window.feather = (0, _featherIconsDefault.default);
             "./base",
             "../utils",
             "../keys"
-        ], function($, BaseSelection, Utils, KEYS) {
+        ], function($1, BaseSelection, Utils, KEYS) {
             function SingleSelection() {
                 SingleSelection.__super__.constructor.apply(this, arguments);
             }
@@ -1269,7 +1269,7 @@ window.feather = (0, _featherIconsDefault.default);
                 return escapeMarkup(template(data, container));
             };
             SingleSelection.prototype.selectionContainer = function() {
-                return $("<span></span>");
+                return $1("<span></span>");
             };
             SingleSelection.prototype.update = function(data) {
                 if (data.length === 0) {
@@ -1290,7 +1290,7 @@ window.feather = (0, _featherIconsDefault.default);
             "jquery",
             "./base",
             "../utils"
-        ], function($, BaseSelection, Utils) {
+        ], function($1, BaseSelection, Utils) {
             function MultipleSelection($element, options) {
                 MultipleSelection.__super__.constructor.apply(this, arguments);
             }
@@ -1314,7 +1314,7 @@ window.feather = (0, _featherIconsDefault.default);
                 this.$selection.on("click", ".select2-selection__choice__remove", function(evt) {
                     // Ignore the event if it is disabled
                     if (self.isDisabled()) return;
-                    var $remove = $(this);
+                    var $remove = $1(this);
                     var $selection = $remove.parent();
                     var data = Utils.GetData($selection[0], "data");
                     self.trigger("unselect", {
@@ -1339,7 +1339,7 @@ window.feather = (0, _featherIconsDefault.default);
                 return escapeMarkup(template(data, container));
             };
             MultipleSelection.prototype.selectionContainer = function() {
-                var $container = $('<li class="select2-selection__choice"><button type="button" class="select2-selection__choice__remove" tabindex="-1"><span aria-hidden="true">&times;</span></button><span class="select2-selection__choice__display"></span></li>');
+                var $container = $1('<li class="select2-selection__choice"><button type="button" class="select2-selection__choice__remove" tabindex="-1"><span aria-hidden="true">&times;</span></button><span class="select2-selection__choice__display"></span></li>');
                 return $container;
             };
             MultipleSelection.prototype.update = function(data) {
@@ -1405,7 +1405,7 @@ window.feather = (0, _featherIconsDefault.default);
             "jquery",
             "../keys",
             "../utils"
-        ], function($, KEYS, Utils) {
+        ], function($1, KEYS, Utils) {
             function AllowClear() {}
             AllowClear.prototype.bind = function(decorated, container, $container) {
                 var self = this;
@@ -1465,7 +1465,7 @@ window.feather = (0, _featherIconsDefault.default);
                 if (this.$selection.find(".select2-selection__placeholder").length > 0 || data.length === 0) return;
                 var selectionId = this.$selection.find(".select2-selection__rendered").attr("id");
                 var removeAll = this.options.get("translations").get("removeAllItems");
-                var $remove = $('<button type="button" class="select2-selection__clear" tabindex="-1"><span aria-hidden="true">&times;</span></button>');
+                var $remove = $1('<button type="button" class="select2-selection__clear" tabindex="-1"><span aria-hidden="true">&times;</span></button>');
                 $remove.attr("title", removeAll());
                 $remove.attr("aria-label", removeAll());
                 $remove.attr("aria-describedby", selectionId);
@@ -1479,13 +1479,13 @@ window.feather = (0, _featherIconsDefault.default);
             "jquery",
             "../utils",
             "../keys"
-        ], function($, Utils, KEYS) {
+        ], function($1, Utils, KEYS) {
             function Search(decorated, $element, options) {
                 decorated.call(this, $element, options);
             }
             Search.prototype.render = function(decorated) {
                 var searchLabel = this.options.get("translations").get("search");
-                var $search = $('<span class="select2-search select2-search--inline"><textarea class="select2-search__field" type="search" tabindex="-1" autocorrect="off" autocapitalize="none" spellcheck="false" role="searchbox" aria-autocomplete="list" ></textarea></span>');
+                var $search = $1('<span class="select2-search select2-search--inline"><textarea class="select2-search__field" type="search" tabindex="-1" autocorrect="off" autocapitalize="none" spellcheck="false" role="searchbox" aria-autocomplete="list" ></textarea></span>');
                 this.$searchContainer = $search;
                 this.$search = $search.find("textarea");
                 this.$search.prop("autocomplete", this.options.get("autocomplete"));
@@ -1652,7 +1652,7 @@ window.feather = (0, _featherIconsDefault.default);
         });
         S2.define("select2/selection/eventRelay", [
             "jquery"
-        ], function($) {
+        ], function($1) {
             function EventRelay() {}
             EventRelay.prototype.bind = function(decorated, container, $container) {
                 var self = this;
@@ -1682,7 +1682,7 @@ window.feather = (0, _featherIconsDefault.default);
                     // The parameters should always be an object
                     params = params || {};
                     // Generate the jQuery event for the Select2 event
-                    var evt = $.Event("select2:" + name, {
+                    var evt = $1.Event("select2:" + name, {
                         params: params
                     });
                     self.$element.trigger(evt);
@@ -1696,7 +1696,7 @@ window.feather = (0, _featherIconsDefault.default);
         S2.define("select2/translation", [
             "jquery",
             "require"
-        ], function($, require) {
+        ], function($1, require1) {
             function Translation(dict) {
                 this.dict = dict || {};
             }
@@ -1707,13 +1707,13 @@ window.feather = (0, _featherIconsDefault.default);
                 return this.dict[key];
             };
             Translation.prototype.extend = function(translation) {
-                this.dict = $.extend({}, translation.all(), this.dict);
+                this.dict = $1.extend({}, translation.all(), this.dict);
             };
             // Static functions
             Translation._cache = {};
             Translation.loadPath = function(path) {
                 if (!(path in Translation._cache)) {
-                    var translations = require(path);
+                    var translations = require1(path);
                     Translation._cache[path] = translations;
                 }
                 return new Translation(Translation._cache[path]);
@@ -1722,848 +1722,848 @@ window.feather = (0, _featherIconsDefault.default);
         });
         S2.define("select2/diacritics", [], function() {
             var diacritics = {
-                "\u24B6": "A",
-                "\uFF21": "A",
+                "Ⓐ": "A",
+                "Ａ": "A",
                 "\xc0": "A",
                 "\xc1": "A",
                 "\xc2": "A",
-                "\u1EA6": "A",
-                "\u1EA4": "A",
-                "\u1EAA": "A",
-                "\u1EA8": "A",
+                "Ầ": "A",
+                "Ấ": "A",
+                "Ẫ": "A",
+                "Ẩ": "A",
                 "\xc3": "A",
-                "\u0100": "A",
-                "\u0102": "A",
-                "\u1EB0": "A",
-                "\u1EAE": "A",
-                "\u1EB4": "A",
-                "\u1EB2": "A",
-                "\u0226": "A",
-                "\u01E0": "A",
+                "Ā": "A",
+                "Ă": "A",
+                "Ằ": "A",
+                "Ắ": "A",
+                "Ẵ": "A",
+                "Ẳ": "A",
+                "Ȧ": "A",
+                "Ǡ": "A",
                 "\xc4": "A",
-                "\u01DE": "A",
-                "\u1EA2": "A",
+                "Ǟ": "A",
+                "Ả": "A",
                 "\xc5": "A",
-                "\u01FA": "A",
-                "\u01CD": "A",
-                "\u0200": "A",
-                "\u0202": "A",
-                "\u1EA0": "A",
-                "\u1EAC": "A",
-                "\u1EB6": "A",
-                "\u1E00": "A",
-                "\u0104": "A",
-                "\u023A": "A",
-                "\u2C6F": "A",
-                "\uA732": "AA",
+                "Ǻ": "A",
+                "Ǎ": "A",
+                "Ȁ": "A",
+                "Ȃ": "A",
+                "Ạ": "A",
+                "Ậ": "A",
+                "Ặ": "A",
+                "Ḁ": "A",
+                "Ą": "A",
+                "Ⱥ": "A",
+                "Ɐ": "A",
+                "Ꜳ": "AA",
                 "\xc6": "AE",
-                "\u01FC": "AE",
-                "\u01E2": "AE",
-                "\uA734": "AO",
-                "\uA736": "AU",
-                "\uA738": "AV",
-                "\uA73A": "AV",
-                "\uA73C": "AY",
-                "\u24B7": "B",
-                "\uFF22": "B",
-                "\u1E02": "B",
-                "\u1E04": "B",
-                "\u1E06": "B",
-                "\u0243": "B",
-                "\u0182": "B",
-                "\u0181": "B",
-                "\u24B8": "C",
-                "\uFF23": "C",
-                "\u0106": "C",
-                "\u0108": "C",
-                "\u010A": "C",
-                "\u010C": "C",
+                "Ǽ": "AE",
+                "Ǣ": "AE",
+                "Ꜵ": "AO",
+                "Ꜷ": "AU",
+                "Ꜹ": "AV",
+                "Ꜻ": "AV",
+                "Ꜽ": "AY",
+                "Ⓑ": "B",
+                "Ｂ": "B",
+                "Ḃ": "B",
+                "Ḅ": "B",
+                "Ḇ": "B",
+                "Ƀ": "B",
+                "Ƃ": "B",
+                "Ɓ": "B",
+                "Ⓒ": "C",
+                "Ｃ": "C",
+                "Ć": "C",
+                "Ĉ": "C",
+                "Ċ": "C",
+                "Č": "C",
                 "\xc7": "C",
-                "\u1E08": "C",
-                "\u0187": "C",
-                "\u023B": "C",
-                "\uA73E": "C",
-                "\u24B9": "D",
-                "\uFF24": "D",
-                "\u1E0A": "D",
-                "\u010E": "D",
-                "\u1E0C": "D",
-                "\u1E10": "D",
-                "\u1E12": "D",
-                "\u1E0E": "D",
-                "\u0110": "D",
-                "\u018B": "D",
-                "\u018A": "D",
-                "\u0189": "D",
-                "\uA779": "D",
-                "\u01F1": "DZ",
-                "\u01C4": "DZ",
-                "\u01F2": "Dz",
-                "\u01C5": "Dz",
-                "\u24BA": "E",
-                "\uFF25": "E",
+                "Ḉ": "C",
+                "Ƈ": "C",
+                "Ȼ": "C",
+                "Ꜿ": "C",
+                "Ⓓ": "D",
+                "Ｄ": "D",
+                "Ḋ": "D",
+                "Ď": "D",
+                "Ḍ": "D",
+                "Ḑ": "D",
+                "Ḓ": "D",
+                "Ḏ": "D",
+                "Đ": "D",
+                "Ƌ": "D",
+                "Ɗ": "D",
+                "Ɖ": "D",
+                "Ꝺ": "D",
+                "Ǳ": "DZ",
+                "Ǆ": "DZ",
+                "ǲ": "Dz",
+                "ǅ": "Dz",
+                "Ⓔ": "E",
+                "Ｅ": "E",
                 "\xc8": "E",
                 "\xc9": "E",
                 "\xca": "E",
-                "\u1EC0": "E",
-                "\u1EBE": "E",
-                "\u1EC4": "E",
-                "\u1EC2": "E",
-                "\u1EBC": "E",
-                "\u0112": "E",
-                "\u1E14": "E",
-                "\u1E16": "E",
-                "\u0114": "E",
-                "\u0116": "E",
+                "Ề": "E",
+                "Ế": "E",
+                "Ễ": "E",
+                "Ể": "E",
+                "Ẽ": "E",
+                "Ē": "E",
+                "Ḕ": "E",
+                "Ḗ": "E",
+                "Ĕ": "E",
+                "Ė": "E",
                 "\xcb": "E",
-                "\u1EBA": "E",
-                "\u011A": "E",
-                "\u0204": "E",
-                "\u0206": "E",
-                "\u1EB8": "E",
-                "\u1EC6": "E",
-                "\u0228": "E",
-                "\u1E1C": "E",
-                "\u0118": "E",
-                "\u1E18": "E",
-                "\u1E1A": "E",
-                "\u0190": "E",
-                "\u018E": "E",
-                "\u24BB": "F",
-                "\uFF26": "F",
-                "\u1E1E": "F",
-                "\u0191": "F",
-                "\uA77B": "F",
-                "\u24BC": "G",
-                "\uFF27": "G",
-                "\u01F4": "G",
-                "\u011C": "G",
-                "\u1E20": "G",
-                "\u011E": "G",
-                "\u0120": "G",
-                "\u01E6": "G",
-                "\u0122": "G",
-                "\u01E4": "G",
-                "\u0193": "G",
-                "\uA7A0": "G",
-                "\uA77D": "G",
-                "\uA77E": "G",
-                "\u24BD": "H",
-                "\uFF28": "H",
-                "\u0124": "H",
-                "\u1E22": "H",
-                "\u1E26": "H",
-                "\u021E": "H",
-                "\u1E24": "H",
-                "\u1E28": "H",
-                "\u1E2A": "H",
-                "\u0126": "H",
-                "\u2C67": "H",
-                "\u2C75": "H",
-                "\uA78D": "H",
-                "\u24BE": "I",
-                "\uFF29": "I",
+                "Ẻ": "E",
+                "Ě": "E",
+                "Ȅ": "E",
+                "Ȇ": "E",
+                "Ẹ": "E",
+                "Ệ": "E",
+                "Ȩ": "E",
+                "Ḝ": "E",
+                "Ę": "E",
+                "Ḙ": "E",
+                "Ḛ": "E",
+                "Ɛ": "E",
+                "Ǝ": "E",
+                "Ⓕ": "F",
+                "Ｆ": "F",
+                "Ḟ": "F",
+                "Ƒ": "F",
+                "Ꝼ": "F",
+                "Ⓖ": "G",
+                "Ｇ": "G",
+                "Ǵ": "G",
+                "Ĝ": "G",
+                "Ḡ": "G",
+                "Ğ": "G",
+                "Ġ": "G",
+                "Ǧ": "G",
+                "Ģ": "G",
+                "Ǥ": "G",
+                "Ɠ": "G",
+                "Ꞡ": "G",
+                "Ᵹ": "G",
+                "Ꝿ": "G",
+                "Ⓗ": "H",
+                "Ｈ": "H",
+                "Ĥ": "H",
+                "Ḣ": "H",
+                "Ḧ": "H",
+                "Ȟ": "H",
+                "Ḥ": "H",
+                "Ḩ": "H",
+                "Ḫ": "H",
+                "Ħ": "H",
+                "Ⱨ": "H",
+                "Ⱶ": "H",
+                "Ɥ": "H",
+                "Ⓘ": "I",
+                "Ｉ": "I",
                 "\xcc": "I",
                 "\xcd": "I",
                 "\xce": "I",
-                "\u0128": "I",
-                "\u012A": "I",
-                "\u012C": "I",
-                "\u0130": "I",
+                "Ĩ": "I",
+                "Ī": "I",
+                "Ĭ": "I",
+                "İ": "I",
                 "\xcf": "I",
-                "\u1E2E": "I",
-                "\u1EC8": "I",
-                "\u01CF": "I",
-                "\u0208": "I",
-                "\u020A": "I",
-                "\u1ECA": "I",
-                "\u012E": "I",
-                "\u1E2C": "I",
-                "\u0197": "I",
-                "\u24BF": "J",
-                "\uFF2A": "J",
-                "\u0134": "J",
-                "\u0248": "J",
-                "\u24C0": "K",
-                "\uFF2B": "K",
-                "\u1E30": "K",
-                "\u01E8": "K",
-                "\u1E32": "K",
-                "\u0136": "K",
-                "\u1E34": "K",
-                "\u0198": "K",
-                "\u2C69": "K",
-                "\uA740": "K",
-                "\uA742": "K",
-                "\uA744": "K",
-                "\uA7A2": "K",
-                "\u24C1": "L",
-                "\uFF2C": "L",
-                "\u013F": "L",
-                "\u0139": "L",
-                "\u013D": "L",
-                "\u1E36": "L",
-                "\u1E38": "L",
-                "\u013B": "L",
-                "\u1E3C": "L",
-                "\u1E3A": "L",
-                "\u0141": "L",
-                "\u023D": "L",
-                "\u2C62": "L",
-                "\u2C60": "L",
-                "\uA748": "L",
-                "\uA746": "L",
-                "\uA780": "L",
-                "\u01C7": "LJ",
-                "\u01C8": "Lj",
-                "\u24C2": "M",
-                "\uFF2D": "M",
-                "\u1E3E": "M",
-                "\u1E40": "M",
-                "\u1E42": "M",
-                "\u2C6E": "M",
-                "\u019C": "M",
-                "\u24C3": "N",
-                "\uFF2E": "N",
-                "\u01F8": "N",
-                "\u0143": "N",
+                "Ḯ": "I",
+                "Ỉ": "I",
+                "Ǐ": "I",
+                "Ȉ": "I",
+                "Ȋ": "I",
+                "Ị": "I",
+                "Į": "I",
+                "Ḭ": "I",
+                "Ɨ": "I",
+                "Ⓙ": "J",
+                "Ｊ": "J",
+                "Ĵ": "J",
+                "Ɉ": "J",
+                "Ⓚ": "K",
+                "Ｋ": "K",
+                "Ḱ": "K",
+                "Ǩ": "K",
+                "Ḳ": "K",
+                "Ķ": "K",
+                "Ḵ": "K",
+                "Ƙ": "K",
+                "Ⱪ": "K",
+                "Ꝁ": "K",
+                "Ꝃ": "K",
+                "Ꝅ": "K",
+                "Ꞣ": "K",
+                "Ⓛ": "L",
+                "Ｌ": "L",
+                "Ŀ": "L",
+                "Ĺ": "L",
+                "Ľ": "L",
+                "Ḷ": "L",
+                "Ḹ": "L",
+                "Ļ": "L",
+                "Ḽ": "L",
+                "Ḻ": "L",
+                "Ł": "L",
+                "Ƚ": "L",
+                "Ɫ": "L",
+                "Ⱡ": "L",
+                "Ꝉ": "L",
+                "Ꝇ": "L",
+                "Ꞁ": "L",
+                "Ǉ": "LJ",
+                "ǈ": "Lj",
+                "Ⓜ": "M",
+                "Ｍ": "M",
+                "Ḿ": "M",
+                "Ṁ": "M",
+                "Ṃ": "M",
+                "Ɱ": "M",
+                "Ɯ": "M",
+                "Ⓝ": "N",
+                "Ｎ": "N",
+                "Ǹ": "N",
+                "Ń": "N",
                 "\xd1": "N",
-                "\u1E44": "N",
-                "\u0147": "N",
-                "\u1E46": "N",
-                "\u0145": "N",
-                "\u1E4A": "N",
-                "\u1E48": "N",
-                "\u0220": "N",
-                "\u019D": "N",
-                "\uA790": "N",
-                "\uA7A4": "N",
-                "\u01CA": "NJ",
-                "\u01CB": "Nj",
-                "\u24C4": "O",
-                "\uFF2F": "O",
+                "Ṅ": "N",
+                "Ň": "N",
+                "Ṇ": "N",
+                "Ņ": "N",
+                "Ṋ": "N",
+                "Ṉ": "N",
+                "Ƞ": "N",
+                "Ɲ": "N",
+                "Ꞑ": "N",
+                "Ꞥ": "N",
+                "Ǌ": "NJ",
+                "ǋ": "Nj",
+                "Ⓞ": "O",
+                "Ｏ": "O",
                 "\xd2": "O",
                 "\xd3": "O",
                 "\xd4": "O",
-                "\u1ED2": "O",
-                "\u1ED0": "O",
-                "\u1ED6": "O",
-                "\u1ED4": "O",
+                "Ồ": "O",
+                "Ố": "O",
+                "Ỗ": "O",
+                "Ổ": "O",
                 "\xd5": "O",
-                "\u1E4C": "O",
-                "\u022C": "O",
-                "\u1E4E": "O",
-                "\u014C": "O",
-                "\u1E50": "O",
-                "\u1E52": "O",
-                "\u014E": "O",
-                "\u022E": "O",
-                "\u0230": "O",
+                "Ṍ": "O",
+                "Ȭ": "O",
+                "Ṏ": "O",
+                "Ō": "O",
+                "Ṑ": "O",
+                "Ṓ": "O",
+                "Ŏ": "O",
+                "Ȯ": "O",
+                "Ȱ": "O",
                 "\xd6": "O",
-                "\u022A": "O",
-                "\u1ECE": "O",
-                "\u0150": "O",
-                "\u01D1": "O",
-                "\u020C": "O",
-                "\u020E": "O",
-                "\u01A0": "O",
-                "\u1EDC": "O",
-                "\u1EDA": "O",
-                "\u1EE0": "O",
-                "\u1EDE": "O",
-                "\u1EE2": "O",
-                "\u1ECC": "O",
-                "\u1ED8": "O",
-                "\u01EA": "O",
-                "\u01EC": "O",
+                "Ȫ": "O",
+                "Ỏ": "O",
+                "Ő": "O",
+                "Ǒ": "O",
+                "Ȍ": "O",
+                "Ȏ": "O",
+                "Ơ": "O",
+                "Ờ": "O",
+                "Ớ": "O",
+                "Ỡ": "O",
+                "Ở": "O",
+                "Ợ": "O",
+                "Ọ": "O",
+                "Ộ": "O",
+                "Ǫ": "O",
+                "Ǭ": "O",
                 "\xd8": "O",
-                "\u01FE": "O",
-                "\u0186": "O",
-                "\u019F": "O",
-                "\uA74A": "O",
-                "\uA74C": "O",
-                "\u0152": "OE",
-                "\u01A2": "OI",
-                "\uA74E": "OO",
-                "\u0222": "OU",
-                "\u24C5": "P",
-                "\uFF30": "P",
-                "\u1E54": "P",
-                "\u1E56": "P",
-                "\u01A4": "P",
-                "\u2C63": "P",
-                "\uA750": "P",
-                "\uA752": "P",
-                "\uA754": "P",
-                "\u24C6": "Q",
-                "\uFF31": "Q",
-                "\uA756": "Q",
-                "\uA758": "Q",
-                "\u024A": "Q",
-                "\u24C7": "R",
-                "\uFF32": "R",
-                "\u0154": "R",
-                "\u1E58": "R",
-                "\u0158": "R",
-                "\u0210": "R",
-                "\u0212": "R",
-                "\u1E5A": "R",
-                "\u1E5C": "R",
-                "\u0156": "R",
-                "\u1E5E": "R",
-                "\u024C": "R",
-                "\u2C64": "R",
-                "\uA75A": "R",
-                "\uA7A6": "R",
-                "\uA782": "R",
-                "\u24C8": "S",
-                "\uFF33": "S",
-                "\u1E9E": "S",
-                "\u015A": "S",
-                "\u1E64": "S",
-                "\u015C": "S",
-                "\u1E60": "S",
-                "\u0160": "S",
-                "\u1E66": "S",
-                "\u1E62": "S",
-                "\u1E68": "S",
-                "\u0218": "S",
-                "\u015E": "S",
-                "\u2C7E": "S",
-                "\uA7A8": "S",
-                "\uA784": "S",
-                "\u24C9": "T",
-                "\uFF34": "T",
-                "\u1E6A": "T",
-                "\u0164": "T",
-                "\u1E6C": "T",
-                "\u021A": "T",
-                "\u0162": "T",
-                "\u1E70": "T",
-                "\u1E6E": "T",
-                "\u0166": "T",
-                "\u01AC": "T",
-                "\u01AE": "T",
-                "\u023E": "T",
-                "\uA786": "T",
-                "\uA728": "TZ",
-                "\u24CA": "U",
-                "\uFF35": "U",
+                "Ǿ": "O",
+                "Ɔ": "O",
+                "Ɵ": "O",
+                "Ꝋ": "O",
+                "Ꝍ": "O",
+                "Œ": "OE",
+                "Ƣ": "OI",
+                "Ꝏ": "OO",
+                "Ȣ": "OU",
+                "Ⓟ": "P",
+                "Ｐ": "P",
+                "Ṕ": "P",
+                "Ṗ": "P",
+                "Ƥ": "P",
+                "Ᵽ": "P",
+                "Ꝑ": "P",
+                "Ꝓ": "P",
+                "Ꝕ": "P",
+                "Ⓠ": "Q",
+                "Ｑ": "Q",
+                "Ꝗ": "Q",
+                "Ꝙ": "Q",
+                "Ɋ": "Q",
+                "Ⓡ": "R",
+                "Ｒ": "R",
+                "Ŕ": "R",
+                "Ṙ": "R",
+                "Ř": "R",
+                "Ȑ": "R",
+                "Ȓ": "R",
+                "Ṛ": "R",
+                "Ṝ": "R",
+                "Ŗ": "R",
+                "Ṟ": "R",
+                "Ɍ": "R",
+                "Ɽ": "R",
+                "Ꝛ": "R",
+                "Ꞧ": "R",
+                "Ꞃ": "R",
+                "Ⓢ": "S",
+                "Ｓ": "S",
+                "ẞ": "S",
+                "Ś": "S",
+                "Ṥ": "S",
+                "Ŝ": "S",
+                "Ṡ": "S",
+                "Š": "S",
+                "Ṧ": "S",
+                "Ṣ": "S",
+                "Ṩ": "S",
+                "Ș": "S",
+                "Ş": "S",
+                "Ȿ": "S",
+                "Ꞩ": "S",
+                "Ꞅ": "S",
+                "Ⓣ": "T",
+                "Ｔ": "T",
+                "Ṫ": "T",
+                "Ť": "T",
+                "Ṭ": "T",
+                "Ț": "T",
+                "Ţ": "T",
+                "Ṱ": "T",
+                "Ṯ": "T",
+                "Ŧ": "T",
+                "Ƭ": "T",
+                "Ʈ": "T",
+                "Ⱦ": "T",
+                "Ꞇ": "T",
+                "Ꜩ": "TZ",
+                "Ⓤ": "U",
+                "Ｕ": "U",
                 "\xd9": "U",
                 "\xda": "U",
                 "\xdb": "U",
-                "\u0168": "U",
-                "\u1E78": "U",
-                "\u016A": "U",
-                "\u1E7A": "U",
-                "\u016C": "U",
+                "Ũ": "U",
+                "Ṹ": "U",
+                "Ū": "U",
+                "Ṻ": "U",
+                "Ŭ": "U",
                 "\xdc": "U",
-                "\u01DB": "U",
-                "\u01D7": "U",
-                "\u01D5": "U",
-                "\u01D9": "U",
-                "\u1EE6": "U",
-                "\u016E": "U",
-                "\u0170": "U",
-                "\u01D3": "U",
-                "\u0214": "U",
-                "\u0216": "U",
-                "\u01AF": "U",
-                "\u1EEA": "U",
-                "\u1EE8": "U",
-                "\u1EEE": "U",
-                "\u1EEC": "U",
-                "\u1EF0": "U",
-                "\u1EE4": "U",
-                "\u1E72": "U",
-                "\u0172": "U",
-                "\u1E76": "U",
-                "\u1E74": "U",
-                "\u0244": "U",
-                "\u24CB": "V",
-                "\uFF36": "V",
-                "\u1E7C": "V",
-                "\u1E7E": "V",
-                "\u01B2": "V",
-                "\uA75E": "V",
-                "\u0245": "V",
-                "\uA760": "VY",
-                "\u24CC": "W",
-                "\uFF37": "W",
-                "\u1E80": "W",
-                "\u1E82": "W",
-                "\u0174": "W",
-                "\u1E86": "W",
-                "\u1E84": "W",
-                "\u1E88": "W",
-                "\u2C72": "W",
-                "\u24CD": "X",
-                "\uFF38": "X",
-                "\u1E8A": "X",
-                "\u1E8C": "X",
-                "\u24CE": "Y",
-                "\uFF39": "Y",
-                "\u1EF2": "Y",
+                "Ǜ": "U",
+                "Ǘ": "U",
+                "Ǖ": "U",
+                "Ǚ": "U",
+                "Ủ": "U",
+                "Ů": "U",
+                "Ű": "U",
+                "Ǔ": "U",
+                "Ȕ": "U",
+                "Ȗ": "U",
+                "Ư": "U",
+                "Ừ": "U",
+                "Ứ": "U",
+                "Ữ": "U",
+                "Ử": "U",
+                "Ự": "U",
+                "Ụ": "U",
+                "Ṳ": "U",
+                "Ų": "U",
+                "Ṷ": "U",
+                "Ṵ": "U",
+                "Ʉ": "U",
+                "Ⓥ": "V",
+                "Ｖ": "V",
+                "Ṽ": "V",
+                "Ṿ": "V",
+                "Ʋ": "V",
+                "Ꝟ": "V",
+                "Ʌ": "V",
+                "Ꝡ": "VY",
+                "Ⓦ": "W",
+                "Ｗ": "W",
+                "Ẁ": "W",
+                "Ẃ": "W",
+                "Ŵ": "W",
+                "Ẇ": "W",
+                "Ẅ": "W",
+                "Ẉ": "W",
+                "Ⱳ": "W",
+                "Ⓧ": "X",
+                "Ｘ": "X",
+                "Ẋ": "X",
+                "Ẍ": "X",
+                "Ⓨ": "Y",
+                "Ｙ": "Y",
+                "Ỳ": "Y",
                 "\xdd": "Y",
-                "\u0176": "Y",
-                "\u1EF8": "Y",
-                "\u0232": "Y",
-                "\u1E8E": "Y",
-                "\u0178": "Y",
-                "\u1EF6": "Y",
-                "\u1EF4": "Y",
-                "\u01B3": "Y",
-                "\u024E": "Y",
-                "\u1EFE": "Y",
-                "\u24CF": "Z",
-                "\uFF3A": "Z",
-                "\u0179": "Z",
-                "\u1E90": "Z",
-                "\u017B": "Z",
-                "\u017D": "Z",
-                "\u1E92": "Z",
-                "\u1E94": "Z",
-                "\u01B5": "Z",
-                "\u0224": "Z",
-                "\u2C7F": "Z",
-                "\u2C6B": "Z",
-                "\uA762": "Z",
-                "\u24D0": "a",
-                "\uFF41": "a",
-                "\u1E9A": "a",
+                "Ŷ": "Y",
+                "Ỹ": "Y",
+                "Ȳ": "Y",
+                "Ẏ": "Y",
+                "Ÿ": "Y",
+                "Ỷ": "Y",
+                "Ỵ": "Y",
+                "Ƴ": "Y",
+                "Ɏ": "Y",
+                "Ỿ": "Y",
+                "Ⓩ": "Z",
+                "Ｚ": "Z",
+                "Ź": "Z",
+                "Ẑ": "Z",
+                "Ż": "Z",
+                "Ž": "Z",
+                "Ẓ": "Z",
+                "Ẕ": "Z",
+                "Ƶ": "Z",
+                "Ȥ": "Z",
+                "Ɀ": "Z",
+                "Ⱬ": "Z",
+                "Ꝣ": "Z",
+                "ⓐ": "a",
+                "ａ": "a",
+                "ẚ": "a",
                 "\xe0": "a",
                 "\xe1": "a",
                 "\xe2": "a",
-                "\u1EA7": "a",
-                "\u1EA5": "a",
-                "\u1EAB": "a",
-                "\u1EA9": "a",
+                "ầ": "a",
+                "ấ": "a",
+                "ẫ": "a",
+                "ẩ": "a",
                 "\xe3": "a",
-                "\u0101": "a",
-                "\u0103": "a",
-                "\u1EB1": "a",
-                "\u1EAF": "a",
-                "\u1EB5": "a",
-                "\u1EB3": "a",
-                "\u0227": "a",
-                "\u01E1": "a",
+                "ā": "a",
+                "ă": "a",
+                "ằ": "a",
+                "ắ": "a",
+                "ẵ": "a",
+                "ẳ": "a",
+                "ȧ": "a",
+                "ǡ": "a",
                 "\xe4": "a",
-                "\u01DF": "a",
-                "\u1EA3": "a",
+                "ǟ": "a",
+                "ả": "a",
                 "\xe5": "a",
-                "\u01FB": "a",
-                "\u01CE": "a",
-                "\u0201": "a",
-                "\u0203": "a",
-                "\u1EA1": "a",
-                "\u1EAD": "a",
-                "\u1EB7": "a",
-                "\u1E01": "a",
-                "\u0105": "a",
-                "\u2C65": "a",
-                "\u0250": "a",
-                "\uA733": "aa",
+                "ǻ": "a",
+                "ǎ": "a",
+                "ȁ": "a",
+                "ȃ": "a",
+                "ạ": "a",
+                "ậ": "a",
+                "ặ": "a",
+                "ḁ": "a",
+                "ą": "a",
+                "ⱥ": "a",
+                "ɐ": "a",
+                "ꜳ": "aa",
                 "\xe6": "ae",
-                "\u01FD": "ae",
-                "\u01E3": "ae",
-                "\uA735": "ao",
-                "\uA737": "au",
-                "\uA739": "av",
-                "\uA73B": "av",
-                "\uA73D": "ay",
-                "\u24D1": "b",
-                "\uFF42": "b",
-                "\u1E03": "b",
-                "\u1E05": "b",
-                "\u1E07": "b",
-                "\u0180": "b",
-                "\u0183": "b",
-                "\u0253": "b",
-                "\u24D2": "c",
-                "\uFF43": "c",
-                "\u0107": "c",
-                "\u0109": "c",
-                "\u010B": "c",
-                "\u010D": "c",
+                "ǽ": "ae",
+                "ǣ": "ae",
+                "ꜵ": "ao",
+                "ꜷ": "au",
+                "ꜹ": "av",
+                "ꜻ": "av",
+                "ꜽ": "ay",
+                "ⓑ": "b",
+                "ｂ": "b",
+                "ḃ": "b",
+                "ḅ": "b",
+                "ḇ": "b",
+                "ƀ": "b",
+                "ƃ": "b",
+                "ɓ": "b",
+                "ⓒ": "c",
+                "ｃ": "c",
+                "ć": "c",
+                "ĉ": "c",
+                "ċ": "c",
+                "č": "c",
                 "\xe7": "c",
-                "\u1E09": "c",
-                "\u0188": "c",
-                "\u023C": "c",
-                "\uA73F": "c",
-                "\u2184": "c",
-                "\u24D3": "d",
-                "\uFF44": "d",
-                "\u1E0B": "d",
-                "\u010F": "d",
-                "\u1E0D": "d",
-                "\u1E11": "d",
-                "\u1E13": "d",
-                "\u1E0F": "d",
-                "\u0111": "d",
-                "\u018C": "d",
-                "\u0256": "d",
-                "\u0257": "d",
-                "\uA77A": "d",
-                "\u01F3": "dz",
-                "\u01C6": "dz",
-                "\u24D4": "e",
-                "\uFF45": "e",
+                "ḉ": "c",
+                "ƈ": "c",
+                "ȼ": "c",
+                "ꜿ": "c",
+                "ↄ": "c",
+                "ⓓ": "d",
+                "ｄ": "d",
+                "ḋ": "d",
+                "ď": "d",
+                "ḍ": "d",
+                "ḑ": "d",
+                "ḓ": "d",
+                "ḏ": "d",
+                "đ": "d",
+                "ƌ": "d",
+                "ɖ": "d",
+                "ɗ": "d",
+                "ꝺ": "d",
+                "ǳ": "dz",
+                "ǆ": "dz",
+                "ⓔ": "e",
+                "ｅ": "e",
                 "\xe8": "e",
                 "\xe9": "e",
                 "\xea": "e",
-                "\u1EC1": "e",
-                "\u1EBF": "e",
-                "\u1EC5": "e",
-                "\u1EC3": "e",
-                "\u1EBD": "e",
-                "\u0113": "e",
-                "\u1E15": "e",
-                "\u1E17": "e",
-                "\u0115": "e",
-                "\u0117": "e",
+                "ề": "e",
+                "ế": "e",
+                "ễ": "e",
+                "ể": "e",
+                "ẽ": "e",
+                "ē": "e",
+                "ḕ": "e",
+                "ḗ": "e",
+                "ĕ": "e",
+                "ė": "e",
                 "\xeb": "e",
-                "\u1EBB": "e",
-                "\u011B": "e",
-                "\u0205": "e",
-                "\u0207": "e",
-                "\u1EB9": "e",
-                "\u1EC7": "e",
-                "\u0229": "e",
-                "\u1E1D": "e",
-                "\u0119": "e",
-                "\u1E19": "e",
-                "\u1E1B": "e",
-                "\u0247": "e",
-                "\u025B": "e",
-                "\u01DD": "e",
-                "\u24D5": "f",
-                "\uFF46": "f",
-                "\u1E1F": "f",
-                "\u0192": "f",
-                "\uA77C": "f",
-                "\u24D6": "g",
-                "\uFF47": "g",
-                "\u01F5": "g",
-                "\u011D": "g",
-                "\u1E21": "g",
-                "\u011F": "g",
-                "\u0121": "g",
-                "\u01E7": "g",
-                "\u0123": "g",
-                "\u01E5": "g",
-                "\u0260": "g",
-                "\uA7A1": "g",
-                "\u1D79": "g",
-                "\uA77F": "g",
-                "\u24D7": "h",
-                "\uFF48": "h",
-                "\u0125": "h",
-                "\u1E23": "h",
-                "\u1E27": "h",
-                "\u021F": "h",
-                "\u1E25": "h",
-                "\u1E29": "h",
-                "\u1E2B": "h",
-                "\u1E96": "h",
-                "\u0127": "h",
-                "\u2C68": "h",
-                "\u2C76": "h",
-                "\u0265": "h",
-                "\u0195": "hv",
-                "\u24D8": "i",
-                "\uFF49": "i",
+                "ẻ": "e",
+                "ě": "e",
+                "ȅ": "e",
+                "ȇ": "e",
+                "ẹ": "e",
+                "ệ": "e",
+                "ȩ": "e",
+                "ḝ": "e",
+                "ę": "e",
+                "ḙ": "e",
+                "ḛ": "e",
+                "ɇ": "e",
+                "ɛ": "e",
+                "ǝ": "e",
+                "ⓕ": "f",
+                "ｆ": "f",
+                "ḟ": "f",
+                "ƒ": "f",
+                "ꝼ": "f",
+                "ⓖ": "g",
+                "ｇ": "g",
+                "ǵ": "g",
+                "ĝ": "g",
+                "ḡ": "g",
+                "ğ": "g",
+                "ġ": "g",
+                "ǧ": "g",
+                "ģ": "g",
+                "ǥ": "g",
+                "ɠ": "g",
+                "ꞡ": "g",
+                "ᵹ": "g",
+                "ꝿ": "g",
+                "ⓗ": "h",
+                "ｈ": "h",
+                "ĥ": "h",
+                "ḣ": "h",
+                "ḧ": "h",
+                "ȟ": "h",
+                "ḥ": "h",
+                "ḩ": "h",
+                "ḫ": "h",
+                "ẖ": "h",
+                "ħ": "h",
+                "ⱨ": "h",
+                "ⱶ": "h",
+                "ɥ": "h",
+                "ƕ": "hv",
+                "ⓘ": "i",
+                "ｉ": "i",
                 "\xec": "i",
                 "\xed": "i",
                 "\xee": "i",
-                "\u0129": "i",
-                "\u012B": "i",
-                "\u012D": "i",
+                "ĩ": "i",
+                "ī": "i",
+                "ĭ": "i",
                 "\xef": "i",
-                "\u1E2F": "i",
-                "\u1EC9": "i",
-                "\u01D0": "i",
-                "\u0209": "i",
-                "\u020B": "i",
-                "\u1ECB": "i",
-                "\u012F": "i",
-                "\u1E2D": "i",
-                "\u0268": "i",
-                "\u0131": "i",
-                "\u24D9": "j",
-                "\uFF4A": "j",
-                "\u0135": "j",
-                "\u01F0": "j",
-                "\u0249": "j",
-                "\u24DA": "k",
-                "\uFF4B": "k",
-                "\u1E31": "k",
-                "\u01E9": "k",
-                "\u1E33": "k",
-                "\u0137": "k",
-                "\u1E35": "k",
-                "\u0199": "k",
-                "\u2C6A": "k",
-                "\uA741": "k",
-                "\uA743": "k",
-                "\uA745": "k",
-                "\uA7A3": "k",
-                "\u24DB": "l",
-                "\uFF4C": "l",
-                "\u0140": "l",
-                "\u013A": "l",
-                "\u013E": "l",
-                "\u1E37": "l",
-                "\u1E39": "l",
-                "\u013C": "l",
-                "\u1E3D": "l",
-                "\u1E3B": "l",
-                "\u017F": "l",
-                "\u0142": "l",
-                "\u019A": "l",
-                "\u026B": "l",
-                "\u2C61": "l",
-                "\uA749": "l",
-                "\uA781": "l",
-                "\uA747": "l",
-                "\u01C9": "lj",
-                "\u24DC": "m",
-                "\uFF4D": "m",
-                "\u1E3F": "m",
-                "\u1E41": "m",
-                "\u1E43": "m",
-                "\u0271": "m",
-                "\u026F": "m",
-                "\u24DD": "n",
-                "\uFF4E": "n",
-                "\u01F9": "n",
-                "\u0144": "n",
+                "ḯ": "i",
+                "ỉ": "i",
+                "ǐ": "i",
+                "ȉ": "i",
+                "ȋ": "i",
+                "ị": "i",
+                "į": "i",
+                "ḭ": "i",
+                "ɨ": "i",
+                "ı": "i",
+                "ⓙ": "j",
+                "ｊ": "j",
+                "ĵ": "j",
+                "ǰ": "j",
+                "ɉ": "j",
+                "ⓚ": "k",
+                "ｋ": "k",
+                "ḱ": "k",
+                "ǩ": "k",
+                "ḳ": "k",
+                "ķ": "k",
+                "ḵ": "k",
+                "ƙ": "k",
+                "ⱪ": "k",
+                "ꝁ": "k",
+                "ꝃ": "k",
+                "ꝅ": "k",
+                "ꞣ": "k",
+                "ⓛ": "l",
+                "ｌ": "l",
+                "ŀ": "l",
+                "ĺ": "l",
+                "ľ": "l",
+                "ḷ": "l",
+                "ḹ": "l",
+                "ļ": "l",
+                "ḽ": "l",
+                "ḻ": "l",
+                "ſ": "l",
+                "ł": "l",
+                "ƚ": "l",
+                "ɫ": "l",
+                "ⱡ": "l",
+                "ꝉ": "l",
+                "ꞁ": "l",
+                "ꝇ": "l",
+                "ǉ": "lj",
+                "ⓜ": "m",
+                "ｍ": "m",
+                "ḿ": "m",
+                "ṁ": "m",
+                "ṃ": "m",
+                "ɱ": "m",
+                "ɯ": "m",
+                "ⓝ": "n",
+                "ｎ": "n",
+                "ǹ": "n",
+                "ń": "n",
                 "\xf1": "n",
-                "\u1E45": "n",
-                "\u0148": "n",
-                "\u1E47": "n",
-                "\u0146": "n",
-                "\u1E4B": "n",
-                "\u1E49": "n",
-                "\u019E": "n",
-                "\u0272": "n",
-                "\u0149": "n",
-                "\uA791": "n",
-                "\uA7A5": "n",
-                "\u01CC": "nj",
-                "\u24DE": "o",
-                "\uFF4F": "o",
+                "ṅ": "n",
+                "ň": "n",
+                "ṇ": "n",
+                "ņ": "n",
+                "ṋ": "n",
+                "ṉ": "n",
+                "ƞ": "n",
+                "ɲ": "n",
+                "ŉ": "n",
+                "ꞑ": "n",
+                "ꞥ": "n",
+                "ǌ": "nj",
+                "ⓞ": "o",
+                "ｏ": "o",
                 "\xf2": "o",
                 "\xf3": "o",
                 "\xf4": "o",
-                "\u1ED3": "o",
-                "\u1ED1": "o",
-                "\u1ED7": "o",
-                "\u1ED5": "o",
+                "ồ": "o",
+                "ố": "o",
+                "ỗ": "o",
+                "ổ": "o",
                 "\xf5": "o",
-                "\u1E4D": "o",
-                "\u022D": "o",
-                "\u1E4F": "o",
-                "\u014D": "o",
-                "\u1E51": "o",
-                "\u1E53": "o",
-                "\u014F": "o",
-                "\u022F": "o",
-                "\u0231": "o",
+                "ṍ": "o",
+                "ȭ": "o",
+                "ṏ": "o",
+                "ō": "o",
+                "ṑ": "o",
+                "ṓ": "o",
+                "ŏ": "o",
+                "ȯ": "o",
+                "ȱ": "o",
                 "\xf6": "o",
-                "\u022B": "o",
-                "\u1ECF": "o",
-                "\u0151": "o",
-                "\u01D2": "o",
-                "\u020D": "o",
-                "\u020F": "o",
-                "\u01A1": "o",
-                "\u1EDD": "o",
-                "\u1EDB": "o",
-                "\u1EE1": "o",
-                "\u1EDF": "o",
-                "\u1EE3": "o",
-                "\u1ECD": "o",
-                "\u1ED9": "o",
-                "\u01EB": "o",
-                "\u01ED": "o",
+                "ȫ": "o",
+                "ỏ": "o",
+                "ő": "o",
+                "ǒ": "o",
+                "ȍ": "o",
+                "ȏ": "o",
+                "ơ": "o",
+                "ờ": "o",
+                "ớ": "o",
+                "ỡ": "o",
+                "ở": "o",
+                "ợ": "o",
+                "ọ": "o",
+                "ộ": "o",
+                "ǫ": "o",
+                "ǭ": "o",
                 "\xf8": "o",
-                "\u01FF": "o",
-                "\u0254": "o",
-                "\uA74B": "o",
-                "\uA74D": "o",
-                "\u0275": "o",
-                "\u0153": "oe",
-                "\u01A3": "oi",
-                "\u0223": "ou",
-                "\uA74F": "oo",
-                "\u24DF": "p",
-                "\uFF50": "p",
-                "\u1E55": "p",
-                "\u1E57": "p",
-                "\u01A5": "p",
-                "\u1D7D": "p",
-                "\uA751": "p",
-                "\uA753": "p",
-                "\uA755": "p",
-                "\u24E0": "q",
-                "\uFF51": "q",
-                "\u024B": "q",
-                "\uA757": "q",
-                "\uA759": "q",
-                "\u24E1": "r",
-                "\uFF52": "r",
-                "\u0155": "r",
-                "\u1E59": "r",
-                "\u0159": "r",
-                "\u0211": "r",
-                "\u0213": "r",
-                "\u1E5B": "r",
-                "\u1E5D": "r",
-                "\u0157": "r",
-                "\u1E5F": "r",
-                "\u024D": "r",
-                "\u027D": "r",
-                "\uA75B": "r",
-                "\uA7A7": "r",
-                "\uA783": "r",
-                "\u24E2": "s",
-                "\uFF53": "s",
+                "ǿ": "o",
+                "ɔ": "o",
+                "ꝋ": "o",
+                "ꝍ": "o",
+                "ɵ": "o",
+                "œ": "oe",
+                "ƣ": "oi",
+                "ȣ": "ou",
+                "ꝏ": "oo",
+                "ⓟ": "p",
+                "ｐ": "p",
+                "ṕ": "p",
+                "ṗ": "p",
+                "ƥ": "p",
+                "ᵽ": "p",
+                "ꝑ": "p",
+                "ꝓ": "p",
+                "ꝕ": "p",
+                "ⓠ": "q",
+                "ｑ": "q",
+                "ɋ": "q",
+                "ꝗ": "q",
+                "ꝙ": "q",
+                "ⓡ": "r",
+                "ｒ": "r",
+                "ŕ": "r",
+                "ṙ": "r",
+                "ř": "r",
+                "ȑ": "r",
+                "ȓ": "r",
+                "ṛ": "r",
+                "ṝ": "r",
+                "ŗ": "r",
+                "ṟ": "r",
+                "ɍ": "r",
+                "ɽ": "r",
+                "ꝛ": "r",
+                "ꞧ": "r",
+                "ꞃ": "r",
+                "ⓢ": "s",
+                "ｓ": "s",
                 "\xdf": "s",
-                "\u015B": "s",
-                "\u1E65": "s",
-                "\u015D": "s",
-                "\u1E61": "s",
-                "\u0161": "s",
-                "\u1E67": "s",
-                "\u1E63": "s",
-                "\u1E69": "s",
-                "\u0219": "s",
-                "\u015F": "s",
-                "\u023F": "s",
-                "\uA7A9": "s",
-                "\uA785": "s",
-                "\u1E9B": "s",
-                "\u24E3": "t",
-                "\uFF54": "t",
-                "\u1E6B": "t",
-                "\u1E97": "t",
-                "\u0165": "t",
-                "\u1E6D": "t",
-                "\u021B": "t",
-                "\u0163": "t",
-                "\u1E71": "t",
-                "\u1E6F": "t",
-                "\u0167": "t",
-                "\u01AD": "t",
-                "\u0288": "t",
-                "\u2C66": "t",
-                "\uA787": "t",
-                "\uA729": "tz",
-                "\u24E4": "u",
-                "\uFF55": "u",
+                "ś": "s",
+                "ṥ": "s",
+                "ŝ": "s",
+                "ṡ": "s",
+                "š": "s",
+                "ṧ": "s",
+                "ṣ": "s",
+                "ṩ": "s",
+                "ș": "s",
+                "ş": "s",
+                "ȿ": "s",
+                "ꞩ": "s",
+                "ꞅ": "s",
+                "ẛ": "s",
+                "ⓣ": "t",
+                "ｔ": "t",
+                "ṫ": "t",
+                "ẗ": "t",
+                "ť": "t",
+                "ṭ": "t",
+                "ț": "t",
+                "ţ": "t",
+                "ṱ": "t",
+                "ṯ": "t",
+                "ŧ": "t",
+                "ƭ": "t",
+                "ʈ": "t",
+                "ⱦ": "t",
+                "ꞇ": "t",
+                "ꜩ": "tz",
+                "ⓤ": "u",
+                "ｕ": "u",
                 "\xf9": "u",
                 "\xfa": "u",
                 "\xfb": "u",
-                "\u0169": "u",
-                "\u1E79": "u",
-                "\u016B": "u",
-                "\u1E7B": "u",
-                "\u016D": "u",
+                "ũ": "u",
+                "ṹ": "u",
+                "ū": "u",
+                "ṻ": "u",
+                "ŭ": "u",
                 "\xfc": "u",
-                "\u01DC": "u",
-                "\u01D8": "u",
-                "\u01D6": "u",
-                "\u01DA": "u",
-                "\u1EE7": "u",
-                "\u016F": "u",
-                "\u0171": "u",
-                "\u01D4": "u",
-                "\u0215": "u",
-                "\u0217": "u",
-                "\u01B0": "u",
-                "\u1EEB": "u",
-                "\u1EE9": "u",
-                "\u1EEF": "u",
-                "\u1EED": "u",
-                "\u1EF1": "u",
-                "\u1EE5": "u",
-                "\u1E73": "u",
-                "\u0173": "u",
-                "\u1E77": "u",
-                "\u1E75": "u",
-                "\u0289": "u",
-                "\u24E5": "v",
-                "\uFF56": "v",
-                "\u1E7D": "v",
-                "\u1E7F": "v",
-                "\u028B": "v",
-                "\uA75F": "v",
-                "\u028C": "v",
-                "\uA761": "vy",
-                "\u24E6": "w",
-                "\uFF57": "w",
-                "\u1E81": "w",
-                "\u1E83": "w",
-                "\u0175": "w",
-                "\u1E87": "w",
-                "\u1E85": "w",
-                "\u1E98": "w",
-                "\u1E89": "w",
-                "\u2C73": "w",
-                "\u24E7": "x",
-                "\uFF58": "x",
-                "\u1E8B": "x",
-                "\u1E8D": "x",
-                "\u24E8": "y",
-                "\uFF59": "y",
-                "\u1EF3": "y",
+                "ǜ": "u",
+                "ǘ": "u",
+                "ǖ": "u",
+                "ǚ": "u",
+                "ủ": "u",
+                "ů": "u",
+                "ű": "u",
+                "ǔ": "u",
+                "ȕ": "u",
+                "ȗ": "u",
+                "ư": "u",
+                "ừ": "u",
+                "ứ": "u",
+                "ữ": "u",
+                "ử": "u",
+                "ự": "u",
+                "ụ": "u",
+                "ṳ": "u",
+                "ų": "u",
+                "ṷ": "u",
+                "ṵ": "u",
+                "ʉ": "u",
+                "ⓥ": "v",
+                "ｖ": "v",
+                "ṽ": "v",
+                "ṿ": "v",
+                "ʋ": "v",
+                "ꝟ": "v",
+                "ʌ": "v",
+                "ꝡ": "vy",
+                "ⓦ": "w",
+                "ｗ": "w",
+                "ẁ": "w",
+                "ẃ": "w",
+                "ŵ": "w",
+                "ẇ": "w",
+                "ẅ": "w",
+                "ẘ": "w",
+                "ẉ": "w",
+                "ⱳ": "w",
+                "ⓧ": "x",
+                "ｘ": "x",
+                "ẋ": "x",
+                "ẍ": "x",
+                "ⓨ": "y",
+                "ｙ": "y",
+                "ỳ": "y",
                 "\xfd": "y",
-                "\u0177": "y",
-                "\u1EF9": "y",
-                "\u0233": "y",
-                "\u1E8F": "y",
+                "ŷ": "y",
+                "ỹ": "y",
+                "ȳ": "y",
+                "ẏ": "y",
                 "\xff": "y",
-                "\u1EF7": "y",
-                "\u1E99": "y",
-                "\u1EF5": "y",
-                "\u01B4": "y",
-                "\u024F": "y",
-                "\u1EFF": "y",
-                "\u24E9": "z",
-                "\uFF5A": "z",
-                "\u017A": "z",
-                "\u1E91": "z",
-                "\u017C": "z",
-                "\u017E": "z",
-                "\u1E93": "z",
-                "\u1E95": "z",
-                "\u01B6": "z",
-                "\u0225": "z",
-                "\u0240": "z",
-                "\u2C6C": "z",
-                "\uA763": "z",
-                "\u0386": "\u0391",
-                "\u0388": "\u0395",
-                "\u0389": "\u0397",
-                "\u038A": "\u0399",
-                "\u03AA": "\u0399",
-                "\u038C": "\u039F",
-                "\u038E": "\u03A5",
-                "\u03AB": "\u03A5",
-                "\u038F": "\u03A9",
-                "\u03AC": "\u03B1",
-                "\u03AD": "\u03B5",
-                "\u03AE": "\u03B7",
-                "\u03AF": "\u03B9",
-                "\u03CA": "\u03B9",
-                "\u0390": "\u03B9",
-                "\u03CC": "\u03BF",
-                "\u03CD": "\u03C5",
-                "\u03CB": "\u03C5",
-                "\u03B0": "\u03C5",
-                "\u03CE": "\u03C9",
-                "\u03C2": "\u03C3",
-                "\u2019": "'"
+                "ỷ": "y",
+                "ẙ": "y",
+                "ỵ": "y",
+                "ƴ": "y",
+                "ɏ": "y",
+                "ỿ": "y",
+                "ⓩ": "z",
+                "ｚ": "z",
+                "ź": "z",
+                "ẑ": "z",
+                "ż": "z",
+                "ž": "z",
+                "ẓ": "z",
+                "ẕ": "z",
+                "ƶ": "z",
+                "ȥ": "z",
+                "ɀ": "z",
+                "ⱬ": "z",
+                "ꝣ": "z",
+                "Ά": "Α",
+                "Έ": "Ε",
+                "Ή": "Η",
+                "Ί": "Ι",
+                "Ϊ": "Ι",
+                "Ό": "Ο",
+                "Ύ": "Υ",
+                "Ϋ": "Υ",
+                "Ώ": "Ω",
+                "ά": "α",
+                "έ": "ε",
+                "ή": "η",
+                "ί": "ι",
+                "ϊ": "ι",
+                "ΐ": "ι",
+                "ό": "ο",
+                "ύ": "υ",
+                "ϋ": "υ",
+                "ΰ": "υ",
+                "ώ": "ω",
+                "ς": "σ",
+                "’": "'"
             };
             return diacritics;
         });
@@ -2599,7 +2599,7 @@ window.feather = (0, _featherIconsDefault.default);
             "./base",
             "../utils",
             "jquery"
-        ], function(BaseAdapter, Utils, $) {
+        ], function(BaseAdapter, Utils, $1) {
             function SelectAdapter($element, options) {
                 this.$element = $element;
                 this.options = options;
@@ -2609,7 +2609,7 @@ window.feather = (0, _featherIconsDefault.default);
             SelectAdapter.prototype.current = function(callback) {
                 var self = this;
                 var data = Array.prototype.map.call(this.$element[0].querySelectorAll(":checked"), function(selectedElement) {
-                    return self.item($(selectedElement));
+                    return self.item($1(selectedElement));
                 });
                 callback(data);
             };
@@ -2636,8 +2636,8 @@ window.feather = (0, _featherIconsDefault.default);
                     self.$element.trigger("input").trigger("change");
                 });
                 else {
-                    var val1 = data.id;
-                    this.$element.val(val1);
+                    var val = data.id;
+                    this.$element.val(val);
                     this.$element.trigger("input").trigger("change");
                 }
             };
@@ -2683,7 +2683,7 @@ window.feather = (0, _featherIconsDefault.default);
                 var $options = this.$element.children();
                 $options.each(function() {
                     if (this.tagName.toLowerCase() !== "option" && this.tagName.toLowerCase() !== "optgroup") return;
-                    var $option = $(this);
+                    var $option = $1(this);
                     var option = self.item($option);
                     var matches = self.matches(params, option);
                     if (matches !== null) data.push(matches);
@@ -2713,7 +2713,7 @@ window.feather = (0, _featherIconsDefault.default);
                 normalizedData.element = option;
                 // Override the option's data with the combined data
                 Utils.StoreData(option, "data", normalizedData);
-                return $(option);
+                return $1(option);
             };
             SelectAdapter.prototype.item = function($option) {
                 var data = {};
@@ -2736,7 +2736,7 @@ window.feather = (0, _featherIconsDefault.default);
                     var $children = $option.children("option");
                     var children = [];
                     for(var c = 0; c < $children.length; c++){
-                        var $child = $($children[c]);
+                        var $child = $1($children[c]);
                         var child = this.item($child);
                         children.push(child);
                     }
@@ -2752,7 +2752,7 @@ window.feather = (0, _featherIconsDefault.default);
                     id: item,
                     text: item
                 };
-                item = $.extend({}, {
+                item = $1.extend({}, {
                     text: ""
                 }, item);
                 var defaults = {
@@ -2762,7 +2762,7 @@ window.feather = (0, _featherIconsDefault.default);
                 if (item.id != null) item.id = item.id.toString();
                 if (item.text != null) item.text = item.text.toString();
                 if (item._resultId == null && item.id && this.container != null) item._resultId = this.generateResultId(this.container, item);
-                return $.extend({}, defaults, item);
+                return $1.extend({}, defaults, item);
             };
             SelectAdapter.prototype.matches = function(params, data) {
                 var matcher = this.options.get("matcher");
@@ -2774,7 +2774,7 @@ window.feather = (0, _featherIconsDefault.default);
             "./select",
             "../utils",
             "jquery"
-        ], function(SelectAdapter, Utils, $) {
+        ], function(SelectAdapter, Utils, $1) {
             function ArrayAdapter($element, options) {
                 this._dataToConvert = options.get("data") || [];
                 ArrayAdapter.__super__.constructor.call(this, $element, options);
@@ -2798,29 +2798,29 @@ window.feather = (0, _featherIconsDefault.default);
                 var self = this;
                 var $existing = this.$element.find("option");
                 var existingIds = $existing.map(function() {
-                    return self.item($(this)).id;
+                    return self.item($1(this)).id;
                 }).get();
                 var $options = [];
                 // Filter out all items except for the one passed in the argument
                 function onlyItem(item) {
                     return function() {
-                        return $(this).val() == item.id;
+                        return $1(this).val() == item.id;
                     };
                 }
                 for(var d = 0; d < data.length; d++){
-                    var item1 = this._normalizeItem(data[d]);
+                    var item = this._normalizeItem(data[d]);
                     // Skip items which were pre-loaded, only merge the data
-                    if (existingIds.indexOf(item1.id) >= 0) {
-                        var $existingOption = $existing.filter(onlyItem(item1));
+                    if (existingIds.indexOf(item.id) >= 0) {
+                        var $existingOption = $existing.filter(onlyItem(item));
                         var existingData = this.item($existingOption);
-                        var newData = $.extend(true, {}, item1, existingData);
+                        var newData = $1.extend(true, {}, item, existingData);
                         var $newOption = this.option(newData);
                         $existingOption.replaceWith($newOption);
                         continue;
                     }
-                    var $option = this.option(item1);
-                    if (item1.children) {
-                        var $children = this.convertToOptions(item1.children);
+                    var $option = this.option(item);
+                    if (item.children) {
+                        var $children = this.convertToOptions(item.children);
                         $option.append($children);
                     }
                     $options.push($option);
@@ -2833,7 +2833,7 @@ window.feather = (0, _featherIconsDefault.default);
             "./array",
             "../utils",
             "jquery"
-        ], function(ArrayAdapter, Utils, $) {
+        ], function(ArrayAdapter, Utils, $1) {
             function AjaxAdapter($element, options) {
                 this.ajaxOptions = this._applyDefaults(options.get("ajax"));
                 if (this.ajaxOptions.processResults != null) this.processResults = this.ajaxOptions.processResults;
@@ -2843,18 +2843,18 @@ window.feather = (0, _featherIconsDefault.default);
             AjaxAdapter.prototype._applyDefaults = function(options) {
                 var defaults = {
                     data: function(params) {
-                        return $.extend({}, params, {
+                        return $1.extend({}, params, {
                             q: params.term
                         });
                     },
                     transport: function(params, success, failure) {
-                        var $request = $.ajax(params);
+                        var $request = $1.ajax(params);
                         $request.then(success);
                         $request.fail(failure);
                         return $request;
                     }
                 };
-                return $.extend({}, defaults, options, true);
+                return $1.extend({}, defaults, options, true);
             };
             AjaxAdapter.prototype.processResults = function(results) {
                 return results;
@@ -2867,7 +2867,7 @@ window.feather = (0, _featherIconsDefault.default);
                     if (typeof this._request.abort === "function") this._request.abort();
                     this._request = null;
                 }
-                var options = $.extend({
+                var options = $1.extend({
                     type: "GET"
                 }, this.ajaxOptions);
                 if (typeof options.url === "function") options.url = options.url.call(this.$element, params);
@@ -2899,7 +2899,7 @@ window.feather = (0, _featherIconsDefault.default);
         });
         S2.define("select2/data/tags", [
             "jquery"
-        ], function($) {
+        ], function($1) {
             function Tags(decorated, $element, options) {
                 var tags = options.get("tags");
                 var createTag = options.get("createTag");
@@ -2969,14 +2969,14 @@ window.feather = (0, _featherIconsDefault.default);
                 var $options = this.$element.find("option[data-select2-tag]");
                 $options.each(function() {
                     if (this.selected) return;
-                    $(this).remove();
+                    $1(this).remove();
                 });
             };
             return Tags;
         });
         S2.define("select2/data/tokenizer", [
             "jquery"
-        ], function($) {
+        ], function($1) {
             function Tokenizer(decorated, $element, options) {
                 var tokenizer = options.get("tokenizer");
                 if (tokenizer !== undefined) this.tokenizer = tokenizer;
@@ -2994,7 +2994,7 @@ window.feather = (0, _featherIconsDefault.default);
                     // Check if the data object already exists as a tag
                     // Select it if it doesn't
                     var $existingOptions = self.$element.find("option").filter(function() {
-                        return $(this).val() === item.id;
+                        return $1(this).val() === item.id;
                     });
                     // If an existing option wasn't found for it, create the option
                     if (!$existingOptions.length) {
@@ -3025,9 +3025,9 @@ window.feather = (0, _featherIconsDefault.default);
                 }
                 decorated.call(this, params, callback);
             };
-            Tokenizer.prototype.tokenizer = function(_, params1, options, callback) {
+            Tokenizer.prototype.tokenizer = function(_, params, options, callback) {
                 var separators = options.get("tokenSeparators") || [];
-                var term = params1.term;
+                var term = params.term;
                 var i = 0;
                 var createTag = this.createTag || function(params) {
                     return {
@@ -3042,7 +3042,7 @@ window.feather = (0, _featherIconsDefault.default);
                         continue;
                     }
                     var part = term.substr(0, i);
-                    var partParams = $.extend({}, params1, {
+                    var partParams = $1.extend({}, params, {
                         term: part
                     });
                     var data = createTag(partParams);
@@ -3144,7 +3144,7 @@ window.feather = (0, _featherIconsDefault.default);
         S2.define("select2/dropdown", [
             "jquery",
             "./utils"
-        ], function($, Utils) {
+        ], function($1, Utils) {
             function Dropdown($element, options) {
                 this.$element = $element;
                 this.options = options;
@@ -3152,7 +3152,7 @@ window.feather = (0, _featherIconsDefault.default);
             }
             Utils.Extend(Dropdown, Utils.Observable);
             Dropdown.prototype.render = function() {
-                var $dropdown = $('<span class="select2-dropdown"><span class="select2-results"></span></span>');
+                var $dropdown = $1('<span class="select2-dropdown"><span class="select2-results"></span></span>');
                 $dropdown.attr("dir", this.options.get("dir"));
                 this.$dropdown = $dropdown;
                 return $dropdown;
@@ -3171,12 +3171,12 @@ window.feather = (0, _featherIconsDefault.default);
         });
         S2.define("select2/dropdown/search", [
             "jquery"
-        ], function($) {
+        ], function($1) {
             function Search() {}
             Search.prototype.render = function(decorated) {
                 var $rendered = decorated.call(this);
                 var searchLabel = this.options.get("translations").get("search");
-                var $search = $('<span class="select2-search select2-search--dropdown"><input class="select2-search__field" type="search" tabindex="-1" autocorrect="off" autocapitalize="none" spellcheck="false" role="searchbox" aria-autocomplete="list" /></span>');
+                var $search = $1('<span class="select2-search select2-search--dropdown"><input class="select2-search__field" type="search" tabindex="-1" autocorrect="off" autocapitalize="none" spellcheck="false" role="searchbox" aria-autocomplete="list" /></span>');
                 this.$searchContainer = $search;
                 this.$search = $search.find("input");
                 this.$search.prop("autocomplete", this.options.get("autocomplete"));
@@ -3197,7 +3197,7 @@ window.feather = (0, _featherIconsDefault.default);
                 // both the `keyup` and `input` events.
                 this.$search.on("input", function(evt) {
                     // Unbind the duplicated `keyup` event
-                    $(this).off("keyup");
+                    $1(this).off("keyup");
                 });
                 this.$search.on("keyup input", function(evt) {
                     self.handleSearch(evt);
@@ -3274,7 +3274,7 @@ window.feather = (0, _featherIconsDefault.default);
         });
         S2.define("select2/dropdown/infiniteScroll", [
             "jquery"
-        ], function($) {
+        ], function($1) {
             function InfiniteScroll(decorated, $element, options, dataAdapter) {
                 this.lastParams = {};
                 decorated.call(this, $element, options, dataAdapter);
@@ -3304,7 +3304,7 @@ window.feather = (0, _featherIconsDefault.default);
                 this.$results.on("scroll", this.loadMoreIfNeeded.bind(this));
             };
             InfiniteScroll.prototype.loadMoreIfNeeded = function() {
-                var isLoadMoreVisible = $.contains(document.documentElement, this.$loadingMore[0]);
+                var isLoadMoreVisible = $1.contains(document.documentElement, this.$loadingMore[0]);
                 if (this.loading || !isLoadMoreVisible) return;
                 var currentOffset = this.$results.offset().top + this.$results.outerHeight(false);
                 var loadingMoreOffset = this.$loadingMore.offset().top + this.$loadingMore.outerHeight(false);
@@ -3312,7 +3312,7 @@ window.feather = (0, _featherIconsDefault.default);
             };
             InfiniteScroll.prototype.loadMore = function() {
                 this.loading = true;
-                var params = $.extend({}, {
+                var params = $1.extend({}, {
                     page: 1
                 }, this.lastParams);
                 params.page++;
@@ -3322,7 +3322,7 @@ window.feather = (0, _featherIconsDefault.default);
                 return data.pagination && data.pagination.more;
             };
             InfiniteScroll.prototype.createLoadingMore = function() {
-                var $option = $('<li class="select2-results__option select2-results__option--load-more"role="option" aria-disabled="true"></li>');
+                var $option = $1('<li class="select2-results__option select2-results__option--load-more"role="option" aria-disabled="true"></li>');
                 var message = this.options.get("translations").get("loadingMore");
                 $option.html(message(this.lastParams));
                 return $option;
@@ -3332,9 +3332,9 @@ window.feather = (0, _featherIconsDefault.default);
         S2.define("select2/dropdown/attachBody", [
             "jquery",
             "../utils"
-        ], function($, Utils) {
+        ], function($1, Utils) {
             function AttachBody(decorated, $element, options) {
-                this.$dropdownParent = $(options.get("dropdownParent") || document.body);
+                this.$dropdownParent = $1(options.get("dropdownParent") || document.body);
                 decorated.call(this, $element, options);
             }
             AttachBody.prototype.bind = function(decorated, container, $container) {
@@ -3370,7 +3370,7 @@ window.feather = (0, _featherIconsDefault.default);
                 this.$container = $container;
             };
             AttachBody.prototype.render = function(decorated) {
-                var $container = $("<span></span>");
+                var $container = $1("<span></span>");
                 var $dropdown = decorated.call(this);
                 $container.append($dropdown);
                 this.$dropdownContainer = $container;
@@ -3413,15 +3413,15 @@ window.feather = (0, _featherIconsDefault.default);
                 var $watchers = this.$container.parents().filter(Utils.hasScroll);
                 $watchers.each(function() {
                     Utils.StoreData(this, "select2-scroll-position", {
-                        x: $(this).scrollLeft(),
-                        y: $(this).scrollTop()
+                        x: $1(this).scrollLeft(),
+                        y: $1(this).scrollTop()
                     });
                 });
                 $watchers.on(scrollEvent, function(ev) {
                     var position = Utils.GetData(this, "select2-scroll-position");
-                    $(this).scrollTop(position.y);
+                    $1(this).scrollTop(position.y);
                 });
-                $(window).on(scrollEvent + " " + resizeEvent + " " + orientationEvent, function(e) {
+                $1(window).on(scrollEvent + " " + resizeEvent + " " + orientationEvent, function(e) {
                     self._positionDropdown();
                     self._resizeDropdown();
                 });
@@ -3432,10 +3432,10 @@ window.feather = (0, _featherIconsDefault.default);
                 var orientationEvent = "orientationchange.select2." + container.id;
                 var $watchers = this.$container.parents().filter(Utils.hasScroll);
                 $watchers.off(scrollEvent);
-                $(window).off(scrollEvent + " " + resizeEvent + " " + orientationEvent);
+                $1(window).off(scrollEvent + " " + resizeEvent + " " + orientationEvent);
             };
             AttachBody.prototype._positionDropdown = function() {
-                var $window = $(window);
+                var $window = $1(window);
                 var isCurrentlyAbove = this.$dropdown[0].classList.contains("select2-dropdown--above");
                 var isCurrentlyBelow = this.$dropdown[0].classList.contains("select2-dropdown--below");
                 var newDirection = null;
@@ -3468,7 +3468,7 @@ window.feather = (0, _featherIconsDefault.default);
                     top: 0,
                     left: 0
                 };
-                if ($.contains(document.body, $offsetParent[0]) || $offsetParent[0].isConnected) parentOffset = $offsetParent.offset();
+                if ($1.contains(document.body, $offsetParent[0]) || $offsetParent[0].isConnected) parentOffset = $offsetParent.offset();
                 css.top -= parentOffset.top;
                 css.left -= parentOffset.left;
                 if (!isCurrentlyAbove && !isCurrentlyBelow) newDirection = "below";
@@ -3632,7 +3632,7 @@ window.feather = (0, _featherIconsDefault.default);
                     return message;
                 },
                 loadingMore: function() {
-                    return "Loading more results\u2026";
+                    return "Loading more results…";
                 },
                 maximumSelected: function(args) {
                     var message = "You can only select " + args.maximum + " item";
@@ -3643,7 +3643,7 @@ window.feather = (0, _featherIconsDefault.default);
                     return "No results found";
                 },
                 searching: function() {
-                    return "Searching\u2026";
+                    return "Searching…";
                 },
                 removeAllItems: function() {
                     return "Remove all items";
@@ -3688,12 +3688,12 @@ window.feather = (0, _featherIconsDefault.default);
             "./dropdown/dropdownCss",
             "./dropdown/tagsSearchHighlight",
             "./i18n/en"
-        ], function($, ResultsList, SingleSelection, MultipleSelection, Placeholder, AllowClear, SelectionSearch, SelectionCSS, EventRelay, Utils, Translation, DIACRITICS, SelectData, ArrayData, AjaxData, Tags, Tokenizer, MinimumInputLength, MaximumInputLength, MaximumSelectionLength, Dropdown, DropdownSearch, HidePlaceholder, InfiniteScroll, AttachBody, MinimumResultsForSearch, SelectOnClose, CloseOnSelect, DropdownCSS, TagsSearchHighlight, EnglishTranslation) {
+        ], function($1, ResultsList, SingleSelection, MultipleSelection, Placeholder, AllowClear, SelectionSearch, SelectionCSS, EventRelay, Utils, Translation, DIACRITICS, SelectData, ArrayData, AjaxData, Tags, Tokenizer, MinimumInputLength, MaximumInputLength, MaximumSelectionLength, Dropdown, DropdownSearch, HidePlaceholder, InfiniteScroll, AttachBody, MinimumResultsForSearch, SelectOnClose, CloseOnSelect, DropdownCSS, TagsSearchHighlight, EnglishTranslation) {
             function Defaults() {
                 this.reset();
             }
             Defaults.prototype.apply = function(options) {
-                options = $.extend(true, {}, this.defaults, options);
+                options = $1.extend(true, {}, this.defaults, options);
                 if (options.dataAdapter == null) {
                     if (options.ajax != null) options.dataAdapter = AjaxData;
                     else if (options.data != null) options.dataAdapter = ArrayData;
@@ -3761,7 +3761,7 @@ window.feather = (0, _featherIconsDefault.default);
                     if (data.children && data.children.length > 0) {
                         // Clone the data object if there are children
                         // This is required as we modify the object to remove any non-matches
-                        var match = $.extend(true, {}, data);
+                        var match = $1.extend(true, {}, data);
                         // Check each child of the option
                         for(var c = data.children.length - 1; c >= 0; c--){
                             var child = data.children[c];
@@ -3820,8 +3820,8 @@ window.feather = (0, _featherIconsDefault.default);
             };
             Defaults.prototype._resolveLanguage = function(language) {
                 if (!language) return [];
-                if ($.isEmptyObject(language)) return [];
-                if ($.isPlainObject(language)) return [
+                if ($1.isEmptyObject(language)) return [];
+                if ($1.isPlainObject(language)) return [
                     language
                 ];
                 var languages;
@@ -3861,18 +3861,18 @@ window.feather = (0, _featherIconsDefault.default);
                             if (debug && window.console && console.warn) console.warn('Select2: The language file for "' + language + '" could ' + "not be automatically loaded. A fallback will be used instead.");
                         }
                     }
-                    else if ($.isPlainObject(language)) languageData = new Translation(language);
+                    else if ($1.isPlainObject(language)) languageData = new Translation(language);
                     else languageData = language;
                     translations.extend(languageData);
                 }
                 return translations;
             };
             Defaults.prototype.set = function(key, value) {
-                var camelKey = $.camelCase(key);
+                var camelKey = $1.camelCase(key);
                 var data = {};
                 data[camelKey] = value;
                 var convertedData = Utils._convertData(data);
-                $.extend(true, this.defaults, convertedData);
+                $1.extend(true, this.defaults, convertedData);
             };
             var defaults = new Defaults();
             return defaults;
@@ -3881,7 +3881,7 @@ window.feather = (0, _featherIconsDefault.default);
             "jquery",
             "./defaults",
             "./utils"
-        ], function($, Defaults, Utils) {
+        ], function($1, Defaults, Utils) {
             function Options(options, $element) {
                 this.options = options;
                 if ($element != null) this.fromElement($element);
@@ -3934,13 +3934,13 @@ window.feather = (0, _featherIconsDefault.default);
                 }
                 // Prefer the element's `dataset` attribute if it exists
                 // jQuery 1.x does not correctly handle data attributes with multiple dashes
-                if ($.fn.jquery && $.fn.jquery.substr(0, 2) == "1." && $e[0].dataset) dataset = $.extend(true, {}, $e[0].dataset, dataset);
+                if ($1.fn.jquery && $1.fn.jquery.substr(0, 2) == "1." && $e[0].dataset) dataset = $1.extend(true, {}, $e[0].dataset, dataset);
                 // Prefer our internal data cache if it exists
-                var data = $.extend(true, {}, Utils.GetData($e[0]), dataset);
+                var data = $1.extend(true, {}, Utils.GetData($e[0]), dataset);
                 data = Utils._convertData(data);
                 for(var key in data){
                     if (excludedData.indexOf(key) > -1) continue;
-                    if ($.isPlainObject(this.options[key])) $.extend(this.options[key], data[key]);
+                    if ($1.isPlainObject(this.options[key])) $1.extend(this.options[key], data[key]);
                     else this.options[key] = data[key];
                 }
                 return this;
@@ -3958,7 +3958,7 @@ window.feather = (0, _featherIconsDefault.default);
             "./options",
             "./utils",
             "./keys"
-        ], function($, Options, Utils, KEYS) {
+        ], function($1, Options, Utils, KEYS) {
             var Select2 = function($element, options) {
                 if (Utils.GetData($element[0], "select2") != null) Utils.GetData($element[0], "select2").destroy();
                 this.$element = $element;
@@ -4332,7 +4332,7 @@ window.feather = (0, _featherIconsDefault.default);
                 this.results = null;
             };
             Select2.prototype.render = function() {
-                var $container = $('<span class="select2 select2-container"><span class="selection"></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>');
+                var $container = $1('<span class="select2 select2-container"><span class="selection"></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>');
                 $container.attr("dir", this.options.get("dir"));
                 this.$container = $container;
                 this.$container[0].classList.add("select2-container--" + this.options.get("theme"));
@@ -4343,9 +4343,9 @@ window.feather = (0, _featherIconsDefault.default);
         });
         S2.define("jquery-mousewheel", [
             "jquery"
-        ], function($) {
+        ], function($1) {
             // Used to shim jQuery.mousewheel for non-full builds.
-            return $;
+            return $1;
         });
         S2.define("jquery.select2", [
             "jquery",
@@ -4353,20 +4353,20 @@ window.feather = (0, _featherIconsDefault.default);
             "./select2/core",
             "./select2/defaults",
             "./select2/utils"
-        ], function($, _, Select2, Defaults, Utils) {
-            if ($.fn.select2 == null) {
+        ], function($1, _, Select2, Defaults, Utils) {
+            if ($1.fn.select2 == null) {
                 // All methods that should return the element
                 var thisMethods = [
                     "open",
                     "close",
                     "destroy"
                 ];
-                $.fn.select2 = function(options) {
+                $1.fn.select2 = function(options) {
                     options = options || {};
                     if (typeof options === "object") {
                         this.each(function() {
-                            var instanceOptions = $.extend(true, {}, options);
-                            var instance = new Select2($(this), instanceOptions);
+                            var instanceOptions = $1.extend(true, {}, options);
+                            var instance = new Select2($1(this), instanceOptions);
                         });
                         return this;
                     } else if (typeof options === "string") {
@@ -4383,7 +4383,7 @@ window.feather = (0, _featherIconsDefault.default);
                     } else throw new Error("Invalid arguments for Select2: " + options);
                 };
             }
-            if ($.fn.select2.defaults == null) $.fn.select2.defaults = Defaults;
+            if ($1.fn.select2.defaults == null) $1.fn.select2.defaults = Defaults;
             return Select2;
         });
         // Return the AMD loader configuration so it can be used outside of this file
@@ -4394,11 +4394,11 @@ window.feather = (0, _featherIconsDefault.default);
     }();
     // Autoload the jQuery bindings
     // We know that all of the modules exist above this, so we're safe
-    var select2 = S21.require("jquery.select2");
+    var select2 = S2.require("jquery.select2");
     // Hold the AMD module references on the jQuery function that was just loaded
     // This allows Select2 to use the internal loader outside of this file, such
     // as in the language files.
-    jQuery.fn.select2.amd = S21;
+    jQuery1.fn.select2.amd = S2;
     // Return the Select2 instance for anyone who is importing it.
     return select2;
 });
@@ -4437,22 +4437,22 @@ window.feather = (0, _featherIconsDefault.default);
     // arguments.callee.caller (trac-13335). But as of jQuery 3.0 (2016), strict mode should be common
     // enough that all such attempts are guarded in a try block.
     "use strict";
-    var arr1 = [];
+    var arr = [];
     var getProto = Object.getPrototypeOf;
-    var slice1 = arr1.slice;
-    var flat = arr1.flat ? function(array) {
-        return arr1.flat.call(array);
+    var slice = arr.slice;
+    var flat = arr.flat ? function(array) {
+        return arr.flat.call(array);
     } : function(array) {
-        return arr1.concat.apply([], array);
+        return arr.concat.apply([], array);
     };
-    var push1 = arr1.push;
-    var indexOf1 = arr1.indexOf;
+    var push = arr.push;
+    var indexOf = arr.indexOf;
     var class2type = {};
     var toString = class2type.toString;
-    var hasOwn1 = class2type.hasOwnProperty;
-    var fnToString = hasOwn1.toString;
+    var hasOwn = class2type.hasOwnProperty;
+    var fnToString = hasOwn.toString;
     var ObjectFunctionString = fnToString.call(Object);
-    var support1 = {};
+    var support = {};
     var isFunction = function isFunction(obj) {
         // Support: Chrome <=57, Firefox <=52
         // In some browsers, typeof returns "function" for HTML <object> elements
@@ -4466,7 +4466,7 @@ window.feather = (0, _featherIconsDefault.default);
     var isWindow = function isWindow(obj) {
         return obj != null && obj === obj.window;
     };
-    var document1 = window1.document;
+    var document = window1.document;
     var preservedScriptAttributes = {
         type: true,
         src: true,
@@ -4474,7 +4474,7 @@ window.feather = (0, _featherIconsDefault.default);
         noModule: true
     };
     function DOMEval(code, node, doc) {
-        doc = doc || document1;
+        doc = doc || document;
         var i, val, script = doc.createElement("script");
         script.text = code;
         if (node) for(i in preservedScriptAttributes){
@@ -4513,13 +4513,13 @@ window.feather = (0, _featherIconsDefault.default);
         // The default length of a jQuery object is 0
         length: 0,
         toArray: function() {
-            return slice1.call(this);
+            return slice.call(this);
         },
         // Get the Nth element in the matched element set OR
         // Get the whole matched element set as a clean array
         get: function(num) {
             // Return all the elements in a clean array
-            if (num == null) return slice1.call(this);
+            if (num == null) return slice.call(this);
             // Return just the one element from the set
             return num < 0 ? this[num + this.length] : this[num];
         },
@@ -4543,7 +4543,7 @@ window.feather = (0, _featherIconsDefault.default);
             }));
         },
         slice: function() {
-            return this.pushStack(slice1.apply(this, arguments));
+            return this.pushStack(slice.apply(this, arguments));
         },
         first: function() {
             return this.eq(0);
@@ -4572,9 +4572,9 @@ window.feather = (0, _featherIconsDefault.default);
         },
         // For internal use only.
         // Behaves like an Array's method, not like a jQuery method.
-        push: push1,
-        sort: arr1.sort,
-        splice: arr1.splice
+        push: push,
+        sort: arr.sort,
+        splice: arr.splice
     };
     jQuery.extend = jQuery.fn.extend = function() {
         var options, name, src, copy, copyIsArray, clone, target = arguments[0] || {}, i = 1, length = arguments.length, deep = false;
@@ -4635,7 +4635,7 @@ window.feather = (0, _featherIconsDefault.default);
             // Objects with no prototype (e.g., `Object.create( null )`) are plain
             if (!proto) return true;
             // Objects with prototype are plain iff they were constructed by a global Object function
-            Ctor = hasOwn1.call(proto, "constructor") && proto.constructor;
+            Ctor = hasOwn.call(proto, "constructor") && proto.constructor;
             return typeof Ctor === "function" && fnToString.call(Ctor) === ObjectFunctionString;
         },
         isEmptyObject: function(obj) {
@@ -4669,12 +4669,12 @@ window.feather = (0, _featherIconsDefault.default);
                 if (isArrayLike(Object(arr))) jQuery.merge(ret, typeof arr === "string" ? [
                     arr
                 ] : arr);
-                else push1.call(ret, arr);
+                else push.call(ret, arr);
             }
             return ret;
         },
         inArray: function(elem, arr, i) {
-            return arr == null ? -1 : indexOf1.call(arr, elem, i);
+            return arr == null ? -1 : indexOf.call(arr, elem, i);
         },
         // Support: Android <=4.0 only, PhantomJS 1 only
         // push.apply(_, arraylike) throws on ancient WebKit
@@ -4716,9 +4716,9 @@ window.feather = (0, _featherIconsDefault.default);
         guid: 1,
         // jQuery.support is not used in Core but other projects attach their
         // properties to it so it needs to exist.
-        support: support1
+        support: support
     });
-    if (typeof Symbol === "function") jQuery.fn[Symbol.iterator] = arr1[Symbol.iterator];
+    if (typeof Symbol === "function") jQuery.fn[Symbol.iterator] = arr[Symbol.iterator];
     // Populate the class2type map
     jQuery.each("Boolean Number String Function Array Date RegExp Object Error Symbol".split(" "), function(_i, name) {
         class2type["[object " + name + "]"] = name.toLowerCase();
@@ -4732,7 +4732,7 @@ window.feather = (0, _featherIconsDefault.default);
         if (isFunction(obj) || isWindow(obj)) return false;
         return type === "array" || length === 0 || typeof length === "number" && length > 0 && length - 1 in obj;
     }
-    var Sizzle1 = /*!
+    var Sizzle = /*!
  * Sizzle CSS Selector Engine v2.3.6
  * https://sizzlejs.com/
  *
@@ -4741,14 +4741,14 @@ window.feather = (0, _featherIconsDefault.default);
  * https://js.foundation/
  *
  * Date: 2021-02-16
- */ function(window) {
-        var i1, support, Expr, getText, isXML1, tokenize, compile, select, outermostContext, sortInput, hasDuplicate, // Local document vars
-        setDocument, document, docElem1, documentIsHTML, rbuggyQSA, rbuggyMatches, matches1, contains, // Instance-specific data
-        expando = "sizzle" + 1 * new Date(), preferredDoc = window.document, dirruns = 0, done = 0, classCache = createCache(), tokenCache = createCache(), compilerCache = createCache(), nonnativeSelectorCache = createCache(), sortOrder = function(a, b) {
+ */ function(window1) {
+        var i, support, Expr, getText, isXML, tokenize, compile, select, outermostContext, sortInput, hasDuplicate, // Local document vars
+        setDocument, document, docElem, documentIsHTML, rbuggyQSA, rbuggyMatches, matches, contains, // Instance-specific data
+        expando = "sizzle" + 1 * new Date(), preferredDoc = window1.document, dirruns = 0, done = 0, classCache = createCache(), tokenCache = createCache(), compilerCache = createCache(), nonnativeSelectorCache = createCache(), sortOrder = function(a, b) {
             if (a === b) hasDuplicate = true;
             return 0;
         }, // Instance methods
-        hasOwn = {}.hasOwnProperty, arr2 = [], pop = arr2.pop, pushNative = arr2.push, push = arr2.push, slice = arr2.slice, // Use a stripped-down indexOf as it's faster than native
+        hasOwn = {}.hasOwnProperty, arr = [], pop = arr.pop, pushNative = arr.push, push = arr.push, slice = arr.slice, // Use a stripped-down indexOf as it's faster than native
         // https://jsperf.com/thor-indexof-vs-for/5
         indexOf = function(list, elem) {
             var i = 0, len = list.length;
@@ -4795,7 +4795,7 @@ window.feather = (0, _featherIconsDefault.default);
         rcssescape = /([\0-\x1f\x7f]|^-?\d)|^-$|[^\0-\x1f\x7f-\uFFFF\w-]/g, fcssescape = function(ch, asCodePoint) {
             if (asCodePoint) {
                 // U+0000 NULL becomes U+FFFD REPLACEMENT CHARACTER
-                if (ch === "\0") return "\uFFFD";
+                if (ch === "\0") return "�";
                 // Control characters and (dependent upon position) numbers get escaped as code points
                 return ch.slice(0, -1) + "\\" + ch.charCodeAt(ch.length - 1).toString(16) + " ";
             }
@@ -4815,14 +4815,14 @@ window.feather = (0, _featherIconsDefault.default);
         });
         // Optimize for push.apply( _, NodeList )
         try {
-            push.apply(arr2 = slice.call(preferredDoc.childNodes), preferredDoc.childNodes);
+            push.apply(arr = slice.call(preferredDoc.childNodes), preferredDoc.childNodes);
             // Support: Android<4.0
             // Detect silently failing push.apply
             // eslint-disable-next-line no-unused-expressions
-            arr2[preferredDoc.childNodes.length].nodeType;
+            arr[preferredDoc.childNodes.length].nodeType;
         } catch (e) {
             push = {
-                apply: arr2.length ? // Leverage slice if possible
+                apply: arr.length ? // Leverage slice if possible
                 function(target, els) {
                     pushNative.apply(target, slice.call(els));
                 } : // Support: IE<9
@@ -5063,7 +5063,7 @@ window.feather = (0, _featherIconsDefault.default);
  * Detects XML nodes
  * @param {Element|Object} elem An element or a document
  * @returns {Boolean} True iff elem is a non-HTML XML node
- */ isXML1 = Sizzle.isXML = function(elem) {
+ */ isXML = Sizzle.isXML = function(elem) {
             var namespace = elem && elem.namespaceURI, docElem = elem && (elem.ownerDocument || elem).documentElement;
             // Support: IE <=8
             // Assume HTML when documentElement doesn't yet exist, such as inside loading iframes
@@ -5074,8 +5074,8 @@ window.feather = (0, _featherIconsDefault.default);
  * Sets document-related variables once based on the current document
  * @param {Element|Object} [doc] An element or document object to use to set the document
  * @returns {Object} Returns the current document
- */ setDocument = Sizzle.setDocument = function(node1) {
-            var hasCompare, subWindow, doc = node1 ? node1.ownerDocument || node1 : preferredDoc;
+ */ setDocument = Sizzle.setDocument = function(node) {
+            var hasCompare, subWindow, doc = node ? node.ownerDocument || node : preferredDoc;
             // Return early if doc is invalid or already selected
             // Support: IE 11+, Edge 17 - 18+
             // IE/Edge sometimes throw a "Permission denied" error when strict-comparing
@@ -5084,8 +5084,8 @@ window.feather = (0, _featherIconsDefault.default);
             if (doc == document || doc.nodeType !== 9 || !doc.documentElement) return document;
             // Update global variables
             document = doc;
-            docElem1 = document.documentElement;
-            documentIsHTML = !isXML1(document);
+            docElem = document.documentElement;
+            documentIsHTML = !isXML(document);
             // Support: IE 9 - 11+, Edge 12 - 18+
             // Accessing iframe documents after unload throws "permission denied" errors (jQuery #13936)
             // Support: IE 11+, Edge 17 - 18+
@@ -5103,7 +5103,7 @@ window.feather = (0, _featherIconsDefault.default);
             // Support: Safari 6.0 only
             // Safari 6.0 supports :scope but it's an alias of :root there.
             support.scope = assert(function(el) {
-                docElem1.appendChild(el).appendChild(document.createElement("div"));
+                docElem.appendChild(el).appendChild(document.createElement("div"));
                 return typeof el.querySelectorAll !== "undefined" && !el.querySelectorAll(":scope fieldset div").length;
             });
             /* Attributes
@@ -5127,7 +5127,7 @@ window.feather = (0, _featherIconsDefault.default);
             // The broken getElementById methods don't pick up programmatically-set names,
             // so use a roundabout getElementsByName test
             support.getById = assert(function(el) {
-                docElem1.appendChild(el).id = expando;
+                docElem.appendChild(el).id = expando;
                 return !document.getElementsByName || !document.getElementsByName(expando).length;
             });
             // ID filter and find
@@ -5217,7 +5217,7 @@ window.feather = (0, _featherIconsDefault.default);
                     // setting a boolean content attribute,
                     // since its presence should be enough
                     // https://bugs.jquery.com/ticket/12359
-                    docElem1.appendChild(el).innerHTML = "<a id='" + expando + "'></a>" + "<select id='" + expando + "-\r\\' msallowcapture=''>" + "<option selected=''></option></select>";
+                    docElem.appendChild(el).innerHTML = "<a id='" + expando + "'></a>" + "<select id='" + expando + "-\r\\' msallowcapture=''>" + "<option selected=''></option></select>";
                     // Support: IE8, Opera 11-12.16
                     // Nothing should be selected when empty strings follow ^= or $= or *=
                     // The test attribute must be unknown in Opera but "safe" for WinRT
@@ -5265,7 +5265,7 @@ window.feather = (0, _featherIconsDefault.default);
                     if (el.querySelectorAll(":enabled").length !== 2) rbuggyQSA.push(":enabled", ":disabled");
                     // Support: IE9-11+
                     // IE's :disabled selector does not pick up the children of disabled fieldsets
-                    docElem1.appendChild(el).disabled = true;
+                    docElem.appendChild(el).disabled = true;
                     if (el.querySelectorAll(":disabled").length !== 2) rbuggyQSA.push(":enabled", ":disabled");
                     // Support: Opera 10 - 11 only
                     // Opera 10-11 does not throw on post-comma invalid pseudos
@@ -5273,23 +5273,23 @@ window.feather = (0, _featherIconsDefault.default);
                     rbuggyQSA.push(",.*:");
                 });
             }
-            if (support.matchesSelector = rnative.test(matches1 = docElem1.matches || docElem1.webkitMatchesSelector || docElem1.mozMatchesSelector || docElem1.oMatchesSelector || docElem1.msMatchesSelector)) assert(function(el) {
+            if (support.matchesSelector = rnative.test(matches = docElem.matches || docElem.webkitMatchesSelector || docElem.mozMatchesSelector || docElem.oMatchesSelector || docElem.msMatchesSelector)) assert(function(el) {
                 // Check to see if it's possible to do matchesSelector
                 // on a disconnected node (IE 9)
-                support.disconnectedMatch = matches1.call(el, "*");
+                support.disconnectedMatch = matches.call(el, "*");
                 // This should fail with an exception
                 // Gecko does not error, returns false instead
-                matches1.call(el, "[s!='']:x");
+                matches.call(el, "[s!='']:x");
                 rbuggyMatches.push("!=", pseudos);
             });
             rbuggyQSA = rbuggyQSA.length && new RegExp(rbuggyQSA.join("|"));
             rbuggyMatches = rbuggyMatches.length && new RegExp(rbuggyMatches.join("|"));
             /* Contains
-	---------------------------------------------------------------------- */ hasCompare = rnative.test(docElem1.compareDocumentPosition);
+	---------------------------------------------------------------------- */ hasCompare = rnative.test(docElem.compareDocumentPosition);
             // Element contains another
             // Purposefully self-exclusive
             // As in, an element does not contain itself
-            contains = hasCompare || rnative.test(docElem1.contains) ? function(a, b) {
+            contains = hasCompare || rnative.test(docElem.contains) ? function(a, b) {
                 var adown = a.nodeType === 9 ? a.documentElement : a, bup = b && b.parentNode;
                 return a === bup || !!(bup && bup.nodeType === 1 && (adown.contains ? adown.contains(bup) : a.compareDocumentPosition && a.compareDocumentPosition(bup) & 16));
             } : function(a, b) {
@@ -5372,7 +5372,7 @@ window.feather = (0, _featherIconsDefault.default);
         Sizzle.matchesSelector = function(elem, expr) {
             setDocument(elem);
             if (support.matchesSelector && documentIsHTML && !nonnativeSelectorCache[expr + " "] && (!rbuggyMatches || !rbuggyMatches.test(expr)) && (!rbuggyQSA || !rbuggyQSA.test(expr))) try {
-                var ret = matches1.call(elem, expr);
+                var ret = matches.call(elem, expr);
                 // IE 9's matchesSelector returns false on disconnected nodes
                 if (ret || support.disconnectedMatch || // As well, disconnected nodes are said to be in a document
                 // fragment in IE 9
@@ -5705,11 +5705,11 @@ window.feather = (0, _featherIconsDefault.default);
                 }),
                 // Miscellaneous
                 "target": function(elem) {
-                    var hash = window.location && window.location.hash;
+                    var hash = window1.location && window1.location.hash;
                     return hash && hash.slice(1) === elem.id;
                 },
                 "root": function(elem) {
-                    return elem === docElem1;
+                    return elem === docElem;
                 },
                 "focus": function(elem) {
                     return elem === document.activeElement && (!document.hasFocus || document.hasFocus()) && !!(elem.type || elem.href || ~elem.tabIndex);
@@ -5799,17 +5799,17 @@ window.feather = (0, _featherIconsDefault.default);
         };
         Expr.pseudos["nth"] = Expr.pseudos["eq"];
         // Add button/input type pseudos
-        for(i1 in {
+        for(i in {
             radio: true,
             checkbox: true,
             file: true,
             password: true,
             image: true
-        })Expr.pseudos[i1] = createInputPseudo(i1);
-        for(i1 in {
+        })Expr.pseudos[i] = createInputPseudo(i);
+        for(i in {
             submit: true,
             reset: true
-        })Expr.pseudos[i1] = createButtonPseudo(i1);
+        })Expr.pseudos[i] = createButtonPseudo(i);
         // Easy API for creating new setFilters
         function setFilters() {}
         setFilters.prototype = Expr.filters = Expr.pseudos;
@@ -6185,16 +6185,16 @@ window.feather = (0, _featherIconsDefault.default);
         });
         return Sizzle;
     }(window1);
-    jQuery.find = Sizzle1;
-    jQuery.expr = Sizzle1.selectors;
+    jQuery.find = Sizzle;
+    jQuery.expr = Sizzle.selectors;
     // Deprecated
     jQuery.expr[":"] = jQuery.expr.pseudos;
-    jQuery.uniqueSort = jQuery.unique = Sizzle1.uniqueSort;
-    jQuery.text = Sizzle1.getText;
-    jQuery.isXMLDoc = Sizzle1.isXML;
-    jQuery.contains = Sizzle1.contains;
-    jQuery.escapeSelector = Sizzle1.escape;
-    var dir1 = function(elem, dir, until) {
+    jQuery.uniqueSort = jQuery.unique = Sizzle.uniqueSort;
+    jQuery.text = Sizzle.getText;
+    jQuery.isXMLDoc = Sizzle.isXML;
+    jQuery.contains = Sizzle.contains;
+    jQuery.escapeSelector = Sizzle.escape;
+    var dir = function(elem, dir, until) {
         var matched = [], truncate = until !== undefined;
         while((elem = elem[dir]) && elem.nodeType !== 9)if (elem.nodeType === 1) {
             if (truncate && jQuery(elem).is(until)) break;
@@ -6208,7 +6208,7 @@ window.feather = (0, _featherIconsDefault.default);
         return matched;
     };
     var rneedsContext = jQuery.expr.match.needsContext;
-    function nodeName1(elem, name) {
+    function nodeName(elem, name) {
         return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
     }
     var rsingleTag = /^<([a-z][^\/\0>:\x20\t\r\n\f]*)[\x20\t\r\n\f]*\/?>(?:<\/\1>|)$/i;
@@ -6223,16 +6223,16 @@ window.feather = (0, _featherIconsDefault.default);
         });
         // Arraylike of elements (jQuery, arguments, Array)
         if (typeof qualifier !== "string") return jQuery.grep(elements, function(elem) {
-            return indexOf1.call(qualifier, elem) > -1 !== not;
+            return indexOf.call(qualifier, elem) > -1 !== not;
         });
         // Filtered directly for both simple and complex selectors
         return jQuery.filter(qualifier, elements, not);
     }
     jQuery.filter = function(expr, elems, not) {
-        var elem1 = elems[0];
+        var elem = elems[0];
         if (not) expr = ":not(" + expr + ")";
-        if (elems.length === 1 && elem1.nodeType === 1) return jQuery.find.matchesSelector(elem1, expr) ? [
-            elem1
+        if (elems.length === 1 && elem.nodeType === 1) return jQuery.find.matchesSelector(elem, expr) ? [
+            elem
         ] : [];
         return jQuery.find.matches(expr, jQuery.grep(elems, function(elem) {
             return elem.nodeType === 1;
@@ -6268,7 +6268,7 @@ window.feather = (0, _featherIconsDefault.default);
     // Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
     // Strict HTML recognition (#11290: must start with <)
     // Shortcut simple #id case for speed
-    rquickExpr1 = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/, init = jQuery.fn.init = function(selector, context, root) {
+    rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/, init = jQuery.fn.init = function(selector, context, root) {
         var match, elem;
         // HANDLE: $(""), $(null), $(undefined), $(false)
         if (!selector) return this;
@@ -6283,7 +6283,7 @@ window.feather = (0, _featherIconsDefault.default);
                 selector,
                 null
             ];
-            else match = rquickExpr1.exec(selector);
+            else match = rquickExpr.exec(selector);
             // Match html or make sure no context is specified for #id
             if (match && (match[1] || !context)) {
                 // HANDLE: $(html) -> $(array)
@@ -6291,7 +6291,7 @@ window.feather = (0, _featherIconsDefault.default);
                     context = context instanceof jQuery ? context[0] : context;
                     // Option to run scripts is true for back-compat
                     // Intentionally let the error be thrown if parseHTML is not present
-                    jQuery.merge(this, jQuery.parseHTML(match[1], context && context.nodeType ? context.ownerDocument || context : document1, true));
+                    jQuery.merge(this, jQuery.parseHTML(match[1], context && context.nodeType ? context.ownerDocument || context : document, true));
                     // HANDLE: $(html, props)
                     if (rsingleTag.test(match[1]) && jQuery.isPlainObject(context)) {
                         for(match in context)// Properties of context are called as methods if possible
@@ -6301,7 +6301,7 @@ window.feather = (0, _featherIconsDefault.default);
                     return this;
                 // HANDLE: $(#id)
                 } else {
-                    elem = document1.getElementById(match[2]);
+                    elem = document.getElementById(match[2]);
                     if (elem) {
                         // Inject the element directly into the jQuery object
                         this[0] = elem;
@@ -6325,7 +6325,7 @@ window.feather = (0, _featherIconsDefault.default);
     // Give the init function the jQuery prototype for later instantiation
     init.prototype = jQuery.fn;
     // Initialize central reference
-    rootjQuery = jQuery(document1);
+    rootjQuery = jQuery(document);
     var rparentsprev = /^(?:parents|prev(?:Until|All))/, // Methods guaranteed to produce a unique set when starting from a unique set
     guaranteedUnique = {
         children: true,
@@ -6361,9 +6361,9 @@ window.feather = (0, _featherIconsDefault.default);
             // No argument, return index in parent
             if (!elem) return this[0] && this[0].parentNode ? this.first().prevAll().length : -1;
             // Index in selector
-            if (typeof elem === "string") return indexOf1.call(jQuery(elem), this[0]);
+            if (typeof elem === "string") return indexOf.call(jQuery(elem), this[0]);
             // Locate the position of the desired element
-            return indexOf1.call(this, // If it receives a jQuery object, the first element is used
+            return indexOf.call(this, // If it receives a jQuery object, the first element is used
             elem.jquery ? elem[0] : elem);
         },
         add: function(selector, context) {
@@ -6383,10 +6383,10 @@ window.feather = (0, _featherIconsDefault.default);
             return parent && parent.nodeType !== 11 ? parent : null;
         },
         parents: function(elem) {
-            return dir1(elem, "parentNode");
+            return dir(elem, "parentNode");
         },
         parentsUntil: function(elem, _i, until) {
-            return dir1(elem, "parentNode", until);
+            return dir(elem, "parentNode", until);
         },
         next: function(elem) {
             return sibling(elem, "nextSibling");
@@ -6395,16 +6395,16 @@ window.feather = (0, _featherIconsDefault.default);
             return sibling(elem, "previousSibling");
         },
         nextAll: function(elem) {
-            return dir1(elem, "nextSibling");
+            return dir(elem, "nextSibling");
         },
         prevAll: function(elem) {
-            return dir1(elem, "previousSibling");
+            return dir(elem, "previousSibling");
         },
         nextUntil: function(elem, _i, until) {
-            return dir1(elem, "nextSibling", until);
+            return dir(elem, "nextSibling", until);
         },
         prevUntil: function(elem, _i, until) {
-            return dir1(elem, "previousSibling", until);
+            return dir(elem, "previousSibling", until);
         },
         siblings: function(elem) {
             return siblings((elem.parentNode || {}).firstChild, elem);
@@ -6420,7 +6420,7 @@ window.feather = (0, _featherIconsDefault.default);
             // Support: IE 9 - 11 only, iOS 7 only, Android Browser <=4.3 only
             // Treat the template element as a regular one in browsers that
             // don't support it.
-            if (nodeName1(elem, "template")) elem = elem.content || elem;
+            if (nodeName(elem, "template")) elem = elem.content || elem;
             return jQuery.merge([], elem.childNodes);
         }
     }, function(name, fn) {
@@ -6655,7 +6655,7 @@ window.feather = (0, _featherIconsDefault.default);
                     return state;
                 },
                 always: function() {
-                    deferred1.done(arguments).fail(arguments);
+                    deferred.done(arguments).fail(arguments);
                     return this;
                 },
                 "catch": function(fn) {
@@ -6671,7 +6671,7 @@ window.feather = (0, _featherIconsDefault.default);
                             // deferred.progress(function() { bind to newDefer or newDefer.notify })
                             // deferred.done(function() { bind to newDefer or newDefer.resolve })
                             // deferred.fail(function() { bind to newDefer or newDefer.reject })
-                            deferred1[tuple[1]](function() {
+                            deferred[tuple[1]](function() {
                                 var returned = fn && fn.apply(this, arguments);
                                 if (returned && isFunction(returned.promise)) returned.promise().progress(newDefer.notify).done(newDefer.resolve).fail(newDefer.reject);
                                 else newDefer[tuple[0] + "With"](this, fn ? [
@@ -6772,7 +6772,7 @@ window.feather = (0, _featherIconsDefault.default);
                 promise: function(obj) {
                     return obj != null ? jQuery.extend(obj, promise) : promise;
                 }
-            }, deferred1 = {};
+            }, deferred = {};
             // Add list-specific methods
             jQuery.each(tuples, function(i, tuple) {
                 var list = tuple[2], stateString = tuple[5];
@@ -6799,44 +6799,44 @@ window.feather = (0, _featherIconsDefault.default);
                 // deferred.notify = function() { deferred.notifyWith(...) }
                 // deferred.resolve = function() { deferred.resolveWith(...) }
                 // deferred.reject = function() { deferred.rejectWith(...) }
-                deferred1[tuple[0]] = function() {
-                    deferred1[tuple[0] + "With"](this === deferred1 ? undefined : this, arguments);
+                deferred[tuple[0]] = function() {
+                    deferred[tuple[0] + "With"](this === deferred ? undefined : this, arguments);
                     return this;
                 };
                 // deferred.notifyWith = list.fireWith
                 // deferred.resolveWith = list.fireWith
                 // deferred.rejectWith = list.fireWith
-                deferred1[tuple[0] + "With"] = list.fireWith;
+                deferred[tuple[0] + "With"] = list.fireWith;
             });
             // Make the deferred a promise
-            promise.promise(deferred1);
+            promise.promise(deferred);
             // Call given func if any
-            if (func) func.call(deferred1, deferred1);
+            if (func) func.call(deferred, deferred);
             // All done!
-            return deferred1;
+            return deferred;
         },
         // Deferred helper
         when: function(singleValue) {
             var // count of uncompleted subordinates
             remaining = arguments.length, // count of unprocessed arguments
-            i2 = remaining, // subordinate fulfillment data
-            resolveContexts = Array(i2), resolveValues = slice1.call(arguments), // the primary Deferred
+            i = remaining, // subordinate fulfillment data
+            resolveContexts = Array(i), resolveValues = slice.call(arguments), // the primary Deferred
             primary = jQuery.Deferred(), // subordinate callback factory
             updateFunc = function(i) {
                 return function(value) {
                     resolveContexts[i] = this;
-                    resolveValues[i] = arguments.length > 1 ? slice1.call(arguments) : value;
+                    resolveValues[i] = arguments.length > 1 ? slice.call(arguments) : value;
                     if (!--remaining) primary.resolveWith(resolveContexts, resolveValues);
                 };
             };
             // Single- and empty arguments are adopted like Promise.resolve
             if (remaining <= 1) {
-                adoptValue(singleValue, primary.done(updateFunc(i2)).resolve, primary.reject, !remaining);
+                adoptValue(singleValue, primary.done(updateFunc(i)).resolve, primary.reject, !remaining);
                 // Use .then() to unwrap secondary thenables (cf. gh-3000)
-                if (primary.state() === "pending" || isFunction(resolveValues[i2] && resolveValues[i2].then)) return primary.then();
+                if (primary.state() === "pending" || isFunction(resolveValues[i] && resolveValues[i].then)) return primary.then();
             }
             // Multiple arguments are aggregated like Promise.all array elements
-            while(i2--)adoptValue(resolveValues[i2], updateFunc(i2), primary.reject);
+            while(i--)adoptValue(resolveValues[i], updateFunc(i), primary.reject);
             return primary.promise();
         }
     });
@@ -6879,46 +6879,46 @@ window.feather = (0, _featherIconsDefault.default);
             // If a normal DOM Ready event fired, decrement, and wait if need be
             if (wait !== true && --jQuery.readyWait > 0) return;
             // If there are functions bound, to execute
-            readyList.resolveWith(document1, [
+            readyList.resolveWith(document, [
                 jQuery
             ]);
         }
     });
     jQuery.ready.then = readyList.then;
     // The ready event handler and self cleanup method
-    function completed1() {
-        document1.removeEventListener("DOMContentLoaded", completed1);
-        window1.removeEventListener("load", completed1);
+    function completed() {
+        document.removeEventListener("DOMContentLoaded", completed);
+        window1.removeEventListener("load", completed);
         jQuery.ready();
     }
     // Catch cases where $(document).ready() is called
     // after the browser event has already occurred.
     // Support: IE <=9 - 10 only
     // Older IE sometimes signals "interactive" too soon
-    if (document1.readyState === "complete" || document1.readyState !== "loading" && !document1.documentElement.doScroll) // Handle it asynchronously to allow scripts the opportunity to delay ready
+    if (document.readyState === "complete" || document.readyState !== "loading" && !document.documentElement.doScroll) // Handle it asynchronously to allow scripts the opportunity to delay ready
     window1.setTimeout(jQuery.ready);
     else {
         // Use the handy event callback
-        document1.addEventListener("DOMContentLoaded", completed1);
+        document.addEventListener("DOMContentLoaded", completed);
         // A fallback to window.onload, that will always work
-        window1.addEventListener("load", completed1);
+        window1.addEventListener("load", completed);
     }
     // Multifunctional method to get and set values of a collection
     // The value/s can optionally be executed if it's a function
-    var access = function(elems, fn, key, value2, chainable, emptyGet, raw) {
+    var access = function(elems, fn, key, value, chainable, emptyGet, raw) {
         var i = 0, len = elems.length, bulk = key == null;
         // Sets many values
         if (toType(key) === "object") {
             chainable = true;
             for(i in key)access(elems, fn, i, key[i], true, emptyGet, raw);
         // Sets one value
-        } else if (value2 !== undefined) {
+        } else if (value !== undefined) {
             chainable = true;
-            if (!isFunction(value2)) raw = true;
+            if (!isFunction(value)) raw = true;
             if (bulk) {
                 // Bulk operations run against the entire set
                 if (raw) {
-                    fn.call(elems, value2);
+                    fn.call(elems, value);
                     fn = null;
                 // ...except when executing function values
                 } else {
@@ -6928,7 +6928,7 @@ window.feather = (0, _featherIconsDefault.default);
                     };
                 }
             }
-            if (fn) for(; i < len; i++)fn(elems[i], key, raw ? value2 : value2.call(elems[i], i, fn(elems[i], key)));
+            if (fn) for(; i < len; i++)fn(elems[i], key, raw ? value : value.call(elems[i], i, fn(elems[i], key)));
         }
         if (chainable) return elems;
         // Gets
@@ -7111,12 +7111,12 @@ window.feather = (0, _featherIconsDefault.default);
         }
     });
     jQuery.fn.extend({
-        data: function(key, value3) {
-            var i, name, data1, elem = this[0], attrs = elem && elem.attributes;
+        data: function(key, value) {
+            var i, name, data, elem = this[0], attrs = elem && elem.attributes;
             // Gets all values
             if (key === undefined) {
                 if (this.length) {
-                    data1 = dataUser.get(elem);
+                    data = dataUser.get(elem);
                     if (elem.nodeType === 1 && !dataPriv.get(elem, "hasDataAttrs")) {
                         i = attrs.length;
                         while(i--)// Support: IE 11 only
@@ -7125,13 +7125,13 @@ window.feather = (0, _featherIconsDefault.default);
                             name = attrs[i].name;
                             if (name.indexOf("data-") === 0) {
                                 name = camelCase(name.slice(5));
-                                dataAttr(elem, name, data1[name]);
+                                dataAttr(elem, name, data[name]);
                             }
                         }
                         dataPriv.set(elem, "hasDataAttrs", true);
                     }
                 }
-                return data1;
+                return data;
             }
             // Sets multiple values
             if (typeof key === "object") return this.each(function() {
@@ -7161,7 +7161,7 @@ window.feather = (0, _featherIconsDefault.default);
                     // We always store the camelCased key
                     dataUser.set(this, key, value);
                 });
-            }, null, value3, arguments.length > 1, null, true);
+            }, null, value, arguments.length > 1, null, true);
         },
         removeData: function(key) {
             return this.each(function() {
@@ -7272,7 +7272,7 @@ window.feather = (0, _featherIconsDefault.default);
         "Bottom",
         "Left"
     ];
-    var documentElement = document1.documentElement;
+    var documentElement = document.documentElement;
     var isAttached = function(elem) {
         return jQuery.contains(elem.ownerDocument, elem);
     }, composed = {
@@ -7392,7 +7392,7 @@ window.feather = (0, _featherIconsDefault.default);
     var rtagName = /<([a-z][^\/\0>\x20\t\r\n\f]*)/i;
     var rscriptType = /^$|^module$|\/(?:java|ecma)script/i;
     (function() {
-        var fragment = document1.createDocumentFragment(), div = fragment.appendChild(document1.createElement("div")), input = document1.createElement("input");
+        var fragment = document.createDocumentFragment(), div = fragment.appendChild(document.createElement("div")), input = document.createElement("input");
         // Support: Android 4.0 - 4.3 only
         // Check state lost if the name is set (#11217)
         // Support: Windows Web Apps (WWA)
@@ -7403,16 +7403,16 @@ window.feather = (0, _featherIconsDefault.default);
         div.appendChild(input);
         // Support: Android <=4.1 only
         // Older WebKit doesn't clone checked state correctly in fragments
-        support1.checkClone = div.cloneNode(true).cloneNode(true).lastChild.checked;
+        support.checkClone = div.cloneNode(true).cloneNode(true).lastChild.checked;
         // Support: IE <=11 only
         // Make sure textarea (and checkbox) defaultValue is properly cloned
         div.innerHTML = "<textarea>x</textarea>";
-        support1.noCloneChecked = !!div.cloneNode(true).lastChild.defaultValue;
+        support.noCloneChecked = !!div.cloneNode(true).lastChild.defaultValue;
         // Support: IE <=9 only
         // IE <=9 replaces <option> tags with their contents when inserted outside of
         // the select element.
         div.innerHTML = "<option></option>";
-        support1.option = !!div.lastChild;
+        support.option = !!div.lastChild;
     })();
     // We have to close these tags to support XHTML (#13200)
     var wrapMap = {
@@ -7448,7 +7448,7 @@ window.feather = (0, _featherIconsDefault.default);
     wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
     wrapMap.th = wrapMap.td;
     // Support: IE <=9 only
-    if (!support1.option) wrapMap.optgroup = wrapMap.option = [
+    if (!support.option) wrapMap.optgroup = wrapMap.option = [
         1,
         "<select multiple='multiple'>",
         "</select>"
@@ -7460,7 +7460,7 @@ window.feather = (0, _featherIconsDefault.default);
         if (typeof context.getElementsByTagName !== "undefined") ret = context.getElementsByTagName(tag || "*");
         else if (typeof context.querySelectorAll !== "undefined") ret = context.querySelectorAll(tag || "*");
         else ret = [];
-        if (tag === undefined || tag && nodeName1(context, tag)) return jQuery.merge([
+        if (tag === undefined || tag && nodeName(context, tag)) return jQuery.merge([
             context
         ], ret);
         return ret;
@@ -7470,7 +7470,7 @@ window.feather = (0, _featherIconsDefault.default);
         var i = 0, l = elems.length;
         for(; i < l; i++)dataPriv.set(elems[i], "globalEval", !refElements || dataPriv.get(refElements[i], "globalEval"));
     }
-    var rhtml1 = /<|&#?\w+;/;
+    var rhtml = /<|&#?\w+;/;
     function buildFragment(elems, context, scripts, selection, ignored) {
         var elem, tmp, tag, wrap, attached, j, fragment = context.createDocumentFragment(), nodes = [], i = 0, l = elems.length;
         for(; i < l; i++){
@@ -7482,7 +7482,7 @@ window.feather = (0, _featherIconsDefault.default);
                 jQuery.merge(nodes, elem.nodeType ? [
                     elem
                 ] : elem);
-                else if (!rhtml1.test(elem)) nodes.push(context.createTextNode(elem));
+                else if (!rhtml.test(elem)) nodes.push(context.createTextNode(elem));
                 else {
                     tmp = tmp || fragment.appendChild(context.createElement("div"));
                     // Deserialize a standard representation
@@ -7540,7 +7540,7 @@ window.feather = (0, _featherIconsDefault.default);
     // and blur to be synchronous when the element is not already active.
     // (focus and blur are always synchronous in other supported browsers,
     // this just defines when we can count on it).
-    function expectSync1(elem, type) {
+    function expectSync(elem, type) {
         return elem === safeActiveElement() === (type === "focus");
     }
     // Support: IE <=9 only
@@ -7548,7 +7548,7 @@ window.feather = (0, _featherIconsDefault.default);
     // https://bugs.jquery.com/ticket/13393
     function safeActiveElement() {
         try {
-            return document1.activeElement;
+            return document.activeElement;
         } catch (err) {}
     }
     function on(elem, types, selector, data, fn, one) {
@@ -7820,7 +7820,7 @@ window.feather = (0, _featherIconsDefault.default);
                     // `|| data` is dead code meant only to preserve the variable through minification.
                     var el = this || data;
                     // Claim the first handler
-                    if (rcheckableType.test(el.type) && el.click && nodeName1(el, "input")) // dataPriv.set( el, "click", ... )
+                    if (rcheckableType.test(el.type) && el.click && nodeName(el, "input")) // dataPriv.set( el, "click", ... )
                     leverageNative(el, "click", returnTrue);
                     // Return false to allow normal processing in the caller
                     return false;
@@ -7830,7 +7830,7 @@ window.feather = (0, _featherIconsDefault.default);
                     // `|| data` is dead code meant only to preserve the variable through minification.
                     var el = this || data;
                     // Force setup before triggering a click
-                    if (rcheckableType.test(el.type) && el.click && nodeName1(el, "input")) leverageNative(el, "click");
+                    if (rcheckableType.test(el.type) && el.click && nodeName(el, "input")) leverageNative(el, "click");
                     // Return non-false to allow normal event-path propagation
                     return true;
                 },
@@ -7838,7 +7838,7 @@ window.feather = (0, _featherIconsDefault.default);
                 // Also prevent it if we're currently inside a leveraged native-event stack
                 _default: function(event) {
                     var target = event.target;
-                    return rcheckableType.test(target.type) && target.click && nodeName1(target, "input") && dataPriv.get(target, "click") || nodeName1(target, "a");
+                    return rcheckableType.test(target.type) && target.click && nodeName(target, "input") && dataPriv.get(target, "click") || nodeName(target, "a");
                 }
             },
             beforeunload: {
@@ -7874,7 +7874,7 @@ window.feather = (0, _featherIconsDefault.default);
                         // Store arguments for use when handling the inner native event
                         // There will always be at least one argument (an event object), so this array
                         // will not be confused with a leftover capture object.
-                        saved = slice1.call(arguments);
+                        saved = slice.call(arguments);
                         dataPriv.set(this, type, saved);
                         // Trigger the native event and capture its result
                         // Support: IE <=9 - 11+
@@ -8016,7 +8016,7 @@ window.feather = (0, _featherIconsDefault.default);
                 // Claim the first handler
                 // dataPriv.set( this, "focus", ... )
                 // dataPriv.set( this, "blur", ... )
-                leverageNative(this, type, expectSync1);
+                leverageNative(this, type, expectSync);
                 // Return false to allow normal processing in the caller
                 return false;
             },
@@ -8102,7 +8102,7 @@ window.feather = (0, _featherIconsDefault.default);
     rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i, rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g;
     // Prefer a tbody over its parent table for containing new rows
     function manipulationTarget(elem, content) {
-        if (nodeName1(elem, "table") && nodeName1(content.nodeType !== 11 ? content : content.firstChild, "tr")) return jQuery(elem).children("tbody")[0] || elem;
+        if (nodeName(elem, "table") && nodeName(content.nodeType !== 11 ? content : content.firstChild, "tr")) return jQuery(elem).children("tbody")[0] || elem;
         return elem;
     }
     // Replace/restore the type attribute of script elements for safe DOM manipulation
@@ -8146,7 +8146,7 @@ window.feather = (0, _featherIconsDefault.default);
         args = flat(args);
         var fragment, first, scripts, hasScripts, node, doc, i = 0, l = collection.length, iNoClone = l - 1, value = args[0], valueIsFunction = isFunction(value);
         // We can't cloneNode fragments that contain checked, in WebKit
-        if (valueIsFunction || l > 1 && typeof value === "string" && !support1.checkClone && rchecked.test(value)) return collection.each(function(index) {
+        if (valueIsFunction || l > 1 && typeof value === "string" && !support.checkClone && rchecked.test(value)) return collection.each(function(index) {
             var self = collection.eq(index);
             if (valueIsFunction) args[0] = value.call(this, index, self.html());
             domManip(self, args, callback, ignored);
@@ -8212,7 +8212,7 @@ window.feather = (0, _featherIconsDefault.default);
         clone: function(elem, dataAndEvents, deepDataAndEvents) {
             var i, l, srcElements, destElements, clone = elem.cloneNode(true), inPage = isAttached(elem);
             // Fix IE cloning issues
-            if (!support1.noCloneChecked && (elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem)) {
+            if (!support.noCloneChecked && (elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem)) {
                 // We eschew Sizzle here for performance reasons: https://jsperf.com/getall-vs-sizzle/2
                 destElements = getAll(clone);
                 srcElements = getAll(elem);
@@ -8257,12 +8257,12 @@ window.feather = (0, _featherIconsDefault.default);
         remove: function(selector) {
             return remove(this, selector);
         },
-        text: function(value4) {
+        text: function(value) {
             return access(this, function(value) {
                 return value === undefined ? jQuery.text(this) : this.empty().each(function() {
                     if (this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9) this.textContent = value;
                 });
-            }, null, value4, arguments.length);
+            }, null, value, arguments.length);
         },
         append: function() {
             return domManip(this, arguments, function(elem) {
@@ -8307,7 +8307,7 @@ window.feather = (0, _featherIconsDefault.default);
                 return jQuery.clone(this, dataAndEvents, deepDataAndEvents);
             });
         },
-        html: function(value5) {
+        html: function(value) {
             return access(this, function(value) {
                 var elem = this[0] || {}, i = 0, l = this.length;
                 if (value === undefined && elem.nodeType === 1) return elem.innerHTML;
@@ -8331,7 +8331,7 @@ window.feather = (0, _featherIconsDefault.default);
                     } catch (e) {}
                 }
                 if (elem) this.empty().append(value);
-            }, null, value5, arguments.length);
+            }, null, value, arguments.length);
         },
         replaceWith: function() {
             var ignored = [];
@@ -8360,7 +8360,7 @@ window.feather = (0, _featherIconsDefault.default);
                 jQuery(insert[i])[original](elems);
                 // Support: Android <=4.0 only, PhantomJS 1 only
                 // .get() because push.apply(_, arraylike) throws on ancient WebKit
-                push1.apply(ret, elems.get());
+                push.apply(ret, elems.get());
             }
             return this.pushStack(ret);
         };
@@ -8421,15 +8421,15 @@ window.feather = (0, _featherIconsDefault.default);
         function roundPixelMeasures(measure) {
             return Math.round(parseFloat(measure));
         }
-        var pixelPositionVal, boxSizingReliableVal, scrollboxSizeVal, pixelBoxStylesVal, reliableTrDimensionsVal, reliableMarginLeftVal, container = document1.createElement("div"), div = document1.createElement("div");
+        var pixelPositionVal, boxSizingReliableVal, scrollboxSizeVal, pixelBoxStylesVal, reliableTrDimensionsVal, reliableMarginLeftVal, container = document.createElement("div"), div = document.createElement("div");
         // Finish early in limited (non-browser) environments
         if (!div.style) return;
         // Support: IE <=9 - 11 only
         // Style of cloned element affects source element cloned (#8908)
         div.style.backgroundClip = "content-box";
         div.cloneNode(true).style.backgroundClip = "";
-        support1.clearCloneStyle = div.style.backgroundClip === "content-box";
-        jQuery.extend(support1, {
+        support.clearCloneStyle = div.style.backgroundClip === "content-box";
+        jQuery.extend(support, {
             boxSizingReliable: function() {
                 computeStyleTests();
                 return boxSizingReliableVal;
@@ -8462,9 +8462,9 @@ window.feather = (0, _featherIconsDefault.default);
             reliableTrDimensions: function() {
                 var table, tr, trChild, trStyle;
                 if (reliableTrDimensionsVal == null) {
-                    table = document1.createElement("table");
-                    tr = document1.createElement("tr");
-                    trChild = document1.createElement("div");
+                    table = document.createElement("table");
+                    tr = document.createElement("tr");
+                    trChild = document.createElement("div");
                     table.style.cssText = "position:absolute;left:-11111px;border-collapse:separate";
                     tr.style.cssText = "border:1px solid";
                     // Support: Chrome 86+
@@ -8506,7 +8506,7 @@ window.feather = (0, _featherIconsDefault.default);
             // but width seems to be reliably pixels.
             // This is against the CSSOM draft spec:
             // https://drafts.csswg.org/cssom/#resolved-values
-            if (!support1.pixelBoxStyles() && rnumnonpx.test(ret) && rboxStyle.test(name)) {
+            if (!support.pixelBoxStyles() && rnumnonpx.test(ret) && rboxStyle.test(name)) {
                 // Remember the original values
                 width = style.width;
                 minWidth = style.minWidth;
@@ -8543,7 +8543,7 @@ window.feather = (0, _featherIconsDefault.default);
         "Webkit",
         "Moz",
         "ms"
-    ], emptyStyle = document1.createElement("div").style, vendorProps = {};
+    ], emptyStyle = document.createElement("div").style, vendorProps = {};
     // Return a vendor-prefixed property or undefined
     function vendorPropName(name) {
         // Check for vendor prefixed names
@@ -8611,7 +8611,7 @@ window.feather = (0, _featherIconsDefault.default);
         // Start with computed style
         var styles = getStyles(elem), // To avoid forcing a reflow, only fetch boxSizing if we need it (gh-4322).
         // Fake content-box until we know it's needed to know the true value.
-        boxSizingNeeded = !support1.boxSizingReliable() || extra, isBorderBox = boxSizingNeeded && jQuery.css(elem, "boxSizing", false, styles) === "border-box", valueIsBorderBox = isBorderBox, val = curCSS(elem, dimension, styles), offsetProp = "offset" + dimension[0].toUpperCase() + dimension.slice(1);
+        boxSizingNeeded = !support.boxSizingReliable() || extra, isBorderBox = boxSizingNeeded && jQuery.css(elem, "boxSizing", false, styles) === "border-box", valueIsBorderBox = isBorderBox, val = curCSS(elem, dimension, styles), offsetProp = "offset" + dimension[0].toUpperCase() + dimension.slice(1);
         // Support: Firefox <=54
         // Return a confounding non-pixel value or feign ignorance, as appropriate.
         if (rnumnonpx.test(val)) {
@@ -8621,11 +8621,11 @@ window.feather = (0, _featherIconsDefault.default);
         // Support: IE 9 - 11 only
         // Use offsetWidth/offsetHeight for when box sizing is unreliable.
         // In those cases, the computed value can be trusted to be border-box.
-        if ((!support1.boxSizingReliable() && isBorderBox || // Support: IE 10 - 11+, Edge 15 - 18+
+        if ((!support.boxSizingReliable() && isBorderBox || // Support: IE 10 - 11+, Edge 15 - 18+
         // IE/Edge misreport `getComputedStyle` of table rows with width/height
         // set in CSS while `offset*` properties report correct values.
         // Interestingly, in some cases IE 9 doesn't suffer from this issue.
-        !support1.reliableTrDimensions() && nodeName1(elem, "tr") || // Fall back to offsetWidth/offsetHeight when value is "auto"
+        !support.reliableTrDimensions() && nodeName(elem, "tr") || // Fall back to offsetWidth/offsetHeight when value is "auto"
         // This happens for inline elements with no explicit setting (gh-3571)
         val === "auto" || // Support: Android <=4.1 - 4.3 only
         // Also use offsetWidth/offsetHeight for misreported inline dimensions (gh-3602)
@@ -8712,7 +8712,7 @@ window.feather = (0, _featherIconsDefault.default);
                 // "px" to a few hardcoded values.
                 if (type === "number" && !isCustomProp) value += ret && ret[3] || (jQuery.cssNumber[origName] ? "" : "px");
                 // background-* props affect original clone's values
-                if (!support1.clearCloneStyle && value === "" && name.indexOf("background") === 0) style[name] = "inherit";
+                if (!support.clearCloneStyle && value === "" && name.indexOf("background") === 0) style[name] = "inherit";
                 // If a hook was provided, use that value, otherwise just set the specified value
                 if (!hooks || !("set" in hooks) || (value = hooks.set(elem, value, extra)) !== undefined) {
                     if (isCustomProp) style.setProperty(name, value);
@@ -8762,7 +8762,7 @@ window.feather = (0, _featherIconsDefault.default);
             set: function(elem, value, extra) {
                 var matches, styles = getStyles(elem), // Only read styles.position if the test has a chance to fail
                 // to avoid forcing a reflow.
-                scrollboxSizeBuggy = !support1.scrollboxSize() && styles.position === "absolute", // To avoid forcing a reflow, only fetch boxSizing if we need it (gh-3991)
+                scrollboxSizeBuggy = !support.scrollboxSize() && styles.position === "absolute", // To avoid forcing a reflow, only fetch boxSizing if we need it (gh-3991)
                 boxSizingNeeded = scrollboxSizeBuggy || extra, isBorderBox = boxSizingNeeded && jQuery.css(elem, "boxSizing", false, styles) === "border-box", subtract = extra ? boxModelAdjustment(elem, dimension, extra, isBorderBox, styles) : 0;
                 // Account for unreliable border-box dimensions by comparing offset* to computed and
                 // faking a content-box to get border and padding (gh-3699)
@@ -8776,7 +8776,7 @@ window.feather = (0, _featherIconsDefault.default);
             }
         };
     });
-    jQuery.cssHooks.marginLeft = addGetHookIf(support1.reliableMarginLeft, function(elem, computed) {
+    jQuery.cssHooks.marginLeft = addGetHookIf(support.reliableMarginLeft, function(elem, computed) {
         if (computed) return (parseFloat(curCSS(elem, "marginLeft")) || elem.getBoundingClientRect().left - swap(elem, {
             marginLeft: 0
         }, function() {
@@ -8802,7 +8802,7 @@ window.feather = (0, _featherIconsDefault.default);
         if (prefix !== "margin") jQuery.cssHooks[prefix + suffix].set = setPositiveNumber;
     });
     jQuery.fn.extend({
-        css: function(name1, value6) {
+        css: function(name, value) {
             return access(this, function(elem, name, value) {
                 var styles, len, map = {}, i = 0;
                 if (Array.isArray(name)) {
@@ -8812,7 +8812,7 @@ window.feather = (0, _featherIconsDefault.default);
                     return map;
                 }
                 return value !== undefined ? jQuery.style(elem, name, value) : jQuery.css(elem, name);
-            }, name1, value6, arguments.length > 1);
+            }, name, value, arguments.length > 1);
         }
     });
     function Tween(elem, options, prop, end, easing) {
@@ -8893,7 +8893,7 @@ window.feather = (0, _featherIconsDefault.default);
     var fxNow, inProgress, rfxtypes = /^(?:toggle|show|hide)$/, rrun = /queueHooks$/;
     function schedule() {
         if (inProgress) {
-            if (document1.hidden === false && window1.requestAnimationFrame) window1.requestAnimationFrame(schedule);
+            if (document.hidden === false && window1.requestAnimationFrame) window1.requestAnimationFrame(schedule);
             else window1.setTimeout(schedule, jQuery.fx.interval);
             jQuery.fx.tick();
         }
@@ -9085,7 +9085,7 @@ window.feather = (0, _featherIconsDefault.default);
         }
     }
     function Animation(elem, properties, options) {
-        var result, stopped, index1 = 0, length1 = Animation.prefilters.length, deferred = jQuery.Deferred().always(function() {
+        var result, stopped, index = 0, length = Animation.prefilters.length, deferred = jQuery.Deferred().always(function() {
             // Don't match elem in the :animated selector
             delete tick.elem;
         }), tick = function() {
@@ -9155,8 +9155,8 @@ window.feather = (0, _featherIconsDefault.default);
             }
         }), props = animation.props;
         propFilter(props, animation.opts.specialEasing);
-        for(; index1 < length1; index1++){
-            result = Animation.prefilters[index1].call(animation, elem, props, animation.opts);
+        for(; index < length; index++){
+            result = Animation.prefilters[index].call(animation, elem, props, animation.opts);
             if (result) {
                 if (isFunction(result.stop)) jQuery._queueHooks(animation.elem, animation.opts.queue).stop = result.stop.bind(result);
                 return result;
@@ -9369,20 +9369,20 @@ window.feather = (0, _featherIconsDefault.default);
         });
     };
     (function() {
-        var input = document1.createElement("input"), select = document1.createElement("select"), opt = select.appendChild(document1.createElement("option"));
+        var input = document.createElement("input"), select = document.createElement("select"), opt = select.appendChild(document.createElement("option"));
         input.type = "checkbox";
         // Support: Android <=4.3 only
         // Default value for a checkbox should be "on"
-        support1.checkOn = input.value !== "";
+        support.checkOn = input.value !== "";
         // Support: IE <=11 only
         // Must access selectedIndex to make default options select
-        support1.optSelected = opt.selected;
+        support.optSelected = opt.selected;
         // Support: IE <=11 only
         // An input loses its value after becoming a radio
-        input = document1.createElement("input");
+        input = document.createElement("input");
         input.value = "t";
         input.type = "radio";
-        support1.radioValue = input.value === "t";
+        support.radioValue = input.value === "t";
     })();
     var boolHook, attrHandle = jQuery.expr.attrHandle;
     jQuery.fn.extend({
@@ -9422,7 +9422,7 @@ window.feather = (0, _featherIconsDefault.default);
         attrHooks: {
             type: {
                 set: function(elem, value) {
-                    if (!support1.radioValue && value === "radio" && nodeName1(elem, "input")) {
+                    if (!support.radioValue && value === "radio" && nodeName(elem, "input")) {
                         var val = elem.value;
                         elem.setAttribute("type", value);
                         if (val) elem.value = val;
@@ -9447,9 +9447,9 @@ window.feather = (0, _featherIconsDefault.default);
             return name;
         }
     };
-    jQuery.each(jQuery.expr.match.bool.source.match(/\w+/g), function(_i, name2) {
-        var getter = attrHandle[name2] || jQuery.find.attr;
-        attrHandle[name2] = function(elem, name, isXML) {
+    jQuery.each(jQuery.expr.match.bool.source.match(/\w+/g), function(_i, name) {
+        var getter = attrHandle[name] || jQuery.find.attr;
+        attrHandle[name] = function(elem, name, isXML) {
             var ret, handle, lowercaseName = name.toLowerCase();
             if (!isXML) {
                 // Avoid an infinite loop by temporarily removing this function from the getter
@@ -9517,7 +9517,7 @@ window.feather = (0, _featherIconsDefault.default);
     // when in an optgroup
     // eslint rule "no-unused-expressions" is disabled for this code
     // since it considers such accessions noop
-    if (!support1.optSelected) jQuery.propHooks.selected = {
+    if (!support.optSelected) jQuery.propHooks.selected = {
         get: function(elem) {
             /* eslint no-unused-expressions: "off" */ var parent = elem.parentNode;
             if (parent && parent.parentNode) parent.parentNode.selectedIndex;
@@ -9561,7 +9561,7 @@ window.feather = (0, _featherIconsDefault.default);
     }
     jQuery.fn.extend({
         addClass: function(value) {
-            var classes, elem, cur, curValue, clazz, j1, finalValue, i = 0;
+            var classes, elem, cur, curValue, clazz, j, finalValue, i = 0;
             if (isFunction(value)) return this.each(function(j) {
                 jQuery(this).addClass(value.call(this, j, getClass(this)));
             });
@@ -9570,8 +9570,8 @@ window.feather = (0, _featherIconsDefault.default);
                 curValue = getClass(elem);
                 cur = elem.nodeType === 1 && " " + stripAndCollapse(curValue) + " ";
                 if (cur) {
-                    j1 = 0;
-                    while(clazz = classes[j1++])if (cur.indexOf(" " + clazz + " ") < 0) cur += clazz + " ";
+                    j = 0;
+                    while(clazz = classes[j++])if (cur.indexOf(" " + clazz + " ") < 0) cur += clazz + " ";
                     // Only assign if different to avoid unneeded rendering.
                     finalValue = stripAndCollapse(cur);
                     if (curValue !== finalValue) elem.setAttribute("class", finalValue);
@@ -9580,7 +9580,7 @@ window.feather = (0, _featherIconsDefault.default);
             return this;
         },
         removeClass: function(value) {
-            var classes, elem, cur, curValue, clazz, j2, finalValue, i = 0;
+            var classes, elem, cur, curValue, clazz, j, finalValue, i = 0;
             if (isFunction(value)) return this.each(function(j) {
                 jQuery(this).removeClass(value.call(this, j, getClass(this)));
             });
@@ -9591,8 +9591,8 @@ window.feather = (0, _featherIconsDefault.default);
                 // This expression is here for better compressibility (see addClass)
                 cur = elem.nodeType === 1 && " " + stripAndCollapse(curValue) + " ";
                 if (cur) {
-                    j2 = 0;
-                    while(clazz = classes[j2++])// Remove *all* instances
+                    j = 0;
+                    while(clazz = classes[j++])// Remove *all* instances
                     while(cur.indexOf(" " + clazz + " ") > -1)cur = cur.replace(" " + clazz + " ", " ");
                     // Only assign if different to avoid unneeded rendering.
                     finalValue = stripAndCollapse(cur);
@@ -9641,7 +9641,7 @@ window.feather = (0, _featherIconsDefault.default);
     });
     var rreturn = /\r/g;
     jQuery.fn.extend({
-        val: function(value7) {
+        val: function(value) {
             var hooks, ret, valueIsFunction, elem = this[0];
             if (!arguments.length) {
                 if (elem) {
@@ -9655,12 +9655,12 @@ window.feather = (0, _featherIconsDefault.default);
                 }
                 return;
             }
-            valueIsFunction = isFunction(value7);
+            valueIsFunction = isFunction(value);
             return this.each(function(i) {
                 var val;
                 if (this.nodeType !== 1) return;
-                if (valueIsFunction) val = value7.call(this, i, jQuery(this).val());
-                else val = value7;
+                if (valueIsFunction) val = value.call(this, i, jQuery(this).val());
+                else val = value;
                 // Treat null/undefined as ""; convert numbers to string
                 if (val == null) val = "";
                 else if (typeof val === "number") val += "";
@@ -9696,7 +9696,7 @@ window.feather = (0, _featherIconsDefault.default);
                         // Support: IE <=9 only
                         // IE8-9 doesn't update selected after form reset (#2551)
                         if ((option.selected || i === index) && // Don't return options that are disabled or in a disabled optgroup
-                        !option.disabled && (!option.parentNode.disabled || !nodeName1(option.parentNode, "optgroup"))) {
+                        !option.disabled && (!option.parentNode.disabled || !nodeName(option.parentNode, "optgroup"))) {
                             // Get the specific value for the option
                             value = jQuery(option).val();
                             // We don't need an array for one selects
@@ -9730,21 +9730,21 @@ window.feather = (0, _featherIconsDefault.default);
                 if (Array.isArray(value)) return elem.checked = jQuery.inArray(jQuery(elem).val(), value) > -1;
             }
         };
-        if (!support1.checkOn) jQuery.valHooks[this].get = function(elem) {
+        if (!support.checkOn) jQuery.valHooks[this].get = function(elem) {
             return elem.getAttribute("value") === null ? "on" : elem.value;
         };
     });
     // Return jQuery for attributes-only inclusion
-    support1.focusin = "onfocusin" in window1;
+    support.focusin = "onfocusin" in window1;
     var rfocusMorph = /^(?:focusinfocus|focusoutblur)$/, stopPropagationCallback = function(e) {
         e.stopPropagation();
     };
     jQuery.extend(jQuery.event, {
         trigger: function(event, data, elem, onlyHandlers) {
             var i, cur, tmp, bubbleType, ontype, handle, special, lastElement, eventPath = [
-                elem || document1
-            ], type = hasOwn1.call(event, "type") ? event.type : event, namespaces = hasOwn1.call(event, "namespace") ? event.namespace.split(".") : [];
-            cur = lastElement = tmp = elem = elem || document1;
+                elem || document
+            ], type = hasOwn.call(event, "type") ? event.type : event, namespaces = hasOwn.call(event, "namespace") ? event.namespace.split(".") : [];
+            cur = lastElement = tmp = elem = elem || document;
             // Don't do events on text and comment nodes
             if (elem.nodeType === 3 || elem.nodeType === 8) return;
             // focus/blur morphs to focusin/out; ensure we're not firing them right now
@@ -9784,7 +9784,7 @@ window.feather = (0, _featherIconsDefault.default);
                     tmp = cur;
                 }
                 // Only add window if we got to document (e.g., not plain obj or detached DOM)
-                if (tmp === (elem.ownerDocument || document1)) eventPath.push(tmp.defaultView || tmp.parentWindow || window1);
+                if (tmp === (elem.ownerDocument || document)) eventPath.push(tmp.defaultView || tmp.parentWindow || window1);
             }
             // Fire handlers on the event path
             i = 0;
@@ -9852,7 +9852,7 @@ window.feather = (0, _featherIconsDefault.default);
     // focus(in | out) events fire after focus & blur events,
     // which is spec violation - http://www.w3.org/TR/DOM-Level-3-Events/#events-focusevent-event-order
     // Related ticket - https://bugs.chromium.org/p/chromium/issues/detail?id=449857
-    if (!support1.focusin) jQuery.each({
+    if (!support.focusin) jQuery.each({
         focus: "focusin",
         blur: "focusout"
     }, function(orig, fix) {
@@ -9946,9 +9946,9 @@ window.feather = (0, _featherIconsDefault.default);
                 // Use .is( ":disabled" ) so that fieldset[disabled] works
                 return this.name && !jQuery(this).is(":disabled") && rsubmittable.test(this.nodeName) && !rsubmitterTypes.test(type) && (this.checked || !rcheckableType.test(type));
             }).map(function(_i, elem) {
-                var val1 = jQuery(this).val();
-                if (val1 == null) return null;
-                if (Array.isArray(val1)) return jQuery.map(val1, function(val) {
+                var val = jQuery(this).val();
+                if (val == null) return null;
+                if (Array.isArray(val)) return jQuery.map(val, function(val) {
                     return {
                         name: elem.name,
                         value: val.replace(rCRLF, "\r\n")
@@ -9956,7 +9956,7 @@ window.feather = (0, _featherIconsDefault.default);
                 });
                 return {
                     name: elem.name,
-                    value: val1.replace(rCRLF, "\r\n")
+                    value: val.replace(rCRLF, "\r\n")
                 };
             }).get();
         }
@@ -9976,7 +9976,7 @@ window.feather = (0, _featherIconsDefault.default);
 	 * 3) selection will start with transport dataType and THEN go to "*" if needed
 	 */ transports = {}, // Avoid comment-prolog char sequence (#10098); must appease lint and evade compression
     allTypes = "*/".concat("*"), // Anchor tag for parsing the document origin
-    originAnchor = document1.createElement("a");
+    originAnchor = document.createElement("a");
     originAnchor.href = location.href;
     // Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
     function addToPrefiltersOrTransports(structure) {
@@ -10288,7 +10288,7 @@ window.feather = (0, _featherIconsDefault.default);
             ];
             // A cross-domain request is in order when the origin doesn't match the current origin.
             if (s.crossDomain == null) {
-                urlAnchor = document1.createElement("a");
+                urlAnchor = document.createElement("a");
                 // Support: IE <=8 - 11, Edge 12 - 15
                 // IE throws exception on accessing the href property if url is malformed,
                 // e.g. http://example.com:80x/
@@ -10382,11 +10382,11 @@ window.feather = (0, _featherIconsDefault.default);
                 try {
                     completed = false;
                     transport.send(requestHeaders, done);
-                } catch (e) {
+                } catch (e1) {
                     // Rethrow post-completion exceptions
-                    if (completed) throw e;
+                    if (completed) throw e1;
                     // Propagate others as results
-                    done(-1, e);
+                    done(-1, e1);
                 }
             }
             // Callback for when everything is done
@@ -10585,12 +10585,12 @@ window.feather = (0, _featherIconsDefault.default);
         // #1450: sometimes IE returns 1223 when it should be 204
         1223: 204
     }, xhrSupported = jQuery.ajaxSettings.xhr();
-    support1.cors = !!xhrSupported && "withCredentials" in xhrSupported;
-    support1.ajax = xhrSupported = !!xhrSupported;
+    support.cors = !!xhrSupported && "withCredentials" in xhrSupported;
+    support.ajax = xhrSupported = !!xhrSupported;
     jQuery.ajaxTransport(function(options) {
         var callback, errorCallback;
         // Cross domain only allowed if supported through XMLHttpRequest
-        if (support1.cors || xhrSupported && !options.crossDomain) return {
+        if (support.cors || xhrSupported && !options.crossDomain) return {
             send: function(headers, complete) {
                 var i, xhr = options.xhr();
                 xhr.open(options.type, options.url, options.async, options.username, options.password);
@@ -10702,7 +10702,7 @@ window.feather = (0, _featherIconsDefault.default);
                         if (evt) complete(evt.type === "error" ? 404 : 200, evt.type);
                     });
                     // Use native DOM manipulation to avoid our domManip AJAX trickery
-                    document1.head.appendChild(script[0]);
+                    document.head.appendChild(script[0]);
                 },
                 abort: function() {
                     if (callback) callback();
@@ -10767,8 +10767,8 @@ window.feather = (0, _featherIconsDefault.default);
     // collapse sibling forms: the second one becomes a child of the first one.
     // Because of that, this security measure has to be disabled in Safari 8.
     // https://bugs.webkit.org/show_bug.cgi?id=137337
-    support1.createHTMLDocument = function() {
-        var body = document1.implementation.createHTMLDocument("").body;
+    support.createHTMLDocument = function() {
+        var body = document.implementation.createHTMLDocument("").body;
         body.innerHTML = "<form></form><form></form>";
         return body.childNodes.length === 2;
     }();
@@ -10786,15 +10786,15 @@ window.feather = (0, _featherIconsDefault.default);
         if (!context) {
             // Stop scripts or inline event handlers from being executed immediately
             // by using document.implementation
-            if (support1.createHTMLDocument) {
-                context = document1.implementation.createHTMLDocument("");
+            if (support.createHTMLDocument) {
+                context = document.implementation.createHTMLDocument("");
                 // Set the base href for the created document
                 // so any parsed elements with URLs
                 // are based on the document's URL (gh-2965)
                 base = context.createElement("base");
-                base.href = document1.location.href;
+                base.href = document.location.href;
                 context.head.appendChild(base);
-            } else context = document1;
+            } else context = document;
         }
         parsed = rsingleTag.exec(data);
         scripts = !keepScripts && [];
@@ -10963,9 +10963,9 @@ window.feather = (0, _featherIconsDefault.default);
     jQuery.each({
         scrollLeft: "pageXOffset",
         scrollTop: "pageYOffset"
-    }, function(method1, prop) {
+    }, function(method, prop) {
         var top = "pageYOffset" === prop;
-        jQuery.fn[method1] = function(val2) {
+        jQuery.fn[method] = function(val) {
             return access(this, function(elem, method, val) {
                 // Coalesce documents and windows
                 var win;
@@ -10974,7 +10974,7 @@ window.feather = (0, _featherIconsDefault.default);
                 if (val === undefined) return win ? win[prop] : elem[method];
                 if (win) win.scrollTo(!top ? val : win.pageXOffset, top ? val : win.pageYOffset);
                 else elem[method] = val;
-            }, method1, val2, arguments.length);
+            }, method, val, arguments.length);
         };
     });
     // Support: Safari <=7 - 9.1, Chrome <=37 - 49
@@ -10987,7 +10987,7 @@ window.feather = (0, _featherIconsDefault.default);
         "top",
         "left"
     ], function(_i, prop) {
-        jQuery.cssHooks[prop] = addGetHookIf(support1.pixelPosition, function(elem, computed) {
+        jQuery.cssHooks[prop] = addGetHookIf(support.pixelPosition, function(elem, computed) {
             if (computed) {
                 computed = curCSS(elem, prop);
                 // If curCSS returns percentage, fallback to offset
@@ -10999,15 +10999,15 @@ window.feather = (0, _featherIconsDefault.default);
     jQuery.each({
         Height: "height",
         Width: "width"
-    }, function(name, type1) {
+    }, function(name, type) {
         jQuery.each({
             padding: "inner" + name,
-            content: type1,
+            content: type,
             "": "outer" + name
         }, function(defaultExtra, funcName) {
             // Margin is only for outerHeight, outerWidth
-            jQuery.fn[funcName] = function(margin, value8) {
-                var chainable = arguments.length && (defaultExtra || typeof margin !== "boolean"), extra = defaultExtra || (margin === true || value8 === true ? "margin" : "border");
+            jQuery.fn[funcName] = function(margin, value) {
+                var chainable = arguments.length && (defaultExtra || typeof margin !== "boolean"), extra = defaultExtra || (margin === true || value === true ? "margin" : "border");
                 return access(this, function(elem, type, value) {
                     var doc;
                     if (isWindow(elem)) // $( window ).outerWidth/Height return w/h including scrollbars (gh-1729)
@@ -11022,7 +11022,7 @@ window.feather = (0, _featherIconsDefault.default);
                     return value === undefined ? // Get width or height on the element, requesting but not forcing parseFloat
                     jQuery.css(elem, type, extra) : // Set width or height on the element
                     jQuery.style(elem, type, value, extra);
-                }, type1, chainable ? margin : undefined, chainable);
+                }, type, chainable ? margin : undefined, chainable);
             };
         });
     });
@@ -11064,7 +11064,7 @@ window.feather = (0, _featherIconsDefault.default);
     });
     // Support: Android <=4.0 only
     // Make sure we trim BOM and NBSP
-    var rtrim1 = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+    var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
     // Bind a function to a context, optionally partially applying any
     // arguments.
     // jQuery.proxy is deprecated to promote standards (specifically Function#bind)
@@ -11080,9 +11080,9 @@ window.feather = (0, _featherIconsDefault.default);
         // this throws a TypeError, but we will just return undefined.
         if (!isFunction(fn)) return undefined;
         // Simulated bind
-        args = slice1.call(arguments, 2);
+        args = slice.call(arguments, 2);
         proxy = function() {
-            return fn.apply(context || this, args.concat(slice1.call(arguments)));
+            return fn.apply(context || this, args.concat(slice.call(arguments)));
         };
         // Set the guid of unique handler to the same of original handler, so it can be removed
         proxy.guid = fn.guid = fn.guid || jQuery.guid++;
@@ -11094,7 +11094,7 @@ window.feather = (0, _featherIconsDefault.default);
     };
     jQuery.isArray = Array.isArray;
     jQuery.parseJSON = JSON.parse;
-    jQuery.nodeName = nodeName1;
+    jQuery.nodeName = nodeName;
     jQuery.isFunction = isFunction;
     jQuery.isWindow = isWindow;
     jQuery.camelCase = camelCase;
@@ -11111,7 +11111,7 @@ window.feather = (0, _featherIconsDefault.default);
         !isNaN(obj - parseFloat(obj));
     };
     jQuery.trim = function(text) {
-        return text == null ? "" : (text + "").replace(rtrim1, "");
+        return text == null ? "" : (text + "").replace(rtrim, "");
     };
     // Register as a named AMD module, since jQuery can be concatenated with other
     // files that may use define, but not via a proper concatenation script that
@@ -11169,7 +11169,7 @@ window.feather = (0, _featherIconsDefault.default);
         $ = require("datatables.net")(root, $).$;
         return factory($, root, root.document);
     };
-})(function($, window, document, undefined) {
+})(function($, window1, document1, undefined) {
     "use strict";
     var DataTable = $.fn.dataTable;
     /* Set the defaults for DataTables initialisation */ $.extend(true, DataTable.defaults, {
@@ -11183,7 +11183,7 @@ window.feather = (0, _featherIconsDefault.default);
         sProcessing: "dataTables_processing card",
         sPageButton: "paginate_button page-item"
     });
-    /* Bootstrap paging button renderer */ DataTable.ext.renderer.pageButton.bootstrap = function(settings, host, idx, buttons1, page, pages) {
+    /* Bootstrap paging button renderer */ DataTable.ext.renderer.pageButton.bootstrap = function(settings, host, idx, buttons, page, pages) {
         var api = new DataTable.Api(settings);
         var classes = settings.oClasses;
         var lang = settings.oLanguage.oPaginate;
@@ -11255,9 +11255,9 @@ window.feather = (0, _featherIconsDefault.default);
             // elements, focus is lost on the select button which is bad for
             // accessibility. So we want to restore focus once the draw has
             // completed
-            activeEl = $(host).find(document.activeElement).data("dt-idx");
+            activeEl = $(host).find(document1.activeElement).data("dt-idx");
         } catch (e) {}
-        attach($(host).empty().html('<ul class="pagination"/>').children("ul"), buttons1);
+        attach($(host).empty().html('<ul class="pagination"/>').children("ul"), buttons);
         if (activeEl !== undefined) $(host).find("[data-dt-idx=" + activeEl + "]").trigger("focus");
     };
     return DataTable;
@@ -11298,7 +11298,7 @@ window.feather = (0, _featherIconsDefault.default);
         if (!$) $ = typeof window !== "undefined" ? require("jquery") : require("jquery")(root);
         return factory($, root, root.document);
     };
-})(function($, window, document, undefined) {
+})(function($, window1, document1, undefined) {
     "use strict";
     var DataTable = function(selector, options) {
         // When creating with `new`, create a new DataTable, returning the API instance
@@ -11914,7 +11914,7 @@ window.feather = (0, _featherIconsDefault.default);
             // object that can be bashed around
             var o = {};
             var oInit = len > 1 ? _fnExtend(o, options, true) : options;
-            /*global oInit,_that,emptyInit*/ var i2 = 0, iLen, j, jLen, k, kLen;
+            /*global oInit,_that,emptyInit*/ var i = 0, iLen, j, jLen, k, kLen;
             var sId = this.getAttribute("id");
             var bInitHandedOff = false;
             var defaults = DataTable.defaults;
@@ -11929,8 +11929,8 @@ window.feather = (0, _featherIconsDefault.default);
             _fnCamelToHungarian(defaults.column, defaults.column, true);
             /* Setting up the initialisation object */ _fnCamelToHungarian(defaults, $.extend(oInit, $this.data()), true);
             /* Check to see if we are re-initialising a table */ var allSettings = DataTable.settings;
-            for(i2 = 0, iLen = allSettings.length; i2 < iLen; i2++){
-                var s = allSettings[i2];
+            for(i = 0, iLen = allSettings.length; i < iLen; i++){
+                var s = allSettings[i];
                 /* Base check on table node */ if (s.nTable == this || s.nTHead && s.nTHead.parentNode == this || s.nTFoot && s.nTFoot.parentNode == this) {
                     var bRetrieve = oInit.bRetrieve !== undefined ? oInit.bRetrieve : defaults.bRetrieve;
                     var bDestroy = oInit.bDestroy !== undefined ? oInit.bDestroy : defaults.bDestroy;
@@ -11948,7 +11948,7 @@ window.feather = (0, _featherIconsDefault.default);
 				 * instance by simply deleting it. This is under the assumption that the table has been
 				 * destroyed by other methods. Anyone using non-id selectors will need to do this manually
 				 */ if (s.sTableId == this.id) {
-                    allSettings.splice(i2, 1);
+                    allSettings.splice(i, 1);
                     break;
                 }
             }
@@ -12126,9 +12126,9 @@ window.feather = (0, _featherIconsDefault.default);
             }
             /* If not given a column array, generate one with nulls */ if (oInit.aoColumns === null) {
                 aoColumnsInit = [];
-                for(i2 = 0, iLen = anThs.length; i2 < iLen; i2++)aoColumnsInit.push(null);
+                for(i = 0, iLen = anThs.length; i < iLen; i++)aoColumnsInit.push(null);
             } else aoColumnsInit = oInit.aoColumns;
-            /* Add the columns */ for(i2 = 0, iLen = aoColumnsInit.length; i2 < iLen; i2++)_fnAddColumn(oSettings, anThs ? anThs[i2] : null);
+            /* Add the columns */ for(i = 0, iLen = aoColumnsInit.length; i < iLen; i++)_fnAddColumn(oSettings, anThs ? anThs[i] : null);
             /* Apply the column definitions */ _fnApplyColumnDefs(oSettings, oInit.aoColumnDefs, aoColumnsInit, function(iCol, oDef) {
                 _fnColumnOptions(oSettings, iCol, oDef);
             });
@@ -12164,7 +12164,7 @@ window.feather = (0, _featherIconsDefault.default);
                 // in case that has been altered, so the default sort reflects that option
                 if (oInit.aaSorting === undefined) {
                     var sorting = oSettings.aaSorting;
-                    for(i2 = 0, iLen = sorting.length; i2 < iLen; i2++)sorting[i2][1] = oSettings.aoColumns[i2].asSorting[0];
+                    for(i = 0, iLen = sorting.length; i < iLen; i++)sorting[i][1] = oSettings.aoColumns[i].asSorting[0];
                 }
                 /* Do a first pass on the sorting classes (allows any size changes to be taken into
 				 * account, and also will apply sorting disabled classes if disabled
@@ -12209,7 +12209,7 @@ window.feather = (0, _featherIconsDefault.default);
                     oSettings.nTFoot = tfoot[0];
                     _fnDetectHeader(oSettings.aoFooter, oSettings.nTFoot);
                 }
-                /* Check if there is data passing into the constructor */ if (oInit.aaData) for(i2 = 0; i2 < oInit.aaData.length; i2++)_fnAddData(oSettings, oInit.aaData[i2]);
+                /* Check if there is data passing into the constructor */ if (oInit.aaData) for(i = 0; i < oInit.aaData.length; i++)_fnAddData(oSettings, oInit.aaData[i]);
                 else if (oSettings.bDeferLoading || _fnDataSource(oSettings) == "dom") /* Grab the data from the page - only do this when deferred loading or no Ajax
 					 * source since there is no point in reading the DOM data if we are then going
 					 * to replace it with Ajax data
@@ -12746,7 +12746,7 @@ window.feather = (0, _featherIconsDefault.default);
             var n = $("<div/>").css({
                 position: "fixed",
                 top: 0,
-                left: $(window).scrollLeft() * -1,
+                left: $(window1).scrollLeft() * -1,
                 height: 1,
                 width: 1,
                 overflow: "hidden"
@@ -12816,7 +12816,7 @@ window.feather = (0, _featherIconsDefault.default);
         var oDefaults = DataTable.defaults.column;
         var iCol = oSettings.aoColumns.length;
         var oCol = $.extend({}, DataTable.models.oColumn, oDefaults, {
-            "nTh": nTh ? nTh : document.createElement("th"),
+            "nTh": nTh ? nTh : document1.createElement("th"),
             "sTitle": oDefaults.sTitle ? oDefaults.sTitle : nTh ? nTh.innerHTML : "",
             "aDataSort": oDefaults.aDataSort ? oDefaults.aDataSort : [
                 iCol
@@ -13309,10 +13309,10 @@ window.feather = (0, _featherIconsDefault.default);
 	 *   them from here).
 	 * @memberof DataTable#oApi
 	 */ function _fnGetRowElements(settings, row, colIdx, d) {
-        var tds = [], td1 = row.firstChild, name, col, o, i = 0, contents, columns = settings.aoColumns, objectRead = settings._rowReadObject;
+        var tds = [], td = row.firstChild, name, col, o, i = 0, contents, columns = settings.aoColumns, objectRead = settings._rowReadObject;
         // Allow the data object to be passed in, or construct
         d = d !== undefined ? d : objectRead ? {} : [];
-        var attr1 = function(str, td) {
+        var attr = function(str, td) {
             if (typeof str === "string") {
                 var idx = str.indexOf("@");
                 if (idx !== -1) {
@@ -13330,9 +13330,9 @@ window.feather = (0, _featherIconsDefault.default);
                 if (col && col._bAttrSrc) {
                     var setter = _fnSetObjectDataFn(col.mData._);
                     setter(d, contents);
-                    attr1(col.mData.sort, cell);
-                    attr1(col.mData.type, cell);
-                    attr1(col.mData.filter, cell);
+                    attr(col.mData.sort, cell);
+                    attr(col.mData.type, cell);
+                    attr(col.mData.filter, cell);
                 } else // Depending on the `data` option for the columns the data can
                 // be read to either an object or an array.
                 if (objectRead) {
@@ -13343,14 +13343,14 @@ window.feather = (0, _featherIconsDefault.default);
             }
             i++;
         };
-        if (td1) // `tr` element was passed in
-        while(td1){
-            name = td1.nodeName.toUpperCase();
+        if (td) // `tr` element was passed in
+        while(td){
+            name = td.nodeName.toUpperCase();
             if (name == "TD" || name == "TH") {
-                cellProcess(td1);
-                tds.push(td1);
+                cellProcess(td);
+                tds.push(td);
             }
-            td1 = td1.nextSibling;
+            td = td.nextSibling;
         }
         else {
             // Existing row object passed in
@@ -13380,7 +13380,7 @@ window.feather = (0, _featherIconsDefault.default);
 	 */ function _fnCreateTr(oSettings, iRow, nTrIn, anTds) {
         var row = oSettings.aoData[iRow], rowData = row._aData, cells = [], nTr, nTd, oCol, i, iLen, create;
         if (row.nTr === null) {
-            nTr = nTrIn || document.createElement("tr");
+            nTr = nTrIn || document1.createElement("tr");
             row.nTr = nTr;
             row.anCells = cells;
             /* Use a private property on the node to allow reserve mapping from the node
@@ -13390,7 +13390,7 @@ window.feather = (0, _featherIconsDefault.default);
             /* Process each column */ for(i = 0, iLen = oSettings.aoColumns.length; i < iLen; i++){
                 oCol = oSettings.aoColumns[i];
                 create = nTrIn ? false : true;
-                nTd = create ? document.createElement(oCol.sCellType) : anTds[i];
+                nTd = create ? document1.createElement(oCol.sCellType) : anTds[i];
                 nTd._DT_CellIndex = {
                     row: iRow,
                     column: i
@@ -13725,7 +13725,7 @@ window.feather = (0, _featherIconsDefault.default);
 	 */ function _fnDetectHeader(aLayout, nThead) {
         var nTrs = $(nThead).children("tr");
         var nTr, nCell;
-        var i3, k1, l, iLen, jLen, iColShifted, iColumn, iColspan, iRowspan;
+        var i, k, l, iLen, jLen, iColShifted, iColumn, iColspan, iRowspan;
         var bUnique;
         var fnShiftCol = function(a, i, j) {
             var k = a[i];
@@ -13733,9 +13733,9 @@ window.feather = (0, _featherIconsDefault.default);
             return j;
         };
         aLayout.splice(0, aLayout.length);
-        /* We know how many rows there are in the layout - so prep it */ for(i3 = 0, iLen = nTrs.length; i3 < iLen; i3++)aLayout.push([]);
-        /* Calculate a layout array */ for(i3 = 0, iLen = nTrs.length; i3 < iLen; i3++){
-            nTr = nTrs[i3];
+        /* We know how many rows there are in the layout - so prep it */ for(i = 0, iLen = nTrs.length; i < iLen; i++)aLayout.push([]);
+        /* Calculate a layout array */ for(i = 0, iLen = nTrs.length; i < iLen; i++){
+            nTr = nTrs[i];
             iColumn = 0;
             /* For every cell in the row... */ nCell = nTr.firstChild;
             while(nCell){
@@ -13746,14 +13746,14 @@ window.feather = (0, _featherIconsDefault.default);
                     iRowspan = !iRowspan || iRowspan === 0 || iRowspan === 1 ? 1 : iRowspan;
                     /* There might be colspan cells already in this row, so shift our target
 					 * accordingly
-					 */ iColShifted = fnShiftCol(aLayout, i3, iColumn);
+					 */ iColShifted = fnShiftCol(aLayout, i, iColumn);
                     /* Cache calculation for unique columns */ bUnique = iColspan === 1 ? true : false;
-                    /* If there is col / rowspan, copy the information into the layout grid */ for(l = 0; l < iColspan; l++)for(k1 = 0; k1 < iRowspan; k1++){
-                        aLayout[i3 + k1][iColShifted + l] = {
+                    /* If there is col / rowspan, copy the information into the layout grid */ for(l = 0; l < iColspan; l++)for(k = 0; k < iRowspan; k++){
+                        aLayout[i + k][iColShifted + l] = {
                             "cell": nCell,
                             "unique": bUnique
                         };
-                        aLayout[i3 + k1].nTr = nTr;
+                        aLayout[i + k].nTr = nTr;
                     }
                 }
                 nCell = nCell.nextSibling;
@@ -13919,7 +13919,7 @@ window.feather = (0, _featherIconsDefault.default);
 	 *  @returns {bool} block the table drawing or not
 	 *  @memberof DataTable#oApi
 	 */ function _fnAjaxParameters(settings) {
-        var columns = settings.aoColumns, columnCount = columns.length, features = settings.oFeatures, preSearch = settings.oPreviousSearch, preColSearch = settings.aoPreSearchCols, i4, data = [], dataProp, column, columnSearch, sort = _fnSortFlatten(settings), displayStart = settings._iDisplayStart, displayLength = features.bPaginate !== false ? settings._iDisplayLength : -1;
+        var columns = settings.aoColumns, columnCount = columns.length, features = settings.oFeatures, preSearch = settings.oPreviousSearch, preColSearch = settings.aoPreSearchCols, i, data = [], dataProp, column, columnSearch, sort = _fnSortFlatten(settings), displayStart = settings._iDisplayStart, displayLength = features.bPaginate !== false ? settings._iDisplayLength : -1;
         var param = function(name, value) {
             data.push({
                 "name": name,
@@ -13944,9 +13944,9 @@ window.feather = (0, _featherIconsDefault.default);
                 regex: preSearch.bRegex
             }
         };
-        for(i4 = 0; i4 < columnCount; i4++){
-            column = columns[i4];
-            columnSearch = preColSearch[i4];
+        for(i = 0; i < columnCount; i++){
+            column = columns[i];
+            columnSearch = preColSearch[i];
             dataProp = typeof column.mData == "function" ? "function" : column.mData;
             d.columns.push({
                 data: dataProp,
@@ -13958,13 +13958,13 @@ window.feather = (0, _featherIconsDefault.default);
                     regex: columnSearch.bRegex
                 }
             });
-            param("mDataProp_" + i4, dataProp);
+            param("mDataProp_" + i, dataProp);
             if (features.bFilter) {
-                param("sSearch_" + i4, columnSearch.sSearch);
-                param("bRegex_" + i4, columnSearch.bRegex);
-                param("bSearchable_" + i4, column.bSearchable);
+                param("sSearch_" + i, columnSearch.sSearch);
+                param("bRegex_" + i, columnSearch.bRegex);
+                param("bSearchable_" + i, column.bSearchable);
             }
-            if (features.bSort) param("bSortable_" + i4, column.bSortable);
+            if (features.bSort) param("bSortable_" + i, column.bSortable);
         }
         if (features.bFilter) {
             param("sSearch", preSearch.sSearch);
@@ -14094,7 +14094,7 @@ window.feather = (0, _featherIconsDefault.default);
             if (settings === s) // IE9 throws an 'unknown error' if document.activeElement is used
             // inside an iframe or frame...
             try {
-                if (jqFilter[0] !== document.activeElement) jqFilter.val(previousSearch.sSearch);
+                if (jqFilter[0] !== document1.activeElement) jqFilter.val(previousSearch.sSearch);
             } catch (e) {}
         });
         return filter[0];
@@ -14475,14 +14475,14 @@ window.feather = (0, _featherIconsDefault.default);
 	 *  @param {object} oSettings dataTables settings object
 	 *  @returns {node} Pagination feature node
 	 *  @memberof DataTable#oApi
-	 */ function _fnFeatureHtmlPaginate(settings1) {
-        var type = settings1.sPaginationType, plugin = DataTable.ext.pager[type], modern = typeof plugin === "function", redraw = function(settings) {
+	 */ function _fnFeatureHtmlPaginate(settings) {
+        var type = settings.sPaginationType, plugin = DataTable.ext.pager[type], modern = typeof plugin === "function", redraw = function(settings) {
             _fnDraw(settings);
-        }, node = $("<div/>").addClass(settings1.oClasses.sPaging + type)[0], features = settings1.aanFeatures;
-        if (!modern) plugin.fnInit(settings1, node, redraw);
+        }, node = $("<div/>").addClass(settings.oClasses.sPaging + type)[0], features = settings.aanFeatures;
+        if (!modern) plugin.fnInit(settings, node, redraw);
         /* Add a draw callback for the pagination on first instance, to update the paging display */ if (!features.p) {
-            node.id = settings1.sTableId + "_paginate";
-            settings1.aoDrawCallback.push({
+            node.id = settings.sTableId + "_paginate";
+            settings.aoDrawCallback.push({
                 "fn": function(settings) {
                     if (modern) {
                         var start = settings._iDisplayStart, len = settings._iDisplayLength, visRecords = settings.fnRecordsDisplay(), all = len === -1, page = all ? 0 : Math.ceil(start / len), pages = all ? 1 : Math.ceil(visRecords / len), buttons = plugin(page, pages), i, ien;
@@ -14727,7 +14727,7 @@ window.feather = (0, _featherIconsDefault.default);
         _fnApplyToChildren(zeroOut, headerSrcEls);
         // Read all widths in next pass
         _fnApplyToChildren(function(nSizer) {
-            var style = window.getComputedStyle ? window.getComputedStyle(nSizer).width : _fnStringToCss($(nSizer).width());
+            var style = window1.getComputedStyle ? window1.getComputedStyle(nSizer).width : _fnStringToCss($(nSizer).width());
             headerContent.push(nSizer.innerHTML);
             headerWidths.push(style);
         }, headerSrcEls);
@@ -14953,7 +14953,7 @@ window.feather = (0, _featherIconsDefault.default);
         if (tableWidthAttr) table.style.width = _fnStringToCss(tableWidthAttr);
         if ((tableWidthAttr || scrollX) && !oSettings._reszEvt) {
             var bindResize = function() {
-                $(window).on("resize.DT-" + oSettings.sInstance, _fnThrottle(function() {
+                $(window1).on("resize.DT-" + oSettings.sInstance, _fnThrottle(function() {
                     _fnAdjustColumnSizing(oSettings);
                 }));
             };
@@ -14980,7 +14980,7 @@ window.feather = (0, _featherIconsDefault.default);
 	 *  @memberof DataTable#oApi
 	 */ function _fnConvertToWidth(width, parent) {
         if (!width) return 0;
-        var n = $("<div/>").css("width", _fnStringToCss(width)).appendTo(parent || document.body);
+        var n = $("<div/>").css("width", _fnStringToCss(width)).appendTo(parent || document1.body);
         var val = n[0].offsetWidth;
         n.remove();
         return val;
@@ -15065,7 +15065,7 @@ window.feather = (0, _featherIconsDefault.default);
 	 *  @memberof DataTable#oApi
 	 *  @todo This really needs split up!
 	 */ function _fnSort(oSettings) {
-        var i, ien, iLen, j, jLen, k2, kLen, sDataType, nTh, aiOrig = [], oExtSort = DataTable.ext.type.order, aoData = oSettings.aoData, aoColumns = oSettings.aoColumns, aDataSort, data, iCol, sType, oSort, formatters = 0, sortCol, displayMaster = oSettings.aiDisplayMaster, aSort;
+        var i, ien, iLen, j, jLen, k, kLen, sDataType, nTh, aiOrig = [], oExtSort = DataTable.ext.type.order, aoData = oSettings.aoData, aoColumns = oSettings.aoColumns, aDataSort, data, iCol, sType, oSort, formatters = 0, sortCol, displayMaster = oSettings.aiDisplayMaster, aSort;
         // Resolve any column types that are unknown due to addition or invalidation
         // @todo Can this be moved into a 'data-ready' handler which is called when
         //   data is going to be used in the table?
@@ -15337,8 +15337,8 @@ window.feather = (0, _featherIconsDefault.default);
         var loaded = function(state) {
             _fnImplementState(settings, state, callback);
         };
-        var state1 = settings.fnStateLoadCallback.call(settings.oInstance, settings, loaded);
-        if (state1 !== undefined) _fnImplementState(settings, state1, callback);
+        var state = settings.fnStateLoadCallback.call(settings.oInstance, settings, loaded);
+        if (state !== undefined) _fnImplementState(settings, state, callback);
         // otherwise, wait for the loaded callback to be executed
         return true;
     }
@@ -15409,16 +15409,16 @@ window.feather = (0, _featherIconsDefault.default);
         // Columns
         if (s.columns) {
             for(i = 0, ien = s.columns.length; i < ien; i++){
-                var col1 = s.columns[i];
+                var col = s.columns[i];
                 // Visibility
-                if (col1.visible !== undefined) {
+                if (col.visible !== undefined) {
                     // If the api is defined, the table has been initialised so we need to use it rather than internal settings
                     if (api) // Don't redraw the columns on every iteration of this loop, we will do this at the end instead
-                    api.column(i).visible(col1.visible, false);
-                    else columns[i].bVisible = col1.visible;
+                    api.column(i).visible(col.visible, false);
+                    else columns[i].bVisible = col.visible;
                 }
                 // Search
-                if (col1.search !== undefined) $.extend(settings.aoPreSearchCols[i], _fnSearchToHung(col1.search));
+                if (col.search !== undefined) $.extend(settings.aoPreSearchCols[i], _fnSearchToHung(col.search));
             }
             // If the api is defined then we need to adjust the columns once the visibility has been changed
             if (api) api.columns.adjust();
@@ -15462,7 +15462,7 @@ window.feather = (0, _featherIconsDefault.default);
             if (type == "alert") alert(msg);
             else if (type == "throw") throw new Error(msg);
             else if (typeof type == "function") type(settings, tn, msg);
-        } else if (window.console && console.log) console.log(msg);
+        } else if (window1.console && console.log) console.log(msg);
     }
     /**
 	 * See if a property is defined on one object, if so assign it to the other object
@@ -15895,7 +15895,7 @@ window.feather = (0, _featherIconsDefault.default);
         },
         unshift: __arrayProto.unshift
     });
-    _Api.extend = function(scope1, obj, ext) {
+    _Api.extend = function(scope, obj, ext) {
         // Only extend API instances and static properties of the API
         if (!ext.length || !obj || !(obj instanceof _Api) && !obj.__dt_wrapper) return;
         var i, ien, struct, methodScoping = function(scope, fn, struc) {
@@ -15909,10 +15909,10 @@ window.feather = (0, _featherIconsDefault.default);
         for(i = 0, ien = ext.length; i < ien; i++){
             struct = ext[i];
             // Value
-            obj[struct.name] = struct.type === "function" ? methodScoping(scope1, struct.val, struct) : struct.type === "object" ? {} : struct.val;
+            obj[struct.name] = struct.type === "function" ? methodScoping(scope, struct.val, struct) : struct.type === "object" ? {} : struct.val;
             obj[struct.name].__dt_wrapper = true;
             // Property extension
-            _Api.extend(scope1, obj[struct.name], struct.propExt);
+            _Api.extend(scope, obj[struct.name], struct.propExt);
         }
     };
     // @todo - Is there need for an augment function?
@@ -15944,36 +15944,36 @@ window.feather = (0, _featherIconsDefault.default);
     //         ]
     //       }
     //     ]
-    _Api.register = _api_register = function(name1, val) {
-        if (Array.isArray(name1)) {
-            for(var j = 0, jen = name1.length; j < jen; j++)_Api.register(name1[j], val);
+    _Api.register = _api_register = function(name, val) {
+        if (Array.isArray(name)) {
+            for(var j = 0, jen = name.length; j < jen; j++)_Api.register(name[j], val);
             return;
         }
-        var i5, ien1, heir = name1.split("."), struct = __apiStruct, key, method;
+        var i, ien, heir = name.split("."), struct = __apiStruct, key, method;
         var find = function(src, name) {
             for(var i = 0, ien = src.length; i < ien; i++){
                 if (src[i].name === name) return src[i];
             }
             return null;
         };
-        for(i5 = 0, ien1 = heir.length; i5 < ien1; i5++){
-            method = heir[i5].indexOf("()") !== -1;
-            key = method ? heir[i5].replace("()", "") : heir[i5];
-            var src1 = find(struct, key);
-            if (!src1) {
-                src1 = {
+        for(i = 0, ien = heir.length; i < ien; i++){
+            method = heir[i].indexOf("()") !== -1;
+            key = method ? heir[i].replace("()", "") : heir[i];
+            var src = find(struct, key);
+            if (!src) {
+                src = {
                     name: key,
                     val: {},
                     methodExt: [],
                     propExt: [],
                     type: "object"
                 };
-                struct.push(src1);
+                struct.push(src);
             }
-            if (i5 === ien1 - 1) {
-                src1.val = val;
-                src1.type = typeof val === "function" ? "function" : $.isPlainObject(val) ? "object" : "other";
-            } else struct = method ? src1.methodExt : src1.propExt;
+            if (i === ien - 1) {
+                src.val = val;
+                src.type = typeof val === "function" ? "function" : $.isPlainObject(val) ? "object" : "other";
+            } else struct = method ? src.methodExt : src.propExt;
         }
     };
     _Api.registerPlural = _api_registerPlural = function(pluralName, singularName, val) {
@@ -16543,7 +16543,7 @@ window.feather = (0, _featherIconsDefault.default);
         // Return an Api.rows() extended instance, with the newly added row selected
         return this.row(rows[0]);
     });
-    $(document).on("plugin-init.dt", function(e, context) {
+    $(document1).on("plugin-init.dt", function(e, context) {
         var api = new _Api(context);
         api.on("stateSaveParams", function(e, settings, d) {
             // This could be more compact with the API, but it is a lot faster as a simple
@@ -16753,20 +16753,20 @@ window.feather = (0, _featherIconsDefault.default);
             if (match) switch(match[2]){
                 case "visIdx":
                 case "visible":
-                    var idx1 = parseInt(match[1], 10);
+                    var idx = parseInt(match[1], 10);
                     // Visible index given, convert to column index
-                    if (idx1 < 0) {
+                    if (idx < 0) {
                         // Counting from the right
                         var visColumns = $.map(columns, function(col, i) {
                             return col.bVisible ? i : null;
                         });
                         return [
-                            visColumns[visColumns.length + idx1]
+                            visColumns[visColumns.length + idx]
                         ];
                     }
                     // Counting from the left
                     return [
-                        _fnVisibleToColumnIndex(settings, idx1)
+                        _fnVisibleToColumnIndex(settings, idx)
                     ];
                 case "name":
                     // match by name. `names` is column index complete and in order
@@ -16868,14 +16868,14 @@ window.feather = (0, _featherIconsDefault.default);
             __setColumnVis(settings, column, vis);
         });
         // Group the column visibility changes
-        if (vis !== undefined) this.iterator("table", function(settings2) {
+        if (vis !== undefined) this.iterator("table", function(settings) {
             // Redraw the header after changes
-            _fnDrawHead(settings2, settings2.aoHeader);
-            _fnDrawHead(settings2, settings2.aoFooter);
+            _fnDrawHead(settings, settings.aoHeader);
+            _fnDrawHead(settings, settings.aoFooter);
             // Update colspan for no records display. Child rows and extensions will use their own
             // listeners to do this - only need to update the empty table item here
-            if (!settings2.aiDisplay.length) $(settings2.nTBody).find("td[colspan]").attr("colspan", _fnVisbleColumns(settings2));
-            _fnSaveState(settings2);
+            if (!settings.aiDisplay.length) $(settings.nTBody).find("td[colspan]").attr("colspan", _fnVisbleColumns(settings));
+            _fnSaveState(settings);
             // Second loop once the first is done for events
             that.iterator("column", function(settings, column) {
                 _fnCallbackFire(settings, null, "column-visibility", [
@@ -17350,7 +17350,7 @@ window.feather = (0, _featherIconsDefault.default);
             var rows = $.map(settings.aoData, function(r) {
                 return r.nTr;
             });
-            var i6, ien;
+            var i, ien;
             // Flag to note that the table is currently being destroyed - no action
             // should be taken
             settings.bDestroying = true;
@@ -17364,7 +17364,7 @@ window.feather = (0, _featherIconsDefault.default);
             // lowercase, `dt` events are user subscribed and they are responsible
             // for removing them
             jqWrapper.off(".DT").find(":not(tbody *)").off(".DT");
-            $(window).off(".DT-" + settings.sInstance);
+            $(window1).off(".DT-" + settings.sInstance);
             // When scrolling we had to break the table up - restore it
             if (table != thead.parentNode) {
                 jqTable.children("thead").detach();
@@ -21795,7 +21795,7 @@ window.feather = (0, _featherIconsDefault.default);
     });
     $.extend(true, DataTable.ext.renderer, {
         pageButton: {
-            _: function(settings, host, idx, buttons1, page, pages) {
+            _: function(settings, host, idx, buttons, page, pages) {
                 var classes = settings.oClasses;
                 var lang = settings.oLanguage.oPaginate;
                 var aria = settings.oLanguage.oAria.paginate || {};
@@ -21878,9 +21878,9 @@ window.feather = (0, _featherIconsDefault.default);
                     // elements, focus is lost on the select button which is bad for
                     // accessibility. So we want to restore focus once the draw has
                     // completed
-                    activeEl = $(host).find(document.activeElement).data("dt-idx");
+                    activeEl = $(host).find(document1.activeElement).data("dt-idx");
                 } catch (e) {}
-                attach($(host).empty(), buttons1);
+                attach($(host).empty(), buttons);
                 if (activeEl !== undefined) $(host).find("[data-dt-idx=" + activeEl + "]").trigger("focus");
             }
         }
@@ -22042,18 +22042,18 @@ window.feather = (0, _featherIconsDefault.default);
     };
     // Common logic for moment, luxon or a date action
     function __mld(dt, momentFn, luxonFn, dateFn, arg1) {
-        if (window.moment) return dt[momentFn](arg1);
-        else if (window.luxon) return dt[luxonFn](arg1);
+        if (window1.moment) return dt[momentFn](arg1);
+        else if (window1.luxon) return dt[luxonFn](arg1);
         return dateFn ? dt[dateFn](arg1) : dt;
     }
     var __mlWarning = false;
     function __mldObj(d, format, locale) {
         var dt;
-        if (window.moment) {
-            dt = window.moment.utc(d, format, locale, true);
+        if (window1.moment) {
+            dt = window1.moment.utc(d, format, locale, true);
             if (!dt.isValid()) return null;
-        } else if (window.luxon) {
-            dt = format ? window.luxon.DateTime.fromFormat(d, format) : window.luxon.DateTime.fromISO(d);
+        } else if (window1.luxon) {
+            dt = format ? window1.luxon.DateTime.fromFormat(d, format) : window1.luxon.DateTime.fromISO(d);
             if (!dt.isValid) return null;
             dt.setLocale(locale);
         } else if (!format) // No format given, must be ISO
@@ -22135,10 +22135,10 @@ window.feather = (0, _featherIconsDefault.default);
     var __thousands = ",";
     var __decimal = ".";
     if (Intl) try {
-        var num1 = new Intl.NumberFormat().formatToParts(100000.1);
-        for(var i1 = 0; i1 < num1.length; i1++){
-            if (num1[i1].type === "group") __thousands = num1[i1].value;
-            else if (num1[i1].type === "decimal") __decimal = num1[i1].value;
+        var num = new Intl.NumberFormat().formatToParts(100000.1);
+        for(var i = 0; i < num.length; i++){
+            if (num[i].type === "group") __thousands = num[i].value;
+            else if (num[i].type === "decimal") __decimal = num[i].value;
         }
     } catch (e) {
     // noop
@@ -22386,22 +22386,22 @@ window.feather = (0, _featherIconsDefault.default);
     // arguments.callee.caller (trac-13335). But as of jQuery 3.0 (2016), strict mode should be common
     // enough that all such attempts are guarded in a try block.
     "use strict";
-    var arr1 = [];
+    var arr = [];
     var getProto = Object.getPrototypeOf;
-    var slice1 = arr1.slice;
-    var flat = arr1.flat ? function(array) {
-        return arr1.flat.call(array);
+    var slice = arr.slice;
+    var flat = arr.flat ? function(array) {
+        return arr.flat.call(array);
     } : function(array) {
-        return arr1.concat.apply([], array);
+        return arr.concat.apply([], array);
     };
-    var push1 = arr1.push;
-    var indexOf1 = arr1.indexOf;
+    var push = arr.push;
+    var indexOf = arr.indexOf;
     var class2type = {};
     var toString = class2type.toString;
-    var hasOwn1 = class2type.hasOwnProperty;
-    var fnToString = hasOwn1.toString;
+    var hasOwn = class2type.hasOwnProperty;
+    var fnToString = hasOwn.toString;
     var ObjectFunctionString = fnToString.call(Object);
-    var support1 = {};
+    var support = {};
     var isFunction = function isFunction(obj) {
         // Support: Chrome <=57, Firefox <=52
         // In some browsers, typeof returns "function" for HTML <object> elements
@@ -22415,7 +22415,7 @@ window.feather = (0, _featherIconsDefault.default);
     var isWindow = function isWindow(obj) {
         return obj != null && obj === obj.window;
     };
-    var document1 = window1.document;
+    var document = window1.document;
     var preservedScriptAttributes = {
         type: true,
         src: true,
@@ -22423,7 +22423,7 @@ window.feather = (0, _featherIconsDefault.default);
         noModule: true
     };
     function DOMEval(code, node, doc) {
-        doc = doc || document1;
+        doc = doc || document;
         var i, val, script = doc.createElement("script");
         script.text = code;
         if (node) for(i in preservedScriptAttributes){
@@ -22462,13 +22462,13 @@ window.feather = (0, _featherIconsDefault.default);
         // The default length of a jQuery object is 0
         length: 0,
         toArray: function() {
-            return slice1.call(this);
+            return slice.call(this);
         },
         // Get the Nth element in the matched element set OR
         // Get the whole matched element set as a clean array
         get: function(num) {
             // Return all the elements in a clean array
-            if (num == null) return slice1.call(this);
+            if (num == null) return slice.call(this);
             // Return just the one element from the set
             return num < 0 ? this[num + this.length] : this[num];
         },
@@ -22492,7 +22492,7 @@ window.feather = (0, _featherIconsDefault.default);
             }));
         },
         slice: function() {
-            return this.pushStack(slice1.apply(this, arguments));
+            return this.pushStack(slice.apply(this, arguments));
         },
         first: function() {
             return this.eq(0);
@@ -22521,9 +22521,9 @@ window.feather = (0, _featherIconsDefault.default);
         },
         // For internal use only.
         // Behaves like an Array's method, not like a jQuery method.
-        push: push1,
-        sort: arr1.sort,
-        splice: arr1.splice
+        push: push,
+        sort: arr.sort,
+        splice: arr.splice
     };
     jQuery.extend = jQuery.fn.extend = function() {
         var options, name, src, copy, copyIsArray, clone, target = arguments[0] || {}, i = 1, length = arguments.length, deep = false;
@@ -22584,7 +22584,7 @@ window.feather = (0, _featherIconsDefault.default);
             // Objects with no prototype (e.g., `Object.create( null )`) are plain
             if (!proto) return true;
             // Objects with prototype are plain iff they were constructed by a global Object function
-            Ctor = hasOwn1.call(proto, "constructor") && proto.constructor;
+            Ctor = hasOwn.call(proto, "constructor") && proto.constructor;
             return typeof Ctor === "function" && fnToString.call(Ctor) === ObjectFunctionString;
         },
         isEmptyObject: function(obj) {
@@ -22618,12 +22618,12 @@ window.feather = (0, _featherIconsDefault.default);
                 if (isArrayLike(Object(arr))) jQuery.merge(ret, typeof arr === "string" ? [
                     arr
                 ] : arr);
-                else push1.call(ret, arr);
+                else push.call(ret, arr);
             }
             return ret;
         },
         inArray: function(elem, arr, i) {
-            return arr == null ? -1 : indexOf1.call(arr, elem, i);
+            return arr == null ? -1 : indexOf.call(arr, elem, i);
         },
         // Support: Android <=4.0 only, PhantomJS 1 only
         // push.apply(_, arraylike) throws on ancient WebKit
@@ -22665,9 +22665,9 @@ window.feather = (0, _featherIconsDefault.default);
         guid: 1,
         // jQuery.support is not used in Core but other projects attach their
         // properties to it so it needs to exist.
-        support: support1
+        support: support
     });
-    if (typeof Symbol === "function") jQuery.fn[Symbol.iterator] = arr1[Symbol.iterator];
+    if (typeof Symbol === "function") jQuery.fn[Symbol.iterator] = arr[Symbol.iterator];
     // Populate the class2type map
     jQuery.each("Boolean Number String Function Array Date RegExp Object Error Symbol".split(" "), function(_i, name) {
         class2type["[object " + name + "]"] = name.toLowerCase();
@@ -22681,7 +22681,7 @@ window.feather = (0, _featherIconsDefault.default);
         if (isFunction(obj) || isWindow(obj)) return false;
         return type === "array" || length === 0 || typeof length === "number" && length > 0 && length - 1 in obj;
     }
-    var Sizzle1 = /*!
+    var Sizzle = /*!
  * Sizzle CSS Selector Engine v2.3.6
  * https://sizzlejs.com/
  *
@@ -22690,14 +22690,14 @@ window.feather = (0, _featherIconsDefault.default);
  * https://js.foundation/
  *
  * Date: 2021-02-16
- */ function(window) {
-        var i1, support, Expr, getText, isXML1, tokenize, compile, select, outermostContext, sortInput, hasDuplicate, // Local document vars
-        setDocument, document, docElem1, documentIsHTML, rbuggyQSA, rbuggyMatches, matches1, contains, // Instance-specific data
-        expando = "sizzle" + 1 * new Date(), preferredDoc = window.document, dirruns = 0, done = 0, classCache = createCache(), tokenCache = createCache(), compilerCache = createCache(), nonnativeSelectorCache = createCache(), sortOrder = function(a, b) {
+ */ function(window1) {
+        var i, support, Expr, getText, isXML, tokenize, compile, select, outermostContext, sortInput, hasDuplicate, // Local document vars
+        setDocument, document, docElem, documentIsHTML, rbuggyQSA, rbuggyMatches, matches, contains, // Instance-specific data
+        expando = "sizzle" + 1 * new Date(), preferredDoc = window1.document, dirruns = 0, done = 0, classCache = createCache(), tokenCache = createCache(), compilerCache = createCache(), nonnativeSelectorCache = createCache(), sortOrder = function(a, b) {
             if (a === b) hasDuplicate = true;
             return 0;
         }, // Instance methods
-        hasOwn = {}.hasOwnProperty, arr2 = [], pop = arr2.pop, pushNative = arr2.push, push = arr2.push, slice = arr2.slice, // Use a stripped-down indexOf as it's faster than native
+        hasOwn = {}.hasOwnProperty, arr = [], pop = arr.pop, pushNative = arr.push, push = arr.push, slice = arr.slice, // Use a stripped-down indexOf as it's faster than native
         // https://jsperf.com/thor-indexof-vs-for/5
         indexOf = function(list, elem) {
             var i = 0, len = list.length;
@@ -22744,7 +22744,7 @@ window.feather = (0, _featherIconsDefault.default);
         rcssescape = /([\0-\x1f\x7f]|^-?\d)|^-$|[^\0-\x1f\x7f-\uFFFF\w-]/g, fcssescape = function(ch, asCodePoint) {
             if (asCodePoint) {
                 // U+0000 NULL becomes U+FFFD REPLACEMENT CHARACTER
-                if (ch === "\0") return "\uFFFD";
+                if (ch === "\0") return "�";
                 // Control characters and (dependent upon position) numbers get escaped as code points
                 return ch.slice(0, -1) + "\\" + ch.charCodeAt(ch.length - 1).toString(16) + " ";
             }
@@ -22764,14 +22764,14 @@ window.feather = (0, _featherIconsDefault.default);
         });
         // Optimize for push.apply( _, NodeList )
         try {
-            push.apply(arr2 = slice.call(preferredDoc.childNodes), preferredDoc.childNodes);
+            push.apply(arr = slice.call(preferredDoc.childNodes), preferredDoc.childNodes);
             // Support: Android<4.0
             // Detect silently failing push.apply
             // eslint-disable-next-line no-unused-expressions
-            arr2[preferredDoc.childNodes.length].nodeType;
+            arr[preferredDoc.childNodes.length].nodeType;
         } catch (e) {
             push = {
-                apply: arr2.length ? // Leverage slice if possible
+                apply: arr.length ? // Leverage slice if possible
                 function(target, els) {
                     pushNative.apply(target, slice.call(els));
                 } : // Support: IE<9
@@ -23012,7 +23012,7 @@ window.feather = (0, _featherIconsDefault.default);
  * Detects XML nodes
  * @param {Element|Object} elem An element or a document
  * @returns {Boolean} True iff elem is a non-HTML XML node
- */ isXML1 = Sizzle.isXML = function(elem) {
+ */ isXML = Sizzle.isXML = function(elem) {
             var namespace = elem && elem.namespaceURI, docElem = elem && (elem.ownerDocument || elem).documentElement;
             // Support: IE <=8
             // Assume HTML when documentElement doesn't yet exist, such as inside loading iframes
@@ -23023,8 +23023,8 @@ window.feather = (0, _featherIconsDefault.default);
  * Sets document-related variables once based on the current document
  * @param {Element|Object} [doc] An element or document object to use to set the document
  * @returns {Object} Returns the current document
- */ setDocument = Sizzle.setDocument = function(node1) {
-            var hasCompare, subWindow, doc = node1 ? node1.ownerDocument || node1 : preferredDoc;
+ */ setDocument = Sizzle.setDocument = function(node) {
+            var hasCompare, subWindow, doc = node ? node.ownerDocument || node : preferredDoc;
             // Return early if doc is invalid or already selected
             // Support: IE 11+, Edge 17 - 18+
             // IE/Edge sometimes throw a "Permission denied" error when strict-comparing
@@ -23033,8 +23033,8 @@ window.feather = (0, _featherIconsDefault.default);
             if (doc == document || doc.nodeType !== 9 || !doc.documentElement) return document;
             // Update global variables
             document = doc;
-            docElem1 = document.documentElement;
-            documentIsHTML = !isXML1(document);
+            docElem = document.documentElement;
+            documentIsHTML = !isXML(document);
             // Support: IE 9 - 11+, Edge 12 - 18+
             // Accessing iframe documents after unload throws "permission denied" errors (jQuery #13936)
             // Support: IE 11+, Edge 17 - 18+
@@ -23052,7 +23052,7 @@ window.feather = (0, _featherIconsDefault.default);
             // Support: Safari 6.0 only
             // Safari 6.0 supports :scope but it's an alias of :root there.
             support.scope = assert(function(el) {
-                docElem1.appendChild(el).appendChild(document.createElement("div"));
+                docElem.appendChild(el).appendChild(document.createElement("div"));
                 return typeof el.querySelectorAll !== "undefined" && !el.querySelectorAll(":scope fieldset div").length;
             });
             /* Attributes
@@ -23076,7 +23076,7 @@ window.feather = (0, _featherIconsDefault.default);
             // The broken getElementById methods don't pick up programmatically-set names,
             // so use a roundabout getElementsByName test
             support.getById = assert(function(el) {
-                docElem1.appendChild(el).id = expando;
+                docElem.appendChild(el).id = expando;
                 return !document.getElementsByName || !document.getElementsByName(expando).length;
             });
             // ID filter and find
@@ -23166,7 +23166,7 @@ window.feather = (0, _featherIconsDefault.default);
                     // setting a boolean content attribute,
                     // since its presence should be enough
                     // https://bugs.jquery.com/ticket/12359
-                    docElem1.appendChild(el).innerHTML = "<a id='" + expando + "'></a>" + "<select id='" + expando + "-\r\\' msallowcapture=''>" + "<option selected=''></option></select>";
+                    docElem.appendChild(el).innerHTML = "<a id='" + expando + "'></a>" + "<select id='" + expando + "-\r\\' msallowcapture=''>" + "<option selected=''></option></select>";
                     // Support: IE8, Opera 11-12.16
                     // Nothing should be selected when empty strings follow ^= or $= or *=
                     // The test attribute must be unknown in Opera but "safe" for WinRT
@@ -23214,7 +23214,7 @@ window.feather = (0, _featherIconsDefault.default);
                     if (el.querySelectorAll(":enabled").length !== 2) rbuggyQSA.push(":enabled", ":disabled");
                     // Support: IE9-11+
                     // IE's :disabled selector does not pick up the children of disabled fieldsets
-                    docElem1.appendChild(el).disabled = true;
+                    docElem.appendChild(el).disabled = true;
                     if (el.querySelectorAll(":disabled").length !== 2) rbuggyQSA.push(":enabled", ":disabled");
                     // Support: Opera 10 - 11 only
                     // Opera 10-11 does not throw on post-comma invalid pseudos
@@ -23222,23 +23222,23 @@ window.feather = (0, _featherIconsDefault.default);
                     rbuggyQSA.push(",.*:");
                 });
             }
-            if (support.matchesSelector = rnative.test(matches1 = docElem1.matches || docElem1.webkitMatchesSelector || docElem1.mozMatchesSelector || docElem1.oMatchesSelector || docElem1.msMatchesSelector)) assert(function(el) {
+            if (support.matchesSelector = rnative.test(matches = docElem.matches || docElem.webkitMatchesSelector || docElem.mozMatchesSelector || docElem.oMatchesSelector || docElem.msMatchesSelector)) assert(function(el) {
                 // Check to see if it's possible to do matchesSelector
                 // on a disconnected node (IE 9)
-                support.disconnectedMatch = matches1.call(el, "*");
+                support.disconnectedMatch = matches.call(el, "*");
                 // This should fail with an exception
                 // Gecko does not error, returns false instead
-                matches1.call(el, "[s!='']:x");
+                matches.call(el, "[s!='']:x");
                 rbuggyMatches.push("!=", pseudos);
             });
             rbuggyQSA = rbuggyQSA.length && new RegExp(rbuggyQSA.join("|"));
             rbuggyMatches = rbuggyMatches.length && new RegExp(rbuggyMatches.join("|"));
             /* Contains
-	---------------------------------------------------------------------- */ hasCompare = rnative.test(docElem1.compareDocumentPosition);
+	---------------------------------------------------------------------- */ hasCompare = rnative.test(docElem.compareDocumentPosition);
             // Element contains another
             // Purposefully self-exclusive
             // As in, an element does not contain itself
-            contains = hasCompare || rnative.test(docElem1.contains) ? function(a, b) {
+            contains = hasCompare || rnative.test(docElem.contains) ? function(a, b) {
                 var adown = a.nodeType === 9 ? a.documentElement : a, bup = b && b.parentNode;
                 return a === bup || !!(bup && bup.nodeType === 1 && (adown.contains ? adown.contains(bup) : a.compareDocumentPosition && a.compareDocumentPosition(bup) & 16));
             } : function(a, b) {
@@ -23321,7 +23321,7 @@ window.feather = (0, _featherIconsDefault.default);
         Sizzle.matchesSelector = function(elem, expr) {
             setDocument(elem);
             if (support.matchesSelector && documentIsHTML && !nonnativeSelectorCache[expr + " "] && (!rbuggyMatches || !rbuggyMatches.test(expr)) && (!rbuggyQSA || !rbuggyQSA.test(expr))) try {
-                var ret = matches1.call(elem, expr);
+                var ret = matches.call(elem, expr);
                 // IE 9's matchesSelector returns false on disconnected nodes
                 if (ret || support.disconnectedMatch || // As well, disconnected nodes are said to be in a document
                 // fragment in IE 9
@@ -23654,11 +23654,11 @@ window.feather = (0, _featherIconsDefault.default);
                 }),
                 // Miscellaneous
                 "target": function(elem) {
-                    var hash = window.location && window.location.hash;
+                    var hash = window1.location && window1.location.hash;
                     return hash && hash.slice(1) === elem.id;
                 },
                 "root": function(elem) {
-                    return elem === docElem1;
+                    return elem === docElem;
                 },
                 "focus": function(elem) {
                     return elem === document.activeElement && (!document.hasFocus || document.hasFocus()) && !!(elem.type || elem.href || ~elem.tabIndex);
@@ -23748,17 +23748,17 @@ window.feather = (0, _featherIconsDefault.default);
         };
         Expr.pseudos["nth"] = Expr.pseudos["eq"];
         // Add button/input type pseudos
-        for(i1 in {
+        for(i in {
             radio: true,
             checkbox: true,
             file: true,
             password: true,
             image: true
-        })Expr.pseudos[i1] = createInputPseudo(i1);
-        for(i1 in {
+        })Expr.pseudos[i] = createInputPseudo(i);
+        for(i in {
             submit: true,
             reset: true
-        })Expr.pseudos[i1] = createButtonPseudo(i1);
+        })Expr.pseudos[i] = createButtonPseudo(i);
         // Easy API for creating new setFilters
         function setFilters() {}
         setFilters.prototype = Expr.filters = Expr.pseudos;
@@ -24134,16 +24134,16 @@ window.feather = (0, _featherIconsDefault.default);
         });
         return Sizzle;
     }(window1);
-    jQuery.find = Sizzle1;
-    jQuery.expr = Sizzle1.selectors;
+    jQuery.find = Sizzle;
+    jQuery.expr = Sizzle.selectors;
     // Deprecated
     jQuery.expr[":"] = jQuery.expr.pseudos;
-    jQuery.uniqueSort = jQuery.unique = Sizzle1.uniqueSort;
-    jQuery.text = Sizzle1.getText;
-    jQuery.isXMLDoc = Sizzle1.isXML;
-    jQuery.contains = Sizzle1.contains;
-    jQuery.escapeSelector = Sizzle1.escape;
-    var dir1 = function(elem, dir, until) {
+    jQuery.uniqueSort = jQuery.unique = Sizzle.uniqueSort;
+    jQuery.text = Sizzle.getText;
+    jQuery.isXMLDoc = Sizzle.isXML;
+    jQuery.contains = Sizzle.contains;
+    jQuery.escapeSelector = Sizzle.escape;
+    var dir = function(elem, dir, until) {
         var matched = [], truncate = until !== undefined;
         while((elem = elem[dir]) && elem.nodeType !== 9)if (elem.nodeType === 1) {
             if (truncate && jQuery(elem).is(until)) break;
@@ -24157,7 +24157,7 @@ window.feather = (0, _featherIconsDefault.default);
         return matched;
     };
     var rneedsContext = jQuery.expr.match.needsContext;
-    function nodeName1(elem, name) {
+    function nodeName(elem, name) {
         return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
     }
     var rsingleTag = /^<([a-z][^\/\0>:\x20\t\r\n\f]*)[\x20\t\r\n\f]*\/?>(?:<\/\1>|)$/i;
@@ -24172,16 +24172,16 @@ window.feather = (0, _featherIconsDefault.default);
         });
         // Arraylike of elements (jQuery, arguments, Array)
         if (typeof qualifier !== "string") return jQuery.grep(elements, function(elem) {
-            return indexOf1.call(qualifier, elem) > -1 !== not;
+            return indexOf.call(qualifier, elem) > -1 !== not;
         });
         // Filtered directly for both simple and complex selectors
         return jQuery.filter(qualifier, elements, not);
     }
     jQuery.filter = function(expr, elems, not) {
-        var elem1 = elems[0];
+        var elem = elems[0];
         if (not) expr = ":not(" + expr + ")";
-        if (elems.length === 1 && elem1.nodeType === 1) return jQuery.find.matchesSelector(elem1, expr) ? [
-            elem1
+        if (elems.length === 1 && elem.nodeType === 1) return jQuery.find.matchesSelector(elem, expr) ? [
+            elem
         ] : [];
         return jQuery.find.matches(expr, jQuery.grep(elems, function(elem) {
             return elem.nodeType === 1;
@@ -24217,7 +24217,7 @@ window.feather = (0, _featherIconsDefault.default);
     // Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
     // Strict HTML recognition (#11290: must start with <)
     // Shortcut simple #id case for speed
-    rquickExpr1 = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/, init = jQuery.fn.init = function(selector, context, root) {
+    rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/, init = jQuery.fn.init = function(selector, context, root) {
         var match, elem;
         // HANDLE: $(""), $(null), $(undefined), $(false)
         if (!selector) return this;
@@ -24232,7 +24232,7 @@ window.feather = (0, _featherIconsDefault.default);
                 selector,
                 null
             ];
-            else match = rquickExpr1.exec(selector);
+            else match = rquickExpr.exec(selector);
             // Match html or make sure no context is specified for #id
             if (match && (match[1] || !context)) {
                 // HANDLE: $(html) -> $(array)
@@ -24240,7 +24240,7 @@ window.feather = (0, _featherIconsDefault.default);
                     context = context instanceof jQuery ? context[0] : context;
                     // Option to run scripts is true for back-compat
                     // Intentionally let the error be thrown if parseHTML is not present
-                    jQuery.merge(this, jQuery.parseHTML(match[1], context && context.nodeType ? context.ownerDocument || context : document1, true));
+                    jQuery.merge(this, jQuery.parseHTML(match[1], context && context.nodeType ? context.ownerDocument || context : document, true));
                     // HANDLE: $(html, props)
                     if (rsingleTag.test(match[1]) && jQuery.isPlainObject(context)) {
                         for(match in context)// Properties of context are called as methods if possible
@@ -24250,7 +24250,7 @@ window.feather = (0, _featherIconsDefault.default);
                     return this;
                 // HANDLE: $(#id)
                 } else {
-                    elem = document1.getElementById(match[2]);
+                    elem = document.getElementById(match[2]);
                     if (elem) {
                         // Inject the element directly into the jQuery object
                         this[0] = elem;
@@ -24274,7 +24274,7 @@ window.feather = (0, _featherIconsDefault.default);
     // Give the init function the jQuery prototype for later instantiation
     init.prototype = jQuery.fn;
     // Initialize central reference
-    rootjQuery = jQuery(document1);
+    rootjQuery = jQuery(document);
     var rparentsprev = /^(?:parents|prev(?:Until|All))/, // Methods guaranteed to produce a unique set when starting from a unique set
     guaranteedUnique = {
         children: true,
@@ -24310,9 +24310,9 @@ window.feather = (0, _featherIconsDefault.default);
             // No argument, return index in parent
             if (!elem) return this[0] && this[0].parentNode ? this.first().prevAll().length : -1;
             // Index in selector
-            if (typeof elem === "string") return indexOf1.call(jQuery(elem), this[0]);
+            if (typeof elem === "string") return indexOf.call(jQuery(elem), this[0]);
             // Locate the position of the desired element
-            return indexOf1.call(this, // If it receives a jQuery object, the first element is used
+            return indexOf.call(this, // If it receives a jQuery object, the first element is used
             elem.jquery ? elem[0] : elem);
         },
         add: function(selector, context) {
@@ -24332,10 +24332,10 @@ window.feather = (0, _featherIconsDefault.default);
             return parent && parent.nodeType !== 11 ? parent : null;
         },
         parents: function(elem) {
-            return dir1(elem, "parentNode");
+            return dir(elem, "parentNode");
         },
         parentsUntil: function(elem, _i, until) {
-            return dir1(elem, "parentNode", until);
+            return dir(elem, "parentNode", until);
         },
         next: function(elem) {
             return sibling(elem, "nextSibling");
@@ -24344,16 +24344,16 @@ window.feather = (0, _featherIconsDefault.default);
             return sibling(elem, "previousSibling");
         },
         nextAll: function(elem) {
-            return dir1(elem, "nextSibling");
+            return dir(elem, "nextSibling");
         },
         prevAll: function(elem) {
-            return dir1(elem, "previousSibling");
+            return dir(elem, "previousSibling");
         },
         nextUntil: function(elem, _i, until) {
-            return dir1(elem, "nextSibling", until);
+            return dir(elem, "nextSibling", until);
         },
         prevUntil: function(elem, _i, until) {
-            return dir1(elem, "previousSibling", until);
+            return dir(elem, "previousSibling", until);
         },
         siblings: function(elem) {
             return siblings((elem.parentNode || {}).firstChild, elem);
@@ -24369,7 +24369,7 @@ window.feather = (0, _featherIconsDefault.default);
             // Support: IE 9 - 11 only, iOS 7 only, Android Browser <=4.3 only
             // Treat the template element as a regular one in browsers that
             // don't support it.
-            if (nodeName1(elem, "template")) elem = elem.content || elem;
+            if (nodeName(elem, "template")) elem = elem.content || elem;
             return jQuery.merge([], elem.childNodes);
         }
     }, function(name, fn) {
@@ -24604,7 +24604,7 @@ window.feather = (0, _featherIconsDefault.default);
                     return state;
                 },
                 always: function() {
-                    deferred1.done(arguments).fail(arguments);
+                    deferred.done(arguments).fail(arguments);
                     return this;
                 },
                 "catch": function(fn) {
@@ -24620,7 +24620,7 @@ window.feather = (0, _featherIconsDefault.default);
                             // deferred.progress(function() { bind to newDefer or newDefer.notify })
                             // deferred.done(function() { bind to newDefer or newDefer.resolve })
                             // deferred.fail(function() { bind to newDefer or newDefer.reject })
-                            deferred1[tuple[1]](function() {
+                            deferred[tuple[1]](function() {
                                 var returned = fn && fn.apply(this, arguments);
                                 if (returned && isFunction(returned.promise)) returned.promise().progress(newDefer.notify).done(newDefer.resolve).fail(newDefer.reject);
                                 else newDefer[tuple[0] + "With"](this, fn ? [
@@ -24721,7 +24721,7 @@ window.feather = (0, _featherIconsDefault.default);
                 promise: function(obj) {
                     return obj != null ? jQuery.extend(obj, promise) : promise;
                 }
-            }, deferred1 = {};
+            }, deferred = {};
             // Add list-specific methods
             jQuery.each(tuples, function(i, tuple) {
                 var list = tuple[2], stateString = tuple[5];
@@ -24748,44 +24748,44 @@ window.feather = (0, _featherIconsDefault.default);
                 // deferred.notify = function() { deferred.notifyWith(...) }
                 // deferred.resolve = function() { deferred.resolveWith(...) }
                 // deferred.reject = function() { deferred.rejectWith(...) }
-                deferred1[tuple[0]] = function() {
-                    deferred1[tuple[0] + "With"](this === deferred1 ? undefined : this, arguments);
+                deferred[tuple[0]] = function() {
+                    deferred[tuple[0] + "With"](this === deferred ? undefined : this, arguments);
                     return this;
                 };
                 // deferred.notifyWith = list.fireWith
                 // deferred.resolveWith = list.fireWith
                 // deferred.rejectWith = list.fireWith
-                deferred1[tuple[0] + "With"] = list.fireWith;
+                deferred[tuple[0] + "With"] = list.fireWith;
             });
             // Make the deferred a promise
-            promise.promise(deferred1);
+            promise.promise(deferred);
             // Call given func if any
-            if (func) func.call(deferred1, deferred1);
+            if (func) func.call(deferred, deferred);
             // All done!
-            return deferred1;
+            return deferred;
         },
         // Deferred helper
         when: function(singleValue) {
             var // count of uncompleted subordinates
             remaining = arguments.length, // count of unprocessed arguments
-            i2 = remaining, // subordinate fulfillment data
-            resolveContexts = Array(i2), resolveValues = slice1.call(arguments), // the primary Deferred
+            i = remaining, // subordinate fulfillment data
+            resolveContexts = Array(i), resolveValues = slice.call(arguments), // the primary Deferred
             primary = jQuery.Deferred(), // subordinate callback factory
             updateFunc = function(i) {
                 return function(value) {
                     resolveContexts[i] = this;
-                    resolveValues[i] = arguments.length > 1 ? slice1.call(arguments) : value;
+                    resolveValues[i] = arguments.length > 1 ? slice.call(arguments) : value;
                     if (!--remaining) primary.resolveWith(resolveContexts, resolveValues);
                 };
             };
             // Single- and empty arguments are adopted like Promise.resolve
             if (remaining <= 1) {
-                adoptValue(singleValue, primary.done(updateFunc(i2)).resolve, primary.reject, !remaining);
+                adoptValue(singleValue, primary.done(updateFunc(i)).resolve, primary.reject, !remaining);
                 // Use .then() to unwrap secondary thenables (cf. gh-3000)
-                if (primary.state() === "pending" || isFunction(resolveValues[i2] && resolveValues[i2].then)) return primary.then();
+                if (primary.state() === "pending" || isFunction(resolveValues[i] && resolveValues[i].then)) return primary.then();
             }
             // Multiple arguments are aggregated like Promise.all array elements
-            while(i2--)adoptValue(resolveValues[i2], updateFunc(i2), primary.reject);
+            while(i--)adoptValue(resolveValues[i], updateFunc(i), primary.reject);
             return primary.promise();
         }
     });
@@ -24828,46 +24828,46 @@ window.feather = (0, _featherIconsDefault.default);
             // If a normal DOM Ready event fired, decrement, and wait if need be
             if (wait !== true && --jQuery.readyWait > 0) return;
             // If there are functions bound, to execute
-            readyList.resolveWith(document1, [
+            readyList.resolveWith(document, [
                 jQuery
             ]);
         }
     });
     jQuery.ready.then = readyList.then;
     // The ready event handler and self cleanup method
-    function completed1() {
-        document1.removeEventListener("DOMContentLoaded", completed1);
-        window1.removeEventListener("load", completed1);
+    function completed() {
+        document.removeEventListener("DOMContentLoaded", completed);
+        window1.removeEventListener("load", completed);
         jQuery.ready();
     }
     // Catch cases where $(document).ready() is called
     // after the browser event has already occurred.
     // Support: IE <=9 - 10 only
     // Older IE sometimes signals "interactive" too soon
-    if (document1.readyState === "complete" || document1.readyState !== "loading" && !document1.documentElement.doScroll) // Handle it asynchronously to allow scripts the opportunity to delay ready
+    if (document.readyState === "complete" || document.readyState !== "loading" && !document.documentElement.doScroll) // Handle it asynchronously to allow scripts the opportunity to delay ready
     window1.setTimeout(jQuery.ready);
     else {
         // Use the handy event callback
-        document1.addEventListener("DOMContentLoaded", completed1);
+        document.addEventListener("DOMContentLoaded", completed);
         // A fallback to window.onload, that will always work
-        window1.addEventListener("load", completed1);
+        window1.addEventListener("load", completed);
     }
     // Multifunctional method to get and set values of a collection
     // The value/s can optionally be executed if it's a function
-    var access = function(elems, fn, key, value2, chainable, emptyGet, raw) {
+    var access = function(elems, fn, key, value, chainable, emptyGet, raw) {
         var i = 0, len = elems.length, bulk = key == null;
         // Sets many values
         if (toType(key) === "object") {
             chainable = true;
             for(i in key)access(elems, fn, i, key[i], true, emptyGet, raw);
         // Sets one value
-        } else if (value2 !== undefined) {
+        } else if (value !== undefined) {
             chainable = true;
-            if (!isFunction(value2)) raw = true;
+            if (!isFunction(value)) raw = true;
             if (bulk) {
                 // Bulk operations run against the entire set
                 if (raw) {
-                    fn.call(elems, value2);
+                    fn.call(elems, value);
                     fn = null;
                 // ...except when executing function values
                 } else {
@@ -24877,7 +24877,7 @@ window.feather = (0, _featherIconsDefault.default);
                     };
                 }
             }
-            if (fn) for(; i < len; i++)fn(elems[i], key, raw ? value2 : value2.call(elems[i], i, fn(elems[i], key)));
+            if (fn) for(; i < len; i++)fn(elems[i], key, raw ? value : value.call(elems[i], i, fn(elems[i], key)));
         }
         if (chainable) return elems;
         // Gets
@@ -25060,12 +25060,12 @@ window.feather = (0, _featherIconsDefault.default);
         }
     });
     jQuery.fn.extend({
-        data: function(key, value3) {
-            var i, name, data1, elem = this[0], attrs = elem && elem.attributes;
+        data: function(key, value) {
+            var i, name, data, elem = this[0], attrs = elem && elem.attributes;
             // Gets all values
             if (key === undefined) {
                 if (this.length) {
-                    data1 = dataUser.get(elem);
+                    data = dataUser.get(elem);
                     if (elem.nodeType === 1 && !dataPriv.get(elem, "hasDataAttrs")) {
                         i = attrs.length;
                         while(i--)// Support: IE 11 only
@@ -25074,13 +25074,13 @@ window.feather = (0, _featherIconsDefault.default);
                             name = attrs[i].name;
                             if (name.indexOf("data-") === 0) {
                                 name = camelCase(name.slice(5));
-                                dataAttr(elem, name, data1[name]);
+                                dataAttr(elem, name, data[name]);
                             }
                         }
                         dataPriv.set(elem, "hasDataAttrs", true);
                     }
                 }
-                return data1;
+                return data;
             }
             // Sets multiple values
             if (typeof key === "object") return this.each(function() {
@@ -25110,7 +25110,7 @@ window.feather = (0, _featherIconsDefault.default);
                     // We always store the camelCased key
                     dataUser.set(this, key, value);
                 });
-            }, null, value3, arguments.length > 1, null, true);
+            }, null, value, arguments.length > 1, null, true);
         },
         removeData: function(key) {
             return this.each(function() {
@@ -25221,7 +25221,7 @@ window.feather = (0, _featherIconsDefault.default);
         "Bottom",
         "Left"
     ];
-    var documentElement = document1.documentElement;
+    var documentElement = document.documentElement;
     var isAttached = function(elem) {
         return jQuery.contains(elem.ownerDocument, elem);
     }, composed = {
@@ -25341,7 +25341,7 @@ window.feather = (0, _featherIconsDefault.default);
     var rtagName = /<([a-z][^\/\0>\x20\t\r\n\f]*)/i;
     var rscriptType = /^$|^module$|\/(?:java|ecma)script/i;
     (function() {
-        var fragment = document1.createDocumentFragment(), div = fragment.appendChild(document1.createElement("div")), input = document1.createElement("input");
+        var fragment = document.createDocumentFragment(), div = fragment.appendChild(document.createElement("div")), input = document.createElement("input");
         // Support: Android 4.0 - 4.3 only
         // Check state lost if the name is set (#11217)
         // Support: Windows Web Apps (WWA)
@@ -25352,16 +25352,16 @@ window.feather = (0, _featherIconsDefault.default);
         div.appendChild(input);
         // Support: Android <=4.1 only
         // Older WebKit doesn't clone checked state correctly in fragments
-        support1.checkClone = div.cloneNode(true).cloneNode(true).lastChild.checked;
+        support.checkClone = div.cloneNode(true).cloneNode(true).lastChild.checked;
         // Support: IE <=11 only
         // Make sure textarea (and checkbox) defaultValue is properly cloned
         div.innerHTML = "<textarea>x</textarea>";
-        support1.noCloneChecked = !!div.cloneNode(true).lastChild.defaultValue;
+        support.noCloneChecked = !!div.cloneNode(true).lastChild.defaultValue;
         // Support: IE <=9 only
         // IE <=9 replaces <option> tags with their contents when inserted outside of
         // the select element.
         div.innerHTML = "<option></option>";
-        support1.option = !!div.lastChild;
+        support.option = !!div.lastChild;
     })();
     // We have to close these tags to support XHTML (#13200)
     var wrapMap = {
@@ -25397,7 +25397,7 @@ window.feather = (0, _featherIconsDefault.default);
     wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
     wrapMap.th = wrapMap.td;
     // Support: IE <=9 only
-    if (!support1.option) wrapMap.optgroup = wrapMap.option = [
+    if (!support.option) wrapMap.optgroup = wrapMap.option = [
         1,
         "<select multiple='multiple'>",
         "</select>"
@@ -25409,7 +25409,7 @@ window.feather = (0, _featherIconsDefault.default);
         if (typeof context.getElementsByTagName !== "undefined") ret = context.getElementsByTagName(tag || "*");
         else if (typeof context.querySelectorAll !== "undefined") ret = context.querySelectorAll(tag || "*");
         else ret = [];
-        if (tag === undefined || tag && nodeName1(context, tag)) return jQuery.merge([
+        if (tag === undefined || tag && nodeName(context, tag)) return jQuery.merge([
             context
         ], ret);
         return ret;
@@ -25419,7 +25419,7 @@ window.feather = (0, _featherIconsDefault.default);
         var i = 0, l = elems.length;
         for(; i < l; i++)dataPriv.set(elems[i], "globalEval", !refElements || dataPriv.get(refElements[i], "globalEval"));
     }
-    var rhtml1 = /<|&#?\w+;/;
+    var rhtml = /<|&#?\w+;/;
     function buildFragment(elems, context, scripts, selection, ignored) {
         var elem, tmp, tag, wrap, attached, j, fragment = context.createDocumentFragment(), nodes = [], i = 0, l = elems.length;
         for(; i < l; i++){
@@ -25431,7 +25431,7 @@ window.feather = (0, _featherIconsDefault.default);
                 jQuery.merge(nodes, elem.nodeType ? [
                     elem
                 ] : elem);
-                else if (!rhtml1.test(elem)) nodes.push(context.createTextNode(elem));
+                else if (!rhtml.test(elem)) nodes.push(context.createTextNode(elem));
                 else {
                     tmp = tmp || fragment.appendChild(context.createElement("div"));
                     // Deserialize a standard representation
@@ -25489,7 +25489,7 @@ window.feather = (0, _featherIconsDefault.default);
     // and blur to be synchronous when the element is not already active.
     // (focus and blur are always synchronous in other supported browsers,
     // this just defines when we can count on it).
-    function expectSync1(elem, type) {
+    function expectSync(elem, type) {
         return elem === safeActiveElement() === (type === "focus");
     }
     // Support: IE <=9 only
@@ -25497,7 +25497,7 @@ window.feather = (0, _featherIconsDefault.default);
     // https://bugs.jquery.com/ticket/13393
     function safeActiveElement() {
         try {
-            return document1.activeElement;
+            return document.activeElement;
         } catch (err) {}
     }
     function on(elem, types, selector, data, fn, one) {
@@ -25769,7 +25769,7 @@ window.feather = (0, _featherIconsDefault.default);
                     // `|| data` is dead code meant only to preserve the variable through minification.
                     var el = this || data;
                     // Claim the first handler
-                    if (rcheckableType.test(el.type) && el.click && nodeName1(el, "input")) // dataPriv.set( el, "click", ... )
+                    if (rcheckableType.test(el.type) && el.click && nodeName(el, "input")) // dataPriv.set( el, "click", ... )
                     leverageNative(el, "click", returnTrue);
                     // Return false to allow normal processing in the caller
                     return false;
@@ -25779,7 +25779,7 @@ window.feather = (0, _featherIconsDefault.default);
                     // `|| data` is dead code meant only to preserve the variable through minification.
                     var el = this || data;
                     // Force setup before triggering a click
-                    if (rcheckableType.test(el.type) && el.click && nodeName1(el, "input")) leverageNative(el, "click");
+                    if (rcheckableType.test(el.type) && el.click && nodeName(el, "input")) leverageNative(el, "click");
                     // Return non-false to allow normal event-path propagation
                     return true;
                 },
@@ -25787,7 +25787,7 @@ window.feather = (0, _featherIconsDefault.default);
                 // Also prevent it if we're currently inside a leveraged native-event stack
                 _default: function(event) {
                     var target = event.target;
-                    return rcheckableType.test(target.type) && target.click && nodeName1(target, "input") && dataPriv.get(target, "click") || nodeName1(target, "a");
+                    return rcheckableType.test(target.type) && target.click && nodeName(target, "input") && dataPriv.get(target, "click") || nodeName(target, "a");
                 }
             },
             beforeunload: {
@@ -25823,7 +25823,7 @@ window.feather = (0, _featherIconsDefault.default);
                         // Store arguments for use when handling the inner native event
                         // There will always be at least one argument (an event object), so this array
                         // will not be confused with a leftover capture object.
-                        saved = slice1.call(arguments);
+                        saved = slice.call(arguments);
                         dataPriv.set(this, type, saved);
                         // Trigger the native event and capture its result
                         // Support: IE <=9 - 11+
@@ -25965,7 +25965,7 @@ window.feather = (0, _featherIconsDefault.default);
                 // Claim the first handler
                 // dataPriv.set( this, "focus", ... )
                 // dataPriv.set( this, "blur", ... )
-                leverageNative(this, type, expectSync1);
+                leverageNative(this, type, expectSync);
                 // Return false to allow normal processing in the caller
                 return false;
             },
@@ -26051,7 +26051,7 @@ window.feather = (0, _featherIconsDefault.default);
     rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i, rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g;
     // Prefer a tbody over its parent table for containing new rows
     function manipulationTarget(elem, content) {
-        if (nodeName1(elem, "table") && nodeName1(content.nodeType !== 11 ? content : content.firstChild, "tr")) return jQuery(elem).children("tbody")[0] || elem;
+        if (nodeName(elem, "table") && nodeName(content.nodeType !== 11 ? content : content.firstChild, "tr")) return jQuery(elem).children("tbody")[0] || elem;
         return elem;
     }
     // Replace/restore the type attribute of script elements for safe DOM manipulation
@@ -26095,7 +26095,7 @@ window.feather = (0, _featherIconsDefault.default);
         args = flat(args);
         var fragment, first, scripts, hasScripts, node, doc, i = 0, l = collection.length, iNoClone = l - 1, value = args[0], valueIsFunction = isFunction(value);
         // We can't cloneNode fragments that contain checked, in WebKit
-        if (valueIsFunction || l > 1 && typeof value === "string" && !support1.checkClone && rchecked.test(value)) return collection.each(function(index) {
+        if (valueIsFunction || l > 1 && typeof value === "string" && !support.checkClone && rchecked.test(value)) return collection.each(function(index) {
             var self = collection.eq(index);
             if (valueIsFunction) args[0] = value.call(this, index, self.html());
             domManip(self, args, callback, ignored);
@@ -26161,7 +26161,7 @@ window.feather = (0, _featherIconsDefault.default);
         clone: function(elem, dataAndEvents, deepDataAndEvents) {
             var i, l, srcElements, destElements, clone = elem.cloneNode(true), inPage = isAttached(elem);
             // Fix IE cloning issues
-            if (!support1.noCloneChecked && (elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem)) {
+            if (!support.noCloneChecked && (elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem)) {
                 // We eschew Sizzle here for performance reasons: https://jsperf.com/getall-vs-sizzle/2
                 destElements = getAll(clone);
                 srcElements = getAll(elem);
@@ -26206,12 +26206,12 @@ window.feather = (0, _featherIconsDefault.default);
         remove: function(selector) {
             return remove(this, selector);
         },
-        text: function(value4) {
+        text: function(value) {
             return access(this, function(value) {
                 return value === undefined ? jQuery.text(this) : this.empty().each(function() {
                     if (this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9) this.textContent = value;
                 });
-            }, null, value4, arguments.length);
+            }, null, value, arguments.length);
         },
         append: function() {
             return domManip(this, arguments, function(elem) {
@@ -26256,7 +26256,7 @@ window.feather = (0, _featherIconsDefault.default);
                 return jQuery.clone(this, dataAndEvents, deepDataAndEvents);
             });
         },
-        html: function(value5) {
+        html: function(value) {
             return access(this, function(value) {
                 var elem = this[0] || {}, i = 0, l = this.length;
                 if (value === undefined && elem.nodeType === 1) return elem.innerHTML;
@@ -26280,7 +26280,7 @@ window.feather = (0, _featherIconsDefault.default);
                     } catch (e) {}
                 }
                 if (elem) this.empty().append(value);
-            }, null, value5, arguments.length);
+            }, null, value, arguments.length);
         },
         replaceWith: function() {
             var ignored = [];
@@ -26309,7 +26309,7 @@ window.feather = (0, _featherIconsDefault.default);
                 jQuery(insert[i])[original](elems);
                 // Support: Android <=4.0 only, PhantomJS 1 only
                 // .get() because push.apply(_, arraylike) throws on ancient WebKit
-                push1.apply(ret, elems.get());
+                push.apply(ret, elems.get());
             }
             return this.pushStack(ret);
         };
@@ -26370,15 +26370,15 @@ window.feather = (0, _featherIconsDefault.default);
         function roundPixelMeasures(measure) {
             return Math.round(parseFloat(measure));
         }
-        var pixelPositionVal, boxSizingReliableVal, scrollboxSizeVal, pixelBoxStylesVal, reliableTrDimensionsVal, reliableMarginLeftVal, container = document1.createElement("div"), div = document1.createElement("div");
+        var pixelPositionVal, boxSizingReliableVal, scrollboxSizeVal, pixelBoxStylesVal, reliableTrDimensionsVal, reliableMarginLeftVal, container = document.createElement("div"), div = document.createElement("div");
         // Finish early in limited (non-browser) environments
         if (!div.style) return;
         // Support: IE <=9 - 11 only
         // Style of cloned element affects source element cloned (#8908)
         div.style.backgroundClip = "content-box";
         div.cloneNode(true).style.backgroundClip = "";
-        support1.clearCloneStyle = div.style.backgroundClip === "content-box";
-        jQuery.extend(support1, {
+        support.clearCloneStyle = div.style.backgroundClip === "content-box";
+        jQuery.extend(support, {
             boxSizingReliable: function() {
                 computeStyleTests();
                 return boxSizingReliableVal;
@@ -26411,9 +26411,9 @@ window.feather = (0, _featherIconsDefault.default);
             reliableTrDimensions: function() {
                 var table, tr, trChild, trStyle;
                 if (reliableTrDimensionsVal == null) {
-                    table = document1.createElement("table");
-                    tr = document1.createElement("tr");
-                    trChild = document1.createElement("div");
+                    table = document.createElement("table");
+                    tr = document.createElement("tr");
+                    trChild = document.createElement("div");
                     table.style.cssText = "position:absolute;left:-11111px;border-collapse:separate";
                     tr.style.cssText = "border:1px solid";
                     // Support: Chrome 86+
@@ -26455,7 +26455,7 @@ window.feather = (0, _featherIconsDefault.default);
             // but width seems to be reliably pixels.
             // This is against the CSSOM draft spec:
             // https://drafts.csswg.org/cssom/#resolved-values
-            if (!support1.pixelBoxStyles() && rnumnonpx.test(ret) && rboxStyle.test(name)) {
+            if (!support.pixelBoxStyles() && rnumnonpx.test(ret) && rboxStyle.test(name)) {
                 // Remember the original values
                 width = style.width;
                 minWidth = style.minWidth;
@@ -26492,7 +26492,7 @@ window.feather = (0, _featherIconsDefault.default);
         "Webkit",
         "Moz",
         "ms"
-    ], emptyStyle = document1.createElement("div").style, vendorProps = {};
+    ], emptyStyle = document.createElement("div").style, vendorProps = {};
     // Return a vendor-prefixed property or undefined
     function vendorPropName(name) {
         // Check for vendor prefixed names
@@ -26560,7 +26560,7 @@ window.feather = (0, _featherIconsDefault.default);
         // Start with computed style
         var styles = getStyles(elem), // To avoid forcing a reflow, only fetch boxSizing if we need it (gh-4322).
         // Fake content-box until we know it's needed to know the true value.
-        boxSizingNeeded = !support1.boxSizingReliable() || extra, isBorderBox = boxSizingNeeded && jQuery.css(elem, "boxSizing", false, styles) === "border-box", valueIsBorderBox = isBorderBox, val = curCSS(elem, dimension, styles), offsetProp = "offset" + dimension[0].toUpperCase() + dimension.slice(1);
+        boxSizingNeeded = !support.boxSizingReliable() || extra, isBorderBox = boxSizingNeeded && jQuery.css(elem, "boxSizing", false, styles) === "border-box", valueIsBorderBox = isBorderBox, val = curCSS(elem, dimension, styles), offsetProp = "offset" + dimension[0].toUpperCase() + dimension.slice(1);
         // Support: Firefox <=54
         // Return a confounding non-pixel value or feign ignorance, as appropriate.
         if (rnumnonpx.test(val)) {
@@ -26570,11 +26570,11 @@ window.feather = (0, _featherIconsDefault.default);
         // Support: IE 9 - 11 only
         // Use offsetWidth/offsetHeight for when box sizing is unreliable.
         // In those cases, the computed value can be trusted to be border-box.
-        if ((!support1.boxSizingReliable() && isBorderBox || // Support: IE 10 - 11+, Edge 15 - 18+
+        if ((!support.boxSizingReliable() && isBorderBox || // Support: IE 10 - 11+, Edge 15 - 18+
         // IE/Edge misreport `getComputedStyle` of table rows with width/height
         // set in CSS while `offset*` properties report correct values.
         // Interestingly, in some cases IE 9 doesn't suffer from this issue.
-        !support1.reliableTrDimensions() && nodeName1(elem, "tr") || // Fall back to offsetWidth/offsetHeight when value is "auto"
+        !support.reliableTrDimensions() && nodeName(elem, "tr") || // Fall back to offsetWidth/offsetHeight when value is "auto"
         // This happens for inline elements with no explicit setting (gh-3571)
         val === "auto" || // Support: Android <=4.1 - 4.3 only
         // Also use offsetWidth/offsetHeight for misreported inline dimensions (gh-3602)
@@ -26661,7 +26661,7 @@ window.feather = (0, _featherIconsDefault.default);
                 // "px" to a few hardcoded values.
                 if (type === "number" && !isCustomProp) value += ret && ret[3] || (jQuery.cssNumber[origName] ? "" : "px");
                 // background-* props affect original clone's values
-                if (!support1.clearCloneStyle && value === "" && name.indexOf("background") === 0) style[name] = "inherit";
+                if (!support.clearCloneStyle && value === "" && name.indexOf("background") === 0) style[name] = "inherit";
                 // If a hook was provided, use that value, otherwise just set the specified value
                 if (!hooks || !("set" in hooks) || (value = hooks.set(elem, value, extra)) !== undefined) {
                     if (isCustomProp) style.setProperty(name, value);
@@ -26711,7 +26711,7 @@ window.feather = (0, _featherIconsDefault.default);
             set: function(elem, value, extra) {
                 var matches, styles = getStyles(elem), // Only read styles.position if the test has a chance to fail
                 // to avoid forcing a reflow.
-                scrollboxSizeBuggy = !support1.scrollboxSize() && styles.position === "absolute", // To avoid forcing a reflow, only fetch boxSizing if we need it (gh-3991)
+                scrollboxSizeBuggy = !support.scrollboxSize() && styles.position === "absolute", // To avoid forcing a reflow, only fetch boxSizing if we need it (gh-3991)
                 boxSizingNeeded = scrollboxSizeBuggy || extra, isBorderBox = boxSizingNeeded && jQuery.css(elem, "boxSizing", false, styles) === "border-box", subtract = extra ? boxModelAdjustment(elem, dimension, extra, isBorderBox, styles) : 0;
                 // Account for unreliable border-box dimensions by comparing offset* to computed and
                 // faking a content-box to get border and padding (gh-3699)
@@ -26725,7 +26725,7 @@ window.feather = (0, _featherIconsDefault.default);
             }
         };
     });
-    jQuery.cssHooks.marginLeft = addGetHookIf(support1.reliableMarginLeft, function(elem, computed) {
+    jQuery.cssHooks.marginLeft = addGetHookIf(support.reliableMarginLeft, function(elem, computed) {
         if (computed) return (parseFloat(curCSS(elem, "marginLeft")) || elem.getBoundingClientRect().left - swap(elem, {
             marginLeft: 0
         }, function() {
@@ -26751,7 +26751,7 @@ window.feather = (0, _featherIconsDefault.default);
         if (prefix !== "margin") jQuery.cssHooks[prefix + suffix].set = setPositiveNumber;
     });
     jQuery.fn.extend({
-        css: function(name1, value6) {
+        css: function(name, value) {
             return access(this, function(elem, name, value) {
                 var styles, len, map = {}, i = 0;
                 if (Array.isArray(name)) {
@@ -26761,7 +26761,7 @@ window.feather = (0, _featherIconsDefault.default);
                     return map;
                 }
                 return value !== undefined ? jQuery.style(elem, name, value) : jQuery.css(elem, name);
-            }, name1, value6, arguments.length > 1);
+            }, name, value, arguments.length > 1);
         }
     });
     function Tween(elem, options, prop, end, easing) {
@@ -26842,7 +26842,7 @@ window.feather = (0, _featherIconsDefault.default);
     var fxNow, inProgress, rfxtypes = /^(?:toggle|show|hide)$/, rrun = /queueHooks$/;
     function schedule() {
         if (inProgress) {
-            if (document1.hidden === false && window1.requestAnimationFrame) window1.requestAnimationFrame(schedule);
+            if (document.hidden === false && window1.requestAnimationFrame) window1.requestAnimationFrame(schedule);
             else window1.setTimeout(schedule, jQuery.fx.interval);
             jQuery.fx.tick();
         }
@@ -27034,7 +27034,7 @@ window.feather = (0, _featherIconsDefault.default);
         }
     }
     function Animation(elem, properties, options) {
-        var result, stopped, index1 = 0, length1 = Animation.prefilters.length, deferred = jQuery.Deferred().always(function() {
+        var result, stopped, index = 0, length = Animation.prefilters.length, deferred = jQuery.Deferred().always(function() {
             // Don't match elem in the :animated selector
             delete tick.elem;
         }), tick = function() {
@@ -27104,8 +27104,8 @@ window.feather = (0, _featherIconsDefault.default);
             }
         }), props = animation.props;
         propFilter(props, animation.opts.specialEasing);
-        for(; index1 < length1; index1++){
-            result = Animation.prefilters[index1].call(animation, elem, props, animation.opts);
+        for(; index < length; index++){
+            result = Animation.prefilters[index].call(animation, elem, props, animation.opts);
             if (result) {
                 if (isFunction(result.stop)) jQuery._queueHooks(animation.elem, animation.opts.queue).stop = result.stop.bind(result);
                 return result;
@@ -27318,20 +27318,20 @@ window.feather = (0, _featherIconsDefault.default);
         });
     };
     (function() {
-        var input = document1.createElement("input"), select = document1.createElement("select"), opt = select.appendChild(document1.createElement("option"));
+        var input = document.createElement("input"), select = document.createElement("select"), opt = select.appendChild(document.createElement("option"));
         input.type = "checkbox";
         // Support: Android <=4.3 only
         // Default value for a checkbox should be "on"
-        support1.checkOn = input.value !== "";
+        support.checkOn = input.value !== "";
         // Support: IE <=11 only
         // Must access selectedIndex to make default options select
-        support1.optSelected = opt.selected;
+        support.optSelected = opt.selected;
         // Support: IE <=11 only
         // An input loses its value after becoming a radio
-        input = document1.createElement("input");
+        input = document.createElement("input");
         input.value = "t";
         input.type = "radio";
-        support1.radioValue = input.value === "t";
+        support.radioValue = input.value === "t";
     })();
     var boolHook, attrHandle = jQuery.expr.attrHandle;
     jQuery.fn.extend({
@@ -27371,7 +27371,7 @@ window.feather = (0, _featherIconsDefault.default);
         attrHooks: {
             type: {
                 set: function(elem, value) {
-                    if (!support1.radioValue && value === "radio" && nodeName1(elem, "input")) {
+                    if (!support.radioValue && value === "radio" && nodeName(elem, "input")) {
                         var val = elem.value;
                         elem.setAttribute("type", value);
                         if (val) elem.value = val;
@@ -27396,9 +27396,9 @@ window.feather = (0, _featherIconsDefault.default);
             return name;
         }
     };
-    jQuery.each(jQuery.expr.match.bool.source.match(/\w+/g), function(_i, name2) {
-        var getter = attrHandle[name2] || jQuery.find.attr;
-        attrHandle[name2] = function(elem, name, isXML) {
+    jQuery.each(jQuery.expr.match.bool.source.match(/\w+/g), function(_i, name) {
+        var getter = attrHandle[name] || jQuery.find.attr;
+        attrHandle[name] = function(elem, name, isXML) {
             var ret, handle, lowercaseName = name.toLowerCase();
             if (!isXML) {
                 // Avoid an infinite loop by temporarily removing this function from the getter
@@ -27466,7 +27466,7 @@ window.feather = (0, _featherIconsDefault.default);
     // when in an optgroup
     // eslint rule "no-unused-expressions" is disabled for this code
     // since it considers such accessions noop
-    if (!support1.optSelected) jQuery.propHooks.selected = {
+    if (!support.optSelected) jQuery.propHooks.selected = {
         get: function(elem) {
             /* eslint no-unused-expressions: "off" */ var parent = elem.parentNode;
             if (parent && parent.parentNode) parent.parentNode.selectedIndex;
@@ -27510,7 +27510,7 @@ window.feather = (0, _featherIconsDefault.default);
     }
     jQuery.fn.extend({
         addClass: function(value) {
-            var classes, elem, cur, curValue, clazz, j1, finalValue, i = 0;
+            var classes, elem, cur, curValue, clazz, j, finalValue, i = 0;
             if (isFunction(value)) return this.each(function(j) {
                 jQuery(this).addClass(value.call(this, j, getClass(this)));
             });
@@ -27519,8 +27519,8 @@ window.feather = (0, _featherIconsDefault.default);
                 curValue = getClass(elem);
                 cur = elem.nodeType === 1 && " " + stripAndCollapse(curValue) + " ";
                 if (cur) {
-                    j1 = 0;
-                    while(clazz = classes[j1++])if (cur.indexOf(" " + clazz + " ") < 0) cur += clazz + " ";
+                    j = 0;
+                    while(clazz = classes[j++])if (cur.indexOf(" " + clazz + " ") < 0) cur += clazz + " ";
                     // Only assign if different to avoid unneeded rendering.
                     finalValue = stripAndCollapse(cur);
                     if (curValue !== finalValue) elem.setAttribute("class", finalValue);
@@ -27529,7 +27529,7 @@ window.feather = (0, _featherIconsDefault.default);
             return this;
         },
         removeClass: function(value) {
-            var classes, elem, cur, curValue, clazz, j2, finalValue, i = 0;
+            var classes, elem, cur, curValue, clazz, j, finalValue, i = 0;
             if (isFunction(value)) return this.each(function(j) {
                 jQuery(this).removeClass(value.call(this, j, getClass(this)));
             });
@@ -27540,8 +27540,8 @@ window.feather = (0, _featherIconsDefault.default);
                 // This expression is here for better compressibility (see addClass)
                 cur = elem.nodeType === 1 && " " + stripAndCollapse(curValue) + " ";
                 if (cur) {
-                    j2 = 0;
-                    while(clazz = classes[j2++])// Remove *all* instances
+                    j = 0;
+                    while(clazz = classes[j++])// Remove *all* instances
                     while(cur.indexOf(" " + clazz + " ") > -1)cur = cur.replace(" " + clazz + " ", " ");
                     // Only assign if different to avoid unneeded rendering.
                     finalValue = stripAndCollapse(cur);
@@ -27590,7 +27590,7 @@ window.feather = (0, _featherIconsDefault.default);
     });
     var rreturn = /\r/g;
     jQuery.fn.extend({
-        val: function(value7) {
+        val: function(value) {
             var hooks, ret, valueIsFunction, elem = this[0];
             if (!arguments.length) {
                 if (elem) {
@@ -27604,12 +27604,12 @@ window.feather = (0, _featherIconsDefault.default);
                 }
                 return;
             }
-            valueIsFunction = isFunction(value7);
+            valueIsFunction = isFunction(value);
             return this.each(function(i) {
                 var val;
                 if (this.nodeType !== 1) return;
-                if (valueIsFunction) val = value7.call(this, i, jQuery(this).val());
-                else val = value7;
+                if (valueIsFunction) val = value.call(this, i, jQuery(this).val());
+                else val = value;
                 // Treat null/undefined as ""; convert numbers to string
                 if (val == null) val = "";
                 else if (typeof val === "number") val += "";
@@ -27645,7 +27645,7 @@ window.feather = (0, _featherIconsDefault.default);
                         // Support: IE <=9 only
                         // IE8-9 doesn't update selected after form reset (#2551)
                         if ((option.selected || i === index) && // Don't return options that are disabled or in a disabled optgroup
-                        !option.disabled && (!option.parentNode.disabled || !nodeName1(option.parentNode, "optgroup"))) {
+                        !option.disabled && (!option.parentNode.disabled || !nodeName(option.parentNode, "optgroup"))) {
                             // Get the specific value for the option
                             value = jQuery(option).val();
                             // We don't need an array for one selects
@@ -27679,21 +27679,21 @@ window.feather = (0, _featherIconsDefault.default);
                 if (Array.isArray(value)) return elem.checked = jQuery.inArray(jQuery(elem).val(), value) > -1;
             }
         };
-        if (!support1.checkOn) jQuery.valHooks[this].get = function(elem) {
+        if (!support.checkOn) jQuery.valHooks[this].get = function(elem) {
             return elem.getAttribute("value") === null ? "on" : elem.value;
         };
     });
     // Return jQuery for attributes-only inclusion
-    support1.focusin = "onfocusin" in window1;
+    support.focusin = "onfocusin" in window1;
     var rfocusMorph = /^(?:focusinfocus|focusoutblur)$/, stopPropagationCallback = function(e) {
         e.stopPropagation();
     };
     jQuery.extend(jQuery.event, {
         trigger: function(event, data, elem, onlyHandlers) {
             var i, cur, tmp, bubbleType, ontype, handle, special, lastElement, eventPath = [
-                elem || document1
-            ], type = hasOwn1.call(event, "type") ? event.type : event, namespaces = hasOwn1.call(event, "namespace") ? event.namespace.split(".") : [];
-            cur = lastElement = tmp = elem = elem || document1;
+                elem || document
+            ], type = hasOwn.call(event, "type") ? event.type : event, namespaces = hasOwn.call(event, "namespace") ? event.namespace.split(".") : [];
+            cur = lastElement = tmp = elem = elem || document;
             // Don't do events on text and comment nodes
             if (elem.nodeType === 3 || elem.nodeType === 8) return;
             // focus/blur morphs to focusin/out; ensure we're not firing them right now
@@ -27733,7 +27733,7 @@ window.feather = (0, _featherIconsDefault.default);
                     tmp = cur;
                 }
                 // Only add window if we got to document (e.g., not plain obj or detached DOM)
-                if (tmp === (elem.ownerDocument || document1)) eventPath.push(tmp.defaultView || tmp.parentWindow || window1);
+                if (tmp === (elem.ownerDocument || document)) eventPath.push(tmp.defaultView || tmp.parentWindow || window1);
             }
             // Fire handlers on the event path
             i = 0;
@@ -27801,7 +27801,7 @@ window.feather = (0, _featherIconsDefault.default);
     // focus(in | out) events fire after focus & blur events,
     // which is spec violation - http://www.w3.org/TR/DOM-Level-3-Events/#events-focusevent-event-order
     // Related ticket - https://bugs.chromium.org/p/chromium/issues/detail?id=449857
-    if (!support1.focusin) jQuery.each({
+    if (!support.focusin) jQuery.each({
         focus: "focusin",
         blur: "focusout"
     }, function(orig, fix) {
@@ -27895,9 +27895,9 @@ window.feather = (0, _featherIconsDefault.default);
                 // Use .is( ":disabled" ) so that fieldset[disabled] works
                 return this.name && !jQuery(this).is(":disabled") && rsubmittable.test(this.nodeName) && !rsubmitterTypes.test(type) && (this.checked || !rcheckableType.test(type));
             }).map(function(_i, elem) {
-                var val1 = jQuery(this).val();
-                if (val1 == null) return null;
-                if (Array.isArray(val1)) return jQuery.map(val1, function(val) {
+                var val = jQuery(this).val();
+                if (val == null) return null;
+                if (Array.isArray(val)) return jQuery.map(val, function(val) {
                     return {
                         name: elem.name,
                         value: val.replace(rCRLF, "\r\n")
@@ -27905,7 +27905,7 @@ window.feather = (0, _featherIconsDefault.default);
                 });
                 return {
                     name: elem.name,
-                    value: val1.replace(rCRLF, "\r\n")
+                    value: val.replace(rCRLF, "\r\n")
                 };
             }).get();
         }
@@ -27925,7 +27925,7 @@ window.feather = (0, _featherIconsDefault.default);
 	 * 3) selection will start with transport dataType and THEN go to "*" if needed
 	 */ transports = {}, // Avoid comment-prolog char sequence (#10098); must appease lint and evade compression
     allTypes = "*/".concat("*"), // Anchor tag for parsing the document origin
-    originAnchor = document1.createElement("a");
+    originAnchor = document.createElement("a");
     originAnchor.href = location.href;
     // Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
     function addToPrefiltersOrTransports(structure) {
@@ -28237,7 +28237,7 @@ window.feather = (0, _featherIconsDefault.default);
             ];
             // A cross-domain request is in order when the origin doesn't match the current origin.
             if (s.crossDomain == null) {
-                urlAnchor = document1.createElement("a");
+                urlAnchor = document.createElement("a");
                 // Support: IE <=8 - 11, Edge 12 - 15
                 // IE throws exception on accessing the href property if url is malformed,
                 // e.g. http://example.com:80x/
@@ -28331,11 +28331,11 @@ window.feather = (0, _featherIconsDefault.default);
                 try {
                     completed = false;
                     transport.send(requestHeaders, done);
-                } catch (e) {
+                } catch (e1) {
                     // Rethrow post-completion exceptions
-                    if (completed) throw e;
+                    if (completed) throw e1;
                     // Propagate others as results
-                    done(-1, e);
+                    done(-1, e1);
                 }
             }
             // Callback for when everything is done
@@ -28534,12 +28534,12 @@ window.feather = (0, _featherIconsDefault.default);
         // #1450: sometimes IE returns 1223 when it should be 204
         1223: 204
     }, xhrSupported = jQuery.ajaxSettings.xhr();
-    support1.cors = !!xhrSupported && "withCredentials" in xhrSupported;
-    support1.ajax = xhrSupported = !!xhrSupported;
+    support.cors = !!xhrSupported && "withCredentials" in xhrSupported;
+    support.ajax = xhrSupported = !!xhrSupported;
     jQuery.ajaxTransport(function(options) {
         var callback, errorCallback;
         // Cross domain only allowed if supported through XMLHttpRequest
-        if (support1.cors || xhrSupported && !options.crossDomain) return {
+        if (support.cors || xhrSupported && !options.crossDomain) return {
             send: function(headers, complete) {
                 var i, xhr = options.xhr();
                 xhr.open(options.type, options.url, options.async, options.username, options.password);
@@ -28651,7 +28651,7 @@ window.feather = (0, _featherIconsDefault.default);
                         if (evt) complete(evt.type === "error" ? 404 : 200, evt.type);
                     });
                     // Use native DOM manipulation to avoid our domManip AJAX trickery
-                    document1.head.appendChild(script[0]);
+                    document.head.appendChild(script[0]);
                 },
                 abort: function() {
                     if (callback) callback();
@@ -28716,8 +28716,8 @@ window.feather = (0, _featherIconsDefault.default);
     // collapse sibling forms: the second one becomes a child of the first one.
     // Because of that, this security measure has to be disabled in Safari 8.
     // https://bugs.webkit.org/show_bug.cgi?id=137337
-    support1.createHTMLDocument = function() {
-        var body = document1.implementation.createHTMLDocument("").body;
+    support.createHTMLDocument = function() {
+        var body = document.implementation.createHTMLDocument("").body;
         body.innerHTML = "<form></form><form></form>";
         return body.childNodes.length === 2;
     }();
@@ -28735,15 +28735,15 @@ window.feather = (0, _featherIconsDefault.default);
         if (!context) {
             // Stop scripts or inline event handlers from being executed immediately
             // by using document.implementation
-            if (support1.createHTMLDocument) {
-                context = document1.implementation.createHTMLDocument("");
+            if (support.createHTMLDocument) {
+                context = document.implementation.createHTMLDocument("");
                 // Set the base href for the created document
                 // so any parsed elements with URLs
                 // are based on the document's URL (gh-2965)
                 base = context.createElement("base");
-                base.href = document1.location.href;
+                base.href = document.location.href;
                 context.head.appendChild(base);
-            } else context = document1;
+            } else context = document;
         }
         parsed = rsingleTag.exec(data);
         scripts = !keepScripts && [];
@@ -28912,9 +28912,9 @@ window.feather = (0, _featherIconsDefault.default);
     jQuery.each({
         scrollLeft: "pageXOffset",
         scrollTop: "pageYOffset"
-    }, function(method1, prop) {
+    }, function(method, prop) {
         var top = "pageYOffset" === prop;
-        jQuery.fn[method1] = function(val2) {
+        jQuery.fn[method] = function(val) {
             return access(this, function(elem, method, val) {
                 // Coalesce documents and windows
                 var win;
@@ -28923,7 +28923,7 @@ window.feather = (0, _featherIconsDefault.default);
                 if (val === undefined) return win ? win[prop] : elem[method];
                 if (win) win.scrollTo(!top ? val : win.pageXOffset, top ? val : win.pageYOffset);
                 else elem[method] = val;
-            }, method1, val2, arguments.length);
+            }, method, val, arguments.length);
         };
     });
     // Support: Safari <=7 - 9.1, Chrome <=37 - 49
@@ -28936,7 +28936,7 @@ window.feather = (0, _featherIconsDefault.default);
         "top",
         "left"
     ], function(_i, prop) {
-        jQuery.cssHooks[prop] = addGetHookIf(support1.pixelPosition, function(elem, computed) {
+        jQuery.cssHooks[prop] = addGetHookIf(support.pixelPosition, function(elem, computed) {
             if (computed) {
                 computed = curCSS(elem, prop);
                 // If curCSS returns percentage, fallback to offset
@@ -28948,15 +28948,15 @@ window.feather = (0, _featherIconsDefault.default);
     jQuery.each({
         Height: "height",
         Width: "width"
-    }, function(name, type1) {
+    }, function(name, type) {
         jQuery.each({
             padding: "inner" + name,
-            content: type1,
+            content: type,
             "": "outer" + name
         }, function(defaultExtra, funcName) {
             // Margin is only for outerHeight, outerWidth
-            jQuery.fn[funcName] = function(margin, value8) {
-                var chainable = arguments.length && (defaultExtra || typeof margin !== "boolean"), extra = defaultExtra || (margin === true || value8 === true ? "margin" : "border");
+            jQuery.fn[funcName] = function(margin, value) {
+                var chainable = arguments.length && (defaultExtra || typeof margin !== "boolean"), extra = defaultExtra || (margin === true || value === true ? "margin" : "border");
                 return access(this, function(elem, type, value) {
                     var doc;
                     if (isWindow(elem)) // $( window ).outerWidth/Height return w/h including scrollbars (gh-1729)
@@ -28971,7 +28971,7 @@ window.feather = (0, _featherIconsDefault.default);
                     return value === undefined ? // Get width or height on the element, requesting but not forcing parseFloat
                     jQuery.css(elem, type, extra) : // Set width or height on the element
                     jQuery.style(elem, type, value, extra);
-                }, type1, chainable ? margin : undefined, chainable);
+                }, type, chainable ? margin : undefined, chainable);
             };
         });
     });
@@ -29013,7 +29013,7 @@ window.feather = (0, _featherIconsDefault.default);
     });
     // Support: Android <=4.0 only
     // Make sure we trim BOM and NBSP
-    var rtrim1 = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+    var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
     // Bind a function to a context, optionally partially applying any
     // arguments.
     // jQuery.proxy is deprecated to promote standards (specifically Function#bind)
@@ -29029,9 +29029,9 @@ window.feather = (0, _featherIconsDefault.default);
         // this throws a TypeError, but we will just return undefined.
         if (!isFunction(fn)) return undefined;
         // Simulated bind
-        args = slice1.call(arguments, 2);
+        args = slice.call(arguments, 2);
         proxy = function() {
-            return fn.apply(context || this, args.concat(slice1.call(arguments)));
+            return fn.apply(context || this, args.concat(slice.call(arguments)));
         };
         // Set the guid of unique handler to the same of original handler, so it can be removed
         proxy.guid = fn.guid = fn.guid || jQuery.guid++;
@@ -29043,7 +29043,7 @@ window.feather = (0, _featherIconsDefault.default);
     };
     jQuery.isArray = Array.isArray;
     jQuery.parseJSON = JSON.parse;
-    jQuery.nodeName = nodeName1;
+    jQuery.nodeName = nodeName;
     jQuery.isFunction = isFunction;
     jQuery.isWindow = isWindow;
     jQuery.camelCase = camelCase;
@@ -29060,7 +29060,7 @@ window.feather = (0, _featherIconsDefault.default);
         !isNaN(obj - parseFloat(obj));
     };
     jQuery.trim = function(text) {
-        return text == null ? "" : (text + "").replace(rtrim1, "");
+        return text == null ? "" : (text + "").replace(rtrim, "");
     };
     // Register as a named AMD module, since jQuery can be concatenated with other
     // files that may use define, but not via a proper concatenation script that
@@ -29108,7 +29108,7 @@ window.feather = (0, _featherIconsDefault.default);
         if (!$ || !$.fn.dataTable) $ = require("datatables.net")(root, $).$;
         return factory($, root, root.document);
     };
-})(function($, window, document, undefined) {
+})(function($, window1, document1, undefined) {
     "use strict";
     var DataTable = $.fn.dataTable;
     // Used for namespacing events added to the document by each instance, so they
@@ -29399,7 +29399,7 @@ window.feather = (0, _featherIconsDefault.default);
             });
             // Global key event binding to listen for button keys
             $("body").on("keyup." + this.s.namespace, function(e) {
-                if (!document.activeElement || document.activeElement === document.body) {
+                if (!document1.activeElement || document1.activeElement === document1.body) {
                     // SUse a string of characters for fast lookup of if we need to
                     // handle this
                     var character = String.fromCharCode(e.keyCode).toLowerCase();
@@ -29493,22 +29493,22 @@ window.feather = (0, _featherIconsDefault.default);
 	 * @param  {boolean} inCollection `true` if a collection button
 	 * @return {jQuery} Created button node (jQuery)
 	 * @private
-	 */ _buildButton: function(config1, inCollection, isSplit, inSplit) {
+	 */ _buildButton: function(config, inCollection, isSplit, inSplit) {
             var buttonDom = this.c.dom.button;
             var linerDom = this.c.dom.buttonLiner;
             var collectionDom = this.c.dom.collection;
             var splitDom = this.c.dom.split;
             var splitCollectionDom = this.c.dom.splitCollection;
             var splitDropdownButton = this.c.dom.splitDropdownButton;
-            var dt1 = this.s.dt;
+            var dt = this.s.dt;
             var text = function(opt) {
-                return typeof opt === "function" ? opt(dt1, button1, config1) : opt;
+                return typeof opt === "function" ? opt(dt, button, config) : opt;
             };
             // Spacers don't do much other than insert an element into the DOM
-            if (config1.spacer) {
-                var spacer = $("<span></span>").addClass("dt-button-spacer " + config1.style + " " + buttonDom.spacerClass).html(text(config1.text));
+            if (config.spacer) {
+                var spacer = $("<span></span>").addClass("dt-button-spacer " + config.style + " " + buttonDom.spacerClass).html(text(config.text));
                 return {
-                    conf: config1,
+                    conf: config,
                     node: spacer,
                     inserter: spacer,
                     buttons: [],
@@ -29524,9 +29524,9 @@ window.feather = (0, _featherIconsDefault.default);
             else if (!isSplit && inCollection && collectionDom.buttonLiner) linerDom = collectionDom.buttonLiner;
             // Make sure that the button is available based on whatever requirements
             // it has. For example, PDF button require pdfmake
-            if (config1.available && !config1.available(dt1, config1) && !config1.hasOwnProperty("html")) return false;
-            var button1;
-            if (!config1.hasOwnProperty("html")) {
+            if (config.available && !config.available(dt, config) && !config.hasOwnProperty("html")) return false;
+            var button;
+            if (!config.hasOwnProperty("html")) {
                 var action = function(e, dt, button, config) {
                     config.action.call(dt.button(button), e, dt, button, config);
                     $(dt.table().node()).triggerHandler("buttons-action.dt", [
@@ -29536,48 +29536,48 @@ window.feather = (0, _featherIconsDefault.default);
                         config
                     ]);
                 };
-                var tag = config1.tag || buttonDom.tag;
-                var clickBlurs = config1.clickBlurs === undefined ? true : config1.clickBlurs;
-                button1 = $("<" + tag + "/>").addClass(buttonDom.className).addClass(inSplit ? this.c.dom.splitDropdownButton.className : "").attr("tabindex", this.s.dt.settings()[0].iTabIndex).attr("aria-controls", this.s.dt.table().node().id).on("click.dtb", function(e) {
+                var tag = config.tag || buttonDom.tag;
+                var clickBlurs = config.clickBlurs === undefined ? true : config.clickBlurs;
+                button = $("<" + tag + "/>").addClass(buttonDom.className).addClass(inSplit ? this.c.dom.splitDropdownButton.className : "").attr("tabindex", this.s.dt.settings()[0].iTabIndex).attr("aria-controls", this.s.dt.table().node().id).on("click.dtb", function(e) {
                     e.preventDefault();
-                    if (!button1.hasClass(buttonDom.disabled) && config1.action) action(e, dt1, button1, config1);
-                    if (clickBlurs) button1.trigger("blur");
+                    if (!button.hasClass(buttonDom.disabled) && config.action) action(e, dt, button, config);
+                    if (clickBlurs) button.trigger("blur");
                 }).on("keypress.dtb", function(e) {
                     if (e.keyCode === 13) {
                         e.preventDefault();
-                        if (!button1.hasClass(buttonDom.disabled) && config1.action) action(e, dt1, button1, config1);
+                        if (!button.hasClass(buttonDom.disabled) && config.action) action(e, dt, button, config);
                     }
                 });
                 // Make `a` tags act like a link
-                if (tag.toLowerCase() === "a") button1.attr("href", "#");
+                if (tag.toLowerCase() === "a") button.attr("href", "#");
                 // Button tags should have `type=button` so they don't have any default behaviour
-                if (tag.toLowerCase() === "button") button1.attr("type", "button");
+                if (tag.toLowerCase() === "button") button.attr("type", "button");
                 if (linerDom.tag) {
-                    var liner = $("<" + linerDom.tag + "/>").html(text(config1.text)).addClass(linerDom.className);
+                    var liner = $("<" + linerDom.tag + "/>").html(text(config.text)).addClass(linerDom.className);
                     if (linerDom.tag.toLowerCase() === "a") liner.attr("href", "#");
-                    button1.append(liner);
-                } else button1.html(text(config1.text));
-                if (config1.enabled === false) button1.addClass(buttonDom.disabled);
-                if (config1.className) button1.addClass(config1.className);
-                if (config1.titleAttr) button1.attr("title", text(config1.titleAttr));
-                if (config1.attr) button1.attr(config1.attr);
-                if (!config1.namespace) config1.namespace = ".dt-button-" + _buttonCounter++;
-                if (config1.config !== undefined && config1.config.split) config1.split = config1.config.split;
-            } else button1 = $(config1.html);
+                    button.append(liner);
+                } else button.html(text(config.text));
+                if (config.enabled === false) button.addClass(buttonDom.disabled);
+                if (config.className) button.addClass(config.className);
+                if (config.titleAttr) button.attr("title", text(config.titleAttr));
+                if (config.attr) button.attr(config.attr);
+                if (!config.namespace) config.namespace = ".dt-button-" + _buttonCounter++;
+                if (config.config !== undefined && config.config.split) config.split = config.config.split;
+            } else button = $(config.html);
             var buttonContainer = this.c.dom.buttonContainer;
             var inserter;
-            if (buttonContainer && buttonContainer.tag) inserter = $("<" + buttonContainer.tag + "/>").addClass(buttonContainer.className).append(button1);
-            else inserter = button1;
-            this._addKey(config1);
+            if (buttonContainer && buttonContainer.tag) inserter = $("<" + buttonContainer.tag + "/>").addClass(buttonContainer.className).append(button);
+            else inserter = button;
+            this._addKey(config);
             // Style integration callback for DOM manipulation
             // Note that this is _not_ documented. It is currently
             // for style integration only
-            if (this.c.buttonCreated) inserter = this.c.buttonCreated(config1, inserter);
+            if (this.c.buttonCreated) inserter = this.c.buttonCreated(config, inserter);
             var splitDiv;
             if (isSplit) {
                 splitDiv = $("<div/>").addClass(this.c.dom.splitWrapper.className);
-                splitDiv.append(button1);
-                var dropButtonConfig = $.extend(config1, {
+                splitDiv.append(button);
+                var dropButtonConfig = $.extend(config, {
                     text: this.c.dom.splitDropdown.text,
                     className: this.c.dom.splitDropdown.className,
                     closeButton: false,
@@ -29602,20 +29602,20 @@ window.feather = (0, _featherIconsDefault.default);
                 var dropButton = $('<button class="' + this.c.dom.splitDropdown.className + ' dt-button"><span class="dt-btn-split-drop-arrow">' + this.c.dom.splitDropdown.text + "</span></button>").on("click.dtb", function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    if (!dropButton.hasClass(buttonDom.disabled)) splitAction(e, dt1, dropButton, dropButtonConfig);
+                    if (!dropButton.hasClass(buttonDom.disabled)) splitAction(e, dt, dropButton, dropButtonConfig);
                     if (clickBlurs) dropButton.trigger("blur");
                 }).on("keypress.dtb", function(e) {
                     if (e.keyCode === 13) {
                         e.preventDefault();
-                        if (!dropButton.hasClass(buttonDom.disabled)) splitAction(e, dt1, dropButton, dropButtonConfig);
+                        if (!dropButton.hasClass(buttonDom.disabled)) splitAction(e, dt, dropButton, dropButtonConfig);
                     }
                 });
-                if (config1.split.length === 0) dropButton.addClass("dtb-hide-drop");
+                if (config.split.length === 0) dropButton.addClass("dtb-hide-drop");
                 splitDiv.append(dropButton).attr(dropButtonConfig.attr);
             }
             return {
-                conf: config1,
-                node: isSplit ? splitDiv.get(0) : button1.get(0),
+                conf: config,
+                node: isSplit ? splitDiv.get(0) : button.get(0),
                 inserter: isSplit ? splitDiv : inserter,
                 buttons: [],
                 inCollection: inCollection,
@@ -29781,7 +29781,7 @@ window.feather = (0, _featherIconsDefault.default);
 	 * @param {string|node} content Content to show
 	 * @param {DataTable.Api} hostButton DT API instance of the button
 	 * @param {object} inOpts Options (see object below for all options)
-	 */ _popover: function(content, hostButton, inOpts, e1) {
+	 */ _popover: function(content, hostButton, inOpts, e) {
             var dt = hostButton;
             var buttonsSettings = this.c;
             var closed = false;
@@ -29809,7 +29809,7 @@ window.feather = (0, _featherIconsDefault.default);
                 $(dt.buttons('[aria-haspopup="dialog"][aria-expanded="true"]').nodes()).attr("aria-expanded", "false");
                 $("div.dt-button-background").off("click.dtb-collection");
                 Buttons.background(false, options.backgroundClassName, options.fade, hostNode);
-                $(window).off("resize.resize.dtb-collection");
+                $(window1).off("resize.resize.dtb-collection");
                 $("body").off(".dtb-collection");
                 dt.off("buttons-action.b-internal");
                 dt.off("destroy");
@@ -29836,7 +29836,7 @@ window.feather = (0, _featherIconsDefault.default);
             });
             content = $(content).addClass(options.contentClassName).attr("role", "menu").appendTo(display);
             hostNode.attr("aria-expanded", "true");
-            if (hostNode.parents("body")[0] !== document.body) hostNode = document.body.lastChild;
+            if (hostNode.parents("body")[0] !== document1.body) hostNode = document1.body.lastChild;
             if (options.popoverTitle) display.prepend('<div class="dt-button-collection-title">' + options.popoverTitle + "</div>");
             else if (options.collectionTitle) display.prepend('<div class="dt-button-collection-title">' + options.collectionTitle + "</div>");
             if (options.closeButton) display.prepend('<div class="dtb-popover-close">x</div>').addClass("dtb-collection-closeable");
@@ -29856,7 +29856,7 @@ window.feather = (0, _featherIconsDefault.default);
                 var buttonOffset = hostNode.offset();
                 var tableSizes = offsetParent.offset();
                 var containerPosition = offsetParent.position();
-                var computed = window.getComputedStyle(offsetParent[0]);
+                var computed = window1.getComputedStyle(offsetParent[0]);
                 tableSizes.height = offsetParent.outerHeight();
                 tableSizes.width = offsetParent.width() + parseFloat(computed.paddingLeft);
                 tableSizes.right = tableSizes.left + tableSizes.width;
@@ -29869,7 +29869,7 @@ window.feather = (0, _featherIconsDefault.default);
                     left: left
                 });
                 // Get the popover position
-                computed = window.getComputedStyle(display[0]);
+                computed = window1.getComputedStyle(display[0]);
                 var popoverSizes = display.offset();
                 popoverSizes.height = display.outerHeight();
                 popoverSizes.width = display.outerWidth();
@@ -29886,13 +29886,13 @@ window.feather = (0, _featherIconsDefault.default);
                     if (left + popoverSizes.width > tableSizes.width) left = tableSizes.width - popoverSizes.width;
                 }
                 // Window adjustment
-                if (containerPosition.left + left + popoverSizes.width > $(window).width()) // Overflowing the document to the right
-                left = $(window).width() - popoverSizes.width - containerPosition.left;
+                if (containerPosition.left + left + popoverSizes.width > $(window1).width()) // Overflowing the document to the right
+                left = $(window1).width() - popoverSizes.width - containerPosition.left;
                 if (buttonOffset.left + left < 0) // Off to the left of the document
                 left = -buttonOffset.left;
-                if (containerPosition.top + top + popoverSizes.height > $(window).height() + $(window).scrollTop()) // Pop up if otherwise we'd need the user to scroll down
+                if (containerPosition.top + top + popoverSizes.height > $(window1).height() + $(window1).scrollTop()) // Pop up if otherwise we'd need the user to scroll down
                 top = buttonPosition.top - popoverSizes.height - popoverSizes.marginTop - popoverSizes.marginBottom;
-                if (containerPosition.top + top < $(window).scrollTop()) // Correction for when the top is beyond the top of the page
+                if (containerPosition.top + top < $(window1).scrollTop()) // Correction for when the top is beyond the top of the page
                 top = buttonPosition.top + hostNode.outerHeight();
                 // Calculations all done - now set it
                 display.css({
@@ -29902,13 +29902,13 @@ window.feather = (0, _featherIconsDefault.default);
             } else {
                 // Fix position - centre on screen
                 var position = function() {
-                    var half = $(window).height() / 2;
+                    var half = $(window1).height() / 2;
                     var top = display.height() / 2;
                     if (top > half) top = half;
                     display.css("marginTop", top * -1);
                 };
                 position();
-                $(window).on("resize.dtb-collection", function() {
+                $(window1).on("resize.dtb-collection", function() {
                     position();
                 });
             }
@@ -29939,7 +29939,7 @@ window.feather = (0, _featherIconsDefault.default);
                 }).on("keydown.dtb-collection", function(e) {
                     // Focus trap for tab key
                     var elements = $("a, button", content);
-                    var active = document.activeElement;
+                    var active = document1.activeElement;
                     if (e.keyCode !== 9) return;
                     if (elements.index(active) === -1) {
                         // If current focus is not inside the popover
@@ -29969,7 +29969,7 @@ window.feather = (0, _featherIconsDefault.default);
  * @static
  */ Buttons.background = function(show, className, fade, insertPoint) {
         if (fade === undefined) fade = 400;
-        if (!insertPoint) insertPoint = document.body;
+        if (!insertPoint) insertPoint = document1.body;
         if (show) _fadeIn($("<div/>").addClass(className).css("display", "none").insertAfter(insertPoint), fade);
         else _fadeOut($("div." + className), fade, function() {
             $(this).removeClass(className).remove();
@@ -30024,7 +30024,7 @@ window.feather = (0, _featherIconsDefault.default);
  * @return {array} Array of objects containing `inst` and `idx` properties of
  *   the selected buttons so you know which instance each button belongs to.
  * @static
- */ Buttons.buttonSelector = function(insts, selector1) {
+ */ Buttons.buttonSelector = function(insts, selector) {
         var ret = [];
         var nodeBuilder = function(a, buttons, baseIdx) {
             var button;
@@ -30101,9 +30101,9 @@ window.feather = (0, _featherIconsDefault.default);
                 });
             }
         };
-        for(var i1 = 0, ien1 = insts.length; i1 < ien1; i1++){
-            var inst1 = insts[i1];
-            run(selector1, inst1);
+        for(var i = 0, ien = insts.length; i < ien; i++){
+            var inst = insts[i];
+            run(selector, inst);
         }
         return ret;
     };
@@ -30239,8 +30239,8 @@ window.feather = (0, _featherIconsDefault.default);
         pdf: function(dt, conf) {
             if (_dtButtons.pdfHtml5 && _dtButtons.pdfHtml5.available(dt, conf)) return "pdfHtml5";
         },
-        pageLength: function(dt2) {
-            var lengthMenu = dt2.settings()[0].aLengthMenu;
+        pageLength: function(dt) {
+            var lengthMenu = dt.settings()[0].aLengthMenu;
             var vals = [];
             var lang = [];
             var text = function(dt) {
@@ -30253,8 +30253,8 @@ window.feather = (0, _featherIconsDefault.default);
             if (Array.isArray(lengthMenu[0])) {
                 vals = lengthMenu[0];
                 lang = lengthMenu[1];
-            } else for(var i2 = 0; i2 < lengthMenu.length; i2++){
-                var option = lengthMenu[i2];
+            } else for(var i = 0; i < lengthMenu.length; i++){
+                var option = lengthMenu[i];
                 // Support for DataTables 2 object in the array
                 if ($.isPlainObject(option)) {
                     vals.push(option.value);
@@ -30636,7 +30636,7 @@ window.feather = (0, _featherIconsDefault.default);
     // create the buttons instance here so they can be inserted into the document
     // using the API. Listen for `init` for compatibility with pre 1.10.10, but to
     // be removed in future.
-    $(document).on("init.dt plugin-init.dt", function(e, settings) {
+    $(document1).on("init.dt plugin-init.dt", function(e, settings) {
         if (e.namespace !== "dt") return;
         var opts = settings.oInit.buttons || DataTable.defaults.buttons;
         if (opts && !settings._buttons) new Buttons(settings, opts).container();
@@ -30691,7 +30691,7 @@ window.feather = (0, _featherIconsDefault.default);
         if (!$) $ = typeof window !== "undefined" ? require("jquery") : require("jquery")(root);
         return factory($, root, root.document);
     };
-})(function($, window, document, undefined) {
+})(function($, window1, document1, undefined) {
     "use strict";
     var DataTable = function(selector, options) {
         // When creating with `new`, create a new DataTable, returning the API instance
@@ -31307,7 +31307,7 @@ window.feather = (0, _featherIconsDefault.default);
             // object that can be bashed around
             var o = {};
             var oInit = len > 1 ? _fnExtend(o, options, true) : options;
-            /*global oInit,_that,emptyInit*/ var i2 = 0, iLen, j, jLen, k, kLen;
+            /*global oInit,_that,emptyInit*/ var i = 0, iLen, j, jLen, k, kLen;
             var sId = this.getAttribute("id");
             var bInitHandedOff = false;
             var defaults = DataTable.defaults;
@@ -31322,8 +31322,8 @@ window.feather = (0, _featherIconsDefault.default);
             _fnCamelToHungarian(defaults.column, defaults.column, true);
             /* Setting up the initialisation object */ _fnCamelToHungarian(defaults, $.extend(oInit, $this.data()), true);
             /* Check to see if we are re-initialising a table */ var allSettings = DataTable.settings;
-            for(i2 = 0, iLen = allSettings.length; i2 < iLen; i2++){
-                var s = allSettings[i2];
+            for(i = 0, iLen = allSettings.length; i < iLen; i++){
+                var s = allSettings[i];
                 /* Base check on table node */ if (s.nTable == this || s.nTHead && s.nTHead.parentNode == this || s.nTFoot && s.nTFoot.parentNode == this) {
                     var bRetrieve = oInit.bRetrieve !== undefined ? oInit.bRetrieve : defaults.bRetrieve;
                     var bDestroy = oInit.bDestroy !== undefined ? oInit.bDestroy : defaults.bDestroy;
@@ -31341,7 +31341,7 @@ window.feather = (0, _featherIconsDefault.default);
 				 * instance by simply deleting it. This is under the assumption that the table has been
 				 * destroyed by other methods. Anyone using non-id selectors will need to do this manually
 				 */ if (s.sTableId == this.id) {
-                    allSettings.splice(i2, 1);
+                    allSettings.splice(i, 1);
                     break;
                 }
             }
@@ -31519,9 +31519,9 @@ window.feather = (0, _featherIconsDefault.default);
             }
             /* If not given a column array, generate one with nulls */ if (oInit.aoColumns === null) {
                 aoColumnsInit = [];
-                for(i2 = 0, iLen = anThs.length; i2 < iLen; i2++)aoColumnsInit.push(null);
+                for(i = 0, iLen = anThs.length; i < iLen; i++)aoColumnsInit.push(null);
             } else aoColumnsInit = oInit.aoColumns;
-            /* Add the columns */ for(i2 = 0, iLen = aoColumnsInit.length; i2 < iLen; i2++)_fnAddColumn(oSettings, anThs ? anThs[i2] : null);
+            /* Add the columns */ for(i = 0, iLen = aoColumnsInit.length; i < iLen; i++)_fnAddColumn(oSettings, anThs ? anThs[i] : null);
             /* Apply the column definitions */ _fnApplyColumnDefs(oSettings, oInit.aoColumnDefs, aoColumnsInit, function(iCol, oDef) {
                 _fnColumnOptions(oSettings, iCol, oDef);
             });
@@ -31557,7 +31557,7 @@ window.feather = (0, _featherIconsDefault.default);
                 // in case that has been altered, so the default sort reflects that option
                 if (oInit.aaSorting === undefined) {
                     var sorting = oSettings.aaSorting;
-                    for(i2 = 0, iLen = sorting.length; i2 < iLen; i2++)sorting[i2][1] = oSettings.aoColumns[i2].asSorting[0];
+                    for(i = 0, iLen = sorting.length; i < iLen; i++)sorting[i][1] = oSettings.aoColumns[i].asSorting[0];
                 }
                 /* Do a first pass on the sorting classes (allows any size changes to be taken into
 				 * account, and also will apply sorting disabled classes if disabled
@@ -31602,7 +31602,7 @@ window.feather = (0, _featherIconsDefault.default);
                     oSettings.nTFoot = tfoot[0];
                     _fnDetectHeader(oSettings.aoFooter, oSettings.nTFoot);
                 }
-                /* Check if there is data passing into the constructor */ if (oInit.aaData) for(i2 = 0; i2 < oInit.aaData.length; i2++)_fnAddData(oSettings, oInit.aaData[i2]);
+                /* Check if there is data passing into the constructor */ if (oInit.aaData) for(i = 0; i < oInit.aaData.length; i++)_fnAddData(oSettings, oInit.aaData[i]);
                 else if (oSettings.bDeferLoading || _fnDataSource(oSettings) == "dom") /* Grab the data from the page - only do this when deferred loading or no Ajax
 					 * source since there is no point in reading the DOM data if we are then going
 					 * to replace it with Ajax data
@@ -32139,7 +32139,7 @@ window.feather = (0, _featherIconsDefault.default);
             var n = $("<div/>").css({
                 position: "fixed",
                 top: 0,
-                left: $(window).scrollLeft() * -1,
+                left: $(window1).scrollLeft() * -1,
                 height: 1,
                 width: 1,
                 overflow: "hidden"
@@ -32209,7 +32209,7 @@ window.feather = (0, _featherIconsDefault.default);
         var oDefaults = DataTable.defaults.column;
         var iCol = oSettings.aoColumns.length;
         var oCol = $.extend({}, DataTable.models.oColumn, oDefaults, {
-            "nTh": nTh ? nTh : document.createElement("th"),
+            "nTh": nTh ? nTh : document1.createElement("th"),
             "sTitle": oDefaults.sTitle ? oDefaults.sTitle : nTh ? nTh.innerHTML : "",
             "aDataSort": oDefaults.aDataSort ? oDefaults.aDataSort : [
                 iCol
@@ -32702,10 +32702,10 @@ window.feather = (0, _featherIconsDefault.default);
 	 *   them from here).
 	 * @memberof DataTable#oApi
 	 */ function _fnGetRowElements(settings, row, colIdx, d) {
-        var tds = [], td1 = row.firstChild, name, col, o, i = 0, contents, columns = settings.aoColumns, objectRead = settings._rowReadObject;
+        var tds = [], td = row.firstChild, name, col, o, i = 0, contents, columns = settings.aoColumns, objectRead = settings._rowReadObject;
         // Allow the data object to be passed in, or construct
         d = d !== undefined ? d : objectRead ? {} : [];
-        var attr1 = function(str, td) {
+        var attr = function(str, td) {
             if (typeof str === "string") {
                 var idx = str.indexOf("@");
                 if (idx !== -1) {
@@ -32723,9 +32723,9 @@ window.feather = (0, _featherIconsDefault.default);
                 if (col && col._bAttrSrc) {
                     var setter = _fnSetObjectDataFn(col.mData._);
                     setter(d, contents);
-                    attr1(col.mData.sort, cell);
-                    attr1(col.mData.type, cell);
-                    attr1(col.mData.filter, cell);
+                    attr(col.mData.sort, cell);
+                    attr(col.mData.type, cell);
+                    attr(col.mData.filter, cell);
                 } else // Depending on the `data` option for the columns the data can
                 // be read to either an object or an array.
                 if (objectRead) {
@@ -32736,14 +32736,14 @@ window.feather = (0, _featherIconsDefault.default);
             }
             i++;
         };
-        if (td1) // `tr` element was passed in
-        while(td1){
-            name = td1.nodeName.toUpperCase();
+        if (td) // `tr` element was passed in
+        while(td){
+            name = td.nodeName.toUpperCase();
             if (name == "TD" || name == "TH") {
-                cellProcess(td1);
-                tds.push(td1);
+                cellProcess(td);
+                tds.push(td);
             }
-            td1 = td1.nextSibling;
+            td = td.nextSibling;
         }
         else {
             // Existing row object passed in
@@ -32773,7 +32773,7 @@ window.feather = (0, _featherIconsDefault.default);
 	 */ function _fnCreateTr(oSettings, iRow, nTrIn, anTds) {
         var row = oSettings.aoData[iRow], rowData = row._aData, cells = [], nTr, nTd, oCol, i, iLen, create;
         if (row.nTr === null) {
-            nTr = nTrIn || document.createElement("tr");
+            nTr = nTrIn || document1.createElement("tr");
             row.nTr = nTr;
             row.anCells = cells;
             /* Use a private property on the node to allow reserve mapping from the node
@@ -32783,7 +32783,7 @@ window.feather = (0, _featherIconsDefault.default);
             /* Process each column */ for(i = 0, iLen = oSettings.aoColumns.length; i < iLen; i++){
                 oCol = oSettings.aoColumns[i];
                 create = nTrIn ? false : true;
-                nTd = create ? document.createElement(oCol.sCellType) : anTds[i];
+                nTd = create ? document1.createElement(oCol.sCellType) : anTds[i];
                 nTd._DT_CellIndex = {
                     row: iRow,
                     column: i
@@ -33118,7 +33118,7 @@ window.feather = (0, _featherIconsDefault.default);
 	 */ function _fnDetectHeader(aLayout, nThead) {
         var nTrs = $(nThead).children("tr");
         var nTr, nCell;
-        var i3, k1, l, iLen, jLen, iColShifted, iColumn, iColspan, iRowspan;
+        var i, k, l, iLen, jLen, iColShifted, iColumn, iColspan, iRowspan;
         var bUnique;
         var fnShiftCol = function(a, i, j) {
             var k = a[i];
@@ -33126,9 +33126,9 @@ window.feather = (0, _featherIconsDefault.default);
             return j;
         };
         aLayout.splice(0, aLayout.length);
-        /* We know how many rows there are in the layout - so prep it */ for(i3 = 0, iLen = nTrs.length; i3 < iLen; i3++)aLayout.push([]);
-        /* Calculate a layout array */ for(i3 = 0, iLen = nTrs.length; i3 < iLen; i3++){
-            nTr = nTrs[i3];
+        /* We know how many rows there are in the layout - so prep it */ for(i = 0, iLen = nTrs.length; i < iLen; i++)aLayout.push([]);
+        /* Calculate a layout array */ for(i = 0, iLen = nTrs.length; i < iLen; i++){
+            nTr = nTrs[i];
             iColumn = 0;
             /* For every cell in the row... */ nCell = nTr.firstChild;
             while(nCell){
@@ -33139,14 +33139,14 @@ window.feather = (0, _featherIconsDefault.default);
                     iRowspan = !iRowspan || iRowspan === 0 || iRowspan === 1 ? 1 : iRowspan;
                     /* There might be colspan cells already in this row, so shift our target
 					 * accordingly
-					 */ iColShifted = fnShiftCol(aLayout, i3, iColumn);
+					 */ iColShifted = fnShiftCol(aLayout, i, iColumn);
                     /* Cache calculation for unique columns */ bUnique = iColspan === 1 ? true : false;
-                    /* If there is col / rowspan, copy the information into the layout grid */ for(l = 0; l < iColspan; l++)for(k1 = 0; k1 < iRowspan; k1++){
-                        aLayout[i3 + k1][iColShifted + l] = {
+                    /* If there is col / rowspan, copy the information into the layout grid */ for(l = 0; l < iColspan; l++)for(k = 0; k < iRowspan; k++){
+                        aLayout[i + k][iColShifted + l] = {
                             "cell": nCell,
                             "unique": bUnique
                         };
-                        aLayout[i3 + k1].nTr = nTr;
+                        aLayout[i + k].nTr = nTr;
                     }
                 }
                 nCell = nCell.nextSibling;
@@ -33312,7 +33312,7 @@ window.feather = (0, _featherIconsDefault.default);
 	 *  @returns {bool} block the table drawing or not
 	 *  @memberof DataTable#oApi
 	 */ function _fnAjaxParameters(settings) {
-        var columns = settings.aoColumns, columnCount = columns.length, features = settings.oFeatures, preSearch = settings.oPreviousSearch, preColSearch = settings.aoPreSearchCols, i4, data = [], dataProp, column, columnSearch, sort = _fnSortFlatten(settings), displayStart = settings._iDisplayStart, displayLength = features.bPaginate !== false ? settings._iDisplayLength : -1;
+        var columns = settings.aoColumns, columnCount = columns.length, features = settings.oFeatures, preSearch = settings.oPreviousSearch, preColSearch = settings.aoPreSearchCols, i, data = [], dataProp, column, columnSearch, sort = _fnSortFlatten(settings), displayStart = settings._iDisplayStart, displayLength = features.bPaginate !== false ? settings._iDisplayLength : -1;
         var param = function(name, value) {
             data.push({
                 "name": name,
@@ -33337,9 +33337,9 @@ window.feather = (0, _featherIconsDefault.default);
                 regex: preSearch.bRegex
             }
         };
-        for(i4 = 0; i4 < columnCount; i4++){
-            column = columns[i4];
-            columnSearch = preColSearch[i4];
+        for(i = 0; i < columnCount; i++){
+            column = columns[i];
+            columnSearch = preColSearch[i];
             dataProp = typeof column.mData == "function" ? "function" : column.mData;
             d.columns.push({
                 data: dataProp,
@@ -33351,13 +33351,13 @@ window.feather = (0, _featherIconsDefault.default);
                     regex: columnSearch.bRegex
                 }
             });
-            param("mDataProp_" + i4, dataProp);
+            param("mDataProp_" + i, dataProp);
             if (features.bFilter) {
-                param("sSearch_" + i4, columnSearch.sSearch);
-                param("bRegex_" + i4, columnSearch.bRegex);
-                param("bSearchable_" + i4, column.bSearchable);
+                param("sSearch_" + i, columnSearch.sSearch);
+                param("bRegex_" + i, columnSearch.bRegex);
+                param("bSearchable_" + i, column.bSearchable);
             }
-            if (features.bSort) param("bSortable_" + i4, column.bSortable);
+            if (features.bSort) param("bSortable_" + i, column.bSortable);
         }
         if (features.bFilter) {
             param("sSearch", preSearch.sSearch);
@@ -33487,7 +33487,7 @@ window.feather = (0, _featherIconsDefault.default);
             if (settings === s) // IE9 throws an 'unknown error' if document.activeElement is used
             // inside an iframe or frame...
             try {
-                if (jqFilter[0] !== document.activeElement) jqFilter.val(previousSearch.sSearch);
+                if (jqFilter[0] !== document1.activeElement) jqFilter.val(previousSearch.sSearch);
             } catch (e) {}
         });
         return filter[0];
@@ -33868,14 +33868,14 @@ window.feather = (0, _featherIconsDefault.default);
 	 *  @param {object} oSettings dataTables settings object
 	 *  @returns {node} Pagination feature node
 	 *  @memberof DataTable#oApi
-	 */ function _fnFeatureHtmlPaginate(settings1) {
-        var type = settings1.sPaginationType, plugin = DataTable.ext.pager[type], modern = typeof plugin === "function", redraw = function(settings) {
+	 */ function _fnFeatureHtmlPaginate(settings) {
+        var type = settings.sPaginationType, plugin = DataTable.ext.pager[type], modern = typeof plugin === "function", redraw = function(settings) {
             _fnDraw(settings);
-        }, node = $("<div/>").addClass(settings1.oClasses.sPaging + type)[0], features = settings1.aanFeatures;
-        if (!modern) plugin.fnInit(settings1, node, redraw);
+        }, node = $("<div/>").addClass(settings.oClasses.sPaging + type)[0], features = settings.aanFeatures;
+        if (!modern) plugin.fnInit(settings, node, redraw);
         /* Add a draw callback for the pagination on first instance, to update the paging display */ if (!features.p) {
-            node.id = settings1.sTableId + "_paginate";
-            settings1.aoDrawCallback.push({
+            node.id = settings.sTableId + "_paginate";
+            settings.aoDrawCallback.push({
                 "fn": function(settings) {
                     if (modern) {
                         var start = settings._iDisplayStart, len = settings._iDisplayLength, visRecords = settings.fnRecordsDisplay(), all = len === -1, page = all ? 0 : Math.ceil(start / len), pages = all ? 1 : Math.ceil(visRecords / len), buttons = plugin(page, pages), i, ien;
@@ -34120,7 +34120,7 @@ window.feather = (0, _featherIconsDefault.default);
         _fnApplyToChildren(zeroOut, headerSrcEls);
         // Read all widths in next pass
         _fnApplyToChildren(function(nSizer) {
-            var style = window.getComputedStyle ? window.getComputedStyle(nSizer).width : _fnStringToCss($(nSizer).width());
+            var style = window1.getComputedStyle ? window1.getComputedStyle(nSizer).width : _fnStringToCss($(nSizer).width());
             headerContent.push(nSizer.innerHTML);
             headerWidths.push(style);
         }, headerSrcEls);
@@ -34346,7 +34346,7 @@ window.feather = (0, _featherIconsDefault.default);
         if (tableWidthAttr) table.style.width = _fnStringToCss(tableWidthAttr);
         if ((tableWidthAttr || scrollX) && !oSettings._reszEvt) {
             var bindResize = function() {
-                $(window).on("resize.DT-" + oSettings.sInstance, _fnThrottle(function() {
+                $(window1).on("resize.DT-" + oSettings.sInstance, _fnThrottle(function() {
                     _fnAdjustColumnSizing(oSettings);
                 }));
             };
@@ -34373,7 +34373,7 @@ window.feather = (0, _featherIconsDefault.default);
 	 *  @memberof DataTable#oApi
 	 */ function _fnConvertToWidth(width, parent) {
         if (!width) return 0;
-        var n = $("<div/>").css("width", _fnStringToCss(width)).appendTo(parent || document.body);
+        var n = $("<div/>").css("width", _fnStringToCss(width)).appendTo(parent || document1.body);
         var val = n[0].offsetWidth;
         n.remove();
         return val;
@@ -34458,7 +34458,7 @@ window.feather = (0, _featherIconsDefault.default);
 	 *  @memberof DataTable#oApi
 	 *  @todo This really needs split up!
 	 */ function _fnSort(oSettings) {
-        var i, ien, iLen, j, jLen, k2, kLen, sDataType, nTh, aiOrig = [], oExtSort = DataTable.ext.type.order, aoData = oSettings.aoData, aoColumns = oSettings.aoColumns, aDataSort, data, iCol, sType, oSort, formatters = 0, sortCol, displayMaster = oSettings.aiDisplayMaster, aSort;
+        var i, ien, iLen, j, jLen, k, kLen, sDataType, nTh, aiOrig = [], oExtSort = DataTable.ext.type.order, aoData = oSettings.aoData, aoColumns = oSettings.aoColumns, aDataSort, data, iCol, sType, oSort, formatters = 0, sortCol, displayMaster = oSettings.aiDisplayMaster, aSort;
         // Resolve any column types that are unknown due to addition or invalidation
         // @todo Can this be moved into a 'data-ready' handler which is called when
         //   data is going to be used in the table?
@@ -34730,8 +34730,8 @@ window.feather = (0, _featherIconsDefault.default);
         var loaded = function(state) {
             _fnImplementState(settings, state, callback);
         };
-        var state1 = settings.fnStateLoadCallback.call(settings.oInstance, settings, loaded);
-        if (state1 !== undefined) _fnImplementState(settings, state1, callback);
+        var state = settings.fnStateLoadCallback.call(settings.oInstance, settings, loaded);
+        if (state !== undefined) _fnImplementState(settings, state, callback);
         // otherwise, wait for the loaded callback to be executed
         return true;
     }
@@ -34802,16 +34802,16 @@ window.feather = (0, _featherIconsDefault.default);
         // Columns
         if (s.columns) {
             for(i = 0, ien = s.columns.length; i < ien; i++){
-                var col1 = s.columns[i];
+                var col = s.columns[i];
                 // Visibility
-                if (col1.visible !== undefined) {
+                if (col.visible !== undefined) {
                     // If the api is defined, the table has been initialised so we need to use it rather than internal settings
                     if (api) // Don't redraw the columns on every iteration of this loop, we will do this at the end instead
-                    api.column(i).visible(col1.visible, false);
-                    else columns[i].bVisible = col1.visible;
+                    api.column(i).visible(col.visible, false);
+                    else columns[i].bVisible = col.visible;
                 }
                 // Search
-                if (col1.search !== undefined) $.extend(settings.aoPreSearchCols[i], _fnSearchToHung(col1.search));
+                if (col.search !== undefined) $.extend(settings.aoPreSearchCols[i], _fnSearchToHung(col.search));
             }
             // If the api is defined then we need to adjust the columns once the visibility has been changed
             if (api) api.columns.adjust();
@@ -34855,7 +34855,7 @@ window.feather = (0, _featherIconsDefault.default);
             if (type == "alert") alert(msg);
             else if (type == "throw") throw new Error(msg);
             else if (typeof type == "function") type(settings, tn, msg);
-        } else if (window.console && console.log) console.log(msg);
+        } else if (window1.console && console.log) console.log(msg);
     }
     /**
 	 * See if a property is defined on one object, if so assign it to the other object
@@ -35288,7 +35288,7 @@ window.feather = (0, _featherIconsDefault.default);
         },
         unshift: __arrayProto.unshift
     });
-    _Api.extend = function(scope1, obj, ext) {
+    _Api.extend = function(scope, obj, ext) {
         // Only extend API instances and static properties of the API
         if (!ext.length || !obj || !(obj instanceof _Api) && !obj.__dt_wrapper) return;
         var i, ien, struct, methodScoping = function(scope, fn, struc) {
@@ -35302,10 +35302,10 @@ window.feather = (0, _featherIconsDefault.default);
         for(i = 0, ien = ext.length; i < ien; i++){
             struct = ext[i];
             // Value
-            obj[struct.name] = struct.type === "function" ? methodScoping(scope1, struct.val, struct) : struct.type === "object" ? {} : struct.val;
+            obj[struct.name] = struct.type === "function" ? methodScoping(scope, struct.val, struct) : struct.type === "object" ? {} : struct.val;
             obj[struct.name].__dt_wrapper = true;
             // Property extension
-            _Api.extend(scope1, obj[struct.name], struct.propExt);
+            _Api.extend(scope, obj[struct.name], struct.propExt);
         }
     };
     // @todo - Is there need for an augment function?
@@ -35337,36 +35337,36 @@ window.feather = (0, _featherIconsDefault.default);
     //         ]
     //       }
     //     ]
-    _Api.register = _api_register = function(name1, val) {
-        if (Array.isArray(name1)) {
-            for(var j = 0, jen = name1.length; j < jen; j++)_Api.register(name1[j], val);
+    _Api.register = _api_register = function(name, val) {
+        if (Array.isArray(name)) {
+            for(var j = 0, jen = name.length; j < jen; j++)_Api.register(name[j], val);
             return;
         }
-        var i5, ien1, heir = name1.split("."), struct = __apiStruct, key, method;
+        var i, ien, heir = name.split("."), struct = __apiStruct, key, method;
         var find = function(src, name) {
             for(var i = 0, ien = src.length; i < ien; i++){
                 if (src[i].name === name) return src[i];
             }
             return null;
         };
-        for(i5 = 0, ien1 = heir.length; i5 < ien1; i5++){
-            method = heir[i5].indexOf("()") !== -1;
-            key = method ? heir[i5].replace("()", "") : heir[i5];
-            var src1 = find(struct, key);
-            if (!src1) {
-                src1 = {
+        for(i = 0, ien = heir.length; i < ien; i++){
+            method = heir[i].indexOf("()") !== -1;
+            key = method ? heir[i].replace("()", "") : heir[i];
+            var src = find(struct, key);
+            if (!src) {
+                src = {
                     name: key,
                     val: {},
                     methodExt: [],
                     propExt: [],
                     type: "object"
                 };
-                struct.push(src1);
+                struct.push(src);
             }
-            if (i5 === ien1 - 1) {
-                src1.val = val;
-                src1.type = typeof val === "function" ? "function" : $.isPlainObject(val) ? "object" : "other";
-            } else struct = method ? src1.methodExt : src1.propExt;
+            if (i === ien - 1) {
+                src.val = val;
+                src.type = typeof val === "function" ? "function" : $.isPlainObject(val) ? "object" : "other";
+            } else struct = method ? src.methodExt : src.propExt;
         }
     };
     _Api.registerPlural = _api_registerPlural = function(pluralName, singularName, val) {
@@ -35936,7 +35936,7 @@ window.feather = (0, _featherIconsDefault.default);
         // Return an Api.rows() extended instance, with the newly added row selected
         return this.row(rows[0]);
     });
-    $(document).on("plugin-init.dt", function(e, context) {
+    $(document1).on("plugin-init.dt", function(e, context) {
         var api = new _Api(context);
         api.on("stateSaveParams", function(e, settings, d) {
             // This could be more compact with the API, but it is a lot faster as a simple
@@ -36146,20 +36146,20 @@ window.feather = (0, _featherIconsDefault.default);
             if (match) switch(match[2]){
                 case "visIdx":
                 case "visible":
-                    var idx1 = parseInt(match[1], 10);
+                    var idx = parseInt(match[1], 10);
                     // Visible index given, convert to column index
-                    if (idx1 < 0) {
+                    if (idx < 0) {
                         // Counting from the right
                         var visColumns = $.map(columns, function(col, i) {
                             return col.bVisible ? i : null;
                         });
                         return [
-                            visColumns[visColumns.length + idx1]
+                            visColumns[visColumns.length + idx]
                         ];
                     }
                     // Counting from the left
                     return [
-                        _fnVisibleToColumnIndex(settings, idx1)
+                        _fnVisibleToColumnIndex(settings, idx)
                     ];
                 case "name":
                     // match by name. `names` is column index complete and in order
@@ -36261,14 +36261,14 @@ window.feather = (0, _featherIconsDefault.default);
             __setColumnVis(settings, column, vis);
         });
         // Group the column visibility changes
-        if (vis !== undefined) this.iterator("table", function(settings2) {
+        if (vis !== undefined) this.iterator("table", function(settings) {
             // Redraw the header after changes
-            _fnDrawHead(settings2, settings2.aoHeader);
-            _fnDrawHead(settings2, settings2.aoFooter);
+            _fnDrawHead(settings, settings.aoHeader);
+            _fnDrawHead(settings, settings.aoFooter);
             // Update colspan for no records display. Child rows and extensions will use their own
             // listeners to do this - only need to update the empty table item here
-            if (!settings2.aiDisplay.length) $(settings2.nTBody).find("td[colspan]").attr("colspan", _fnVisbleColumns(settings2));
-            _fnSaveState(settings2);
+            if (!settings.aiDisplay.length) $(settings.nTBody).find("td[colspan]").attr("colspan", _fnVisbleColumns(settings));
+            _fnSaveState(settings);
             // Second loop once the first is done for events
             that.iterator("column", function(settings, column) {
                 _fnCallbackFire(settings, null, "column-visibility", [
@@ -36743,7 +36743,7 @@ window.feather = (0, _featherIconsDefault.default);
             var rows = $.map(settings.aoData, function(r) {
                 return r.nTr;
             });
-            var i6, ien;
+            var i, ien;
             // Flag to note that the table is currently being destroyed - no action
             // should be taken
             settings.bDestroying = true;
@@ -36757,7 +36757,7 @@ window.feather = (0, _featherIconsDefault.default);
             // lowercase, `dt` events are user subscribed and they are responsible
             // for removing them
             jqWrapper.off(".DT").find(":not(tbody *)").off(".DT");
-            $(window).off(".DT-" + settings.sInstance);
+            $(window1).off(".DT-" + settings.sInstance);
             // When scrolling we had to break the table up - restore it
             if (table != thead.parentNode) {
                 jqTable.children("thead").detach();
@@ -41188,7 +41188,7 @@ window.feather = (0, _featherIconsDefault.default);
     });
     $.extend(true, DataTable.ext.renderer, {
         pageButton: {
-            _: function(settings, host, idx, buttons1, page, pages) {
+            _: function(settings, host, idx, buttons, page, pages) {
                 var classes = settings.oClasses;
                 var lang = settings.oLanguage.oPaginate;
                 var aria = settings.oLanguage.oAria.paginate || {};
@@ -41271,9 +41271,9 @@ window.feather = (0, _featherIconsDefault.default);
                     // elements, focus is lost on the select button which is bad for
                     // accessibility. So we want to restore focus once the draw has
                     // completed
-                    activeEl = $(host).find(document.activeElement).data("dt-idx");
+                    activeEl = $(host).find(document1.activeElement).data("dt-idx");
                 } catch (e) {}
-                attach($(host).empty(), buttons1);
+                attach($(host).empty(), buttons);
                 if (activeEl !== undefined) $(host).find("[data-dt-idx=" + activeEl + "]").trigger("focus");
             }
         }
@@ -41435,18 +41435,18 @@ window.feather = (0, _featherIconsDefault.default);
     };
     // Common logic for moment, luxon or a date action
     function __mld(dt, momentFn, luxonFn, dateFn, arg1) {
-        if (window.moment) return dt[momentFn](arg1);
-        else if (window.luxon) return dt[luxonFn](arg1);
+        if (window1.moment) return dt[momentFn](arg1);
+        else if (window1.luxon) return dt[luxonFn](arg1);
         return dateFn ? dt[dateFn](arg1) : dt;
     }
     var __mlWarning = false;
     function __mldObj(d, format, locale) {
         var dt;
-        if (window.moment) {
-            dt = window.moment.utc(d, format, locale, true);
+        if (window1.moment) {
+            dt = window1.moment.utc(d, format, locale, true);
             if (!dt.isValid()) return null;
-        } else if (window.luxon) {
-            dt = format ? window.luxon.DateTime.fromFormat(d, format) : window.luxon.DateTime.fromISO(d);
+        } else if (window1.luxon) {
+            dt = format ? window1.luxon.DateTime.fromFormat(d, format) : window1.luxon.DateTime.fromISO(d);
             if (!dt.isValid) return null;
             dt.setLocale(locale);
         } else if (!format) // No format given, must be ISO
@@ -41528,10 +41528,10 @@ window.feather = (0, _featherIconsDefault.default);
     var __thousands = ",";
     var __decimal = ".";
     if (Intl) try {
-        var num1 = new Intl.NumberFormat().formatToParts(100000.1);
-        for(var i1 = 0; i1 < num1.length; i1++){
-            if (num1[i1].type === "group") __thousands = num1[i1].value;
-            else if (num1[i1].type === "decimal") __decimal = num1[i1].value;
+        var num = new Intl.NumberFormat().formatToParts(100000.1);
+        for(var i = 0; i < num.length; i++){
+            if (num[i].type === "group") __thousands = num[i].value;
+            else if (num[i].type === "decimal") __decimal = num[i].value;
         }
     } catch (e) {
     // noop
@@ -41883,14 +41883,14 @@ const getjQuery = ()=>{
     return null;
 };
 const DOMContentLoadedCallbacks = [];
-const onDOMContentLoaded = (callback1)=>{
+const onDOMContentLoaded = (callback)=>{
     if (document.readyState === "loading") {
         // add listener on the first call when the document is in loading state
         if (!DOMContentLoadedCallbacks.length) document.addEventListener("DOMContentLoaded", ()=>{
             DOMContentLoadedCallbacks.forEach((callback)=>callback());
         });
-        DOMContentLoadedCallbacks.push(callback1);
-    } else callback1();
+        DOMContentLoadedCallbacks.push(callback);
+    } else callback();
 };
 const isRTL = ()=>document.documentElement.dir === "rtl";
 const defineJQueryPlugin = (plugin)=>{
@@ -42095,13 +42095,13 @@ function addHandler(element, originalTypeEvent, handler, delegationFn, oneOff) {
         return;
     }
     const uid = getUidEvent(originalHandler, originalTypeEvent.replace(namespaceRegex, ""));
-    const fn1 = delegation ? bootstrapDelegationHandler(element, handler, delegationFn) : bootstrapHandler(element, handler);
-    fn1.delegationSelector = delegation ? handler : null;
-    fn1.originalHandler = originalHandler;
-    fn1.oneOff = oneOff;
-    fn1.uidEvent = uid;
-    handlers[uid] = fn1;
-    element.addEventListener(typeEvent, fn1, delegation);
+    const fn = delegation ? bootstrapDelegationHandler(element, handler, delegationFn) : bootstrapHandler(element, handler);
+    fn.delegationSelector = delegation ? handler : null;
+    fn.originalHandler = originalHandler;
+    fn.oneOff = oneOff;
+    fn.uidEvent = uid;
+    handlers[uid] = fn;
+    element.addEventListener(typeEvent, fn, delegation);
 }
 function removeHandler(element, events, typeEvent, handler, delegationSelector) {
     const fn = findHandler(events[typeEvent], handler, delegationSelector);
@@ -42692,8 +42692,8 @@ const POINTER_TYPE_PEN = "pen";
             // ensure swiping with one touch and not pinching
             this.touchDeltaX = event.touches && event.touches.length > 1 ? 0 : event.touches[0].clientX - this.touchStartX;
         };
-        const end = (event1)=>{
-            if (hasPointerPenTouch(event1)) this.touchDeltaX = event1.clientX - this.touchStartX;
+        const end = (event)=>{
+            if (hasPointerPenTouch(event)) this.touchDeltaX = event.clientX - this.touchStartX;
             this._handleSwipe();
             if (this._config.pause === "hover") {
                 // If it's a touch-enabled device, mouseenter/leave are fired as
@@ -45337,10 +45337,10 @@ var _instanceOfJs = require("../dom-utils/instanceOf.js"); // This modifier take
 // and applies them to the HTMLElements such as popper and arrow
 function applyStyles(_ref) {
     var state = _ref.state;
-    Object.keys(state.elements).forEach(function(name1) {
-        var style = state.styles[name1] || {};
-        var attributes = state.attributes[name1] || {};
-        var element = state.elements[name1]; // arrow is optional + virtual elements
+    Object.keys(state.elements).forEach(function(name) {
+        var style = state.styles[name] || {};
+        var attributes = state.attributes[name] || {};
+        var element = state.elements[name]; // arrow is optional + virtual elements
         if (!(0, _instanceOfJs.isHTMLElement)(element) || !(0, _getNodeNameJsDefault.default)(element)) return;
          // Flow doesn't support to extend this property, but it's the most
         // effective way to apply styles to an HTMLElement
@@ -45375,12 +45375,12 @@ function effect(_ref2) {
             var element = state.elements[name];
             var attributes = state.attributes[name] || {};
             var styleProperties = Object.keys(state.styles.hasOwnProperty(name) ? state.styles[name] : initialStyles[name]); // Set all values to an empty string to unset them
-            var style1 = styleProperties.reduce(function(style, property) {
+            var style = styleProperties.reduce(function(style, property) {
                 style[property] = "";
                 return style;
             }, {}); // arrow is optional + virtual elements
             if (!(0, _instanceOfJs.isHTMLElement)(element) || !(0, _getNodeNameJsDefault.default)(element)) return;
-            Object.assign(element.style, style1);
+            Object.assign(element.style, style);
             Object.keys(attributes).forEach(function(attribute) {
                 element.removeAttribute(attribute);
             });
@@ -46034,16 +46034,16 @@ function flip(_ref) {
     var makeFallbackChecks = true;
     var firstFittingPlacement = placements[0];
     for(var i = 0; i < placements.length; i++){
-        var placement1 = placements[i];
-        var _basePlacement = (0, _getBasePlacementJsDefault.default)(placement1);
-        var isStartVariation = (0, _getVariationJsDefault.default)(placement1) === (0, _enumsJs.start);
+        var placement = placements[i];
+        var _basePlacement = (0, _getBasePlacementJsDefault.default)(placement);
+        var isStartVariation = (0, _getVariationJsDefault.default)(placement) === (0, _enumsJs.start);
         var isVertical = [
             (0, _enumsJs.top),
             (0, _enumsJs.bottom)
         ].indexOf(_basePlacement) >= 0;
         var len = isVertical ? "width" : "height";
         var overflow = (0, _detectOverflowJsDefault.default)(state, {
-            placement: placement1,
+            placement: placement,
             boundary: boundary,
             rootBoundary: rootBoundary,
             altBoundary: altBoundary,
@@ -46058,11 +46058,11 @@ function flip(_ref) {
         if (checks.every(function(check) {
             return check;
         })) {
-            firstFittingPlacement = placement1;
+            firstFittingPlacement = placement;
             makeFallbackChecks = false;
             break;
         }
-        checksMap.set(placement1, checks);
+        checksMap.set(placement, checks);
     }
     if (makeFallbackChecks) {
         // `2` may be desired in some cases – research later
@@ -46079,8 +46079,8 @@ function flip(_ref) {
                 return "break";
             }
         };
-        for(var _i1 = numberOfChecks; _i1 > 0; _i1--){
-            var _ret = _loop(_i1);
+        for(var _i = numberOfChecks; _i > 0; _i--){
+            var _ret = _loop(_i);
             if (_ret === "break") break;
         }
     }
@@ -46537,8 +46537,8 @@ var _getBasePlacementJs = require("./getBasePlacement.js");
 var _getBasePlacementJsDefault = parcelHelpers.interopDefault(_getBasePlacementJs);
 function computeAutoPlacement(state, options) {
     if (options === void 0) options = {};
-    var _options = options, placement1 = _options.placement, boundary = _options.boundary, rootBoundary = _options.rootBoundary, padding = _options.padding, flipVariations = _options.flipVariations, _options$allowedAutoP = _options.allowedAutoPlacements, allowedAutoPlacements = _options$allowedAutoP === void 0 ? (0, _enumsJs.placements) : _options$allowedAutoP;
-    var variation = (0, _getVariationJsDefault.default)(placement1);
+    var _options = options, placement = _options.placement, boundary = _options.boundary, rootBoundary = _options.rootBoundary, padding = _options.padding, flipVariations = _options.flipVariations, _options$allowedAutoP = _options.allowedAutoPlacements, allowedAutoPlacements = _options$allowedAutoP === void 0 ? (0, _enumsJs.placements) : _options$allowedAutoP;
+    var variation = (0, _getVariationJsDefault.default)(placement);
     var placements = variation ? flipVariations ? (0, _enumsJs.variationPlacements) : (0, _enumsJs.variationPlacements).filter(function(placement) {
         return (0, _getVariationJsDefault.default)(placement) === variation;
     }) : (0, _enumsJs.basePlacements);
@@ -46641,15 +46641,15 @@ parcelHelpers.export(exports, "distanceAndSkiddingToXY", ()=>distanceAndSkidding
 var _getBasePlacementJs = require("../utils/getBasePlacement.js");
 var _getBasePlacementJsDefault = parcelHelpers.interopDefault(_getBasePlacementJs);
 var _enumsJs = require("../enums.js"); // eslint-disable-next-line import/no-unused-modules
-function distanceAndSkiddingToXY(placement, rects, offset1) {
+function distanceAndSkiddingToXY(placement, rects, offset) {
     var basePlacement = (0, _getBasePlacementJsDefault.default)(placement);
     var invertDistance = [
         (0, _enumsJs.left),
         (0, _enumsJs.top)
     ].indexOf(basePlacement) >= 0 ? -1 : 1;
-    var _ref = typeof offset1 === "function" ? offset1(Object.assign({}, rects, {
+    var _ref = typeof offset === "function" ? offset(Object.assign({}, rects, {
         placement: placement
-    })) : offset1, skidding = _ref[0], distance = _ref[1];
+    })) : offset, skidding = _ref[0], distance = _ref[1];
     skidding = skidding || 0;
     distance = (distance || 0) * invertDistance;
     return [
@@ -46665,12 +46665,12 @@ function distanceAndSkiddingToXY(placement, rects, offset1) {
 }
 function offset(_ref2) {
     var state = _ref2.state, options = _ref2.options, name = _ref2.name;
-    var _options$offset = options.offset, offset2 = _options$offset === void 0 ? [
+    var _options$offset = options.offset, offset = _options$offset === void 0 ? [
         0,
         0
     ] : _options$offset;
     var data = (0, _enumsJs.placements).reduce(function(acc, placement) {
-        acc[placement] = distanceAndSkiddingToXY(placement, state.rects, offset2);
+        acc[placement] = distanceAndSkiddingToXY(placement, state.rects, offset);
         return acc;
     }, {});
     var _data$state$placement = data[state.placement], x = _data$state$placement.x, y = _data$state$placement.y;
@@ -46894,16 +46894,16 @@ function areValidElements() {
 function popperGenerator(generatorOptions) {
     if (generatorOptions === void 0) generatorOptions = {};
     var _generatorOptions = generatorOptions, _generatorOptions$def = _generatorOptions.defaultModifiers, defaultModifiers = _generatorOptions$def === void 0 ? [] : _generatorOptions$def, _generatorOptions$def2 = _generatorOptions.defaultOptions, defaultOptions = _generatorOptions$def2 === void 0 ? DEFAULT_OPTIONS : _generatorOptions$def2;
-    return function createPopper(reference1, popper1, options1) {
-        if (options1 === void 0) options1 = defaultOptions;
-        var state1 = {
+    return function createPopper(reference, popper, options) {
+        if (options === void 0) options = defaultOptions;
+        var state = {
             placement: "bottom",
             orderedModifiers: [],
             options: Object.assign({}, DEFAULT_OPTIONS, defaultOptions),
             modifiersData: {},
             elements: {
-                reference: reference1,
-                popper: popper1
+                reference: reference,
+                popper: popper
             },
             attributes: {},
             styles: {}
@@ -46911,27 +46911,27 @@ function popperGenerator(generatorOptions) {
         var effectCleanupFns = [];
         var isDestroyed = false;
         var instance = {
-            state: state1,
+            state: state,
             setOptions: function setOptions(setOptionsAction) {
-                var options = typeof setOptionsAction === "function" ? setOptionsAction(state1.options) : setOptionsAction;
+                var options = typeof setOptionsAction === "function" ? setOptionsAction(state.options) : setOptionsAction;
                 cleanupModifierEffects();
-                state1.options = Object.assign({}, defaultOptions, state1.options, options);
-                state1.scrollParents = {
-                    reference: (0, _instanceOfJs.isElement)(reference1) ? (0, _listScrollParentsJsDefault.default)(reference1) : reference1.contextElement ? (0, _listScrollParentsJsDefault.default)(reference1.contextElement) : [],
-                    popper: (0, _listScrollParentsJsDefault.default)(popper1)
+                state.options = Object.assign({}, defaultOptions, state.options, options);
+                state.scrollParents = {
+                    reference: (0, _instanceOfJs.isElement)(reference) ? (0, _listScrollParentsJsDefault.default)(reference) : reference.contextElement ? (0, _listScrollParentsJsDefault.default)(reference.contextElement) : [],
+                    popper: (0, _listScrollParentsJsDefault.default)(popper)
                 }; // Orders the modifiers based on their dependencies and `phase`
                 // properties
-                var orderedModifiers = (0, _orderModifiersJsDefault.default)((0, _mergeByNameJsDefault.default)([].concat(defaultModifiers, state1.options.modifiers))); // Strip out disabled modifiers
-                state1.orderedModifiers = orderedModifiers.filter(function(m) {
+                var orderedModifiers = (0, _orderModifiersJsDefault.default)((0, _mergeByNameJsDefault.default)([].concat(defaultModifiers, state.options.modifiers))); // Strip out disabled modifiers
+                state.orderedModifiers = orderedModifiers.filter(function(m) {
                     return m.enabled;
                 }); // Validate the provided modifiers so that the consumer will get warned
-                var modifiers = (0, _uniqueByJsDefault.default)([].concat(orderedModifiers, state1.options.modifiers), function(_ref) {
+                var modifiers = (0, _uniqueByJsDefault.default)([].concat(orderedModifiers, state.options.modifiers), function(_ref) {
                     var name = _ref.name;
                     return name;
                 });
                 (0, _validateModifiersJsDefault.default)(modifiers);
-                if ((0, _getBasePlacementJsDefault.default)(state1.options.placement) === (0, _enumsJs.auto)) {
-                    var flipModifier = state1.orderedModifiers.find(function(_ref2) {
+                if ((0, _getBasePlacementJsDefault.default)(state.options.placement) === (0, _enumsJs.auto)) {
+                    var flipModifier = state.orderedModifiers.find(function(_ref2) {
                         var name = _ref2.name;
                         return name === "flip";
                     });
@@ -46940,7 +46940,7 @@ function popperGenerator(generatorOptions) {
                         "present and enabled to work."
                     ].join(" "));
                 }
-                var _getComputedStyle = (0, _getComputedStyleJsDefault.default)(popper1), marginTop = _getComputedStyle.marginTop, marginRight = _getComputedStyle.marginRight, marginBottom = _getComputedStyle.marginBottom, marginLeft = _getComputedStyle.marginLeft; // We no longer take into account `margins` on the popper, and it can
+                var _getComputedStyle = (0, _getComputedStyleJsDefault.default)(popper), marginTop = _getComputedStyle.marginTop, marginRight = _getComputedStyle.marginRight, marginBottom = _getComputedStyle.marginBottom, marginLeft = _getComputedStyle.marginLeft; // We no longer take into account `margins` on the popper, and it can
                 // cause bugs with positioning, so we'll warn the consumer
                 if ([
                     marginTop,
@@ -46966,47 +46966,47 @@ function popperGenerator(generatorOptions) {
             // prefer the async Popper#update method
             forceUpdate: function forceUpdate() {
                 if (isDestroyed) return;
-                var _state$elements = state1.elements, reference = _state$elements.reference, popper = _state$elements.popper; // Don't proceed if `reference` or `popper` are not valid elements
+                var _state$elements = state.elements, reference = _state$elements.reference, popper = _state$elements.popper; // Don't proceed if `reference` or `popper` are not valid elements
                 // anymore
                 if (!areValidElements(reference, popper)) {
                     console.error(INVALID_ELEMENT_ERROR);
                     return;
                 } // Store the reference and popper rects to be read by modifiers
-                state1.rects = {
-                    reference: (0, _getCompositeRectJsDefault.default)(reference, (0, _getOffsetParentJsDefault.default)(popper), state1.options.strategy === "fixed"),
+                state.rects = {
+                    reference: (0, _getCompositeRectJsDefault.default)(reference, (0, _getOffsetParentJsDefault.default)(popper), state.options.strategy === "fixed"),
                     popper: (0, _getLayoutRectJsDefault.default)(popper)
                 }; // Modifiers have the ability to reset the current update cycle. The
                 // most common use case for this is the `flip` modifier changing the
                 // placement, which then needs to re-run all the modifiers, because the
                 // logic was previously ran for the previous placement and is therefore
                 // stale/incorrect
-                state1.reset = false;
-                state1.placement = state1.options.placement; // On each update cycle, the `modifiersData` property for each modifier
+                state.reset = false;
+                state.placement = state.options.placement; // On each update cycle, the `modifiersData` property for each modifier
                 // is filled with the initial data specified by the modifier. This means
                 // it doesn't persist and is fresh on each update.
                 // To ensure persistent data, use `${name}#persistent`
-                state1.orderedModifiers.forEach(function(modifier) {
-                    return state1.modifiersData[modifier.name] = Object.assign({}, modifier.data);
+                state.orderedModifiers.forEach(function(modifier) {
+                    return state.modifiersData[modifier.name] = Object.assign({}, modifier.data);
                 });
                 var __debug_loops__ = 0;
-                for(var index = 0; index < state1.orderedModifiers.length; index++){
+                for(var index = 0; index < state.orderedModifiers.length; index++){
                     __debug_loops__ += 1;
                     if (__debug_loops__ > 100) {
                         console.error(INFINITE_LOOP_ERROR);
                         break;
                     }
-                    if (state1.reset === true) {
-                        state1.reset = false;
+                    if (state.reset === true) {
+                        state.reset = false;
                         index = -1;
                         continue;
                     }
-                    var _state$orderedModifie = state1.orderedModifiers[index], fn = _state$orderedModifie.fn, _state$orderedModifie2 = _state$orderedModifie.options, _options = _state$orderedModifie2 === void 0 ? {} : _state$orderedModifie2, name = _state$orderedModifie.name;
-                    if (typeof fn === "function") state1 = fn({
-                        state: state1,
+                    var _state$orderedModifie = state.orderedModifiers[index], fn = _state$orderedModifie.fn, _state$orderedModifie2 = _state$orderedModifie.options, _options = _state$orderedModifie2 === void 0 ? {} : _state$orderedModifie2, name = _state$orderedModifie.name;
+                    if (typeof fn === "function") state = fn({
+                        state: state,
                         options: _options,
                         name: name,
                         instance: instance
-                    }) || state1;
+                    }) || state;
                 }
             },
             // Async and optimistically optimized update – it will not be executed if
@@ -47014,7 +47014,7 @@ function popperGenerator(generatorOptions) {
             update: (0, _debounceJsDefault.default)(function() {
                 return new Promise(function(resolve) {
                     instance.forceUpdate();
-                    resolve(state1);
+                    resolve(state);
                 });
             }),
             destroy: function destroy() {
@@ -47022,23 +47022,23 @@ function popperGenerator(generatorOptions) {
                 isDestroyed = true;
             }
         };
-        if (!areValidElements(reference1, popper1)) {
+        if (!areValidElements(reference, popper)) {
             console.error(INVALID_ELEMENT_ERROR);
             return instance;
         }
-        instance.setOptions(options1).then(function(state) {
-            if (!isDestroyed && options1.onFirstUpdate) options1.onFirstUpdate(state);
+        instance.setOptions(options).then(function(state) {
+            if (!isDestroyed && options.onFirstUpdate) options.onFirstUpdate(state);
         }); // Modifiers have the ability to execute arbitrary code before the first
         // update cycle runs. They will be executed in the same order as the update
         // cycle. This is useful when a modifier adds some persistent data that
         // other modifiers need to use, but the modifier is run after the dependent
         // one.
         function runModifierEffects() {
-            state1.orderedModifiers.forEach(function(_ref3) {
+            state.orderedModifiers.forEach(function(_ref3) {
                 var name = _ref3.name, _ref3$options = _ref3.options, options = _ref3$options === void 0 ? {} : _ref3$options, effect = _ref3.effect;
                 if (typeof effect === "function") {
                     var cleanupFn = effect({
-                        state: state1,
+                        state: state,
                         name: name,
                         instance: instance,
                         options: options
@@ -47289,7 +47289,7 @@ exports.default = uniqueBy;
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 function mergeByName(modifiers) {
-    var merged1 = modifiers.reduce(function(merged, current) {
+    var merged = modifiers.reduce(function(merged, current) {
         var existing = merged[current.name];
         merged[current.name] = existing ? Object.assign({}, existing, current, {
             options: Object.assign({}, existing.options, current.options),
@@ -47297,8 +47297,8 @@ function mergeByName(modifiers) {
         }) : current;
         return merged;
     }, {}); // IE11 does not support Object.values
-    return Object.keys(merged1).map(function(key) {
-        return merged1[key];
+    return Object.keys(merged).map(function(key) {
+        return merged[key];
     });
 }
 exports.default = mergeByName;
@@ -47388,17 +47388,17 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
             /******/ /******/ // Check if module is in cache
             /******/ if (installedModules[moduleId]) /******/ return installedModules[moduleId].exports;
             /******/ // Create a new module (and put it into the cache)
-            /******/ var module = installedModules[moduleId] = {
+            /******/ var module1 = installedModules[moduleId] = {
                 /******/ i: moduleId,
                 /******/ l: false,
                 /******/ exports: {}
             };
             /******/ /******/ // Execute the module function
-            /******/ modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+            /******/ modules[moduleId].call(module1.exports, module1, module1.exports, __webpack_require__);
             /******/ /******/ // Flag the module as loaded
-            /******/ module.l = true;
+            /******/ module1.l = true;
             /******/ /******/ // Return the exports of the module
-            /******/ return module.exports;
+            /******/ return module1.exports;
         /******/ }
         /******/ /******/ /******/ // expose the modules object (__webpack_modules__)
         /******/ __webpack_require__.m = modules;
@@ -47419,11 +47419,11 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
             });
         /******/ };
         /******/ /******/ // getDefaultExport function for compatibility with non-harmony modules
-        /******/ __webpack_require__.n = function(module) {
-            /******/ var getter = module && module.__esModule ? /******/ function getDefault() {
-                return module["default"];
+        /******/ __webpack_require__.n = function(module1) {
+            /******/ var getter = module1 && module1.__esModule ? /******/ function getDefault() {
+                return module1["default"];
             } : /******/ function getModuleExports() {
-                return module;
+                return module1;
             };
             /******/ __webpack_require__.d(getter, "a", getter);
             /******/ return getter;
@@ -47439,8 +47439,8 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
     /******/ }({
         /***/ "./dist/icons.json": /*!*************************!*\
   !*** ./dist/icons.json ***!
-  \*************************/ /*! exports provided: activity, airplay, alert-circle, alert-octagon, alert-triangle, align-center, align-justify, align-left, align-right, anchor, aperture, archive, arrow-down-circle, arrow-down-left, arrow-down-right, arrow-down, arrow-left-circle, arrow-left, arrow-right-circle, arrow-right, arrow-up-circle, arrow-up-left, arrow-up-right, arrow-up, at-sign, award, bar-chart-2, bar-chart, battery-charging, battery, bell-off, bell, bluetooth, bold, book-open, book, bookmark, box, briefcase, calendar, camera-off, camera, cast, check-circle, check-square, check, chevron-down, chevron-left, chevron-right, chevron-up, chevrons-down, chevrons-left, chevrons-right, chevrons-up, chrome, circle, clipboard, clock, cloud-drizzle, cloud-lightning, cloud-off, cloud-rain, cloud-snow, cloud, code, codepen, codesandbox, coffee, columns, command, compass, copy, corner-down-left, corner-down-right, corner-left-down, corner-left-up, corner-right-down, corner-right-up, corner-up-left, corner-up-right, cpu, credit-card, crop, crosshair, database, delete, disc, divide-circle, divide-square, divide, dollar-sign, download-cloud, download, dribbble, droplet, edit-2, edit-3, edit, external-link, eye-off, eye, facebook, fast-forward, feather, figma, file-minus, file-plus, file-text, file, film, filter, flag, folder-minus, folder-plus, folder, framer, frown, gift, git-branch, git-commit, git-merge, git-pull-request, github, gitlab, globe, grid, hard-drive, hash, headphones, heart, help-circle, hexagon, home, image, inbox, info, instagram, italic, key, layers, layout, life-buoy, link-2, link, linkedin, list, loader, lock, log-in, log-out, mail, map-pin, map, maximize-2, maximize, meh, menu, message-circle, message-square, mic-off, mic, minimize-2, minimize, minus-circle, minus-square, minus, monitor, moon, more-horizontal, more-vertical, mouse-pointer, move, music, navigation-2, navigation, octagon, package, paperclip, pause-circle, pause, pen-tool, percent, phone-call, phone-forwarded, phone-incoming, phone-missed, phone-off, phone-outgoing, phone, pie-chart, play-circle, play, plus-circle, plus-square, plus, pocket, power, printer, radio, refresh-ccw, refresh-cw, repeat, rewind, rotate-ccw, rotate-cw, rss, save, scissors, search, send, server, settings, share-2, share, shield-off, shield, shopping-bag, shopping-cart, shuffle, sidebar, skip-back, skip-forward, slack, slash, sliders, smartphone, smile, speaker, square, star, stop-circle, sun, sunrise, sunset, table, tablet, tag, target, terminal, thermometer, thumbs-down, thumbs-up, toggle-left, toggle-right, tool, trash-2, trash, trello, trending-down, trending-up, triangle, truck, tv, twitch, twitter, type, umbrella, underline, unlock, upload-cloud, upload, user-check, user-minus, user-plus, user-x, user, users, video-off, video, voicemail, volume-1, volume-2, volume-x, volume, watch, wifi-off, wifi, wind, x-circle, x-octagon, x-square, x, youtube, zap-off, zap, zoom-in, zoom-out, default */ /***/ function(module) {
-            module.exports = {
+  \*************************/ /*! exports provided: activity, airplay, alert-circle, alert-octagon, alert-triangle, align-center, align-justify, align-left, align-right, anchor, aperture, archive, arrow-down-circle, arrow-down-left, arrow-down-right, arrow-down, arrow-left-circle, arrow-left, arrow-right-circle, arrow-right, arrow-up-circle, arrow-up-left, arrow-up-right, arrow-up, at-sign, award, bar-chart-2, bar-chart, battery-charging, battery, bell-off, bell, bluetooth, bold, book-open, book, bookmark, box, briefcase, calendar, camera-off, camera, cast, check-circle, check-square, check, chevron-down, chevron-left, chevron-right, chevron-up, chevrons-down, chevrons-left, chevrons-right, chevrons-up, chrome, circle, clipboard, clock, cloud-drizzle, cloud-lightning, cloud-off, cloud-rain, cloud-snow, cloud, code, codepen, codesandbox, coffee, columns, command, compass, copy, corner-down-left, corner-down-right, corner-left-down, corner-left-up, corner-right-down, corner-right-up, corner-up-left, corner-up-right, cpu, credit-card, crop, crosshair, database, delete, disc, divide-circle, divide-square, divide, dollar-sign, download-cloud, download, dribbble, droplet, edit-2, edit-3, edit, external-link, eye-off, eye, facebook, fast-forward, feather, figma, file-minus, file-plus, file-text, file, film, filter, flag, folder-minus, folder-plus, folder, framer, frown, gift, git-branch, git-commit, git-merge, git-pull-request, github, gitlab, globe, grid, hard-drive, hash, headphones, heart, help-circle, hexagon, home, image, inbox, info, instagram, italic, key, layers, layout, life-buoy, link-2, link, linkedin, list, loader, lock, log-in, log-out, mail, map-pin, map, maximize-2, maximize, meh, menu, message-circle, message-square, mic-off, mic, minimize-2, minimize, minus-circle, minus-square, minus, monitor, moon, more-horizontal, more-vertical, mouse-pointer, move, music, navigation-2, navigation, octagon, package, paperclip, pause-circle, pause, pen-tool, percent, phone-call, phone-forwarded, phone-incoming, phone-missed, phone-off, phone-outgoing, phone, pie-chart, play-circle, play, plus-circle, plus-square, plus, pocket, power, printer, radio, refresh-ccw, refresh-cw, repeat, rewind, rotate-ccw, rotate-cw, rss, save, scissors, search, send, server, settings, share-2, share, shield-off, shield, shopping-bag, shopping-cart, shuffle, sidebar, skip-back, skip-forward, slack, slash, sliders, smartphone, smile, speaker, square, star, stop-circle, sun, sunrise, sunset, table, tablet, tag, target, terminal, thermometer, thumbs-down, thumbs-up, toggle-left, toggle-right, tool, trash-2, trash, trello, trending-down, trending-up, triangle, truck, tv, twitch, twitter, type, umbrella, underline, unlock, upload-cloud, upload, user-check, user-minus, user-plus, user-x, user, users, video-off, video, voicemail, volume-1, volume-2, volume-x, volume, watch, wifi-off, wifi, wind, x-circle, x-octagon, x-square, x, youtube, zap-off, zap, zoom-in, zoom-out, default */ /***/ function(module1) {
+            module1.exports = {
                 "activity": '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>',
                 "airplay": '<path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path><polygon points="12 15 17 21 7 21 12 15"></polygon>',
                 "alert-circle": '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>',
@@ -47732,7 +47732,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/classnames/dedupe.js": /*!*******************************************!*\
   !*** ./node_modules/classnames/dedupe.js ***!
-  \*******************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*******************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__; /*!
   Copyright (c) 2016 Jed Watson.
   Licensed under the MIT License (MIT), see
@@ -47787,40 +47787,40 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
                     }
                     return _classNames;
                 }();
-                if (typeof module !== "undefined" && module.exports) module.exports = classNames;
+                if (typeof module1 !== "undefined" && module1.exports) module1.exports = classNames;
                 else __WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function() {
                     return classNames;
-                }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__);
+                }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module1.exports = __WEBPACK_AMD_DEFINE_RESULT__);
             })();
         /***/ },
         /***/ "./node_modules/core-js/es/array/from.js": /*!***********************************************!*\
   !*** ./node_modules/core-js/es/array/from.js ***!
-  \***********************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \***********************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             __webpack_require__(/*! ../../modules/es.string.iterator */ "./node_modules/core-js/modules/es.string.iterator.js");
             __webpack_require__(/*! ../../modules/es.array.from */ "./node_modules/core-js/modules/es.array.from.js");
             var path = __webpack_require__(/*! ../../internals/path */ "./node_modules/core-js/internals/path.js");
-            module.exports = path.Array.from;
+            module1.exports = path.Array.from;
         /***/ },
         /***/ "./node_modules/core-js/internals/a-function.js": /*!******************************************************!*\
   !*** ./node_modules/core-js/internals/a-function.js ***!
-  \******************************************************/ /*! no static exports found */ /***/ function(module, exports) {
-            module.exports = function(it) {
+  \******************************************************/ /*! no static exports found */ /***/ function(module1, exports) {
+            module1.exports = function(it) {
                 if (typeof it != "function") throw TypeError(String(it) + " is not a function");
                 return it;
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/an-object.js": /*!*****************************************************!*\
   !*** ./node_modules/core-js/internals/an-object.js ***!
-  \*****************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*****************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var isObject = __webpack_require__(/*! ../internals/is-object */ "./node_modules/core-js/internals/is-object.js");
-            module.exports = function(it) {
+            module1.exports = function(it) {
                 if (!isObject(it)) throw TypeError(String(it) + " is not an object");
                 return it;
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/array-from.js": /*!******************************************************!*\
   !*** ./node_modules/core-js/internals/array-from.js ***!
-  \******************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \******************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             "use strict";
             var bind = __webpack_require__(/*! ../internals/bind-context */ "./node_modules/core-js/internals/bind-context.js");
             var toObject = __webpack_require__(/*! ../internals/to-object */ "./node_modules/core-js/internals/to-object.js");
@@ -47831,7 +47831,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
             var getIteratorMethod = __webpack_require__(/*! ../internals/get-iterator-method */ "./node_modules/core-js/internals/get-iterator-method.js");
             // `Array.from` method
             // https://tc39.github.io/ecma262/#sec-array.from
-            module.exports = function from(arrayLike /* , mapfn = undefined, thisArg = undefined */ ) {
+            module1.exports = function from(arrayLike /* , mapfn = undefined, thisArg = undefined */ ) {
                 var O = toObject(arrayLike);
                 var C = typeof this == "function" ? this : Array;
                 var argumentsLength = arguments.length;
@@ -47860,7 +47860,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/array-includes.js": /*!**********************************************************!*\
   !*** ./node_modules/core-js/internals/array-includes.js ***!
-  \**********************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \**********************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var toIndexedObject = __webpack_require__(/*! ../internals/to-indexed-object */ "./node_modules/core-js/internals/to-indexed-object.js");
             var toLength = __webpack_require__(/*! ../internals/to-length */ "./node_modules/core-js/internals/to-length.js");
             var toAbsoluteIndex = __webpack_require__(/*! ../internals/to-absolute-index */ "./node_modules/core-js/internals/to-absolute-index.js");
@@ -47869,7 +47869,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
             // https://tc39.github.io/ecma262/#sec-array.prototype.indexof
             // true  -> Array#includes
             // https://tc39.github.io/ecma262/#sec-array.prototype.includes
-            module.exports = function(IS_INCLUDES) {
+            module1.exports = function(IS_INCLUDES) {
                 return function($this, el, fromIndex) {
                     var O = toIndexedObject($this);
                     var length = toLength(O.length);
@@ -47892,10 +47892,10 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/bind-context.js": /*!********************************************************!*\
   !*** ./node_modules/core-js/internals/bind-context.js ***!
-  \********************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \********************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var aFunction = __webpack_require__(/*! ../internals/a-function */ "./node_modules/core-js/internals/a-function.js");
             // optional / simple context binding
-            module.exports = function(fn, that, length) {
+            module1.exports = function(fn, that, length) {
                 aFunction(fn);
                 if (that === undefined) return fn;
                 switch(length){
@@ -47923,10 +47923,10 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/call-with-safe-iteration-closing.js": /*!****************************************************************************!*\
   !*** ./node_modules/core-js/internals/call-with-safe-iteration-closing.js ***!
-  \****************************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \****************************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var anObject = __webpack_require__(/*! ../internals/an-object */ "./node_modules/core-js/internals/an-object.js");
             // call something on iterator step with safe closing on error
-            module.exports = function(iterator, fn, value, ENTRIES) {
+            module1.exports = function(iterator, fn, value, ENTRIES) {
                 try {
                     return ENTRIES ? fn(anObject(value)[0], value[1]) : fn(value);
                 // 7.4.6 IteratorClose(iterator, completion)
@@ -47939,7 +47939,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/check-correctness-of-iteration.js": /*!**************************************************************************!*\
   !*** ./node_modules/core-js/internals/check-correctness-of-iteration.js ***!
-  \**************************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \**************************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
             var ITERATOR = wellKnownSymbol("iterator");
             var SAFE_CLOSING = false;
@@ -47963,7 +47963,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
                     throw 2;
                 });
             } catch (error) {}
-            module.exports = function(exec, SKIP_CLOSING) {
+            module1.exports = function(exec, SKIP_CLOSING) {
                 if (!SKIP_CLOSING && !SAFE_CLOSING) return false;
                 var ITERATION_SUPPORT = false;
                 try {
@@ -47984,15 +47984,15 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/classof-raw.js": /*!*******************************************************!*\
   !*** ./node_modules/core-js/internals/classof-raw.js ***!
-  \*******************************************************/ /*! no static exports found */ /***/ function(module, exports) {
+  \*******************************************************/ /*! no static exports found */ /***/ function(module1, exports) {
             var toString = {}.toString;
-            module.exports = function(it) {
+            module1.exports = function(it) {
                 return toString.call(it).slice(8, -1);
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/classof.js": /*!***************************************************!*\
   !*** ./node_modules/core-js/internals/classof.js ***!
-  \***************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \***************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var classofRaw = __webpack_require__(/*! ../internals/classof-raw */ "./node_modules/core-js/internals/classof-raw.js");
             var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
             var TO_STRING_TAG = wellKnownSymbol("toStringTag");
@@ -48007,19 +48007,19 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
                 } catch (error) {}
             };
             // getting tag from ES6+ `Object.prototype.toString`
-            module.exports = function(it) {
+            module1.exports = function(it) {
                 var O, tag, result;
                 return it === undefined ? "Undefined" : it === null ? "Null" : typeof (tag = tryGet(O = Object(it), TO_STRING_TAG)) == "string" ? tag : CORRECT_ARGUMENTS ? classofRaw(O) : (result = classofRaw(O)) == "Object" && typeof O.callee == "function" ? "Arguments" : result;
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/copy-constructor-properties.js": /*!***********************************************************************!*\
   !*** ./node_modules/core-js/internals/copy-constructor-properties.js ***!
-  \***********************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \***********************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var has = __webpack_require__(/*! ../internals/has */ "./node_modules/core-js/internals/has.js");
             var ownKeys = __webpack_require__(/*! ../internals/own-keys */ "./node_modules/core-js/internals/own-keys.js");
             var getOwnPropertyDescriptorModule = __webpack_require__(/*! ../internals/object-get-own-property-descriptor */ "./node_modules/core-js/internals/object-get-own-property-descriptor.js");
             var definePropertyModule = __webpack_require__(/*! ../internals/object-define-property */ "./node_modules/core-js/internals/object-define-property.js");
-            module.exports = function(target, source) {
+            module1.exports = function(target, source) {
                 var keys = ownKeys(source);
                 var defineProperty = definePropertyModule.f;
                 var getOwnPropertyDescriptor = getOwnPropertyDescriptorModule.f;
@@ -48031,9 +48031,9 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/correct-prototype-getter.js": /*!********************************************************************!*\
   !*** ./node_modules/core-js/internals/correct-prototype-getter.js ***!
-  \********************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \********************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var fails = __webpack_require__(/*! ../internals/fails */ "./node_modules/core-js/internals/fails.js");
-            module.exports = !fails(function() {
+            module1.exports = !fails(function() {
                 function F() {}
                 F.prototype.constructor = null;
                 return Object.getPrototypeOf(new F()) !== F.prototype;
@@ -48041,7 +48041,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/create-iterator-constructor.js": /*!***********************************************************************!*\
   !*** ./node_modules/core-js/internals/create-iterator-constructor.js ***!
-  \***********************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \***********************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             "use strict";
             var IteratorPrototype = __webpack_require__(/*! ../internals/iterators-core */ "./node_modules/core-js/internals/iterators-core.js").IteratorPrototype;
             var create = __webpack_require__(/*! ../internals/object-create */ "./node_modules/core-js/internals/object-create.js");
@@ -48051,7 +48051,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
             var returnThis = function() {
                 return this;
             };
-            module.exports = function(IteratorConstructor, NAME, next) {
+            module1.exports = function(IteratorConstructor, NAME, next) {
                 var TO_STRING_TAG = NAME + " Iterator";
                 IteratorConstructor.prototype = create(IteratorPrototype, {
                     next: createPropertyDescriptor(1, next)
@@ -48063,8 +48063,8 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/create-property-descriptor.js": /*!**********************************************************************!*\
   !*** ./node_modules/core-js/internals/create-property-descriptor.js ***!
-  \**********************************************************************/ /*! no static exports found */ /***/ function(module, exports) {
-            module.exports = function(bitmap, value) {
+  \**********************************************************************/ /*! no static exports found */ /***/ function(module1, exports) {
+            module1.exports = function(bitmap, value) {
                 return {
                     enumerable: !(bitmap & 1),
                     configurable: !(bitmap & 2),
@@ -48075,12 +48075,12 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/create-property.js": /*!***********************************************************!*\
   !*** ./node_modules/core-js/internals/create-property.js ***!
-  \***********************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \***********************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             "use strict";
             var toPrimitive = __webpack_require__(/*! ../internals/to-primitive */ "./node_modules/core-js/internals/to-primitive.js");
             var definePropertyModule = __webpack_require__(/*! ../internals/object-define-property */ "./node_modules/core-js/internals/object-define-property.js");
             var createPropertyDescriptor = __webpack_require__(/*! ../internals/create-property-descriptor */ "./node_modules/core-js/internals/create-property-descriptor.js");
-            module.exports = function(object, key, value) {
+            module1.exports = function(object, key, value) {
                 var propertyKey = toPrimitive(key);
                 if (propertyKey in object) definePropertyModule.f(object, propertyKey, createPropertyDescriptor(0, value));
                 else object[propertyKey] = value;
@@ -48088,7 +48088,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/define-iterator.js": /*!***********************************************************!*\
   !*** ./node_modules/core-js/internals/define-iterator.js ***!
-  \***********************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \***********************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             "use strict";
             var $ = __webpack_require__(/*! ../internals/export */ "./node_modules/core-js/internals/export.js");
             var createIteratorConstructor = __webpack_require__(/*! ../internals/create-iterator-constructor */ "./node_modules/core-js/internals/create-iterator-constructor.js");
@@ -48110,7 +48110,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
             var returnThis = function() {
                 return this;
             };
-            module.exports = function(Iterable, NAME, IteratorConstructor, next, DEFAULT, IS_SET, FORCED) {
+            module1.exports = function(Iterable, NAME, IteratorConstructor, next, DEFAULT, IS_SET, FORCED) {
                 createIteratorConstructor(IteratorConstructor, NAME, next);
                 var getIterationMethod = function(KIND) {
                     if (KIND === DEFAULT && defaultIterator) return defaultIterator;
@@ -48183,10 +48183,10 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/descriptors.js": /*!*******************************************************!*\
   !*** ./node_modules/core-js/internals/descriptors.js ***!
-  \*******************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*******************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var fails = __webpack_require__(/*! ../internals/fails */ "./node_modules/core-js/internals/fails.js");
             // Thank's IE8 for his funny defineProperty
-            module.exports = !fails(function() {
+            module1.exports = !fails(function() {
                 return Object.defineProperty({}, "a", {
                     get: function() {
                         return 7;
@@ -48196,21 +48196,21 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/document-create-element.js": /*!*******************************************************************!*\
   !*** ./node_modules/core-js/internals/document-create-element.js ***!
-  \*******************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*******************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var global = __webpack_require__(/*! ../internals/global */ "./node_modules/core-js/internals/global.js");
             var isObject = __webpack_require__(/*! ../internals/is-object */ "./node_modules/core-js/internals/is-object.js");
-            var document = global.document;
+            var document1 = global.document;
             // typeof document.createElement is 'object' in old IE
-            var exist = isObject(document) && isObject(document.createElement);
-            module.exports = function(it) {
-                return exist ? document.createElement(it) : {};
+            var exist = isObject(document1) && isObject(document1.createElement);
+            module1.exports = function(it) {
+                return exist ? document1.createElement(it) : {};
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/enum-bug-keys.js": /*!*********************************************************!*\
   !*** ./node_modules/core-js/internals/enum-bug-keys.js ***!
-  \*********************************************************/ /*! no static exports found */ /***/ function(module, exports) {
+  \*********************************************************/ /*! no static exports found */ /***/ function(module1, exports) {
             // IE8- don't enum bug keys
-            module.exports = [
+            module1.exports = [
                 "constructor",
                 "hasOwnProperty",
                 "isPrototypeOf",
@@ -48222,7 +48222,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/export.js": /*!**************************************************!*\
   !*** ./node_modules/core-js/internals/export.js ***!
-  \**************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \**************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var global = __webpack_require__(/*! ../internals/global */ "./node_modules/core-js/internals/global.js");
             var getOwnPropertyDescriptor = __webpack_require__(/*! ../internals/object-get-own-property-descriptor */ "./node_modules/core-js/internals/object-get-own-property-descriptor.js").f;
             var hide = __webpack_require__(/*! ../internals/hide */ "./node_modules/core-js/internals/hide.js");
@@ -48243,7 +48243,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
   options.sham        - add a flag to not completely full polyfills
   options.enumerable  - export as enumerable property
   options.noTargetGet - prevent calling a getter on target
-*/ module.exports = function(options, source) {
+*/ module1.exports = function(options, source) {
                 var TARGET = options.target;
                 var GLOBAL = options.global;
                 var STATIC = options.stat;
@@ -48272,8 +48272,8 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/fails.js": /*!*************************************************!*\
   !*** ./node_modules/core-js/internals/fails.js ***!
-  \*************************************************/ /*! no static exports found */ /***/ function(module, exports) {
-            module.exports = function(exec) {
+  \*************************************************/ /*! no static exports found */ /***/ function(module1, exports) {
+            module1.exports = function(exec) {
                 try {
                     return !!exec();
                 } catch (error) {
@@ -48283,55 +48283,55 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/function-to-string.js": /*!**************************************************************!*\
   !*** ./node_modules/core-js/internals/function-to-string.js ***!
-  \**************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \**************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var shared = __webpack_require__(/*! ../internals/shared */ "./node_modules/core-js/internals/shared.js");
-            module.exports = shared("native-function-to-string", Function.toString);
+            module1.exports = shared("native-function-to-string", Function.toString);
         /***/ },
         /***/ "./node_modules/core-js/internals/get-iterator-method.js": /*!***************************************************************!*\
   !*** ./node_modules/core-js/internals/get-iterator-method.js ***!
-  \***************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \***************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var classof = __webpack_require__(/*! ../internals/classof */ "./node_modules/core-js/internals/classof.js");
             var Iterators = __webpack_require__(/*! ../internals/iterators */ "./node_modules/core-js/internals/iterators.js");
             var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
             var ITERATOR = wellKnownSymbol("iterator");
-            module.exports = function(it) {
+            module1.exports = function(it) {
                 if (it != undefined) return it[ITERATOR] || it["@@iterator"] || Iterators[classof(it)];
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/global.js": /*!**************************************************!*\
   !*** ./node_modules/core-js/internals/global.js ***!
-  \**************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \**************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             /* WEBPACK VAR INJECTION */ (function(global) {
                 var O = "object";
                 var check = function(it) {
                     return it && it.Math == Math && it;
                 };
                 // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-                module.exports = // eslint-disable-next-line no-undef
+                module1.exports = // eslint-disable-next-line no-undef
                 check(typeof globalThis == O && globalThis) || check(typeof window == O && window) || check(typeof self == O && self) || check(typeof global == O && global) || // eslint-disable-next-line no-new-func
                 Function("return this")();
             /* WEBPACK VAR INJECTION */ }).call(this, __webpack_require__(/*! ./../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js"));
         /***/ },
         /***/ "./node_modules/core-js/internals/has.js": /*!***********************************************!*\
   !*** ./node_modules/core-js/internals/has.js ***!
-  \***********************************************/ /*! no static exports found */ /***/ function(module, exports) {
+  \***********************************************/ /*! no static exports found */ /***/ function(module1, exports) {
             var hasOwnProperty = {}.hasOwnProperty;
-            module.exports = function(it, key) {
+            module1.exports = function(it, key) {
                 return hasOwnProperty.call(it, key);
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/hidden-keys.js": /*!*******************************************************!*\
   !*** ./node_modules/core-js/internals/hidden-keys.js ***!
-  \*******************************************************/ /*! no static exports found */ /***/ function(module, exports) {
-            module.exports = {};
+  \*******************************************************/ /*! no static exports found */ /***/ function(module1, exports) {
+            module1.exports = {};
         /***/ },
         /***/ "./node_modules/core-js/internals/hide.js": /*!************************************************!*\
   !*** ./node_modules/core-js/internals/hide.js ***!
-  \************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var DESCRIPTORS = __webpack_require__(/*! ../internals/descriptors */ "./node_modules/core-js/internals/descriptors.js");
             var definePropertyModule = __webpack_require__(/*! ../internals/object-define-property */ "./node_modules/core-js/internals/object-define-property.js");
             var createPropertyDescriptor = __webpack_require__(/*! ../internals/create-property-descriptor */ "./node_modules/core-js/internals/create-property-descriptor.js");
-            module.exports = DESCRIPTORS ? function(object, key, value) {
+            module1.exports = DESCRIPTORS ? function(object, key, value) {
                 return definePropertyModule.f(object, key, createPropertyDescriptor(1, value));
             } : function(object, key, value) {
                 object[key] = value;
@@ -48340,19 +48340,19 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/html.js": /*!************************************************!*\
   !*** ./node_modules/core-js/internals/html.js ***!
-  \************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var global = __webpack_require__(/*! ../internals/global */ "./node_modules/core-js/internals/global.js");
-            var document = global.document;
-            module.exports = document && document.documentElement;
+            var document1 = global.document;
+            module1.exports = document1 && document1.documentElement;
         /***/ },
         /***/ "./node_modules/core-js/internals/ie8-dom-define.js": /*!**********************************************************!*\
   !*** ./node_modules/core-js/internals/ie8-dom-define.js ***!
-  \**********************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \**********************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var DESCRIPTORS = __webpack_require__(/*! ../internals/descriptors */ "./node_modules/core-js/internals/descriptors.js");
             var fails = __webpack_require__(/*! ../internals/fails */ "./node_modules/core-js/internals/fails.js");
             var createElement = __webpack_require__(/*! ../internals/document-create-element */ "./node_modules/core-js/internals/document-create-element.js");
             // Thank's IE8 for his funny defineProperty
-            module.exports = !DESCRIPTORS && !fails(function() {
+            module1.exports = !DESCRIPTORS && !fails(function() {
                 return Object.defineProperty(createElement("div"), "a", {
                     get: function() {
                         return 7;
@@ -48362,12 +48362,12 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/indexed-object.js": /*!**********************************************************!*\
   !*** ./node_modules/core-js/internals/indexed-object.js ***!
-  \**********************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \**********************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             // fallback for non-array-like ES3 and non-enumerable old V8 strings
             var fails = __webpack_require__(/*! ../internals/fails */ "./node_modules/core-js/internals/fails.js");
             var classof = __webpack_require__(/*! ../internals/classof-raw */ "./node_modules/core-js/internals/classof-raw.js");
             var split = "".split;
-            module.exports = fails(function() {
+            module1.exports = fails(function() {
                 // throws an error in rhino, see https://github.com/mozilla/rhino/issues/346
                 // eslint-disable-next-line no-prototype-builtins
                 return !Object("z").propertyIsEnumerable(0);
@@ -48377,7 +48377,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/internal-state.js": /*!**********************************************************!*\
   !*** ./node_modules/core-js/internals/internal-state.js ***!
-  \**********************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \**********************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var NATIVE_WEAK_MAP = __webpack_require__(/*! ../internals/native-weak-map */ "./node_modules/core-js/internals/native-weak-map.js");
             var global = __webpack_require__(/*! ../internals/global */ "./node_modules/core-js/internals/global.js");
             var isObject = __webpack_require__(/*! ../internals/is-object */ "./node_modules/core-js/internals/is-object.js");
@@ -48426,7 +48426,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
                     return objectHas(it, STATE);
                 };
             }
-            module.exports = {
+            module1.exports = {
                 set: set,
                 get: get,
                 has: has,
@@ -48436,19 +48436,19 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/is-array-iterator-method.js": /*!********************************************************************!*\
   !*** ./node_modules/core-js/internals/is-array-iterator-method.js ***!
-  \********************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \********************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
             var Iterators = __webpack_require__(/*! ../internals/iterators */ "./node_modules/core-js/internals/iterators.js");
             var ITERATOR = wellKnownSymbol("iterator");
             var ArrayPrototype = Array.prototype;
             // check on default Array iterator
-            module.exports = function(it) {
+            module1.exports = function(it) {
                 return it !== undefined && (Iterators.Array === it || ArrayPrototype[ITERATOR] === it);
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/is-forced.js": /*!*****************************************************!*\
   !*** ./node_modules/core-js/internals/is-forced.js ***!
-  \*****************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*****************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var fails = __webpack_require__(/*! ../internals/fails */ "./node_modules/core-js/internals/fails.js");
             var replacement = /#|\.prototype\./;
             var isForced = function(feature, detection) {
@@ -48461,23 +48461,23 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
             var data = isForced.data = {};
             var NATIVE = isForced.NATIVE = "N";
             var POLYFILL = isForced.POLYFILL = "P";
-            module.exports = isForced;
+            module1.exports = isForced;
         /***/ },
         /***/ "./node_modules/core-js/internals/is-object.js": /*!*****************************************************!*\
   !*** ./node_modules/core-js/internals/is-object.js ***!
-  \*****************************************************/ /*! no static exports found */ /***/ function(module, exports) {
-            module.exports = function(it) {
+  \*****************************************************/ /*! no static exports found */ /***/ function(module1, exports) {
+            module1.exports = function(it) {
                 return typeof it === "object" ? it !== null : typeof it === "function";
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/is-pure.js": /*!***************************************************!*\
   !*** ./node_modules/core-js/internals/is-pure.js ***!
-  \***************************************************/ /*! no static exports found */ /***/ function(module, exports) {
-            module.exports = false;
+  \***************************************************/ /*! no static exports found */ /***/ function(module1, exports) {
+            module1.exports = false;
         /***/ },
         /***/ "./node_modules/core-js/internals/iterators-core.js": /*!**********************************************************!*\
   !*** ./node_modules/core-js/internals/iterators-core.js ***!
-  \**********************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \**********************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             "use strict";
             var getPrototypeOf = __webpack_require__(/*! ../internals/object-get-prototype-of */ "./node_modules/core-js/internals/object-get-prototype-of.js");
             var hide = __webpack_require__(/*! ../internals/hide */ "./node_modules/core-js/internals/hide.js");
@@ -48504,21 +48504,21 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
             if (IteratorPrototype == undefined) IteratorPrototype = {};
             // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
             if (!IS_PURE && !has(IteratorPrototype, ITERATOR)) hide(IteratorPrototype, ITERATOR, returnThis);
-            module.exports = {
+            module1.exports = {
                 IteratorPrototype: IteratorPrototype,
                 BUGGY_SAFARI_ITERATORS: BUGGY_SAFARI_ITERATORS
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/iterators.js": /*!*****************************************************!*\
   !*** ./node_modules/core-js/internals/iterators.js ***!
-  \*****************************************************/ /*! no static exports found */ /***/ function(module, exports) {
-            module.exports = {};
+  \*****************************************************/ /*! no static exports found */ /***/ function(module1, exports) {
+            module1.exports = {};
         /***/ },
         /***/ "./node_modules/core-js/internals/native-symbol.js": /*!*********************************************************!*\
   !*** ./node_modules/core-js/internals/native-symbol.js ***!
-  \*********************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*********************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var fails = __webpack_require__(/*! ../internals/fails */ "./node_modules/core-js/internals/fails.js");
-            module.exports = !!Object.getOwnPropertySymbols && !fails(function() {
+            module1.exports = !!Object.getOwnPropertySymbols && !fails(function() {
                 // Chrome 38 Symbol has incorrect toString conversion
                 // eslint-disable-next-line no-undef
                 return !String(Symbol());
@@ -48526,15 +48526,15 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/native-weak-map.js": /*!***********************************************************!*\
   !*** ./node_modules/core-js/internals/native-weak-map.js ***!
-  \***********************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \***********************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var global = __webpack_require__(/*! ../internals/global */ "./node_modules/core-js/internals/global.js");
             var nativeFunctionToString = __webpack_require__(/*! ../internals/function-to-string */ "./node_modules/core-js/internals/function-to-string.js");
             var WeakMap = global.WeakMap;
-            module.exports = typeof WeakMap === "function" && /native code/.test(nativeFunctionToString.call(WeakMap));
+            module1.exports = typeof WeakMap === "function" && /native code/.test(nativeFunctionToString.call(WeakMap));
         /***/ },
         /***/ "./node_modules/core-js/internals/object-create.js": /*!*********************************************************!*\
   !*** ./node_modules/core-js/internals/object-create.js ***!
-  \*********************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*********************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var anObject = __webpack_require__(/*! ../internals/an-object */ "./node_modules/core-js/internals/an-object.js");
             var defineProperties = __webpack_require__(/*! ../internals/object-define-properties */ "./node_modules/core-js/internals/object-define-properties.js");
             var enumBugKeys = __webpack_require__(/*! ../internals/enum-bug-keys */ "./node_modules/core-js/internals/enum-bug-keys.js");
@@ -48567,7 +48567,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
                 return createDict();
             };
             // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-            module.exports = Object.create || function create(O, Properties) {
+            module1.exports = Object.create || function create(O, Properties) {
                 var result;
                 if (O !== null) {
                     Empty[PROTOTYPE] = anObject(O);
@@ -48582,12 +48582,12 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/object-define-properties.js": /*!********************************************************************!*\
   !*** ./node_modules/core-js/internals/object-define-properties.js ***!
-  \********************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \********************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var DESCRIPTORS = __webpack_require__(/*! ../internals/descriptors */ "./node_modules/core-js/internals/descriptors.js");
             var definePropertyModule = __webpack_require__(/*! ../internals/object-define-property */ "./node_modules/core-js/internals/object-define-property.js");
             var anObject = __webpack_require__(/*! ../internals/an-object */ "./node_modules/core-js/internals/an-object.js");
             var objectKeys = __webpack_require__(/*! ../internals/object-keys */ "./node_modules/core-js/internals/object-keys.js");
-            module.exports = DESCRIPTORS ? Object.defineProperties : function defineProperties(O, Properties) {
+            module1.exports = DESCRIPTORS ? Object.defineProperties : function defineProperties(O, Properties) {
                 anObject(O);
                 var keys = objectKeys(Properties);
                 var length = keys.length;
@@ -48599,7 +48599,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/object-define-property.js": /*!******************************************************************!*\
   !*** ./node_modules/core-js/internals/object-define-property.js ***!
-  \******************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \******************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var DESCRIPTORS = __webpack_require__(/*! ../internals/descriptors */ "./node_modules/core-js/internals/descriptors.js");
             var IE8_DOM_DEFINE = __webpack_require__(/*! ../internals/ie8-dom-define */ "./node_modules/core-js/internals/ie8-dom-define.js");
             var anObject = __webpack_require__(/*! ../internals/an-object */ "./node_modules/core-js/internals/an-object.js");
@@ -48619,7 +48619,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/object-get-own-property-descriptor.js": /*!******************************************************************************!*\
   !*** ./node_modules/core-js/internals/object-get-own-property-descriptor.js ***!
-  \******************************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \******************************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var DESCRIPTORS = __webpack_require__(/*! ../internals/descriptors */ "./node_modules/core-js/internals/descriptors.js");
             var propertyIsEnumerableModule = __webpack_require__(/*! ../internals/object-property-is-enumerable */ "./node_modules/core-js/internals/object-property-is-enumerable.js");
             var createPropertyDescriptor = __webpack_require__(/*! ../internals/create-property-descriptor */ "./node_modules/core-js/internals/create-property-descriptor.js");
@@ -48639,7 +48639,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/object-get-own-property-names.js": /*!*************************************************************************!*\
   !*** ./node_modules/core-js/internals/object-get-own-property-names.js ***!
-  \*************************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*************************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             // 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
             var internalObjectKeys = __webpack_require__(/*! ../internals/object-keys-internal */ "./node_modules/core-js/internals/object-keys-internal.js");
             var enumBugKeys = __webpack_require__(/*! ../internals/enum-bug-keys */ "./node_modules/core-js/internals/enum-bug-keys.js");
@@ -48650,12 +48650,12 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/object-get-own-property-symbols.js": /*!***************************************************************************!*\
   !*** ./node_modules/core-js/internals/object-get-own-property-symbols.js ***!
-  \***************************************************************************/ /*! no static exports found */ /***/ function(module, exports) {
+  \***************************************************************************/ /*! no static exports found */ /***/ function(module1, exports) {
             exports.f = Object.getOwnPropertySymbols;
         /***/ },
         /***/ "./node_modules/core-js/internals/object-get-prototype-of.js": /*!*******************************************************************!*\
   !*** ./node_modules/core-js/internals/object-get-prototype-of.js ***!
-  \*******************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*******************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var has = __webpack_require__(/*! ../internals/has */ "./node_modules/core-js/internals/has.js");
             var toObject = __webpack_require__(/*! ../internals/to-object */ "./node_modules/core-js/internals/to-object.js");
             var sharedKey = __webpack_require__(/*! ../internals/shared-key */ "./node_modules/core-js/internals/shared-key.js");
@@ -48663,7 +48663,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
             var IE_PROTO = sharedKey("IE_PROTO");
             var ObjectPrototype = Object.prototype;
             // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
-            module.exports = CORRECT_PROTOTYPE_GETTER ? Object.getPrototypeOf : function(O) {
+            module1.exports = CORRECT_PROTOTYPE_GETTER ? Object.getPrototypeOf : function(O) {
                 O = toObject(O);
                 if (has(O, IE_PROTO)) return O[IE_PROTO];
                 if (typeof O.constructor == "function" && O instanceof O.constructor) return O.constructor.prototype;
@@ -48672,13 +48672,13 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/object-keys-internal.js": /*!****************************************************************!*\
   !*** ./node_modules/core-js/internals/object-keys-internal.js ***!
-  \****************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \****************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var has = __webpack_require__(/*! ../internals/has */ "./node_modules/core-js/internals/has.js");
             var toIndexedObject = __webpack_require__(/*! ../internals/to-indexed-object */ "./node_modules/core-js/internals/to-indexed-object.js");
             var arrayIncludes = __webpack_require__(/*! ../internals/array-includes */ "./node_modules/core-js/internals/array-includes.js");
             var hiddenKeys = __webpack_require__(/*! ../internals/hidden-keys */ "./node_modules/core-js/internals/hidden-keys.js");
             var arrayIndexOf = arrayIncludes(false);
-            module.exports = function(object, names) {
+            module1.exports = function(object, names) {
                 var O = toIndexedObject(object);
                 var i = 0;
                 var result = [];
@@ -48691,17 +48691,17 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/object-keys.js": /*!*******************************************************!*\
   !*** ./node_modules/core-js/internals/object-keys.js ***!
-  \*******************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*******************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var internalObjectKeys = __webpack_require__(/*! ../internals/object-keys-internal */ "./node_modules/core-js/internals/object-keys-internal.js");
             var enumBugKeys = __webpack_require__(/*! ../internals/enum-bug-keys */ "./node_modules/core-js/internals/enum-bug-keys.js");
             // 19.1.2.14 / 15.2.3.14 Object.keys(O)
-            module.exports = Object.keys || function keys(O) {
+            module1.exports = Object.keys || function keys(O) {
                 return internalObjectKeys(O, enumBugKeys);
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/object-property-is-enumerable.js": /*!*************************************************************************!*\
   !*** ./node_modules/core-js/internals/object-property-is-enumerable.js ***!
-  \*************************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*************************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             "use strict";
             var nativePropertyIsEnumerable = {}.propertyIsEnumerable;
             var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
@@ -48716,10 +48716,10 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/object-set-prototype-of.js": /*!*******************************************************************!*\
   !*** ./node_modules/core-js/internals/object-set-prototype-of.js ***!
-  \*******************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*******************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var validateSetPrototypeOfArguments = __webpack_require__(/*! ../internals/validate-set-prototype-of-arguments */ "./node_modules/core-js/internals/validate-set-prototype-of-arguments.js");
             // Works with __proto__ only. Old v8 can't work with null proto objects.
-            /* eslint-disable no-proto */ module.exports = Object.setPrototypeOf || ("__proto__" in {} ? function() {
+            /* eslint-disable no-proto */ module1.exports = Object.setPrototypeOf || ("__proto__" in {} ? function() {
                 var correctSetter = false;
                 var test = {};
                 var setter;
@@ -48738,14 +48738,14 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/own-keys.js": /*!****************************************************!*\
   !*** ./node_modules/core-js/internals/own-keys.js ***!
-  \****************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \****************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var global = __webpack_require__(/*! ../internals/global */ "./node_modules/core-js/internals/global.js");
             var getOwnPropertyNamesModule = __webpack_require__(/*! ../internals/object-get-own-property-names */ "./node_modules/core-js/internals/object-get-own-property-names.js");
             var getOwnPropertySymbolsModule = __webpack_require__(/*! ../internals/object-get-own-property-symbols */ "./node_modules/core-js/internals/object-get-own-property-symbols.js");
             var anObject = __webpack_require__(/*! ../internals/an-object */ "./node_modules/core-js/internals/an-object.js");
             var Reflect = global.Reflect;
             // all object keys, includes non-enumerable and symbols
-            module.exports = Reflect && Reflect.ownKeys || function ownKeys(it) {
+            module1.exports = Reflect && Reflect.ownKeys || function ownKeys(it) {
                 var keys = getOwnPropertyNamesModule.f(anObject(it));
                 var getOwnPropertySymbols = getOwnPropertySymbolsModule.f;
                 return getOwnPropertySymbols ? keys.concat(getOwnPropertySymbols(it)) : keys;
@@ -48753,12 +48753,12 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/path.js": /*!************************************************!*\
   !*** ./node_modules/core-js/internals/path.js ***!
-  \************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
-            module.exports = __webpack_require__(/*! ../internals/global */ "./node_modules/core-js/internals/global.js");
+  \************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
+            module1.exports = __webpack_require__(/*! ../internals/global */ "./node_modules/core-js/internals/global.js");
         /***/ },
         /***/ "./node_modules/core-js/internals/redefine.js": /*!****************************************************!*\
   !*** ./node_modules/core-js/internals/redefine.js ***!
-  \****************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \****************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var global = __webpack_require__(/*! ../internals/global */ "./node_modules/core-js/internals/global.js");
             var shared = __webpack_require__(/*! ../internals/shared */ "./node_modules/core-js/internals/shared.js");
             var hide = __webpack_require__(/*! ../internals/hide */ "./node_modules/core-js/internals/hide.js");
@@ -48772,7 +48772,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
             shared("inspectSource", function(it) {
                 return nativeFunctionToString.call(it);
             });
-            (module.exports = function(O, key, value, options) {
+            (module1.exports = function(O, key, value, options) {
                 var unsafe = options ? !!options.unsafe : false;
                 var simple = options ? !!options.enumerable : false;
                 var noTargetGet = options ? !!options.noTargetGet : false;
@@ -48795,20 +48795,20 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/require-object-coercible.js": /*!********************************************************************!*\
   !*** ./node_modules/core-js/internals/require-object-coercible.js ***!
-  \********************************************************************/ /*! no static exports found */ /***/ function(module, exports) {
+  \********************************************************************/ /*! no static exports found */ /***/ function(module1, exports) {
             // `RequireObjectCoercible` abstract operation
             // https://tc39.github.io/ecma262/#sec-requireobjectcoercible
-            module.exports = function(it) {
+            module1.exports = function(it) {
                 if (it == undefined) throw TypeError("Can't call method on " + it);
                 return it;
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/set-global.js": /*!******************************************************!*\
   !*** ./node_modules/core-js/internals/set-global.js ***!
-  \******************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \******************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var global = __webpack_require__(/*! ../internals/global */ "./node_modules/core-js/internals/global.js");
             var hide = __webpack_require__(/*! ../internals/hide */ "./node_modules/core-js/internals/hide.js");
-            module.exports = function(key, value) {
+            module1.exports = function(key, value) {
                 try {
                     hide(global, key, value);
                 } catch (error) {
@@ -48819,12 +48819,12 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/set-to-string-tag.js": /*!*************************************************************!*\
   !*** ./node_modules/core-js/internals/set-to-string-tag.js ***!
-  \*************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var defineProperty = __webpack_require__(/*! ../internals/object-define-property */ "./node_modules/core-js/internals/object-define-property.js").f;
             var has = __webpack_require__(/*! ../internals/has */ "./node_modules/core-js/internals/has.js");
             var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
             var TO_STRING_TAG = wellKnownSymbol("toStringTag");
-            module.exports = function(it, TAG, STATIC) {
+            module1.exports = function(it, TAG, STATIC) {
                 if (it && !has(it = STATIC ? it : it.prototype, TO_STRING_TAG)) defineProperty(it, TO_STRING_TAG, {
                     configurable: true,
                     value: TAG
@@ -48833,23 +48833,23 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/shared-key.js": /*!******************************************************!*\
   !*** ./node_modules/core-js/internals/shared-key.js ***!
-  \******************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \******************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var shared = __webpack_require__(/*! ../internals/shared */ "./node_modules/core-js/internals/shared.js");
             var uid = __webpack_require__(/*! ../internals/uid */ "./node_modules/core-js/internals/uid.js");
             var keys = shared("keys");
-            module.exports = function(key) {
+            module1.exports = function(key) {
                 return keys[key] || (keys[key] = uid(key));
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/shared.js": /*!**************************************************!*\
   !*** ./node_modules/core-js/internals/shared.js ***!
-  \**************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \**************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var global = __webpack_require__(/*! ../internals/global */ "./node_modules/core-js/internals/global.js");
             var setGlobal = __webpack_require__(/*! ../internals/set-global */ "./node_modules/core-js/internals/set-global.js");
             var IS_PURE = __webpack_require__(/*! ../internals/is-pure */ "./node_modules/core-js/internals/is-pure.js");
             var SHARED = "__core-js_shared__";
             var store = global[SHARED] || setGlobal(SHARED, {});
-            (module.exports = function(key, value) {
+            (module1.exports = function(key, value) {
                 return store[key] || (store[key] = value !== undefined ? value : {});
             })("versions", []).push({
                 version: "3.1.3",
@@ -48859,12 +48859,12 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/string-at.js": /*!*****************************************************!*\
   !*** ./node_modules/core-js/internals/string-at.js ***!
-  \*****************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*****************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var toInteger = __webpack_require__(/*! ../internals/to-integer */ "./node_modules/core-js/internals/to-integer.js");
             var requireObjectCoercible = __webpack_require__(/*! ../internals/require-object-coercible */ "./node_modules/core-js/internals/require-object-coercible.js");
             // CONVERT_TO_STRING: true  -> String#at
             // CONVERT_TO_STRING: false -> String#codePointAt
-            module.exports = function(that, pos, CONVERT_TO_STRING) {
+            module1.exports = function(that, pos, CONVERT_TO_STRING) {
                 var S = String(requireObjectCoercible(that));
                 var position = toInteger(pos);
                 var size = S.length;
@@ -48876,68 +48876,68 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/to-absolute-index.js": /*!*************************************************************!*\
   !*** ./node_modules/core-js/internals/to-absolute-index.js ***!
-  \*************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var toInteger = __webpack_require__(/*! ../internals/to-integer */ "./node_modules/core-js/internals/to-integer.js");
             var max = Math.max;
             var min = Math.min;
             // Helper for a popular repeating case of the spec:
             // Let integer be ? ToInteger(index).
             // If integer < 0, let result be max((length + integer), 0); else let result be min(length, length).
-            module.exports = function(index, length) {
+            module1.exports = function(index, length) {
                 var integer = toInteger(index);
                 return integer < 0 ? max(integer + length, 0) : min(integer, length);
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/to-indexed-object.js": /*!*************************************************************!*\
   !*** ./node_modules/core-js/internals/to-indexed-object.js ***!
-  \*************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             // toObject with fallback for non-array-like ES3 strings
             var IndexedObject = __webpack_require__(/*! ../internals/indexed-object */ "./node_modules/core-js/internals/indexed-object.js");
             var requireObjectCoercible = __webpack_require__(/*! ../internals/require-object-coercible */ "./node_modules/core-js/internals/require-object-coercible.js");
-            module.exports = function(it) {
+            module1.exports = function(it) {
                 return IndexedObject(requireObjectCoercible(it));
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/to-integer.js": /*!******************************************************!*\
   !*** ./node_modules/core-js/internals/to-integer.js ***!
-  \******************************************************/ /*! no static exports found */ /***/ function(module, exports) {
+  \******************************************************/ /*! no static exports found */ /***/ function(module1, exports) {
             var ceil = Math.ceil;
             var floor = Math.floor;
             // `ToInteger` abstract operation
             // https://tc39.github.io/ecma262/#sec-tointeger
-            module.exports = function(argument) {
+            module1.exports = function(argument) {
                 return isNaN(argument = +argument) ? 0 : (argument > 0 ? floor : ceil)(argument);
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/to-length.js": /*!*****************************************************!*\
   !*** ./node_modules/core-js/internals/to-length.js ***!
-  \*****************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*****************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var toInteger = __webpack_require__(/*! ../internals/to-integer */ "./node_modules/core-js/internals/to-integer.js");
             var min = Math.min;
             // `ToLength` abstract operation
             // https://tc39.github.io/ecma262/#sec-tolength
-            module.exports = function(argument) {
+            module1.exports = function(argument) {
                 return argument > 0 ? min(toInteger(argument), 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/to-object.js": /*!*****************************************************!*\
   !*** ./node_modules/core-js/internals/to-object.js ***!
-  \*****************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*****************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var requireObjectCoercible = __webpack_require__(/*! ../internals/require-object-coercible */ "./node_modules/core-js/internals/require-object-coercible.js");
             // `ToObject` abstract operation
             // https://tc39.github.io/ecma262/#sec-toobject
-            module.exports = function(argument) {
+            module1.exports = function(argument) {
                 return Object(requireObjectCoercible(argument));
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/to-primitive.js": /*!********************************************************!*\
   !*** ./node_modules/core-js/internals/to-primitive.js ***!
-  \********************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \********************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var isObject = __webpack_require__(/*! ../internals/is-object */ "./node_modules/core-js/internals/is-object.js");
             // 7.1.1 ToPrimitive(input [, PreferredType])
             // instead of the ES6 spec version, we didn't implement @@toPrimitive case
             // and the second argument - flag - preferred type is a string
-            module.exports = function(it, S) {
+            module1.exports = function(it, S) {
                 if (!isObject(it)) return it;
                 var fn, val;
                 if (S && typeof (fn = it.toString) == "function" && !isObject(val = fn.call(it))) return val;
@@ -48948,39 +48948,39 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/internals/uid.js": /*!***********************************************!*\
   !*** ./node_modules/core-js/internals/uid.js ***!
-  \***********************************************/ /*! no static exports found */ /***/ function(module, exports) {
+  \***********************************************/ /*! no static exports found */ /***/ function(module1, exports) {
             var id = 0;
             var postfix = Math.random();
-            module.exports = function(key) {
+            module1.exports = function(key) {
                 return "Symbol(".concat(key === undefined ? "" : key, ")_", (++id + postfix).toString(36));
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/validate-set-prototype-of-arguments.js": /*!*******************************************************************************!*\
   !*** ./node_modules/core-js/internals/validate-set-prototype-of-arguments.js ***!
-  \*******************************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*******************************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var isObject = __webpack_require__(/*! ../internals/is-object */ "./node_modules/core-js/internals/is-object.js");
             var anObject = __webpack_require__(/*! ../internals/an-object */ "./node_modules/core-js/internals/an-object.js");
-            module.exports = function(O, proto) {
+            module1.exports = function(O, proto) {
                 anObject(O);
                 if (!isObject(proto) && proto !== null) throw TypeError("Can't set " + String(proto) + " as a prototype");
             };
         /***/ },
         /***/ "./node_modules/core-js/internals/well-known-symbol.js": /*!*************************************************************!*\
   !*** ./node_modules/core-js/internals/well-known-symbol.js ***!
-  \*************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var global = __webpack_require__(/*! ../internals/global */ "./node_modules/core-js/internals/global.js");
             var shared = __webpack_require__(/*! ../internals/shared */ "./node_modules/core-js/internals/shared.js");
             var uid = __webpack_require__(/*! ../internals/uid */ "./node_modules/core-js/internals/uid.js");
             var NATIVE_SYMBOL = __webpack_require__(/*! ../internals/native-symbol */ "./node_modules/core-js/internals/native-symbol.js");
-            var Symbol = global.Symbol;
+            var Symbol1 = global.Symbol;
             var store = shared("wks");
-            module.exports = function(name) {
-                return store[name] || (store[name] = NATIVE_SYMBOL && Symbol[name] || (NATIVE_SYMBOL ? Symbol : uid)("Symbol." + name));
+            module1.exports = function(name) {
+                return store[name] || (store[name] = NATIVE_SYMBOL && Symbol1[name] || (NATIVE_SYMBOL ? Symbol1 : uid)("Symbol." + name));
             };
         /***/ },
         /***/ "./node_modules/core-js/modules/es.array.from.js": /*!*******************************************************!*\
   !*** ./node_modules/core-js/modules/es.array.from.js ***!
-  \*******************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*******************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             var $ = __webpack_require__(/*! ../internals/export */ "./node_modules/core-js/internals/export.js");
             var from = __webpack_require__(/*! ../internals/array-from */ "./node_modules/core-js/internals/array-from.js");
             var checkCorrectnessOfIteration = __webpack_require__(/*! ../internals/check-correctness-of-iteration */ "./node_modules/core-js/internals/check-correctness-of-iteration.js");
@@ -48999,7 +48999,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./node_modules/core-js/modules/es.string.iterator.js": /*!************************************************************!*\
   !*** ./node_modules/core-js/modules/es.string.iterator.js ***!
-  \************************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \************************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             "use strict";
             var codePointAt = __webpack_require__(/*! ../internals/string-at */ "./node_modules/core-js/internals/string-at.js");
             var InternalStateModule = __webpack_require__(/*! ../internals/internal-state */ "./node_modules/core-js/internals/internal-state.js");
@@ -49056,8 +49056,8 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./src/default-attrs.json": /*!********************************!*\
   !*** ./src/default-attrs.json ***!
-  \********************************/ /*! exports provided: xmlns, width, height, viewBox, fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, default */ /***/ function(module) {
-            module.exports = {
+  \********************************/ /*! exports provided: xmlns, width, height, viewBox, fill, stroke, stroke-width, stroke-linecap, stroke-linejoin, default */ /***/ function(module1) {
+            module1.exports = {
                 "xmlns": "http://www.w3.org/2000/svg",
                 "width": 24,
                 "height": 24,
@@ -49071,7 +49071,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./src/icon.js": /*!*********************!*\
   !*** ./src/icon.js ***!
-  \*********************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \*********************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             "use strict";
             Object.defineProperty(exports, "__esModule", {
                 value: true
@@ -49111,7 +49111,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
             function _classCallCheck(instance, Constructor) {
                 if (!(instance instanceof Constructor)) throw new TypeError("Cannot call a class as a function");
             }
-            var Icon1 = function() {
+            var Icon = function() {
                 function Icon(name, contents) {
                     var tags = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
                     _classCallCheck(this, Icon);
@@ -49155,11 +49155,11 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
                     return key + '="' + attrs[key] + '"';
                 }).join(" ");
             }
-            exports.default = Icon1;
+            exports.default = Icon;
         /***/ },
         /***/ "./src/icons.js": /*!**********************!*\
   !*** ./src/icons.js ***!
-  \**********************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \**********************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             "use strict";
             Object.defineProperty(exports, "__esModule", {
                 value: true
@@ -49184,7 +49184,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./src/index.js": /*!**********************!*\
   !*** ./src/index.js ***!
-  \**********************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \**********************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             "use strict";
             var _icons = __webpack_require__(/*! ./icons */ "./src/icons.js");
             var _icons2 = _interopRequireDefault(_icons);
@@ -49197,7 +49197,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
                     default: obj
                 };
             }
-            module.exports = {
+            module1.exports = {
                 icons: _icons2.default,
                 toSvg: _toSvg2.default,
                 replace: _replace2.default
@@ -49205,7 +49205,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./src/replace.js": /*!************************!*\
   !*** ./src/replace.js ***!
-  \************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             "use strict";
             Object.defineProperty(exports, "__esModule", {
                 value: true
@@ -49269,8 +49269,8 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./src/tags.json": /*!***********************!*\
   !*** ./src/tags.json ***!
-  \***********************/ /*! exports provided: activity, airplay, alert-circle, alert-octagon, alert-triangle, align-center, align-justify, align-left, align-right, anchor, archive, at-sign, award, aperture, bar-chart, bar-chart-2, battery, battery-charging, bell, bell-off, bluetooth, book-open, book, bookmark, box, briefcase, calendar, camera, cast, chevron-down, chevron-up, circle, clipboard, clock, cloud-drizzle, cloud-lightning, cloud-rain, cloud-snow, cloud, codepen, codesandbox, code, coffee, columns, command, compass, copy, corner-down-left, corner-down-right, corner-left-down, corner-left-up, corner-right-down, corner-right-up, corner-up-left, corner-up-right, cpu, credit-card, crop, crosshair, database, delete, disc, dollar-sign, droplet, edit, edit-2, edit-3, eye, eye-off, external-link, facebook, fast-forward, figma, file-minus, file-plus, file-text, film, filter, flag, folder-minus, folder-plus, folder, framer, frown, gift, git-branch, git-commit, git-merge, git-pull-request, github, gitlab, globe, hard-drive, hash, headphones, heart, help-circle, hexagon, home, image, inbox, instagram, key, layers, layout, life-bouy, link, link-2, linkedin, list, lock, log-in, log-out, mail, map-pin, map, maximize, maximize-2, meh, menu, message-circle, message-square, mic-off, mic, minimize, minimize-2, minus, monitor, moon, more-horizontal, more-vertical, mouse-pointer, move, music, navigation, navigation-2, octagon, package, paperclip, pause, pause-circle, pen-tool, percent, phone-call, phone-forwarded, phone-incoming, phone-missed, phone-off, phone-outgoing, phone, play, pie-chart, play-circle, plus, plus-circle, plus-square, pocket, power, printer, radio, refresh-cw, refresh-ccw, repeat, rewind, rotate-ccw, rotate-cw, rss, save, scissors, search, send, settings, share-2, shield, shield-off, shopping-bag, shopping-cart, shuffle, skip-back, skip-forward, slack, slash, sliders, smartphone, smile, speaker, star, stop-circle, sun, sunrise, sunset, tablet, tag, target, terminal, thermometer, thumbs-down, thumbs-up, toggle-left, toggle-right, tool, trash, trash-2, triangle, truck, tv, twitch, twitter, type, umbrella, unlock, user-check, user-minus, user-plus, user-x, user, users, video-off, video, voicemail, volume, volume-1, volume-2, volume-x, watch, wifi-off, wifi, wind, x-circle, x-octagon, x-square, x, youtube, zap-off, zap, zoom-in, zoom-out, default */ /***/ function(module) {
-            module.exports = {
+  \***********************/ /*! exports provided: activity, airplay, alert-circle, alert-octagon, alert-triangle, align-center, align-justify, align-left, align-right, anchor, archive, at-sign, award, aperture, bar-chart, bar-chart-2, battery, battery-charging, bell, bell-off, bluetooth, book-open, book, bookmark, box, briefcase, calendar, camera, cast, chevron-down, chevron-up, circle, clipboard, clock, cloud-drizzle, cloud-lightning, cloud-rain, cloud-snow, cloud, codepen, codesandbox, code, coffee, columns, command, compass, copy, corner-down-left, corner-down-right, corner-left-down, corner-left-up, corner-right-down, corner-right-up, corner-up-left, corner-up-right, cpu, credit-card, crop, crosshair, database, delete, disc, dollar-sign, droplet, edit, edit-2, edit-3, eye, eye-off, external-link, facebook, fast-forward, figma, file-minus, file-plus, file-text, film, filter, flag, folder-minus, folder-plus, folder, framer, frown, gift, git-branch, git-commit, git-merge, git-pull-request, github, gitlab, globe, hard-drive, hash, headphones, heart, help-circle, hexagon, home, image, inbox, instagram, key, layers, layout, life-bouy, link, link-2, linkedin, list, lock, log-in, log-out, mail, map-pin, map, maximize, maximize-2, meh, menu, message-circle, message-square, mic-off, mic, minimize, minimize-2, minus, monitor, moon, more-horizontal, more-vertical, mouse-pointer, move, music, navigation, navigation-2, octagon, package, paperclip, pause, pause-circle, pen-tool, percent, phone-call, phone-forwarded, phone-incoming, phone-missed, phone-off, phone-outgoing, phone, play, pie-chart, play-circle, plus, plus-circle, plus-square, pocket, power, printer, radio, refresh-cw, refresh-ccw, repeat, rewind, rotate-ccw, rotate-cw, rss, save, scissors, search, send, settings, share-2, shield, shield-off, shopping-bag, shopping-cart, shuffle, skip-back, skip-forward, slack, slash, sliders, smartphone, smile, speaker, star, stop-circle, sun, sunrise, sunset, tablet, tag, target, terminal, thermometer, thumbs-down, thumbs-up, toggle-left, toggle-right, tool, trash, trash-2, triangle, truck, tv, twitch, twitter, type, umbrella, unlock, user-check, user-minus, user-plus, user-x, user, users, video-off, video, voicemail, volume, volume-1, volume-2, volume-x, watch, wifi-off, wifi, wind, x-circle, x-octagon, x-square, x, youtube, zap-off, zap, zoom-in, zoom-out, default */ /***/ function(module1) {
+            module1.exports = {
                 "activity": [
                     "pulse",
                     "health",
@@ -50289,7 +50289,7 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ "./src/to-svg.js": /*!***********************!*\
   !*** ./src/to-svg.js ***!
-  \***********************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \***********************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             "use strict";
             Object.defineProperty(exports, "__esModule", {
                 value: true
@@ -50318,9 +50318,9 @@ var createPopper = /*#__PURE__*/ (0, _createPopperJs.popperGenerator)({
         /***/ },
         /***/ 0: /*!**************************************************!*\
   !*** multi core-js/es/array/from ./src/index.js ***!
-  \**************************************************/ /*! no static exports found */ /***/ function(module, exports, __webpack_require__) {
+  \**************************************************/ /*! no static exports found */ /***/ function(module1, exports, __webpack_require__) {
             __webpack_require__(/*! core-js/es/array/from */ "./node_modules/core-js/es/array/from.js");
-            module.exports = __webpack_require__(/*! /home/runner/work/feather/feather/src/index.js */ "./src/index.js");
+            module1.exports = __webpack_require__(/*! /home/runner/work/feather/feather/src/index.js */ "./src/index.js");
         /***/ }
     });
 });

@@ -120,9 +120,7 @@ class Generar_Tramite_View(PermissionsMixin, TemplateView):
         return context
 
 
-class Importar_Activos_View(PermissionsMixin, TemplateView):
-    template_name = "importar/activos.html"
-
+class ImportTemplateView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         queryparams = self.request.GET
@@ -135,3 +133,11 @@ class Importar_Activos_View(PermissionsMixin, TemplateView):
         context['message'] = message
         context['error'] = error
         return context
+
+
+class Importar_Activos_View(PermissionsMixin, ImportTemplateView):
+    template_name = "importar/activos.html"
+
+
+class Importar_Activos_No_Plaqueados_View(PermissionsMixin, ImportTemplateView):
+    template_name = "importar/noPlaqueados.html"

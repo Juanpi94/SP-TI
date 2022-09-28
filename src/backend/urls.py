@@ -20,6 +20,7 @@ urlpatterns = [
          name="generar-traslados"),
     path("importar/activos", views.Importar_Activos_View.as_view(),
          name="importar-activos"),
+     path("importar/no_plaqueados", views.Importar_Activos_No_Plaqueados_View.as_view(), name="importar-no-plaqueados"),
     path("funcionarios/", views.Funcionarios_View.as_view(), name="funcionarios"),
     path("ubicaciones/", views.Ubicaciones_View.as_view(), name="ubicaciones"),
     path("", include("django.contrib.auth.urls")),
@@ -43,6 +44,8 @@ apiurlpatterns = [
     path('', include(router.urls)),
     path("importar/activos", api_views.ImportarActivosApiView.as_view(),
          name="api-importar-activos"),
+     path("importar/no_plaqueados", api_views.ImportarActivosNoPlaqueadosApiView.as_view(), name="api-importar-no-plaqueados"),
+    path("exportar/", api_views.ExportarHojaDeCalculo.as_view())
 ]
 
 urlpatterns.extend([

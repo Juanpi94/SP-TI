@@ -147,20 +147,20 @@
     module.exports = factory();
 })(this, function() {
     "use strict";
-    function _typeof(obj1) {
+    function _typeof(obj) {
         "@babel/helpers - typeof";
         return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj) {
             return typeof obj;
         } : function(obj) {
             return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-        }, _typeof(obj1);
+        }, _typeof(obj);
     }
-    function _setPrototypeOf(o1, p1) {
+    function _setPrototypeOf(o, p) {
         _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
             o.__proto__ = p;
             return o;
         };
-        return _setPrototypeOf(o1, p1);
+        return _setPrototypeOf(o, p);
     }
     function _isNativeReflectConstruct() {
         if (typeof Reflect === "undefined" || !Reflect.construct) return false;
@@ -173,7 +173,7 @@
             return false;
         }
     }
-    function _construct(Parent1, args1, Class1) {
+    function _construct(Parent, args, Class) {
         if (_isNativeReflectConstruct()) _construct = Reflect.construct;
         else _construct = function _construct(Parent, args, Class) {
             var a = [
@@ -565,7 +565,7 @@
     var text = freeze([
         "#text"
     ]);
-    var html1 = freeze([
+    var html = freeze([
         "accept",
         "action",
         "align",
@@ -966,7 +966,7 @@
         }
     };
     function createDOMPurify() {
-        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : getGlobal();
+        var window1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : getGlobal();
         var DOMPurify = function DOMPurify(root) {
             return createDOMPurify(root);
         };
@@ -978,15 +978,15 @@
      * Array of elements that DOMPurify removed during sanitation.
      * Empty if nothing was removed.
      */ DOMPurify.removed = [];
-        if (!window || !window.document || window.document.nodeType !== 9) {
+        if (!window1 || !window1.document || window1.document.nodeType !== 9) {
             // Not running in a browser, provide a factory function
             // so that you can pass your own Window
             DOMPurify.isSupported = false;
             return DOMPurify;
         }
-        var originalDocument = window.document;
-        var document = window.document;
-        var DocumentFragment = window.DocumentFragment, HTMLTemplateElement = window.HTMLTemplateElement, Node = window.Node, Element = window.Element, NodeFilter = window.NodeFilter, _window$NamedNodeMap = window.NamedNodeMap, NamedNodeMap = _window$NamedNodeMap === void 0 ? window.NamedNodeMap || window.MozNamedAttrMap : _window$NamedNodeMap, HTMLFormElement = window.HTMLFormElement, DOMParser = window.DOMParser, trustedTypes = window.trustedTypes;
+        var originalDocument = window1.document;
+        var document = window1.document;
+        var DocumentFragment = window1.DocumentFragment, HTMLTemplateElement = window1.HTMLTemplateElement, Node = window1.Node, Element = window1.Element, NodeFilter = window1.NodeFilter, _window$NamedNodeMap = window1.NamedNodeMap, NamedNodeMap = _window$NamedNodeMap === void 0 ? window1.NamedNodeMap || window1.MozNamedAttrMap : _window$NamedNodeMap, HTMLFormElement = window1.HTMLFormElement, DOMParser = window1.DOMParser, trustedTypes = window1.trustedTypes;
         var ElementPrototype = Element.prototype;
         var cloneNode = lookupGetter(ElementPrototype, "cloneNode");
         var getNextSibling = lookupGetter(ElementPrototype, "nextSibling");
@@ -1021,7 +1021,7 @@
      */ /* allowed element names */ var ALLOWED_TAGS = null;
         var DEFAULT_ALLOWED_TAGS = addToSet({}, [].concat(_toConsumableArray(html$1), _toConsumableArray(svg$1), _toConsumableArray(svgFilters), _toConsumableArray(mathMl$1), _toConsumableArray(text)));
         /* Allowed attribute names */ var ALLOWED_ATTR = null;
-        var DEFAULT_ALLOWED_ATTR = addToSet({}, [].concat(_toConsumableArray(html1), _toConsumableArray(svg), _toConsumableArray(mathMl), _toConsumableArray(xml)));
+        var DEFAULT_ALLOWED_ATTR = addToSet({}, [].concat(_toConsumableArray(html), _toConsumableArray(svg), _toConsumableArray(mathMl), _toConsumableArray(xml)));
         /*
      * Configure how DOMPUrify should handle custom elements and their attributes as well as customized built-in elements.
      * @property {RegExp|Function|null} tagNameCheck one of [null, regexPattern, predicate]. Default: `null` (disallow any custom elements)
@@ -1188,7 +1188,7 @@
                 ALLOWED_ATTR = [];
                 if (USE_PROFILES.html === true) {
                     addToSet(ALLOWED_TAGS, html$1);
-                    addToSet(ALLOWED_ATTR, html1);
+                    addToSet(ALLOWED_ATTR, html);
                 }
                 if (USE_PROFILES.svg === true) {
                     addToSet(ALLOWED_TAGS, svg$1);
@@ -1334,7 +1334,7 @@
             } catch (_) {
                 try {
                     node.outerHTML = emptyHTML;
-                } catch (_) {
+                } catch (_1) {
                     node.remove();
                 }
             }
@@ -1360,10 +1360,10 @@
             if (name === "is" && !ALLOWED_ATTR[name]) {
                 if (RETURN_DOM || RETURN_DOM_FRAGMENT) try {
                     _forceRemove(node);
-                } catch (_) {}
+                } catch (_1) {}
                 else try {
                     node.setAttribute(name, "");
-                } catch (_1) {}
+                } catch (_2) {}
             }
         };
         /**
@@ -1392,7 +1392,7 @@
                 doc = implementation.createDocument(NAMESPACE, "template", null);
                 try {
                     doc.documentElement.innerHTML = IS_EMPTY_INPUT ? "" : dirtyPayload;
-                } catch (_) {}
+                } catch (_1) {}
             }
             var body = doc.body || doc.documentElement;
             if (dirty && leadingWhitespace) body.insertBefore(document.createTextNode(leadingWhitespace), body.childNodes[0] || null);
@@ -1604,7 +1604,7 @@
      * _sanitizeShadowDOM
      *
      * @param  {DocumentFragment} fragment to iterate over recursively
-     */ var _sanitizeShadowDOM1 = function _sanitizeShadowDOM(fragment) {
+     */ var _sanitizeShadowDOM = function _sanitizeShadowDOM(fragment) {
             var shadowNode;
             var shadowIterator = _createIterator(fragment);
             /* Execute a hook if present */ _executeHook("beforeSanitizeShadowDOM", fragment, null);
@@ -1642,9 +1642,9 @@
                 }
             }
             /* Check we can run. Otherwise fall back or ignore */ if (!DOMPurify.isSupported) {
-                if (_typeof(window.toStaticHTML) === "object" || typeof window.toStaticHTML === "function") {
-                    if (typeof dirty === "string") return window.toStaticHTML(dirty);
-                    if (_isNode(dirty)) return window.toStaticHTML(dirty.outerHTML);
+                if (_typeof(window1.toStaticHTML) === "object" || typeof window1.toStaticHTML === "function") {
+                    if (typeof dirty === "string") return window1.toStaticHTML(dirty);
+                    if (_isNode(dirty)) return window1.toStaticHTML(dirty.outerHTML);
                 }
                 return dirty;
             }
@@ -1674,7 +1674,7 @@
             /* Now start iterating over the created document */ while(currentNode = nodeIterator.nextNode()){
                 /* Fix IE's strange behavior with manipulated textNodes #89 */ if (currentNode.nodeType === 3 && currentNode === oldNode) continue;
                 /* Sanitize tags and elements */ if (_sanitizeElements(currentNode)) continue;
-                /* Shadow DOM detected, sanitize it */ if (currentNode.content instanceof DocumentFragment) _sanitizeShadowDOM1(currentNode.content);
+                /* Shadow DOM detected, sanitize it */ if (currentNode.content instanceof DocumentFragment) _sanitizeShadowDOM(currentNode.content);
                 /* Check attributes, sanitize if necessary */ _sanitizeAttributes(currentNode);
                 oldNode = currentNode;
             }

@@ -1,0 +1,35 @@
+.btn-add {
+  --btn-color: #1976d2;
+  border-color: var(--btn-color);
+  color: #fff;
+  background-color: var(--btn-color) !important;
+}
+
+.btn-export-visibles {
+  --btn-color: #388e3c;
+  border-color: var(--btn-color);
+  color: #fff;
+  background-color: var(--btn-color) !important;
+}
+
+.btn-export-all {
+  --btn-color: #fbc02d;
+  border-color: var(--btn-color);
+  color: #fff;
+  background-color: var(--btn-color) !important;
+}
+
+.btn:hover {
+  color: #fff;
+  background: linear-gradient(#0003, #0003);
+}
+
+.odd {
+  background-color: ;
+}
+
+td {
+  font-size: .9rem;
+}
+
+/*# sourceMappingURL=table.css.map */
