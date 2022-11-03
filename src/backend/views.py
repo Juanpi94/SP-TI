@@ -6,7 +6,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.views.generic import TemplateView, RedirectView
 from backend import models
 from backend.exceptions import ArgMissingException
-from backend.forms import FuncionariosForm, NoPlaqueadosForm, PlaqueadosForm, TramitesExportForm, TramitesForm, UbicacionesForm
+from backend.forms import FuncionariosForm, NoPlaqueadosForm, PlaqueadosForm, TipoForm, TramitesExportForm, TramitesForm, UbicacionesForm
+
+
+class Table():
+    headers = []
+    body = {}
 
 
 class PermissionsMixin(LoginRequiredMixin, PermissionRequiredMixin):
@@ -141,3 +146,15 @@ class Importar_Activos_View(PermissionsMixin, ImportTemplateView):
 
 class Importar_Activos_No_Plaqueados_View(PermissionsMixin, ImportTemplateView):
     template_name = "importar/noPlaqueados.html"
+
+
+class Perfil_View(PermissionsMixin, TemplateView):
+    template_name = "auth/perfil.html"
+
+
+class Tipo_View(Table_View):
+    target_view = "tipo-list"
+    columns = "__all__"
+    exclude = ["id", "activos_plaqueados"]
+    model = models.Tipo
+    form = TipoForm

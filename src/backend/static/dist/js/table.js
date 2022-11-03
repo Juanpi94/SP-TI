@@ -207,6 +207,13 @@ let table = $("#datatable").DataTable({
     ],
     //Las columnas de la tabla, utiliza la variable que se define en table.html
     columns: [
+        {
+            className: "dt-control",
+            orderable: false,
+            sortable: false,
+            data: null,
+            defaultContent: ""
+        },
         ...columns,
         {
             data: "id",
@@ -405,6 +412,24 @@ addForm.on("submit", addSubmitHandler);
 $("#add-modal").find("#submit-form-btn").on("click", ()=>{
     addForm.trigger("submit");
 });
+function format(data) {
+    let rows = [];
+    console.log(data, "data");
+    console.log(columns, "colums");
+    for(item in data)rows.push(`<tr class="detail-row"><td  style="width: 1px;">${item}</td> <td>${data[item]}</td></tr>`);
+    return `<table cellpadding="5" cellspacing="0" border="0"class="detail-table">${rows.join("")}</table>`;
+}
+$("#datatable tbody").on("click", "td.dt-control", function() {
+    const selector = $(this).closest("tr");
+    const row = table.row(selector);
+    if (row.child.isShown()) {
+        row.child.hide();
+        selector.remove("shown");
+    } else {
+        row.child(format(row.data())).show();
+        selector.addClass("shown");
+    }
+});
 
 },{"./utils":"xZHcx","sweetalert2":"9aECL","@parcel/transformer-js/src/esmodule-helpers.js":"cEE7i","marked":"fZz1R","axios":"keco7","buffer":"fCgem"}],"xZHcx":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -426,7 +451,7 @@ class Fetcher {
     suffix = "";
     csrfToken = "";
     constructor(csrfToken = "", suffix = ""){
-        this.csrfToken = csrfToken;
+        this.csrfToken = csrfToken !== "" ? csrfToken : getCsrf();
         this.suffix = suffix;
         this.getFetcher = this.getFetcher.bind(this);
         this.fetch = this.fetch.bind(this);

@@ -24,12 +24,27 @@
   background: linear-gradient(#0003, #0003);
 }
 
-.odd {
-  background-color: ;
+td {
+  border-right: 1px solid #8b8b8b;
+  font-size: .9rem;
 }
 
-td {
-  font-size: .9rem;
+.detail-table {
+  width: 100%;
+  table-layout: auto;
+  padding-left: 50px;
+}
+
+.detail-table tbody, .detail-row {
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.detail-row td {
+  max-width: -moz-fit-content !important;
+  max-width: fit-content !important;
+  white-space: break-spaces !important;
+  overflow: visible !important;
 }
 
 /*# sourceMappingURL=table.css.map */

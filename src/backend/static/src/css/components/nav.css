@@ -59,5 +59,15 @@ hr{
 .nav-link:focus,
 .nav-link:active,
 .nav-link:hover{
-    color: rgb(206, 206, 206) !important;
+    color: rgb(233, 233, 233) !important;
+}
+
+.bottomNavItem{
+    font-weight: bold;
+    color: #d7d7d7;
+    text-decoration: none;
+}
+
+.bottomNavItem:hover{
+    color:   #eaeaea;
 }

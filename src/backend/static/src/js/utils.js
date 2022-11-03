@@ -7,7 +7,7 @@ export class Fetcher {
 	suffix = "";
 	csrfToken = "";
 	constructor(csrfToken = "", suffix = "") {
-		this.csrfToken = csrfToken;
+		this.csrfToken = csrfToken !== "" ? csrfToken : getCsrf();
 		this.suffix = suffix;
 		this.getFetcher = this.getFetcher.bind(this);
 		this.fetch = this.fetch.bind(this);

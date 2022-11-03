@@ -1,0 +1,94 @@
+{% extends 'base.html' %} {% load static %} {% block head %}
+
+<link rel="stylesheet" href="{% static 'dist/css/auth/perfil.css'%}" />
+{% endblock head %} {% block body%} {% csrf_token %}
+<div class="container p-4">
+	<h1>{{ user.get_username }}</h1>
+	<div class="flex-column d-flex password-form">
+		<button
+			class="btn btn-primary"
+			data-bs-toggle="modal"
+			data-bs-target="#change-password-modal"
+			id="btnPassword"
+		>
+			Cambiar contraseña
+		</button>
+	</div>
+</div>
+
+<div
+	class="modal fade"
+	id="change-password-modal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="Cambiar contraseña"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-dialog-center" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="change-password-title">
+					Cambiar contraseña
+				</h5>
+
+				<button
+					type="button"
+					class="close"
+					data-bs-dismiss="modal"
+					aria-label="Close"
+				>
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+
+			<div class="moda-body">
+				<div class="modal-body">
+					<form id="password-form">
+						<div class="form-group">
+							<label for="recipient-name" class="col-form-label"
+								>Contraseña:</label
+							>
+							<input
+								type="password"
+								name="password-input"
+								id="password"
+								class="form-control"
+								placeholder="Contraseña nueva"
+								required
+							/>
+						</div>
+						<div class="form-group has-validation">
+							<label for="message-text" class="col-form-label"
+								>Repetir contraseña:</label
+							>
+							<input
+								type="password"
+								name="repeat-password-input"
+								id="repeat-password"
+								class="form-control"
+								placeholder="Repita la contraseña"
+								required
+							/>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button
+						type="button"
+						class="btn btn-secondary"
+						data-bs-dismiss="modal"
+					>
+						Cerrar
+					</button>
+					<button type="button" class="btn btn-primary" id="submit-btn">
+						Cambiar contraseña
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %} {% block script %}
+<script src="{% static 'dist/js/perfil.js'%}"></script>
+{% endblock script %}

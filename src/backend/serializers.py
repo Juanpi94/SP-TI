@@ -3,7 +3,7 @@ from dataclasses import field
 from django.forms import SlugField
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Funcionarios, Tramites, Traslados, Ubicaciones
+from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Funcionarios, Tipo, Tramites, Traslados, Ubicaciones
 from django.contrib.auth.models import User
 
 
@@ -31,7 +31,7 @@ class PlaqueadosSerializer(ModelSerializer):
     tramite = serializers.SlugRelatedField(
         slug_field="referencia", queryset=Tramites.objects.all(), required=False)
     ubicacion = serializers.SlugRelatedField(queryset=Ubicaciones.objects.all(
-    ), slug_field="lugar", allow_null=True)
+    ), slug_field="nombre", allow_null=True)
 
     class Meta:
         model = Activos_Plaqueados
@@ -42,7 +42,7 @@ class NoPlaqueadosSerializer(ModelSerializer):
     tramite = serializers.SlugRelatedField(
         slug_field="referencia", queryset=Tramites.objects.all(), required=False)
     ubicacion = serializers.SlugRelatedField(queryset=Ubicaciones.objects.all(
-    ), slug_field="lugar", allow_null=True)
+    ), slug_field="nombre", allow_null=True)
 
     class Meta:
         model = Activos_No_Plaqueados
@@ -97,4 +97,9 @@ class TrasladosSerializer(ModelSerializer):
 
     class Meta:
         model = Traslados
+        fields = "__all__"
+class TipoSerializer(ModelSerializer):
+
+    class Meta:
+        model =Tipo
         fields = "__all__"

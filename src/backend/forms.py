@@ -2,7 +2,7 @@
 from django.forms import ModelForm, DateField, Select, SelectDateWidget, TextInput, Textarea
 from django import forms
 
-from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Funcionarios, Tramites, Ubicaciones
+from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Funcionarios, Tramites, Ubicaciones, Tipo
 from backend.widgets import DatePickerInput
 from django.contrib.auth.models import User
 
@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 class PlaqueadosForm(ModelForm):
     garantia = DateField(required=False, widget=DatePickerInput)
     ubicacion = forms.ModelChoiceField(
-        queryset=Ubicaciones.objects.all(), required=False, to_field_name="lugar")
+        queryset=Ubicaciones.objects.all(), required=False, to_field_name="nombre")
     detalle = forms.CharField(widget=Textarea(
         attrs={"class": "plaqueadosTextarea"}), label="Detalle")
 
@@ -86,4 +86,10 @@ class UbicacionesForm(forms.ModelForm):
 
     class Meta:
         model = Ubicaciones
+        exclude = ["id"]
+
+
+class TipoForm(forms.ModelForm):
+    class Meta:
+        model = Tipo
         exclude = ["id"]

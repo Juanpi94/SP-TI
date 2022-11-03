@@ -1,3 +1,5 @@
+from email.policy import default
+from tkinter import CASCADE
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from django.db import models
@@ -5,8 +7,22 @@ from django.db import models
 # Create your models here.
 
 
+class Tipo(models.Model):
+    nombre = models.CharField(max_length=120, null=False)
+
+    def __str__(self) -> str:
+        return self.nombre
+
+
+class Subtipo(models.Model):
+    nombre = models.CharField(max_length=120, null=False)
+
+
 class Activos_Plaqueados(models.Model):
     nombre = models.CharField(max_length=120)
+    tipo = models.OneToOneField(Tipo, on_delete=models.SET_NULL, null=True)
+    subtipo = models.OneToOneField(
+        Subtipo, on_delete=models.SET_NULL, null=True)
     placa = models.CharField(max_length=7)
     detalle = models.CharField(max_length=300)
     marca = models.CharField(max_length=200)
@@ -86,13 +102,14 @@ class Ubicaciones(models.Model):
     class SedeChoices(models.TextChoices):
         ESPARZA = "Esparza", _("Sede de Esparza")
         COCAL = "Cocal", _("Sede del Cocal")
-    lugar = models.CharField(max_length=120, unique=True)
+    localizacion = models.CharField(max_length=120, default="NA")
+    nombre = models.CharField(max_length=120, unique=True)
     sede = models.CharField(
         max_length=10, choices=SedeChoices.choices, default=SedeChoices.ESPARZA)
     custodio = models.ForeignKey(to=Funcionarios, on_delete=models.DO_NOTHING)
 
     def __str__(self):
-        return self.lugar
+        return self.nombre
 
     class Meta:
         verbose_name_plural = "Ubicaciones"

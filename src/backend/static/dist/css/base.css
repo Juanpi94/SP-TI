@@ -37,10 +37,6 @@ body {
   padding-left: .4rem;
 }
 
-.main-section {
-  display: flex;
-}
-
 .ms-6 {
   margin-inline-start: 5rem;
 }

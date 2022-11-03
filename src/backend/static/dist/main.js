@@ -164,6 +164,19 @@ var _featherIconsDefault = parcelHelpers.interopDefault(_featherIcons);
     fill: "red",
     color: "white"
 };
+(0, _jqueryDefault.default).fn.extend({
+    isValid: function() {
+        return this[0].checkValidity();
+    },
+    setInvalid: function(msg) {
+        this[0].setCustomValidity(msg);
+        this[0].reportValidity();
+    },
+    setValid: function() {
+        this[0].setCustomValidity("");
+        this[0].reportValidity();
+    }
+});
 window.$ = (0, _jqueryDefault.default);
 (0, _datatablesNetBs4Default.default)(window, (0, _jqueryDefault.default));
 (0, _datatablesNetButtonsDefault.default)(window, (0, _jqueryDefault.default));

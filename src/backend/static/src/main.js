@@ -16,6 +16,22 @@ feather.icons["x-circle"].attrs = {
 	color: "white",
 };
 
+$.fn.extend({
+	isValid: function () {
+		return this[0].checkValidity();
+	},
+
+	setInvalid: function (msg) {
+		 
+		this[0].setCustomValidity(msg);
+		this[0].reportValidity();
+	},
+	setValid: function () {
+		this[0].setCustomValidity("");
+		this[0].reportValidity();
+	},
+});
+
 window.$ = $;
 
 dt(window, $);

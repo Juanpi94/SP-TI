@@ -142,7 +142,43 @@
       this[globalName] = mainExports;
     }
   }
-})({"xZHcx":[function(require,module,exports) {
+})({"8ldlB":[function(require,module,exports) {
+var _utils = require("./utils");
+const passwordInput = $("#password");
+const repeatedPasswordInput = $("#repeat-password");
+const submitBtn = $("#submit-btn");
+submitBtn.on("click", ()=>{
+    const password = passwordInput.val();
+    const repeatedPassword = repeatedPasswordInput.val();
+    passwordInput.setValid();
+    repeatedPasswordInput.setValid();
+    const isPasswordValid = passwordInput.isValid();
+    const isRepeatedValid = repeatedPasswordInput.isValid();
+    if (isPasswordValid) {
+        if (isRepeatedValid) {
+            console.log(password !== repeatedPassword, password, repeatedPassword);
+            if (password !== repeatedPassword) repeatedPasswordInput.setInvalid("Las contrase\xf1a repetida no coincide");
+            else {
+                let fetcher = new (0, _utils.Fetcher)().getFetcher();
+                fetcher("/api/auth/change_password/", {
+                    body: JSON.stringify({
+                        password
+                    }),
+                    method: "POST"
+                }).then((res)=>{
+                    if (res.status === 202) {
+                        (0, _utils.Success).fire("Se cambio la contrase\xf1a con \xe9xito");
+                        bootstrap.Modal.getInstance($("#change-password-modal")).hide();
+                        return;
+                    }
+                    (0, _utils.Err).fire("Error al cambiar la contrase\xf1a");
+                });
+            }
+        } else repeatedPasswordInput.setInvalid("Rellene el campo");
+    } else passwordInput.setInvalid("Rellene el campo");
+});
+
+},{"./utils":"xZHcx"}],"xZHcx":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 //Esta clase es utilizada para evitar repetir la misma declaración fetch
@@ -6415,6 +6451,6 @@ var utils = require("./../utils");
     return utils.isObject(payload) && payload.isAxiosError === true;
 };
 
-},{"./../utils":"hYHpy"}]},["xZHcx"], "xZHcx", "parcelRequire9763")
+},{"./../utils":"hYHpy"}]},["8ldlB"], "8ldlB", "parcelRequire9763")
 
-//# sourceMappingURL=utils.js.map
+//# sourceMappingURL=perfil.js.map

@@ -17,7 +17,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from backend import models
 from backend import serializers
-from backend.serializers import FuncionariosSerializer, NoPlaqueadosSerializer, PlaqueadosSerializer, TramitesCreateSerializer, TramitesSerializer, TrasladosSerializer, UbicacionesSerializer
+from backend.serializers import FuncionariosSerializer, NoPlaqueadosSerializer, PlaqueadosSerializer, TipoSerializer, TramitesCreateSerializer, TramitesSerializer, TrasladosSerializer, UbicacionesSerializer
 from rest_framework.decorators import action
 import pandas as pd
 from django.db.models import Model
@@ -115,6 +115,11 @@ class FuncionariosApiViewset(ModelViewSet):
     serializer_class = FuncionariosSerializer
 
 
+class TipoApiViewset(ModelViewSet):
+    queryset = models.Tipo.objects.all()
+    serializer_class = TipoSerializer
+
+
 class UbicacionesApiViewset(ModelViewSet):
     queryset = models.Ubicaciones.objects.all()
     serializer_class = UbicacionesSerializer
@@ -147,7 +152,7 @@ class ImportarActivosApiView(APIView):
             if(row_dict['ubicacion']):
                 try:
                     row_dict['ubicacion'] = models.Ubicaciones.objects.get(
-                        lugar__icontains=row_dict['ubicacion'])
+                        nombre__icontains=row_dict['ubicacion'])
                 except ObjectDoesNotExist:
                     activos_erroneos.append(
                         f"{row_dict['nombre']} : {row_dict['placa']}")
@@ -193,7 +198,7 @@ class ImportarActivosNoPlaqueadosApiView(APIView):
             if(row_dict['ubicacion']):
                 try:
                     row_dict['ubicacion'] = models.Ubicaciones.objects.get(
-                        lugar__icontains=row_dict['ubicacion'])
+                        nombre__icontains=row_dict['ubicacion'])
                 except ObjectDoesNotExist:
                     activos_erroneos.append(
                         f"{row_dict['nombre']} : {row_dict['placa']}")
@@ -225,3 +230,15 @@ class ExportarHojaDeCalculo(APIView):
             parsed_json.to_excel(writer)
             writer.save()
             return Response({"data": b.getbuffer().hex()})
+
+
+class ChangePasswordView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, format=None):
+        json_data = request.data
+        print(request.user)
+        password = json_data['password']
+        request.user.set_password(password)
+        request.user.save()
+        return Response(None, status.HTTP_202_ACCEPTED)

@@ -25,15 +25,33 @@
 }
 
 .odd{
-    background-color: ;
+    
 }  
 
 .even{
-
+  
 }
 
 td{
     font-size: .9rem;
+    border-right: 1px solid rgb(139, 139, 139);
 }
 
- 
+.detail-table{
+    padding-left: 50px;
+    width: 100%;
+    table-layout:auto;
+}
+
+.detail-table tbody{
+    width: fit-content;
+}
+.detail-row{
+    width: fit-content;
+}
+.detail-row td{
+    max-width: fit-content !important;
+    white-space: break-spaces !important;
+    overflow:visible !important;
+     
+}
