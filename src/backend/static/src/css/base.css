@@ -2,6 +2,7 @@
     box-sizing: border-box;
 }
 
+ 
 body{
     background-color: #ededed;
     margin: 0;
@@ -46,4 +47,10 @@ body{
     margin-inline-start: 5rem;
  }
 
- 
+ .h-fit{
+    height: fit-content;
+}
+
+.w-fit{
+    width: fit-content;
+}

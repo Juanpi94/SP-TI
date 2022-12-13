@@ -17,7 +17,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from backend import models
 from backend import serializers
-from backend.serializers import FuncionariosSerializer, NoPlaqueadosSerializer, PlaqueadosSerializer, TipoSerializer, TramitesCreateSerializer, TramitesSerializer, TrasladosSerializer, UbicacionesSerializer
+from backend.serializers import DeshechoSerializer, FuncionariosSerializer, NoPlaqueadosSerializer, PlaqueadosSerializer, SubtipoSerializer, TipoSerializer, TramitesCreateSerializer, TramitesSerializer, TrasladosSerializer, UbicacionesSerializer
 from rest_framework.decorators import action
 import pandas as pd
 from django.db.models import Model
@@ -81,6 +81,12 @@ class TramitesApiViewset(ModelViewSet):
         return serializer.save()
 
 
+class DeshechoApiViewset(ModelViewSet):
+    queryset = models.Deshecho.objects.all()
+    serializer_class = DeshechoSerializer
+    permission_classes = [AllowAny]
+
+
 class TrasladosApiViewset(ModelViewSet):
     queryset = models.Traslados.objects.all()
     serializer_class = TrasladosSerializer
@@ -118,6 +124,11 @@ class FuncionariosApiViewset(ModelViewSet):
 class TipoApiViewset(ModelViewSet):
     queryset = models.Tipo.objects.all()
     serializer_class = TipoSerializer
+
+
+class SubtipoApiViewSet(ModelViewSet):
+    queryset = models.Subtipo.objects.all()
+    serializer_class = SubtipoSerializer
 
 
 class UbicacionesApiViewset(ModelViewSet):

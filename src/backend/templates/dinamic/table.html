@@ -7,6 +7,11 @@
 {% block head %}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.5/b-2.2.2/datatables.min.css"/>
 <link rel="stylesheet" href="{% static 'dist/css/dinamic/table.css'%}">
+<link
+	href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+	rel="stylesheet"
+/>
+
 {% endblock %}
 
 {% if request.user|can_read%}
@@ -20,13 +25,10 @@
     </table>
 </div>
 
-{% include 'components/formModal.html' with form=form modal_id="edit-modal" form_id="edit-form" modal_label="Editar el activo"%}
-
-{% if add == True and request.user|can_write %}
   
-  {% include 'components/formModal.html' with form=form modal_id="add-modal" form_id="add-form" modal_label="Añadir activo"%}
+{% include 'components/formModal.html' with form=form modal_id="form-modal" form_id="form" modal_label="Añadir activo"%}
   
-{% endif %}
+ 
 
 {% endblock %}
 

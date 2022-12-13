@@ -1,5 +1,5 @@
 from django.contrib import admin
-from backend.models import Funcionarios, Traslados, Ubicaciones
+from backend.models import Funcionarios, Tipo, Traslados, Ubicaciones
 
 admin.site.site_title = "ATIC Admin"
 
@@ -16,6 +16,10 @@ class FuncionariosAdmin(admin.ModelAdmin):
     search_fields = ['nombre_completo', 'cedula']
 
 
+class TiposAdmin(admin.ModelAdmin):
+    pass
+
+
 class TrasladosAdmin(admin.ModelAdmin):
     pass
 
@@ -23,3 +27,4 @@ class TrasladosAdmin(admin.ModelAdmin):
 admin.site.register(Traslados, TrasladosAdmin)
 admin.site.register(Ubicaciones, UbicacionesAdmin)
 admin.site.register(Funcionarios, FuncionariosAdmin)
+admin.site.register(Tipo, TiposAdmin)

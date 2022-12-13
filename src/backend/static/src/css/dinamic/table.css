@@ -55,3 +55,9 @@ td{
     overflow:visible !important;
      
 }
+
+/* .select2-dropdown, .select2-container, .select2-container > *, .select2-search, .select2-search > *{
+    z-index:99999;
+} */
+
+ 

@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.views.generic import TemplateView, RedirectView
 from backend import models
 from backend.exceptions import ArgMissingException
-from backend.forms import FuncionariosForm, NoPlaqueadosForm, PlaqueadosForm, TipoForm, TramitesExportForm, TramitesForm, UbicacionesForm
+from backend.forms import DeshechoExportForm, FuncionariosForm, NoPlaqueadosForm, PlaqueadosForm, TipoForm, TramitesExportForm, TramitesForm, UbicacionesForm, SubtipoForm
 
 
 class Table():
@@ -61,6 +61,7 @@ class Table_View(PermissionsMixin, TemplateView):
                 self.columns = [
                     field for field in self.columns if field not in self.exclude]
         context['columns'] = self.columns
+
         context['form'] = self.form()
         context['add'] = self.add
         return context
@@ -78,7 +79,7 @@ class Activos_Plaqueados_View(Table_View):
 
     target_view = "plaqueados-list"
     columns = "__all__"
-    exclude = ["id"]
+    exclude = ["id", "deshecho"]
     model = models.Activos_Plaqueados
     form = PlaqueadosForm
 
@@ -86,7 +87,7 @@ class Activos_Plaqueados_View(Table_View):
 class Tramites_View(Table_View):
     target_view = "tramites-list"
     columns = "__all__"
-    exclude = ["id", "activos", "activos_sin_placa"]
+    exclude = ["id", "activos", "activos_sin_placa", "activos_plaqueados"]
     model = models.Tramites
     form = TramitesForm
     add = False
@@ -95,7 +96,7 @@ class Tramites_View(Table_View):
 class Activos_No_Plaqueados_View(Table_View):
     target_view = "no_plaqueados-list"
     columns = "__all__"
-    exclude = ["id"]
+    exclude = ["id", "deshecho"]
     model = models.Activos_No_Plaqueados
     form = NoPlaqueadosForm
 
@@ -154,7 +155,25 @@ class Perfil_View(PermissionsMixin, TemplateView):
 
 class Tipo_View(Table_View):
     target_view = "tipo-list"
-    columns = "__all__"
-    exclude = ["id", "activos_plaqueados"]
+    columns = ["nombre", "subtipos"]
+    exclude = ["id", "activos_plaqueados", "activos_no_plaqueados"]
     model = models.Tipo
     form = TipoForm
+
+
+class Subtipo_View(Table_View):
+    target_view = "subtipo-list"
+    columns = "__all__"
+    exclude = ["id", "activos_plaqueados", "activos_no_plaqueados"]
+    model = models.Subtipo
+    form = SubtipoForm
+
+class Compra_View(Table_View):
+    pass
+class Deshecho_View (PermissionsMixin, TemplateView):
+    template_name = "generar/deshecho.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = DeshechoExportForm()
+        return context

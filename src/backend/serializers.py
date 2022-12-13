@@ -3,7 +3,7 @@ from dataclasses import field
 from django.forms import SlugField
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Funcionarios, Tipo, Tramites, Traslados, Ubicaciones
+from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Deshecho, Funcionarios, Subtipo, Tipo, Tramites, Traslados, Ubicaciones
 from django.contrib.auth.models import User
 
 
@@ -32,6 +32,9 @@ class PlaqueadosSerializer(ModelSerializer):
         slug_field="referencia", queryset=Tramites.objects.all(), required=False)
     ubicacion = serializers.SlugRelatedField(queryset=Ubicaciones.objects.all(
     ), slug_field="nombre", allow_null=True)
+
+    tipo = serializers.SlugRelatedField(
+        queryset=Tipo.objects.all(), slug_field="nombre")
 
     class Meta:
         model = Activos_Plaqueados
@@ -98,8 +101,32 @@ class TrasladosSerializer(ModelSerializer):
     class Meta:
         model = Traslados
         fields = "__all__"
-class TipoSerializer(ModelSerializer):
+
+
+class DeshechoSerializer(ModelSerializer):
+    activos_plaqueados = serializers.PrimaryKeyRelatedField(
+        queryset=Activos_Plaqueados.objects.all(), many=True, allow_null=True)
+    activos_no_plaqueados = serializers.PrimaryKeyRelatedField(
+        queryset=Activos_No_Plaqueados.objects.all(), many=True, allow_null=True)
 
     class Meta:
-        model =Tipo
+        model = Deshecho
+        fields = "__all__"
+
+
+class TipoSerializer(ModelSerializer):
+    subtipos = serializers.SlugRelatedField(
+        queryset=Subtipo.objects.all(), many=True, slug_field="nombre", source="subtipo_set")
+
+    class Meta:
+        model = Tipo
+        fields = "__all__"
+
+
+class SubtipoSerializer(ModelSerializer):
+    tipo = serializers.SlugRelatedField(
+        slug_field="nombre", queryset=Tipo.objects.all())
+
+    class Meta:
+        model = Subtipo
         fields = "__all__"

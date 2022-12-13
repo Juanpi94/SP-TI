@@ -364,7 +364,7 @@ var allUppercase = /^[A-Z-]+$/;
  */ function normalizeColor(color) {
     if (!color.startsWith("rgb")) return color;
     var rgbParts = 3;
-    var normalizedColor = color.replace(/\d+(\.\d+)?/g, (num, isFloat)=>(rgbParts--) && isFloat ? String(Math.round(parseFloat(num))) : num);
+    var normalizedColor = color.replace(/\d+(\.\d+)?/g, (num, isFloat)=>rgbParts-- && isFloat ? String(Math.round(parseFloat(num))) : num);
     return normalizedColor;
 }
 // slightly modified version of https://github.com/keeganstreet/specificity/blob/master/specificity.js
@@ -4713,7 +4713,7 @@ function _objectSpread(target) {
     }
 }
 
-},{"core-js/modules/es.promise.js":"9lvo1","@babel/runtime/helpers/asyncToGenerator":"jxKg8","core-js/modules/es.string.match.js":"dhI0U","core-js/modules/es.string.replace.js":"bE0gl","core-js/modules/es.string.starts-with.js":"jBAVV","core-js/modules/es.array.iterator.js":"dFlRN","core-js/modules/web.dom-collections.iterator.js":"3YhYU","@babel/runtime/helpers/defineProperty":"4x6r7","core-js/modules/es.array.reduce.js":"4JP9y","core-js/modules/es.string.ends-with.js":"jGTSU","core-js/modules/es.string.split.js":"c6es8","raf":"ba7ov","core-js/modules/es.string.trim.js":"8KjjF","rgbcolor":"iVlt2","core-js/modules/es.array.index-of.js":"jWtjc","core-js/modules/es.string.includes.js":"iQrGk","core-js/modules/es.array.reverse.js":"fcRaU","svg-pathdata":"8cZl0","core-js/modules/es.regexp.to-string.js":"8bEcW","stackblur-canvas":"imAgF","process":"58IdK","@parcel/transformer-js/src/esmodule-helpers.js":"cEE7i"}],"9lvo1":[function(require,module,exports) {
+},{"process":"jhUEF","core-js/modules/es.promise.js":"9lvo1","@babel/runtime/helpers/asyncToGenerator":"jxKg8","core-js/modules/es.string.match.js":"dhI0U","core-js/modules/es.string.replace.js":"bE0gl","core-js/modules/es.string.starts-with.js":"jBAVV","core-js/modules/es.array.iterator.js":"dFlRN","core-js/modules/web.dom-collections.iterator.js":"3YhYU","@babel/runtime/helpers/defineProperty":"4x6r7","core-js/modules/es.array.reduce.js":"4JP9y","core-js/modules/es.string.ends-with.js":"jGTSU","core-js/modules/es.string.split.js":"c6es8","raf":"ba7ov","core-js/modules/es.string.trim.js":"8KjjF","rgbcolor":"iVlt2","core-js/modules/es.array.index-of.js":"jWtjc","core-js/modules/es.string.includes.js":"iQrGk","core-js/modules/es.array.reverse.js":"fcRaU","svg-pathdata":"8cZl0","core-js/modules/es.regexp.to-string.js":"8bEcW","stackblur-canvas":"imAgF","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9lvo1":[function(require,module,exports) {
 // TODO: Remove this module from `core-js@4` since it's split to modules listed below
 require("../modules/es.promise.constructor");
 require("../modules/es.promise.all");
@@ -8226,7 +8226,7 @@ var process = require("process");
     }
 }).call(this);
 
-},{"process":"58IdK"}],"8KjjF":[function(require,module,exports) {
+},{"process":"jhUEF"}],"8KjjF":[function(require,module,exports) {
 "use strict";
 var $ = require("../internals/export");
 var $trim = require("../internals/string-trim").trim;
@@ -8654,13 +8654,6 @@ module.exports = Array.isArray || function isArray(argument) {
 };
 
 },{"../internals/classof-raw":"bdfmm"}],"8cZl0":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "COMMAND_ARG_COUNTS", ()=>N);
-parcelHelpers.export(exports, "SVGPathData", ()=>_);
-parcelHelpers.export(exports, "SVGPathDataParser", ()=>f);
-parcelHelpers.export(exports, "SVGPathDataTransformer", ()=>u);
-parcelHelpers.export(exports, "encodeSVGPath", ()=>e);
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -8674,7 +8667,14 @@ INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
 LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */ var t = function(r, e) {
+***************************************************************************** */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "COMMAND_ARG_COUNTS", ()=>N);
+parcelHelpers.export(exports, "SVGPathData", ()=>_);
+parcelHelpers.export(exports, "SVGPathDataParser", ()=>f);
+parcelHelpers.export(exports, "SVGPathDataTransformer", ()=>u);
+parcelHelpers.export(exports, "encodeSVGPath", ()=>e);
+var t = function(r, e) {
     return (t = Object.setPrototypeOf || ({
         __proto__: []
     }) instanceof Array && function(t, r) {
@@ -9164,7 +9164,7 @@ var O, l = function() {
     }, i.CLOSE_PATH = 1, i.MOVE_TO = 2, i.HORIZ_LINE_TO = 4, i.VERT_LINE_TO = 8, i.LINE_TO = 16, i.CURVE_TO = 32, i.SMOOTH_CURVE_TO = 64, i.QUAD_TO = 128, i.SMOOTH_QUAD_TO = 256, i.ARC = 512, i.LINE_COMMANDS = i.LINE_TO | i.HORIZ_LINE_TO | i.VERT_LINE_TO, i.DRAWING_COMMANDS = i.HORIZ_LINE_TO | i.VERT_LINE_TO | i.LINE_TO | i.CURVE_TO | i.SMOOTH_CURVE_TO | i.QUAD_TO | i.SMOOTH_QUAD_TO | i.ARC, i;
 }(l), N = ((O = {})[_.MOVE_TO] = 2, O[_.LINE_TO] = 2, O[_.HORIZ_LINE_TO] = 1, O[_.VERT_LINE_TO] = 1, O[_.CLOSE_PATH] = 0, O[_.QUAD_TO] = 4, O[_.SMOOTH_QUAD_TO] = 2, O[_.CURVE_TO] = 6, O[_.SMOOTH_CURVE_TO] = 4, O[_.ARC] = 7, O);
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"cEE7i"}],"8bEcW":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8bEcW":[function(require,module,exports) {
 "use strict";
 var PROPER_FUNCTION_NAME = require("../internals/function-name").PROPER;
 var defineBuiltIn = require("../internals/define-built-in");
@@ -10165,6 +10165,6 @@ var shgTable = [
     this.next = null;
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"cEE7i"}]},[], null, "parcelRequire9763")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},[], null, "parcelRequire9763")
 
 //# sourceMappingURL=index.es.0fcf784f.js.map

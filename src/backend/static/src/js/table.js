@@ -1,17 +1,30 @@
-import { download, Fetcher, getCsrf, toExcel } from "./utils";
+import { axiosInstance, download, getCsrf, toExcel } from "./utils";
 import Swal from "sweetalert2";
-import { parse } from "marked";
-import axios from "axios";
+
 import { Buffer } from "buffer";
+import axios from "axios";
 
 //Este archivo utiliza variables que se declaran en table.html
 const swalAlertTimer = 1200; //El tiempo en que las alertas de sweetAlert tardan en estar visibles: https://sweetalert2.github.io/
 
-//Token para validar los requests
-csrfToken = getCsrf();
+//Se inicializan los select, si existen
+if ($("select").length) {
+	$("select").select2({
+		language: {
+			noResults: () => "No hay resultados para esta busqueda",
+		},
+		theme: "default",
+		dropdownParent: $("#form-modal .modal-body form"),
+	});
 
-//Se obtiene un fetcher desde utils.js
-const fetcher = new Fetcher(csrfToken, target_view).getFetcher();
+	$("select")
+		.data("select2")
+		.on("open", function () {
+			if (this) {
+				this.dropdown._positionDropdown();
+			}
+		});
+}
 
 // Esta función se encarga de inicializar la tabla
 let table = $("#datatable").DataTable({
@@ -25,8 +38,9 @@ let table = $("#datatable").DataTable({
 			text: "Añadir",
 			className: "btn mt-3 btn-add",
 			action: () => {
-				const addModal = new bootstrap.Modal($("#add-modal"));
-				addModal.show();
+				$("#form")[0].reset();
+				$("#form-modal").showModal("Añadir registro");
+				$("#form").only("submit", (ev) => addSubmitHandler(ev));
 			},
 		},
 		{
@@ -97,16 +111,27 @@ table.on("draw.dt", () => {
 	feather.replace();
 });
 
+$("#form-modal")
+	.find("#submit-form-btn")
+	.on("click", (ev) => {
+		$("#form").trigger("submit");
+	});
 //El controlador del botón editar
+
 async function editHandler(event) {
+	$("#form-modal").showModal("Editar registro");
+	$("#form")[0].reset();
+	$("#form select").val("").trigger("change");
+	$("#form").only("submit", editSubmitHandler);
 	const id = $(this).data("id");
 	//Se le añade un data-id al formulario, para poder conectarse con el api
-	$("#edit-form").data("id", id);
+	$("#form").data("id", id);
 
 	//Se hace un fetch de los datos del objeto que se quiere editar, luego se
 	//le adjunta dichos datos al formulario, para facilitar la edición
-	const data = await fetcher(id);
-	const jsonData = await data.json();
+	const res = await axiosInstance.get(target_view + id);
+	console.log(res);
+	const jsonData = res.data;
 
 	for (key in jsonData) {
 		//Cada input del formulario tiene un id con el formato id_{nombre del dato}
@@ -149,7 +174,7 @@ async function deleteHandler(event) {
 			}
 		}
 
-		const { status } = await fetcher(id, { method: "DELETE" });
+		const { status } = await axiosInstance.delete(target_view + id);
 		//El codigo 204 es el que por general retorna luego de una eliminación
 		if (status === 204) {
 			Swal.fire({
@@ -202,9 +227,9 @@ async function addSubmitHandler(event) {
 	//Si es valido, crea un formData con los datos del formulario: https://developer.mozilla.org/es/docs/Web/API/FormData
 	const formData = getSanitizedFormData(event.target);
 	//Se crea un texto json con los datos del formulario, luego se le adjuntan a la petición AJAX
-	const body = JSON.stringify(formData);
-
-	const res = await fetcher("", { body, method: "POST" });
+	const res = await axios.post(target_view, formData, {
+		headers: { "X-CSRFToken": getCsrf() },
+	});
 	//201: Objeto creado
 	//400: El usuario ingreso mal un dato
 	//500+: Algo pasó en el servidor
@@ -216,7 +241,7 @@ async function addSubmitHandler(event) {
 			timer: swalAlertTimer,
 		});
 
-		const addModal = bootstrap.Modal.getInstance($("#add-modal"));
+		const addModal = bootstrap.Modal.getInstance($("#form-modal"));
 		addModal.hide();
 		table.ajax.reload();
 	} else if (res.status === 400) {
@@ -239,16 +264,18 @@ async function addSubmitHandler(event) {
 //El controlador del formulario de edición
 async function editSubmitHandler(event) {
 	event.preventDefault();
+
 	//Se checa la validez del formulario
+
 	if (!sanitizeForm(event.target)) return;
-	const id = $(this).data("id");
+
+	const id = $(event.target).data("id");
 	//Si es valido, crea un formData con los datos del formulario: https://developer.mozilla.org/es/docs/Web/API/FormData
 	const formData = getSanitizedFormData(event.target);
 
 	//Se crea un texto json con los datos del formulario, luego se le adjuntan a la petición AJAX
-	const body = JSON.stringify(formData);
-	console.log(body, "edit");
-	const res = await fetcher(id, { body, method: "PUT" });
+
+	const res = await axiosInstance.put(target_view + id, formData);
 	//200: Edición exitosa
 	//400: El usuario ingreso mal un dato
 	//500+: Algo pasó en el servidor
@@ -260,7 +287,7 @@ async function editSubmitHandler(event) {
 			timer: swalAlertTimer,
 		});
 
-		bootstrap.Modal.getInstance($("#edit-modal")).hide();
+		bootstrap.Modal.getInstance($("#form-modal")).hide();
 		table.ajax.reload();
 	} else if (res.status === 400) {
 		Swal.fire({
@@ -284,30 +311,12 @@ function buttonsRender(data) {
 	//data corresponde al id de cada activo, se utiliza para referirse a las rutas en el api
 	return `
         <div class="container d-inline-flex gap-1">
-        <button type="button" data-bs-toggle="modal" data-bs-target="#edit-modal" data-action="edit" data-id=${data}><i data-feather="edit"></i></button>
+        <button type="button"  data-action="edit" data-id=${data}><i data-feather="edit"></i></button>
         <button type="button" data-action="delete" data-id=${data}><i data-feather="x-circle"></i></button>
         </div>
     `;
 }
 //Se le añade el controlador al formulario, así como al botón para subir el formulario
-
-const editForm = $("#edit-form");
-editForm.on("submit", editSubmitHandler);
-
-//Estas funciones se encargan de ejecutar el evento "submit" de los formularios
-$("#edit-modal")
-	.find("#submit-form-btn")
-	.on("click", () => {
-		editForm.trigger("submit");
-	});
-
-const addForm = $("#add-form");
-addForm.on("submit", addSubmitHandler);
-$("#add-modal")
-	.find("#submit-form-btn")
-	.on("click", () => {
-		addForm.trigger("submit");
-	});
 
 function format(data) {
 	let rows = [];

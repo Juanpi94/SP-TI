@@ -2,4 +2,4 @@
 
 source ../venv/Scripts/activate
 
-py manage.py runserver & npm --prefix ./backend run build
+py manage.py runserver & npm --prefix ./backend run dev

@@ -41,4 +41,14 @@ body {
   margin-inline-start: 5rem;
 }
 
+.h-fit {
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
+.w-fit {
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
 /*# sourceMappingURL=base.css.map */

@@ -16,44 +16,47 @@ class Tipo(models.Model):
 
 class Subtipo(models.Model):
     nombre = models.CharField(max_length=120, null=False)
+    tipo = models.ForeignKey(Tipo, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.nombre
 
 
-class Activos_Plaqueados(models.Model):
+class Activo(models.Model):
+    detalle = models.CharField(max_length=300)
+    marca = models.CharField(max_length=200)
+    serie = models.CharField(max_length=200, null=True)
+    valor = models.CharField(max_length=200, null=True)
+    modelo = models.CharField(max_length=200)
+    garantia = models.DateField(null=True)
+    fecha = models.DateField(null=True)
+    observacion = models.CharField(max_length=300, default="", null=True)
+    ubicacion = models.ForeignKey(
+        to="Ubicaciones", on_delete=models.DO_NOTHING, null=True)
+    tramite = models.ForeignKey(
+        to="Tramites", on_delete=models.SET_NULL, null=True)
     nombre = models.CharField(max_length=120)
     tipo = models.OneToOneField(Tipo, on_delete=models.SET_NULL, null=True)
     subtipo = models.OneToOneField(
         Subtipo, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        abstract = True
+
+
+class Activos_Plaqueados(Activo):
     placa = models.CharField(max_length=7)
-    detalle = models.CharField(max_length=300)
-    marca = models.CharField(max_length=200)
-    serie = models.CharField(max_length=200, null=True)
-    valor = models.CharField(max_length=200, null=True)
-    modelo = models.CharField(max_length=200)
-    garantia = models.DateField(null=True)
-    ubicacion = models.ForeignKey(
-        to="Ubicaciones", on_delete=models.DO_NOTHING, null=True)
+
+    def __str__(self) -> str:
+        return self.placa
+
+
+class Activos_No_Plaqueados(Activo):
     tramite = models.ForeignKey(
         to="Tramites", on_delete=models.SET_NULL, null=True, related_name="activos_sin_placa")
 
     def __str__(self) -> str:
-        return self.placa
-
-
-class Activos_No_Plaqueados(models.Model):
-    nombre = models.CharField(max_length=120)
-    detalle = models.CharField(max_length=300)
-    marca = models.CharField(max_length=200)
-    serie = models.CharField(max_length=200, null=True)
-    valor = models.CharField(max_length=200, null=True)
-    modelo = models.CharField(max_length=200)
-    garantia = models.DateField(null=True)
-    ubicacion = models.ForeignKey(
-        to="Ubicaciones", on_delete=models.DO_NOTHING, null=True)
-    tramite = models.ForeignKey(
-        to="Tramites", on_delete=models.SET_NULL, null=True, related_name="activos")
-
-    def __str__(self) -> str:
-        return self.placa
+        return self.serie
 
 
 class Tramites(models.Model):
@@ -140,3 +143,22 @@ class Traslados(models.Model):
 
     class Meta:
         verbose_name_plural = "Traslados"
+
+
+class Deshecho(models.Model):
+    referencia = models.CharField(max_length=120, unique=True)
+    fecha = models.DateField(auto_now_add=True)
+    activos_plaqueados = models.ManyToManyField(Activos_Plaqueados)
+    activos_no_plaqueados = models.ManyToManyField(
+        Activos_No_Plaqueados)
+
+
+class Compra(models.Model):
+    numero_solicitud = models.CharField(max_length=150)
+    origen_presupuesto = models.CharField(max_length=200)
+    decisión_final = models.CharField(max_length=100)
+    numero_procedimiento = models.CharField(max_length=120)
+    numero_factura = models.CharField(max_length=120)
+    proveedor = models.CharField(max_length=300)
+    telefono_proveedor = models.CharField(max_length=100)
+    correo_proveedor = models.CharField(max_length=120)

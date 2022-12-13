@@ -1,30 +1,7 @@
-.pdf-container{
-    max-width: 50rem;
-    background-color: white;
-    border: .3rem solid black;
-}
+@import url("./global.css");
 
-.pdf-container.export{
-    border: none;
-    margin: 0;
-    padding: 0;
-}
-.pdf-container.export .controls{
-    display: none;
-}
-.identificador-container{
-    border-right: .1rem solid black;
 
-    padding: 1rem;
-}
-.identificador{
-    width: 100%;
-    height: 100%;    
-}
 
-.header-row{
-    border-bottom: .1rem solid black;
-}
 .departamento{
     font-size: .8rem;
 }
@@ -34,34 +11,12 @@
     height: 7rem;
 }
 
-.h-fit{
-    height: fit-content;
-}
 
 .spacing{
     --spacing: 0rem;
     margin-bottom: var(--spacing);
 }
 
-.select2-container{
-    max-width: fit-content !important;
-    min-width: 12rem;
-}
-.select2-selection{
-    height: fit-content !important;
-}
-.select2-selection__rendered{
-    max-width: 11rem;
-    height: fit-content;
-    text-overflow: clip !important;
-    overflow-wrap: break-word;
-    white-space: break-spaces !important;
-}
-.select2-selection__arrow{
-    position: absolute;
-    right: 0.938rem !important;
-    top: 0;
-}
 .motivoPdf{
     display: none;
     width: 35rem;
@@ -79,18 +34,7 @@
     
 }
 
-tbody tr td{
-    max-width: 13rem; 
-    word-break: break-all;
-    min-height: fit-content;
-}
 
-thead {
-    font-size: medium;
-}
-tbody{
-    font-size: small;
-}
 
 .footer{
     font-size: smaller;
@@ -103,7 +47,3 @@ tbody{
     border: none;
 }
 
-.traslados-control{
-    border: none;
-    background: none;
-}

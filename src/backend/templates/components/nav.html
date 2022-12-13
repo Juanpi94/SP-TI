@@ -1,232 +1,192 @@
-{% load static %} {% block head %}
-<link rel="stylesheet" href="{% static 'dist/css/components/nav.css'%}" />
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'dist/css/components/nav.css' %}" />
 {% endblock head %}
-<nav
-	id="dashboard_navbar"
-	class="d-flex flex-column flex-shrink-0 p-3 text-dark sidenav"
->
-	<div class="d-flex nav-header">
-		<a
-			href="/"
-			class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none logo"
-		>
-			<span class="fs-4 text-light">ATIC</span>
-		</a>
-
-		<button class="toggle-btn">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="30"
-				height="30"
-				fill="#ededed"
-				class="bi bi-list"
-				viewBox="0 0 16 16"
-			>
-				<path
-					fill-rule="evenodd"
-					d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
-				/>
-			</svg>
-		</button>
-	</div>
-
-	<hr />
-	<ul class="nav nav-pills flex-column mb-auto">
-		{% comment %} ACTIVOS DROPDOWN {% endcomment %}
-		<li class="nav-item dropend dropdown">
-			<a
-				class="nav-link dropdown-toggle"
-				href="#"
-				id="activos-dropdown"
-				role="button"
-				data-bs-toggle="dropdown"
-				aria-expanded="false"
-			>
-				Activos
-			</a>
-			<ul
-				class="dropdown-menu dropdown-menu-light"
-				aria-labelledby="activos-dropdown"
-			>
-				<li>
-					<a class="dropdown-item" href="{%url 'plaqueados'%}">Plaqueados</a>
-				</li>
-
-				<li>
-					<a class="dropdown-item" href="{%url 'no_plaqueados'%}"
-						>No Plaqueados</a
-					>
-				</li>
-
-				<li>
-					<a class="dropdown-item" href="{%url 'tipo'%}">Tipo</a>
-				</li>
-			</ul>
-		</li>
-		{% comment %} REPORTES DROPDOWN {% endcomment %}
-		<li class="nav-item dropend dropdown">
-			<a
-				class="nav-link dropdown-toggle"
-				href="#"
-				id="reportes-dropdown"
-				role="button"
-				data-bs-toggle="dropdown"
-				aria-expanded="false"
-			>
-				Reportes
-			</a>
-			<ul
-				class="dropdown-menu dropdown-menu-light"
-				aria-labelledby="reportes-dropdown"
-			>
-				<li>
-					<a class="dropdown-item" href="{%url 'tramites'%}">Trámites</a>
-				</li>
-			</ul>
-		</li>
-		{% comment %} ADMINISTRACION DROPDOWN {% endcomment %}
-		<li class="nav-item dropend dropdown">
-			<a
-				class="nav-link dropdown-toggle"
-				href="#"
-				id="reportes-dropdown"
-				role="button"
-				data-bs-toggle="dropdown"
-				aria-expanded="false"
-			>
-				Administración
-			</a>
-			<ul
-				class="dropdown-menu dropdown-menu-light"
-				aria-labelledby="reportes-dropdown"
-			>
-				<li>
-					<a class="dropdown-item" href="{%url 'funcionarios'%}"
-						>Funcionarios</a
-					>
-				</li>
-				<li>
-					<a class="dropdown-item" href="{%url 'ubicaciones'%}">Ubicaciones</a>
-				</li>
-			</ul>
-		</li>
-		{% comment %} GENERAR DROPDOWN {% endcomment %}
-		<li class="nav-item dropend dropdown">
-			<a
-				class="nav-link dropdown-toggle"
-				href="#"
-				id="generar-dropdown"
-				role="button"
-				data-bs-toggle="dropdown"
-				aria-expanded="false"
-			>
-				Generar
-			</a>
-			<ul
-				class="dropdown-menu dropdown-menu-light mr-auto"
-				aria-labelledby="generar-dropdown"
-			>
-				<li>
-					<a class="dropdown-item" href="{% url 'generar-traslados'%}"
-						>Generar traslado</a
-					>
-				</li>
-			</ul>
-		</li>
-		{% comment %} IMPORTAR DROPDOWN {% endcomment %}
-		<li class="nav-item dropend dropdown">
-			<a
-				class="nav-link dropdown-toggle"
-				href="#"
-				id="generar-dropdown"
-				role="button"
-				data-bs-toggle="dropdown"
-				aria-expanded="false"
-			>
-				Importar
-			</a>
-			<ul
-				class="dropdown-menu dropdown-menu-light mr-auto"
-				aria-labelledby="generar-dropdown"
-			>
-				<li>
-					<a class="dropdown-item" href="{% url 'importar-activos'%}"
-						>Importar activos plaqueados</a
-					>
-				</li>
-				<li>
-					<a class="dropdown-item" href="{% url 'importar-no-plaqueados'%}"
-						>Importar activos no plaqueados</a
-					>
-				</li>
-			</ul>
-		</li>
-
-		{% comment %} ----------------------- {% endcomment %}
-	</ul>
-
-	<div class="flex mb-4 flex-column mb-4 ms-2">
-		<div class="d-flex gap-2 align-items-center mb-3">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="30"
-				height="30"
-				fill="#d7d7d7"
-				class="bi bi-person-circle"
-				viewBox="0 0 16 16"
-			>
-				<path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-				<path
-					fill-rule="evenodd"
-					d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
-				/>
-			</svg>
-
-			<a href="{% url 'perfil' %}" class="bottomNavItem">Perfil</a>
-		</div>
-		{% if request.user.is_staff%}
-		<div class="d-flex gap-2 align-items-center mb-3">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="30"
-				height="30"
-				fill="#d7d7d7"
-				class="bi bi-gear"
-				viewBox="0 0 16 16"
-			>
-				<path
-					d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"
-				/>
-				<path
-					d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"
-				/>
-			</svg>
-			<a href="{% url 'admin:index' %}" class="bottomNavItem">Admin</a>
-		</div>
-
-		{% endif %}
-		<div class="d-flex gap-2 align-items-center">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="30"
-				height="30"
-				fill="#d7d7d7"
-				class="bi bi-box-arrow-left"
-				viewBox="0 0 16 16"
-			>
-				<path
-					fill-rule="evenodd"
-					d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z"
-				/>
-				<path
-					fill-rule="evenodd"
-					d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"
-				/>
-			</svg>
-
-			<a href="{% url 'logout'%}" class="bottomNavItem">Logout</a>
-		</div>
-	</div>
-</nav>
-
-<script src="{% static 'dist/js/nav.js'%}" defer></script>
+<nav id="dashboard_navbar"
+     class="d-flex flex-column flex-shrink-0 p-3 text-dark sidenav">
+    <div class="d-flex nav-header">
+        <a href="/"
+           class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none logo">
+            <span class="fs-4 text-light">ATIC</span>
+        </a>
+        <button class="toggle-btn">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 width="30"
+                 height="30"
+                 fill="#ededed"
+                 class="bi bi-list"
+                 viewBox="0 0 16 16">
+                <path
+                fill-rule="evenodd"
+                d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
+                />
+            </svg>
+        </button>
+    </div>
+    <hr />
+    <ul class="nav nav-pills flex-column mb-auto">
+        {% comment %} ACTIVOS DROPDOWN {% endcomment %}
+        <li class="nav-item dropend dropdown">
+            <a class="nav-link dropdown-toggle"
+               href="#"
+               id="activos-dropdown"
+               role="button"
+               data-bs-toggle="dropdown"
+               aria-expanded="false">
+                Activos
+            </a>
+            <ul class="dropdown-menu dropdown-menu-light"
+                aria-labelledby="activos-dropdown">
+                <li>
+                    <a class="dropdown-item" href="{% url 'plaqueados' %}">Plaqueados</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{% url 'no_plaqueados' %}">No Plaqueados</a
+                        >
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{% url 'tipo' %}">Tipo</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{% url 'subtipo' %}">Subtipo</a>
+                    </li>
+                </ul>
+            </li>
+            {% comment %} REPORTES DROPDOWN {% endcomment %}
+            <li class="nav-item dropend dropdown">
+                <a class="nav-link dropdown-toggle"
+                   href="#"
+                   id="reportes-dropdown"
+                   role="button"
+                   data-bs-toggle="dropdown"
+                   aria-expanded="false">
+                    Reportes
+                </a>
+                <ul class="dropdown-menu dropdown-menu-light"
+                    aria-labelledby="reportes-dropdown">
+                    <li>
+                        <a class="dropdown-item" href="{% url 'tramites' %}">Trámites</a>
+                    </li>
+                </ul>
+            </li>
+            {% comment %} ADMINISTRACION DROPDOWN {% endcomment %}
+            <li class="nav-item dropend dropdown">
+                <a class="nav-link dropdown-toggle"
+                   href="#"
+                   id="reportes-dropdown"
+                   role="button"
+                   data-bs-toggle="dropdown"
+                   aria-expanded="false">
+                    Administración
+                </a>
+                <ul class="dropdown-menu dropdown-menu-light"
+                    aria-labelledby="reportes-dropdown">
+                    <li>
+                        <a class="dropdown-item" href="{% url 'funcionarios' %}">Funcionarios</a
+                            >
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'ubicaciones' %}">Ubicaciones</a>
+                        </li>
+                    </ul>
+                </li>
+                {% comment %} GENERAR DROPDOWN {% endcomment %}
+                <li class="nav-item dropend dropdown">
+                    <a class="nav-link dropdown-toggle"
+                       href="#"
+                       id="generar-dropdown"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Generar
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-light mr-auto"
+                        aria-labelledby="generar-dropdown">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'generar-traslados' %}">Generar traslado</a
+                                >
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'deshecho' %}">Generar deshecho</a>
+                            </li>
+                        </ul>
+                    </li>
+                    {% comment %} IMPORTAR DROPDOWN {% endcomment %}
+                    <li class="nav-item dropend dropdown">
+                        <a class="nav-link dropdown-toggle"
+                           href="#"
+                           id="generar-dropdown"
+                           role="button"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Importar
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-light mr-auto"
+                            aria-labelledby="generar-dropdown">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'importar-activos' %}">Importar activos plaqueados</a
+                                    >
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'importar-no-plaqueados' %}">Importar activos no plaqueados</a
+                                        >
+                                    </li>
+                                </ul>
+                            </li>
+                            {% comment %} ----------------------- {% endcomment %}
+                        </ul>
+                        <div class="flex mb-4 flex-column mb-4 ms-2">
+                            <div class="d-flex gap-2 align-items-center mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="30"
+                                     height="30"
+                                     fill="#d7d7d7"
+                                     class="bi bi-person-circle"
+                                     viewBox="0 0 16 16">
+                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                                    <path
+                                    fill-rule="evenodd"
+                                    d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+                                    />
+                                </svg>
+                                <a href="{% url 'perfil' %}" class="bottomNavItem">Perfil</a>
+                            </div>
+                            {% if request.user.is_staff %}
+                                <div class="d-flex gap-2 align-items-center mb-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         width="30"
+                                         height="30"
+                                         fill="#d7d7d7"
+                                         class="bi bi-gear"
+                                         viewBox="0 0 16 16">
+                                        <path
+                                        d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"
+                                        />
+                                        <path
+                                        d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"
+                                        />
+                                    </svg>
+                                    <a href="{% url 'admin:index' %}" class="bottomNavItem">Admin</a>
+                                </div>
+                            {% endif %}
+                            <div class="d-flex gap-2 align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="30"
+                                     height="30"
+                                     fill="#d7d7d7"
+                                     class="bi bi-box-arrow-left"
+                                     viewBox="0 0 16 16">
+                                    <path
+                                    fill-rule="evenodd"
+                                    d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z"
+                                    />
+                                    <path
+                                    fill-rule="evenodd"
+                                    d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"
+                                    />
+                                </svg>
+                                <a href="{% url 'logout' %}" class="bottomNavItem">Logout</a>
+                            </div>
+                        </div>
+                    </nav>
+                    <script src="{% static 'dist/js/nav.js'%}" defer></script>

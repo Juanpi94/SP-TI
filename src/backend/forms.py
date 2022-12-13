@@ -2,17 +2,30 @@
 from django.forms import ModelForm, DateField, Select, SelectDateWidget, TextInput, Textarea
 from django import forms
 
-from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Funcionarios, Tramites, Ubicaciones, Tipo
+from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Compra, Funcionarios, Tramites, Ubicaciones, Tipo, Subtipo
 from backend.widgets import DatePickerInput
 from django.contrib.auth.models import User
 
 
 class PlaqueadosForm(ModelForm):
     garantia = DateField(required=False, widget=DatePickerInput)
+    fecha = garantia = DateField(required=False, widget=DatePickerInput)
+
     ubicacion = forms.ModelChoiceField(
         queryset=Ubicaciones.objects.all(), required=False, to_field_name="nombre")
+
     detalle = forms.CharField(widget=Textarea(
         attrs={"class": "plaqueadosTextarea"}), label="Detalle")
+
+    observacion = forms.CharField(widget=Textarea(
+        attrs={"class": "plaqueadosTextarea"}), label="Observacion", required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(PlaqueadosForm, self).__init__(*args, **kwargs)
+        print(*args)
+        self.fields['tipo'].required = False
+        self.fields['subtipo'].required = False
+        self.fields['serie'].required = False
 
     class Meta:
         model = Activos_Plaqueados
@@ -70,8 +83,15 @@ class TramitesExportForm(forms.Form):
         attrs={"class": "textarea"}), label="Motivo o Observaciones")
     placa = forms.ModelChoiceField(queryset=Activos_Plaqueados.objects.all(
     ), empty_label="--placa", label="Placa:", to_field_name="id", widget=Select(attrs=attrs_col))
-    serie = SerieChoiceField(queryset=Activos_Plaqueados.objects.exclude(
-        serie__isnull=True), empty_label="--serie", label="Serie:", to_field_name="id", widget=Select(attrs=attrs_col))
+    serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(
+    ), empty_label="--serie", label="Serie:", to_field_name="id", widget=Select(attrs=attrs_col))
+
+
+class DeshechoExportForm(forms.Form):
+    placa = forms.ModelChoiceField(queryset=Activos_Plaqueados.objects.all(
+    ), empty_label="--placa", label="Placa:", to_field_name="id", widget=Select(attrs=attrs_col))
+    serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(
+    ), empty_label="--serie", label="Serie:", to_field_name="id", widget=Select(attrs=attrs_col))
 
 
 class FuncionariosForm(forms.ModelForm):
@@ -90,6 +110,19 @@ class UbicacionesForm(forms.ModelForm):
 
 
 class TipoForm(forms.ModelForm):
+
     class Meta:
         model = Tipo
+        exclude = ["id"]
+
+
+class SubtipoForm(forms.ModelForm):
+    class Meta:
+        model = Subtipo
+        exclude = ["id"]
+
+
+class CompraForm(forms.ModelForm):
+    class Meta:
+        model = Compra
         exclude = ["id"]

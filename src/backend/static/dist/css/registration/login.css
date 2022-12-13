@@ -24,7 +24,7 @@ body {
 .form_side {
   height: 100vh;
   background-color: #005da4;
-  animation: fade-in .9s ease-in-out both;
+  animation: .9s ease-in-out both fade-in;
 }
 
 @keyframes fade-in {

@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from django.contrib.auth.decorators import login_required
 from backend import views
 from backend import api_views
-from backend.api_views import FuncionariosApiViewset, NoPlaqueadosApiViewSet, PlaqueadosApiViewset, TipoApiViewset, TramitesApiViewset, TrasladosApiViewset, UbicacionesApiViewset
+from backend.api_views import DeshechoApiViewset, FuncionariosApiViewset, NoPlaqueadosApiViewSet, PlaqueadosApiViewset, SubtipoApiViewSet, TipoApiViewset, TramitesApiViewset, TrasladosApiViewset, UbicacionesApiViewset
 
 
 def protected(view): return login_required(view, "/login")
@@ -26,6 +26,8 @@ urlpatterns = [
     path("ubicaciones/", views.Ubicaciones_View.as_view(), name="ubicaciones"),
     path("perfil/", views.Perfil_View.as_view(), name="perfil"),
     path("tipo/", views.Tipo_View.as_view(), name="tipo"),
+    path("subtipo/", views.Subtipo_View.as_view(), name="subtipo"),
+    path("desecho/", views.Deshecho_View.as_view(), name="deshecho"),
     path("", include("django.contrib.auth.urls")),
 
 ]
@@ -33,6 +35,7 @@ urlpatterns = [
 
 # api urls
 router = DefaultRouter()
+
 
 router.register(r"plaqueados", PlaqueadosApiViewset, basename="plaqueados")
 router.register(r"tramites", TramitesApiViewset, basename="tramites")
@@ -45,7 +48,8 @@ router.register(r"funcionarios", FuncionariosApiViewset,
 router.register(r"ubicaciones", UbicacionesApiViewset, "ubicaciones")
 
 router.register(r"tipo", TipoApiViewset, "tipo")
-
+router.register(r"subtipos", SubtipoApiViewSet, "subtipo")
+router.register(r"deshecho", DeshechoApiViewset, "deshecho")
 apiurlpatterns = [
     path('', include(router.urls)),
     path("importar/activos", api_views.ImportarActivosApiView.as_view(),

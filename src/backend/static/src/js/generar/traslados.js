@@ -1,64 +1,62 @@
-import { getCsrf, Fetcher, Warning, Success, Err } from "./utils";
-import html2pdf from "html2pdf.js";
+import { getCsrf, Warning, Success, Err, toPdf, axiosInstance } from "../utils";
+
 import Swal from "sweetalert2";
 // Se obtiene el cross-site request forgery token
-const csrfToken = getCsrf();
 
-// Se inicializan los fetchers para cada ruta api
-const fetcher = new Fetcher(csrfToken).getFetcher();
+const table = $("#activos-table").DataTable();
+// // Se inicializa la tabla de activos
+// const table = $("#activos-table").DataTable({
+// 	dom: "t",
+// 	pageLength: 100,
+// 	language: {
+// 		emptyTable: "Aún no hay datos para esta tabla",
+// 	},
+// 	rowId: "id",
+// 	columns: [
+// 		{ data: "id", render: idRenderer, sortable: false },
+// 		{ data: "placa", title: "Placa" },
+// 		{ data: "marca", title: "Marca" },
+// 		{ data: "modelo", title: "Modelo" },
+// 		{ data: "serie", title: "Serie" },
+// 		{ data: "ubicacion", title: "Ubicación Actual" },
+// 		{ data: "destino", title: "Destino", render: destinoRender },
+// 		{
+// 			data: null,
+// 			title: "controles",
+// 			render: controlesRender,
+// 			name: "controles",
+// 		},
+// 	],
+// });
 
-// Se inicializa la tabla de activos
-const table = $("#activos-table").DataTable({
-	dom: "t",
-	language: {
-		emptyTable: "Aún no hay datos para esta tabla",
-	},
-	rowId: "id",
-	columns: [
-		{ data: "id", render: idRenderer, sortable: false },
-		{ data: "placa", title: "Placa" },
-		{ data: "marca", title: "Marca" },
-		{ data: "modelo", title: "Modelo" },
-		{ data: "serie", title: "Serie" },
-		{ data: "ubicacion", title: "Ubicación Actual" },
-		{ data: "destino", title: "Destino", render: destinoRender },
-		{
-			data: null,
-			title: "controles",
-			render: controlesRender,
-			name: "controles",
-		},
-	],
-});
+// // Se inicializa los select2
+// $("select").select2({
+// 	language: {
+// 		noResults: () => "No hay resultados para esta busqueda",
+// 	},
+// 	theme: "default",
+// });
 
-// Se inicializa los select2
-$("select").select2({
-	language: {
-		noResults: () => "No hay resultados para esta busqueda",
-	},
-	theme: "default",
-});
+// $(".select2-container").addClass("col");
 
-$(".select2-container").addClass("col");
+// function idRenderer(id) {
+// 	return `<input name="id-input" type='hidden' value="${id}"/>`;
+// }
+// function controlesRender() {
+// 	return "<button data-action='delete-row' class='traslados-control' title='control'> <i data-feather='x-circle'></i></button>";
+// }
 
-function idRenderer(id) {
-	return `<input name="id-input" type='hidden' value="${id}"/>`;
-}
-function controlesRender() {
-	return "<button data-action='delete-row' class='traslados-control' title='control'> <i data-feather='x-circle'></i></button>";
-}
+// function destinoRender() {
+// 	return destinoSelect;
+// }
 
-function destinoRender() {
-	return destinoSelect;
-}
+// table.on("draw.dt", () => {
+// 	$("[data-action=delete-row]").on("click", deleteRowHandler);
+// 	$(".destino-select").removeAttr("id");
+// 	$(".destino-select").select2();
 
-table.on("draw.dt", () => {
-	$("[data-action=delete-row]").on("click", deleteRowHandler);
-	$(".destino-select").removeAttr("id");
-	$(".destino-select").select2();
-
-	feather.replace();
-});
+// 	feather.replace();
+// });
 const spacingElement1 = $("[data-spacing=1]");
 const spacingElement2 = $("[data-spacing=2]");
 
@@ -100,79 +98,67 @@ $("[data-action=pdf]").on("click", () => {
 	motivoPdf.text(text);
 	motivoPdf.height(finalHeight);
 	motivoPdf.show();
-	const opts = {
-		html2canvas: { scale: 3 },
-		jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-	};
-	const worker = html2pdf()
-		.set(opts)
-		.from($(".pdf-container")[0])
-		.save(`Traslado-${new Date().toISOString()}.pdf`);
+	// const opts = {
+	// 	html2canvas: { scale: 3 },
+	// 	margin: [40, 0, 22, 0],
+	// 	jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+	// 	pagebreak: {
+	// 		avoid: "tr",
+	// 		mode: ["avoid-all", "css", "legacy"],
+	// 	},
+	// };
+
+	const worker = toPdf(
+		$(".pdf-container")[0],
+		`Traslado-${new Date().toISOString()}.pdf`
+	);
 	worker.then(() => {
 		$(".pdf-container").toggleClass("export");
 		table.column("controles:name").visible(true);
 		motivoPdf.text("");
 		motivoPdf.hide();
 		motivoTextArea.show();
-		console.log(pdf);
 	});
 });
 
-$("[data-action=add_placa]").on("click", async () => {
-	const id = $("#id_placa").select2("data")[0].id;
-	console.log(table.rows().data().toArray());
-	const repeated = table
-		.rows()
-		.data()
-		.toArray()
-		.some((activo) => {
-			return activo.id == id;
-		});
+// $("[data-action=add_placa]").on("click", async () => {
+// 	const id = $("#id_placa").select2("data")[0].id;
 
-	if (repeated) {
-		Err.fire("Este activo ya se agrego una vez");
-		return;
-	}
+// 	const repeated = table
+// 		.rows()
+// 		.data()
+// 		.toArray()
+// 		.some((activo) => {
+// 			return activo.id == id;
+// 		});
 
-	const response = await fetcher(plaqueadosView + id);
-	const data = await response.json();
-	if (data.tramite) {
-		const confirmacion = await Swal.fire({
-			title:
-				"Este activo ya tiene un tramite en curso, ¿añadir de todas formas?",
-			showCancelButton: true,
-			confirmButtonText: "Añadir",
-			cancelButtonText: `Cancelar`,
-		});
-		if (!confirmacion.isConfirmed) return;
-	}
-	table.row.add(data).draw();
-});
+// 	if (repeated) {
+// 		Err.fire("Este activo ya se agrego una vez");
+// 		return;
+// 	}
 
-$("[data-action=add_serie]").on("click", async () => {
-	const id = $("#id_serie").select2("data")[0].id;
-	const response = await fetcher(plaqueadosView + id);
-	const data = await response.json();
-
-	if (data.tramite) {
-		const confirmacion = await Swal.fire({
-			title:
-				"Este activo ya tiene un tramite en curso, ¿añadir de todas formas?",
-			showCancelButton: true,
-			confirmButtonText: "Añadir",
-			cancelButtonText: `Cancelar`,
-		});
-		if (!confirmacion.isConfirmed) return;
-	}
-	table.row.add(data).draw();
-});
+// 	const response = await axiosInstance.get(plaqueadosView + id);
+// 	const data = response.data;
+// 	if (data.tramite) {
+// 		const confirmacion = await Swal.fire({
+// 			title:
+// 				"Este activo ya tiene un tramite en curso, ¿añadir de todas formas?",
+// 			showCancelButton: true,
+// 			confirmButtonText: "Añadir",
+// 			cancelButtonText: `Cancelar`,
+// 		});
+// 		if (!confirmacion.isConfirmed) return;
+// 	}
+// 	table.row.add(data).draw();
+// 	console.log("added");
+// });
 
 $("[data-action=load]").on("click", async () => {
 	const id = $("#id_tramite").select2("data")[0].id;
 	if (!id) return;
-	let res = await fetcher(tramitesView + id);
+	let res = await axiosInstance.get(tramitesView + id);
 
-	tramite = await res.json();
+	tramite = await res.data;
 
 	/* 
     detalles: "adsadsd"
@@ -213,13 +199,15 @@ $("[data-action=load]").on("click", async () => {
 	table.draw();
 
 	let bodyDestinos = activos.map((activo) => activo.id);
-	let responseDestinos = await fetcher(trasladosView + "get_destinos/", {
-		method: "POST",
-		body: JSON.stringify({ activos: bodyDestinos }),
-	});
+	let responseDestinos = await axiosInstance.post(
+		trasladosView + "get_destinos/",
+		{
+			activos: bodyDestinos,
+		}
+	);
 
-	let traslados = await responseDestinos.json();
-	traslados = JSON.parse(traslados);
+	let traslados = responseDestinos.data;
+
 	for (let traslado of traslados) {
 		$(`#${traslado.activo}`)
 			.find("select")
@@ -228,10 +216,6 @@ $("[data-action=load]").on("click", async () => {
 });
 
 $("[data-action=subir-traslado]").on("click", subirTrasladoHandler);
-
-function deleteRowHandler(event) {
-	table.row($(this).parents("tr")).remove().draw();
-}
 
 async function subirTrasladoHandler(event) {
 	event.preventDefault();
@@ -283,14 +267,11 @@ async function subirTrasladoHandler(event) {
 	});
 	bodyTraslados = JSON.stringify(bodyTraslados);
 
-	const tramiteResponse = await fetcher(tramitesView, {
-		body: bodyTramites,
-		method: "POST",
-	});
-	const trasladosResponse = await fetcher(trasladosView, {
-		body: bodyTraslados,
-		method: "POST",
-	});
+	const tramiteResponse = await axiosInstance.post(tramitesView, bodyTramites);
+	const trasladosResponse = await axiosInstance.post(
+		trasladosView,
+		bodyTraslados
+	);
 
 	const tramiteStatus = tramiteResponse.status;
 	if (tramiteStatus > 200 && tramiteStatus < 300) {

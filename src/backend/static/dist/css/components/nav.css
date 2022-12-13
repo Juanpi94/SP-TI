@@ -19,7 +19,7 @@
 
 .dropdown-menu {
   z-index: 2;
-  animation: dropdown-fade .2s ease-in-out both;
+  animation: .2s ease-in-out both dropdown-fade;
   background-color: #fff !important;
 }
 
