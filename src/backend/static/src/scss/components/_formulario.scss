@@ -1,0 +1,73 @@
+.header-row {
+}
+.identificador-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.identificador-srp {
+	width: 17rem;
+}
+
+.identificador-ucr {
+	width: 17rem;
+}
+
+.pdf-container {
+	max-width: 50rem;
+	background-color: white;
+	border: 0.3rem solid black;
+	overflow-x: hidden;
+}
+
+.pdf-container.export {
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+.pdf-container.export .controls {
+	display: none;
+}
+
+.select2-container {
+	max-width: fit-content !important;
+	min-width: 12rem;
+}
+.select2-selection {
+	height: fit-content !important;
+}
+.select2-selection__rendered {
+	max-width: 11rem;
+	height: fit-content;
+	text-overflow: clip !important;
+	overflow-wrap: break-word;
+	white-space: break-spaces !important;
+}
+.select2-selection__arrow {
+	position: absolute;
+	right: 0.938rem !important;
+	top: 0;
+}
+
+tbody tr td {
+	max-width: 13rem;
+	word-break: break-all;
+	min-height: fit-content;
+}
+
+thead {
+	font-size: medium;
+}
+tbody {
+	font-size: small;
+}
+
+.traslados-control {
+	border: none;
+	background: none;
+}
+
+[data-spacing] {
+	--spacing: 0rem;
+	margin-bottom: var(--spacing);
+}

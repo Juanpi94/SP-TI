@@ -3,7 +3,7 @@ from dataclasses import field
 from django.forms import SlugField
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Deshecho, Funcionarios, Subtipo, Tipo, Tramites, Traslados, Ubicaciones
+from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Compra, Deshecho, Funcionarios, Subtipo, Tipo, Tramites, Traslados, Ubicaciones
 from django.contrib.auth.models import User
 
 
@@ -129,4 +129,19 @@ class SubtipoSerializer(ModelSerializer):
 
     class Meta:
         model = Subtipo
+        fields = "__all__"
+
+
+class CompraSerializer(ModelSerializer):
+
+    class Meta:
+        model = Compra
+        fields = "__all__"
+
+
+class UserSerializer(ModelSerializer):
+    nombre = serializers.CharField(source="first_name")
+
+    class Meta:
+        model = User
         fields = "__all__"

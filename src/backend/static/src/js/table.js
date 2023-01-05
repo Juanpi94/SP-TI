@@ -324,7 +324,7 @@ function format(data) {
 	console.log(columns, "colums");
 	for (item in data) {
 		rows.push(
-			`<tr class="detail-row"><td  style="width: 1px;">${item}</td> <td>${data[item]}</td></tr>`
+			`<tr class="detail-row"><td class="detail-title">${item}</td> <td class="detail-data">${data[item]}</td></tr>`
 		);
 	}
 

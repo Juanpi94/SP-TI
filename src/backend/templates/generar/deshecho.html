@@ -4,14 +4,12 @@
 {% block title %}
     Desecho
 {% endblock title %}
-{% block head %}
-    <link rel="stylesheet" href="{% static 'dist/css/generar/deshecho.css' %}" />
-{% endblock head %}
 {% block body %}
     {% csrf_token %}
     {% include "components/pdfHeader.html" %}
     <div class="container w-50 my-4">
         <div class="row header-controls justify-content-center flex-column align-items-center gap-4">
+            {{ form.deshechos }}
             <button class="btn btn-secondary col-2" data-action="load">Cargar deshecho</button>
             <button class="btn btn-primary col-2" data-action="pdf">Guardar pdf</button>
         </div>
@@ -44,9 +42,14 @@
                     {{ form.serie }}
                     <button data-action="add_serie" class="btn btn-primary col-2 fs-6">Añadir serie</button>
                 </div>
-                <div class="table-wrapper mt-4">
+                <div class="table-wrapper mt-4" data-spacing="table">
                     <table id="activos-table" class="table table-striped table-responsive mb-5">
                     </table>
+                </div>
+
+                <div class="row justify-content-center controls gap-2">
+                    <button data-action="add" data-target="table" class="col-2 h-fit btn btn-primary">Añadir espacio</button>
+                    <button data-action="substract" data-target="table" class="col-2 h-fit btn btn-secondary">Reducir espacio</button>
                 </div>
                 <div class="pdf-notes">
                     <p class="note">
@@ -58,7 +61,7 @@
                         <li class="condicion">Rendimiento de los equipos no satisface las necesidades de la comunidad universitaria.</li>
                     </ol>
                     <p class="fw-bold">Se recomienda: DESHECHAR</p>
-                    <div class="row">
+                    <div class="row" data-spacing="1">
                         <div class="col d-flex flex-column text-center">
                             <p class="m-0">José Alexander Vargas Campos</p>
                             <p class="m-0">Revisión          Técnica</p>
@@ -67,6 +70,11 @@
                             <p class="m-0">Julio Rayo Arce</p>
                             <p class="m-0">VB Encargado Área TI.</p>
                         </div>
+                    </div>
+
+                    <div class="row justify-content-center controls gap-2">
+                        <button data-action="add" data-target="1" class="col-2 h-fit btn btn-primary">Añadir espacio</button>
+                        <button data-action="substract" data-target="1" class="col-2 h-fit btn btn-secondary">Reducir espacio</button>
                     </div>
                 </div>
             </div>

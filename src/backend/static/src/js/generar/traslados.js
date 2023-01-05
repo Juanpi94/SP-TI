@@ -57,33 +57,8 @@ const table = $("#activos-table").DataTable();
 
 // 	feather.replace();
 // });
-const spacingElement1 = $("[data-spacing=1]");
-const spacingElement2 = $("[data-spacing=2]");
 
-//Action listeners para los botones de margen
-$("[data-action=add-1]").on("click", () => {
-	const spacing = parseFloat(spacingElement1.css("--spacing"));
-	const newSpacing = spacing + 2;
-	spacingElement1.css("--spacing", newSpacing + "rem");
-});
 
-$("[data-action=substract-1]").on("click", () => {
-	const spacing = parseFloat(spacingElement1.css("--spacing"));
-	const newSpacing = Math.max(0, spacing - 2);
-	spacingElement1.css("--spacing", newSpacing + "rem");
-});
-
-$("[data-action=add-2]").on("click", () => {
-	const spacing = parseFloat(spacingElement2.css("--spacing"));
-	const newSpacing = spacing + 2;
-	spacingElement2.css("--spacing", newSpacing + "rem");
-});
-
-$("[data-action=substract-2]").on("click", () => {
-	const spacing = parseFloat(spacingElement2.css("--spacing"));
-	const newSpacing = Math.max(0, spacing - 2);
-	spacingElement2.css("--spacing", newSpacing + "rem");
-});
 
 $("[data-action=pdf]").on("click", () => {
 	$(".pdf-container").toggleClass("export");

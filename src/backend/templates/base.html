@@ -24,8 +24,12 @@
                 ATIC
             {% endblock title %}
         </title>
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/main.css' %}" />
-        <link rel="stylesheet" href="{% static "dist/css/base.css" %}" />
+        <link rel="stylesheet"
+              type="text/css"
+              href="https://cdn.datatables.net/v/bs5/dt-1.11.5/b-2.2.2/datatables.min.css"/>
+        <link rel="stylesheet"
+              type="text/css"
+              href="{% static 'dist/scss/main.css' %}"/>
         {% block head %}
         {% endblock head %}
     </head>

@@ -12512,7 +12512,7 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
   box-sizing: border-box;
   pointer-events: all;
   background: #fff;
-  grid-template-columns: min-content auto min-content;
+  grid-template-columns: 1fr 99fr 1fr;
   padding: 1em;
   overflow-y: hidden;
   box-shadow: 0 0 1px #00000013, 0 1px 2px #00000013, 1px 2px 4px #00000013, 1px 3px 8px #00000013, 2px 4px 16px #00000013;
@@ -12560,7 +12560,6 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
 }
 
 .swal2-popup.swal2-toast .swal2-html-container {
-  overflow: initial;
   text-align: initial;
   margin: .5em 1em;
   padding: 0;
@@ -13019,8 +13018,8 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
 .swal2-input, .swal2-file, .swal2-textarea {
   box-sizing: border-box;
   width: auto;
+  background: inherit;
   color: inherit;
-  background: none;
   border: 1px solid #d9d9d9;
   border-radius: .1875em;
   font-size: 1.125em;
@@ -13073,7 +13072,7 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
 
 .swal2-file {
   width: 75%;
-  background: none;
+  background: inherit;
   margin-left: auto;
   margin-right: auto;
   font-size: 1.125em;
@@ -13087,8 +13086,8 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
 .swal2-select {
   min-width: 50%;
   max-width: 100%;
+  background: inherit;
   color: inherit;
-  background: none;
   padding: .375em .625em;
   font-size: 1.125em;
 }
@@ -13330,7 +13329,7 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
 
 .swal2-progress-steps {
   max-width: 100%;
-  background: none;
+  background: inherit;
   flex-wrap: wrap;
   align-items: center;
   margin: 1.25em auto;

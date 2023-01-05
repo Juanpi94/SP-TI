@@ -23,19 +23,19 @@ class Subtipo(models.Model):
 
 
 class Activo(models.Model):
-    detalle = models.CharField(max_length=300)
+    observacion = models.CharField(max_length=300)
+    nombre = models.CharField(max_length=120)
     marca = models.CharField(max_length=200)
-    serie = models.CharField(max_length=200, null=True)
     valor = models.CharField(max_length=200, null=True)
     modelo = models.CharField(max_length=200)
+    serie = models.CharField(max_length=200, null=True)
     garantia = models.DateField(null=True)
-    fecha = models.DateField(null=True)
-    observacion = models.CharField(max_length=300, default="", null=True)
+    fecha_ingreso = models.DateField(null=True)
     ubicacion = models.ForeignKey(
         to="Ubicaciones", on_delete=models.DO_NOTHING, null=True)
     tramite = models.ForeignKey(
         to="Tramites", on_delete=models.SET_NULL, null=True)
-    nombre = models.CharField(max_length=120)
+
     tipo = models.OneToOneField(Tipo, on_delete=models.SET_NULL, null=True)
     subtipo = models.OneToOneField(
         Subtipo, on_delete=models.SET_NULL, null=True)
@@ -52,9 +52,6 @@ class Activos_Plaqueados(Activo):
 
 
 class Activos_No_Plaqueados(Activo):
-    tramite = models.ForeignKey(
-        to="Tramites", on_delete=models.SET_NULL, null=True, related_name="activos_sin_placa")
-
     def __str__(self) -> str:
         return self.serie
 
@@ -102,13 +99,13 @@ class Funcionarios(models.Model):
 
 
 class Ubicaciones(models.Model):
-    class SedeChoices(models.TextChoices):
+    class InstalacionChoices(models.TextChoices):
         ESPARZA = "Esparza", _("Sede de Esparza")
         COCAL = "Cocal", _("Sede del Cocal")
-    localizacion = models.CharField(max_length=120, default="NA")
+    ubicacion = models.CharField(max_length=120, default="NA")
     nombre = models.CharField(max_length=120, unique=True)
-    sede = models.CharField(
-        max_length=10, choices=SedeChoices.choices, default=SedeChoices.ESPARZA)
+    instalacion = models.CharField(
+        max_length=10, choices=InstalacionChoices.choices, default=InstalacionChoices.ESPARZA)
     custodio = models.ForeignKey(to=Funcionarios, on_delete=models.DO_NOTHING)
 
     def __str__(self):
@@ -152,8 +149,12 @@ class Deshecho(models.Model):
     activos_no_plaqueados = models.ManyToManyField(
         Activos_No_Plaqueados)
 
+    def __str__(self):
+        return self.referencia
+
 
 class Compra(models.Model):
+    numero_orden_compra = models.CharField(max_length=15, primary_key=True)
     numero_solicitud = models.CharField(max_length=150)
     origen_presupuesto = models.CharField(max_length=200)
     decisión_final = models.CharField(max_length=100)

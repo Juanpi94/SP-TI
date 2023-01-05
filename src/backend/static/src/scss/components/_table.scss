@@ -1,0 +1,57 @@
+.btn-add {
+	--btn-color: #1976d2;
+	background-color: var(--btn-color) !important;
+	border-color: var(--btn-color);
+	color: white;
+}
+.btn-export-visibles {
+	--btn-color: #388e3c;
+	background-color: var(--btn-color) !important;
+	border-color: var(--btn-color);
+	color: white;
+}
+
+.btn-export-all {
+	--btn-color: #fbc02d;
+	background-color: var(--btn-color) !important;
+	border-color: var(--btn-color);
+	color: white;
+}
+
+.btn:hover {
+	color: white;
+	background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+}
+
+.odd {
+}
+
+.even {
+}
+
+td {
+	font-size: 0.9rem;
+	border-right: 1px solid rgb(139, 139, 139);
+}
+
+.detail-table {
+	padding-left: 50px;
+	width: 100%;
+	table-layout: auto;
+
+	tbody {
+		width: fit-content;
+	}
+}
+
+.detail-row {
+	width: fit-content;
+	.detail-title {
+		width: 1px;
+	}
+	.detail-data {
+		word-wrap: break-word;
+		word-break: break-all;
+		white-space: break-spaces;
+	}
+}

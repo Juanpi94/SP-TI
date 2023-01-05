@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from django.contrib.auth.decorators import login_required
 from backend import views
 from backend import api_views
-from backend.api_views import DeshechoApiViewset, FuncionariosApiViewset, NoPlaqueadosApiViewSet, PlaqueadosApiViewset, SubtipoApiViewSet, TipoApiViewset, TramitesApiViewset, TrasladosApiViewset, UbicacionesApiViewset
+from backend.api_views import CompraApiViewset, DeshechoApiViewset, FuncionariosApiViewset, NoPlaqueadosApiViewSet, PlaqueadosApiViewset, SubtipoApiViewSet, TipoApiViewset, TramitesApiViewset, TrasladosApiViewset, UbicacionesApiViewset, UserApiViewset
 
 
 def protected(view): return login_required(view, "/login")
@@ -28,6 +28,8 @@ urlpatterns = [
     path("tipo/", views.Tipo_View.as_view(), name="tipo"),
     path("subtipo/", views.Subtipo_View.as_view(), name="subtipo"),
     path("desecho/", views.Deshecho_View.as_view(), name="deshecho"),
+    path("compra/", views.Compra_View.as_view(), name="compra"),
+    path("users/", views.Users_View.as_view(), name="users"),
     path("", include("django.contrib.auth.urls")),
 
 ]
@@ -50,6 +52,10 @@ router.register(r"ubicaciones", UbicacionesApiViewset, "ubicaciones")
 router.register(r"tipo", TipoApiViewset, "tipo")
 router.register(r"subtipos", SubtipoApiViewSet, "subtipo")
 router.register(r"deshecho", DeshechoApiViewset, "deshecho")
+
+router.register(r"compra", CompraApiViewset, "compra")
+
+router.register(r"user", UserApiViewset, "user")
 apiurlpatterns = [
     path('', include(router.urls)),
     path("importar/activos", api_views.ImportarActivosApiView.as_view(),

@@ -1,0 +1,26 @@
+// Abstracts
+@import "abstracts/variables";
+@import "abstracts/mixins";
+@import "abstracts/functions";
+@import "abstracts/utils";
+
+// Vendors
+
+@import "vendors/bootstrap";
+@import "vendors/datatables";
+@import "vendors/select2";
+
+// Base
+@import "base/base";
+@import "base/typography";
+
+// Components
+@import "components/formulario";
+@import "components/table";
+@import "components/nav";
+
+// Pages
+@import "pages/deshecho";
+@import "pages/login";
+@import "pages/reportePlaqueados";
+@import "pages/traslados";

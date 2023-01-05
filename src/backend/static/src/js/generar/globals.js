@@ -118,3 +118,22 @@ $("[data-action=add_serie]").on("click", async () => {
 	}
 	table.row.add(data).draw();
 });
+
+//Action listeners para los botones de margen
+$("[data-action=add").on("click", (ev) => {
+	const target = $(ev.target).attr("data-target");
+	const element = $(`[data-spacing=${target}]`);
+	console.log(target, element);
+	const spacing = parseFloat(element.css("--spacing"));
+	const newSpacing = spacing + 2;
+	element.css("--spacing", newSpacing + "rem");
+});
+
+$("[data-action=substract]").on("click", (ev) => {
+	const target = $(ev.target).attr("data-target");
+	const element = $(`[data-spacing=${target}]`);
+
+	const spacing = parseFloat(element.css("--spacing"));
+	const newSpacing = Math.max(0, spacing - 2);
+	element.css("--spacing", newSpacing + "rem");
+});

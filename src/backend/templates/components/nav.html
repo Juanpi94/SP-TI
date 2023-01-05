@@ -1,11 +1,8 @@
 {% load static %}
-{% block head %}
-    <link rel="stylesheet" href="{% static 'dist/css/components/nav.css' %}" />
-{% endblock head %}
 <nav id="dashboard_navbar"
      class="d-flex flex-column flex-shrink-0 p-3 text-dark sidenav">
     <div class="d-flex nav-header">
-        <a href="/"
+        <a href="{% url "index" %}"
            class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none logo">
             <span class="fs-4 text-light">ATIC</span>
         </a>
@@ -50,6 +47,9 @@
                     <li>
                         <a class="dropdown-item" href="{% url 'subtipo' %}">Subtipo</a>
                     </li>
+                    <li>
+                        <a class="dropdown-item" href="{% url 'compra' %}">Compra</a>
+                    </li>
                 </ul>
             </li>
             {% comment %} REPORTES DROPDOWN {% endcomment %}
@@ -87,6 +87,9 @@
                         </li>
                         <li>
                             <a class="dropdown-item" href="{% url 'ubicaciones' %}">Ubicaciones</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'users' %}" class="dropdown-item">Usuarios</a>
                         </li>
                     </ul>
                 </li>

@@ -1,1 +1,0 @@
-{"mappings":"AAAA","sources":["static/src/css/auth/perfil.css"],"sourcesContent":[".password-form{\r\n    \r\n    width: 20rem;\r\n    gap: 1rem;\r\n}"],"names":[],"version":3,"file":"perfil.css.map","sourceRoot":"/__parcel_source_root/"}

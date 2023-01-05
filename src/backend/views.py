@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.views.generic import TemplateView, RedirectView
 from backend import models
 from backend.exceptions import ArgMissingException
-from backend.forms import DeshechoExportForm, FuncionariosForm, NoPlaqueadosForm, PlaqueadosForm, TipoForm, TramitesExportForm, TramitesForm, UbicacionesForm, SubtipoForm
+from backend.forms import CompraForm, DeshechoExportForm, FuncionariosForm, NoPlaqueadosForm, PlaqueadosForm, TipoForm, TramitesExportForm, TramitesForm, UbicacionesForm, SubtipoForm, UserForm
 
 
 class Table():
@@ -78,7 +78,8 @@ class Table_View(PermissionsMixin, TemplateView):
 class Activos_Plaqueados_View(Table_View):
 
     target_view = "plaqueados-list"
-    columns = "__all__"
+    columns = ["placa", "nombre", "marca", "modelo",
+               "serie", "valor", "garantia", "observacion"]
     exclude = ["id", "deshecho"]
     model = models.Activos_Plaqueados
     form = PlaqueadosForm
@@ -95,8 +96,9 @@ class Tramites_View(Table_View):
 
 class Activos_No_Plaqueados_View(Table_View):
     target_view = "no_plaqueados-list"
-    columns = "__all__"
-    exclude = ["id", "deshecho"]
+    columns = ["serie", "nombre", "marca",
+               "modelo", "valor", "garantia", "observacion"]
+    exclude = ["id", "deshecho", "fecha_ingreso", "tramite"]
     model = models.Activos_No_Plaqueados
     form = NoPlaqueadosForm
 
@@ -168,8 +170,23 @@ class Subtipo_View(Table_View):
     model = models.Subtipo
     form = SubtipoForm
 
+
 class Compra_View(Table_View):
-    pass
+    target_view = "compra-list"
+    columns = "__all__"
+    exclude = ["id"]
+    model = models.Compra
+    form = CompraForm
+
+
+class Users_View(Table_View):
+    target_view = "user-list"
+    columns = ["nombre", "username"]
+    exclude = ["id", "password"]
+    model = models.User
+    form = UserForm
+
+
 class Deshecho_View (PermissionsMixin, TemplateView):
     template_name = "generar/deshecho.html"
 

@@ -17,7 +17,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from backend import models
 from backend import serializers
-from backend.serializers import DeshechoSerializer, FuncionariosSerializer, NoPlaqueadosSerializer, PlaqueadosSerializer, SubtipoSerializer, TipoSerializer, TramitesCreateSerializer, TramitesSerializer, TrasladosSerializer, UbicacionesSerializer
+from backend.serializers import CompraSerializer, DeshechoSerializer, FuncionariosSerializer, NoPlaqueadosSerializer, PlaqueadosSerializer, SubtipoSerializer, TipoSerializer, TramitesCreateSerializer, TramitesSerializer, TrasladosSerializer, UbicacionesSerializer, UserSerializer
 from rest_framework.decorators import action
 import pandas as pd
 from django.db.models import Model
@@ -134,6 +134,16 @@ class SubtipoApiViewSet(ModelViewSet):
 class UbicacionesApiViewset(ModelViewSet):
     queryset = models.Ubicaciones.objects.all()
     serializer_class = UbicacionesSerializer
+
+
+class CompraApiViewset(ModelViewSet):
+    queryset = models.Compra.objects.all()
+    serializer_class = CompraSerializer
+
+
+class UserApiViewset(ModelViewSet):
+    queryset = models.User.objects.all()
+    serializer_class = UserSerializer
 
 
 class ImportarActivosApiView(APIView):

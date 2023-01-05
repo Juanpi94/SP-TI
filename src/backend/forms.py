@@ -2,23 +2,24 @@
 from django.forms import ModelForm, DateField, Select, SelectDateWidget, TextInput, Textarea
 from django import forms
 
-from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Compra, Funcionarios, Tramites, Ubicaciones, Tipo, Subtipo
+
+from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Compra, Deshecho, Funcionarios, Tramites, Ubicaciones, Tipo, Subtipo
 from backend.widgets import DatePickerInput
 from django.contrib.auth.models import User
+from phonenumber_field.formfields import PhoneNumberField
 
 
 class PlaqueadosForm(ModelForm):
     garantia = DateField(required=False, widget=DatePickerInput)
-    fecha = garantia = DateField(required=False, widget=DatePickerInput)
+    fecha_ingreso = DateField(required=False, widget=DatePickerInput)
 
     ubicacion = forms.ModelChoiceField(
         queryset=Ubicaciones.objects.all(), required=False, to_field_name="nombre")
 
-    detalle = forms.CharField(widget=Textarea(
-        attrs={"class": "plaqueadosTextarea"}), label="Detalle")
-
     observacion = forms.CharField(widget=Textarea(
         attrs={"class": "plaqueadosTextarea"}), label="Observacion", required=False)
+
+    field_order = ["placa"]
 
     def __init__(self, *args, **kwargs):
         super(PlaqueadosForm, self).__init__(*args, **kwargs)
@@ -88,6 +89,9 @@ class TramitesExportForm(forms.Form):
 
 
 class DeshechoExportForm(forms.Form):
+
+    deshechos = forms.ModelChoiceField(queryset=Deshecho.objects.all(
+    ), empty_label="--seleccione tramite a cargar", label=None, widget=Select(attrs={'class': 'col-12 tramite-select'}))
     placa = forms.ModelChoiceField(queryset=Activos_Plaqueados.objects.all(
     ), empty_label="--placa", label="Placa:", to_field_name="id", widget=Select(attrs=attrs_col))
     serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(
@@ -123,6 +127,15 @@ class SubtipoForm(forms.ModelForm):
 
 
 class CompraForm(forms.ModelForm):
+    telefono_proveedor = PhoneNumberField(region="CR")
+    correo_proveedor = forms.EmailField()
+
     class Meta:
         model = Compra
+        exclude = ["id"]
+
+
+class UserForm(ModelForm):
+    class Meta:
+        model = User
         exclude = ["id"]

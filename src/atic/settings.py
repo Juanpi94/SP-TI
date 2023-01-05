@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'constance',
     "constance.backends.database",
     'backend',
+    "phonenumber_field",
 ]
 
 MIDDLEWARE = [
@@ -153,3 +154,8 @@ CONSTANCE_CONFIG = OrderedDict({
     "NOMBRE_ATIC": ("Julio Rayo", "Nombre de encargad@ atic"),
     "CARGO_ATIC": ("Encargado ATIC", "Cargo de encargad@ atic"),
 })
+
+
+# Phone Number
+
+PHONENUMBER_DEFAULT_REGION = "CR"
