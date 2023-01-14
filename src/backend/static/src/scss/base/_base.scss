@@ -38,7 +38,7 @@ body {
 	padding-left: 0.4rem;
 }
 .main-section {
-	/* display: flex; */
+	display: flex;
 }
 
 .ms-6 {
@@ -51,4 +51,14 @@ body {
 
 .w-fit {
 	width: fit-content;
+}
+
+.wrapper {
+	flex: 1 0 auto;
+}
+
+.content {
+	min-height: 80vh;
+	min-width: 100%;
+	overflow-x: auto;
 }

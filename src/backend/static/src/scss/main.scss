@@ -3,6 +3,7 @@
 @import "abstracts/mixins";
 @import "abstracts/functions";
 @import "abstracts/utils";
+@import "abstracts/animations";
 
 // Vendors
 
@@ -17,10 +18,15 @@
 // Components
 @import "components/formulario";
 @import "components/table";
-@import "components/nav";
+@import "components/buttons";
+@import "components/report-table";
 
+// Layout
+@import "layout/topnav";
+@import "layout/sidenav";
 // Pages
 @import "pages/deshecho";
 @import "pages/login";
 @import "pages/reportePlaqueados";
 @import "pages/traslados";
+@import "pages/taller";

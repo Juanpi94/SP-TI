@@ -1,1 +1,13 @@
+@import "../../../../node_modules/datatables.net-bs4/css/dataTables.bootstrap4";
 @import "../../../../node_modules/datatables.net-bs5/css/dataTables.bootstrap5";
+
+@import "../../../../node_modules/datatables.net-buttons-dt/css/buttons.dataTables";
+
+.dataTables_filter {
+	width: fit-content;
+}
+
+#datatable_paginate {
+	width: fit-content;
+	margin-top: 1rem;
+}

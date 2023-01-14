@@ -3,9 +3,9 @@
 {% block title %}
     Import
 {% endblock title %}
-{% block body %}
+{% block content %}
     <form action="{% url 'api-importar-activos' %}"
-          method="POST"
+          method="post"
           enctype="multipart/form-data"
           class="p-4 ms-6">
         {% csrf_token %}
@@ -27,4 +27,4 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-{% endblock %}
+{% endblock content %}

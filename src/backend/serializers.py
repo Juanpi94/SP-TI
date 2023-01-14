@@ -3,7 +3,7 @@ from dataclasses import field
 from django.forms import SlugField
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Compra, Deshecho, Funcionarios, Subtipo, Tipo, Tramites, Traslados, Ubicaciones
+from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Compra, Deshecho, Funcionarios, Subtipo, Taller, Tipo, Tramites, Traslados, Ubicaciones
 from django.contrib.auth.models import User
 
 
@@ -28,13 +28,10 @@ class DualRelatedField(serializers.RelatedField):
 
 
 class PlaqueadosSerializer(ModelSerializer):
-    tramite = serializers.SlugRelatedField(
-        slug_field="referencia", queryset=Tramites.objects.all(), required=False)
+    tramites = serializers.SlugRelatedField(
+        slug_field="referencia", queryset=Tramites.objects.all(), required=False, many=True)
     ubicacion = serializers.SlugRelatedField(queryset=Ubicaciones.objects.all(
-    ), slug_field="nombre", allow_null=True)
-
-    tipo = serializers.SlugRelatedField(
-        queryset=Tipo.objects.all(), slug_field="nombre")
+    ), slug_field="ubicacion", allow_null=True)
 
     class Meta:
         model = Activos_Plaqueados
@@ -42,10 +39,10 @@ class PlaqueadosSerializer(ModelSerializer):
 
 
 class NoPlaqueadosSerializer(ModelSerializer):
-    tramite = serializers.SlugRelatedField(
-        slug_field="referencia", queryset=Tramites.objects.all(), required=False)
+    tramites = serializers.SlugRelatedField(
+        slug_field="referencia", queryset=Tramites.objects.all(), required=False, many=True)
     ubicacion = serializers.SlugRelatedField(queryset=Ubicaciones.objects.all(
-    ), slug_field="nombre", allow_null=True)
+    ), slug_field="ubicacion", allow_null=True)
 
     class Meta:
         model = Activos_No_Plaqueados
@@ -53,7 +50,15 @@ class NoPlaqueadosSerializer(ModelSerializer):
 
 
 class TramitesSerializer(ModelSerializer):
-    activos = PlaqueadosSerializer(many=True, required=False)
+    activos_plaqueados = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='placa', source="activos_plaqueados_set")
+
+    activos_no_plaqueados = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='serie', source="activos_no_plaqueados_set")
     solicitante = serializers.SlugRelatedField(
         slug_field="username", queryset=User.objects.all())
     recipiente = serializers.SlugRelatedField(
@@ -67,11 +72,13 @@ class TramitesSerializer(ModelSerializer):
 
 
 class TramitesCreateSerializer(ModelSerializer):
-    activos = PlaqueadosSerializer(many=True, required=False)
+
     recipiente = serializers.SlugRelatedField(
-        slug_field="nombre_completo", queryset=Funcionarios.objects.all())
+        slug_field="nombre_completo", queryset=Funcionarios.objects.all(), required=False)
     remitente = serializers.SlugRelatedField(
-        slug_field="nombre_completo", queryset=Funcionarios.objects.all())
+        slug_field="nombre_completo", queryset=Funcionarios.objects.all(), required=False)
+
+    traslados = serializers.ReadOnlyField()
 
     class Meta:
         model = Tramites
@@ -94,10 +101,6 @@ class UbicacionesSerializer(ModelSerializer):
 
 
 class TrasladosSerializer(ModelSerializer):
-
-    activo = serializers.PrimaryKeyRelatedField(
-        queryset=Activos_Plaqueados.objects.all())
-
     class Meta:
         model = Traslados
         fields = "__all__"
@@ -114,9 +117,18 @@ class DeshechoSerializer(ModelSerializer):
         fields = "__all__"
 
 
+class TallerSerializer(ModelSerializer):
+    activos_plaqueados = serializers.PrimaryKeyRelatedField(
+        queryset=Activos_Plaqueados.objects.all(), many=True, allow_null=True)
+    activos_no_plaqueados = serializers.PrimaryKeyRelatedField(
+        queryset=Activos_No_Plaqueados.objects.all(), many=True, allow_null=True)
+
+    class Meta:
+        model = Taller
+        fields = "__all__"
+
+
 class TipoSerializer(ModelSerializer):
-    subtipos = serializers.SlugRelatedField(
-        queryset=Subtipo.objects.all(), many=True, slug_field="nombre", source="subtipo_set")
 
     class Meta:
         model = Tipo
@@ -124,8 +136,6 @@ class TipoSerializer(ModelSerializer):
 
 
 class SubtipoSerializer(ModelSerializer):
-    tipo = serializers.SlugRelatedField(
-        slug_field="nombre", queryset=Tipo.objects.all())
 
     class Meta:
         model = Subtipo
@@ -144,4 +154,5 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = "__all__"
+
+        exclude = ["password"]

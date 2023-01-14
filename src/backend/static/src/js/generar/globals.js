@@ -1,21 +1,33 @@
-import html2pdf from "html2pdf.js";
 import Swal from "sweetalert2";
-import { axiosInstance, Err } from "../utils";
+import { axiosInstance, Err, NO_PLAQUEADO, PLAQUEADO } from "../utils";
+
 const table = $("#activos-table").DataTable({
 	dom: "t",
 	pageLength: 100,
 	language: {
 		emptyTable: "Aún no hay datos para esta tabla",
 	},
-	rowId: "id",
+	rowId: "rowId",
 	columns: [
-		{ data: "id", render: idRenderer, sortable: false },
+		{
+			data: "id",
+			render: idRenderer,
+			sortable: false,
+			searchable: false,
+			visible: false,
+		},
+		{ data: "tipo", visible: false, sortable: false, searchable: false },
 		{ data: "placa", title: "Placa" },
 		{ data: "marca", title: "Marca" },
 		{ data: "modelo", title: "Modelo" },
 		{ data: "serie", title: "Serie" },
-		{ data: "ubicacion", title: "Ubicación Actual" },
-		{ data: "destino", title: "Destino", render: destinoRender },
+		{ data: "ubicacion", title: "Ubicación Actual", name: "ubicacion" },
+		{
+			data: "destino",
+			title: "Destino",
+			render: destinoRender,
+			name: "destino",
+		},
 		{
 			data: null,
 			title: "controles",
@@ -44,6 +56,9 @@ function controlesRender() {
 }
 
 function destinoRender() {
+	if (table.column("destino:name").visible() == false) {
+		return "";
+	}
 	return destinoSelect;
 }
 
@@ -61,7 +76,7 @@ function deleteRowHandler(event) {
 
 $("[data-action=add_placa]").on("click", async () => {
 	const id = $("#id_placa").select2("data")[0].id;
-	alert("Im firing");
+
 	const repeated = table
 		.rows()
 		.data()
@@ -77,7 +92,7 @@ $("[data-action=add_placa]").on("click", async () => {
 
 	const response = await axiosInstance.get(plaqueadosView + id);
 	const data = await response.data;
-	if (data.tramite) {
+	if (data.tramites.length > 0) {
 		const confirmacion = await Swal.fire({
 			title:
 				"Este activo ya tiene un tramite en curso, ¿añadir de todas formas?",
@@ -87,8 +102,9 @@ $("[data-action=add_placa]").on("click", async () => {
 		});
 		if (!confirmacion.isConfirmed) return;
 	}
+
+	data["tipo"] = PLAQUEADO;
 	table.row.add(data).draw();
-	console.log("added");
 });
 
 $("[data-action=add_serie]").on("click", async () => {
@@ -96,17 +112,18 @@ $("[data-action=add_serie]").on("click", async () => {
 	const response = await axiosInstance.get(noPlaqueadosView + id);
 	console.log(response);
 	const data = response.data;
-	data["placa"] = "";
+	data["placa"] = "Sin placa";
+	data["tipo"] = NO_PLAQUEADO;
 	const repeated = table
 		.rows()
 		.data()
 		.toArray()
-		.some((activo) => (activo.serie = data.serie));
+		.some((activo) => activo.serie == data.serie);
 	if (repeated) {
 		Err.fire("Activo no plaqueado ya ha sido añadido");
 		return;
 	}
-	if (data.tramite == null) {
+	if (data.tramites.length > 0) {
 		const confirmacion = await Swal.fire({
 			title:
 				"Este activo ya tiene un tramite en curso, ¿añadir de todas formas?",

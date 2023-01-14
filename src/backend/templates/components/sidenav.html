@@ -1,0 +1,157 @@
+{% load auth_extras %}
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+    id="accordionSidebar">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center"
+       href="{% url "index" %}">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <i data-feather="home"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">Atic</div>
+    </a>
+    <hr class="sidebar-divider my-0" />
+    <hr class="sidebar-divider" />
+    <!--PLATAFORMA -->
+    <div class="sidebar-heading">Plataforma</div>
+    <!--ACTIVOS DROPDOWN-->
+    <li class="nav-item">
+        <a class="nav-link collapsed"
+           href="#"
+           data-bs-toggle="collapse"
+           data-bs-target="#collapseTwo"
+           aria-expanded="true"
+           aria-controls="collapseTwo">
+            <i data-feather="key"></i>
+            <span>Activos</span>
+        </a>
+        <div id="collapseTwo"
+             class="collapse"
+             aria-labelledby="headingTwo"
+             data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <!--ACTIVOS DROPDOWN ITEMS-->
+                <a class="collapse-item" href="{% url "plaqueados" %}">Activos Plaqueados</a>
+                <a class="collapse-item" href="{% url "no_plaqueados" %}">Activos no Plaqueados</a>
+                <a class="collapse-item" href="{% url "tipo" %}">Tipos</a>
+                <a class="collapse-item" href="{% url "subtipo" %}">Subtipos</a>
+                <a class="collapse-item" href="{% url "compra" %}">Compra</a>
+            </div>
+        </div>
+    </li>
+    <!--TRAMITES DROPDOWN -->
+    <li class="nav-item">
+        <a class="nav-link collapsed"
+           href="#"
+           data-bs-toggle="collapse"
+           data-bs-target="#collapseTramites"
+           aria-expanded="true"
+           aria-controls="collapseTramites">
+            <i data-feather="book"></i>
+            <span>Trámites</span>
+        </a>
+        <div id="collapseTramites"
+             class="collapse"
+             aria-labelledby="headingTramites"
+             data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <!--TRAMITES DROPDOWN ITEMS-->
+                <a class="collapse-item" href="{% url "generar_traslados" %}">Generar traslado</a>
+                <a class="collapse-item" href="{% url "deshecho" %}">Generar Deshecho</a>
+                <a class="collapse-item" href="{% url "generar_taller" %}">Generar envio a taller</a>
+                <a class="collapse-item" href="{% url "tramites" %}">Ver tramites</a>
+            </div>
+        </div>
+    </li>
+    <!--REPORTES DROPDOWN-->
+    <li class="nav-item">
+        <a class="nav-link collapsed"
+           href="#"
+           data-bs-toggle="collapse"
+           data-bs-target="#collapseReportes"
+           aria-expanded="true"
+           aria-controls="collapseReportes">
+            <i data-feather="folder"></i>
+            <span>Reportes</span>
+        </a>
+        <div id="collapseReportes"
+             class="collapse"
+             aria-labelledby="headingReportes"
+             data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <!--TRAMITES DROPDOWN ITEMS-->
+                <a class="collapse-item" href="{% url "reporte_plaqueados" %}">Reporte general plaqueados</a>
+                <a class="collapse-item" href="{% url "reporte_no_plaqueados" %}">Reporte general no plaqueados</a>
+                <a class="collapse-item" href="{% url "reporte_plaqueados_2" %}">Reporte plaqueados con 2 años de antigüedad</a>
+                <a class="collapse-item" href="{% url "reporte_plaqueados_4" %}">Reporte plaqueados con 4 años de antigüedad</a>
+                <a class="collapse-item" href="{% url "reporte_no_plaqueados_2" %}">Reporte no plaqueados con 2 años de antigüedad</a>
+                <a class="collapse-item" href="{% url "reporte_no_plaqueados_4" %}">Reporte no plaqueados con 4 años de antigüedad</a>
+            </div>
+        </div>
+    </li>
+    <hr class="sidebar-divider"/>
+    <!--ADMINISTRACION-->
+    <div class="sidebar-heading">Administración</div>
+    <!--GESTION DROPDOWN -->
+    <li class="nav-item">
+        <a class="nav-link collapsed"
+           href="#"
+           data-bs-toggle="collapse"
+           data-bs-target="#collapsePages"
+           aria-expanded="true"
+           aria-controls="collapsePages">
+            <i data-feather="pen-tool"></i>
+            <span>Gestión</span>
+        </a>
+        <div id="collapsePages"
+             class="collapse"
+             aria-labelledby="headingPages"
+             data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <!--GESTION DROPDOWN ITEMS-->
+                <a class="collapse-item" href="{% url "funcionarios" %}">Funcionarios</a>
+                <a class="collapse-item" href="{% url "ubicaciones" %}">Ubicaciones</a>
+                <a class="collapse-item" href="{% url "users" %}">Usuarios</a>
+            </div>
+        </div>
+    </li>
+    {% if request.user|can_write %}
+        <!--IMPORTAR DROPDOWN -->
+        <li class="nav-item">
+            <a class="nav-link collapsed"
+               href="#"
+               data-bs-toggle="collapse"
+               data-bs-target="#collapseImportar"
+               aria-expanded="true"
+               aria-controls="collapseImportar">
+                <i data-feather="archive"></i>
+                <span>Importar</span>
+            </a>
+            <div id="collapseImportar"
+                 class="collapse"
+                 aria-labelledby="headingImportar"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <!--IMPORTAR DROPDOWN ITEMS-->
+                    <a class="collapse-item" href="{% url "importar_activos" %}">Importar Activos Plaqueados</a>
+                    <a class="collapse-item" href="{% url "importar_no_plaqueados" %}">Importar Activos no Plaqueados</a>
+                    <a class="collapse-item" href="{% url "importar_reporte_plaqueados" %}">Importar Reporte</a>
+                </div>
+            </div>
+        </li>
+    {% endif %}
+    {% if request.user.is_staff %}
+        <li class="nav-item collapsed">
+            <a class="nav-link collapsed" href="{% url "admin:index" %}">
+                <i data-feather="settings"></i>
+                <span>Admin</span>
+            </a>
+        </li>
+    {% endif %}
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block" />
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle">
+        </button>
+    </div>
+</ul>
+<!-- End of Sidebar -->

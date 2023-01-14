@@ -79,7 +79,7 @@ export const toExcel = (data) => {
 export const toPdf = (element, name) => {
 	const opts = {
 		html2canvas: { scale: 3 },
-		margin: [40, 0, 22, 0],
+		margin: [40, 5, 22, 5],
 		jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
 		pagebreak: {
 			avoid: "tr",
@@ -105,7 +105,7 @@ export const toPdf = (element, name) => {
 		const ucrLogo = document.getElementById("identificador-ucr-img");
 		const srpLogo = document.getElementById("identificador-srp-img");
 		pdf.addImage(ucrLogo, "png", 20, 5, 50, 30);
-		pdf.addImage(srpLogo, "jpg", width - 70, 15, 50, 15);
+		pdf.addImage(srpLogo, "jpg", width - 70, 15, 55, 15);
 		pdf.line(0, height - 20, width, height - 20);
 		pdf.setFontSize(13);
 		pdf.setFont(pdf.getFont().fontName, "bold");
@@ -131,3 +131,7 @@ export const toPdf = (element, name) => {
 		.save(name);
 	return worker;
 };
+
+// CONSTS
+export const PLAQUEADO = 0;
+export const NO_PLAQUEADO = 1;

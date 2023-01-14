@@ -6,30 +6,33 @@
     Activos
 {% endblock title %}
 {% if request.user|can_read %}
-    {% block body %}
+    {% block content %}
         {% csrf_token %}
-        <div id="table-container" class="container py-4">
+        <h1 class="ms-5 mb-1 fs-2">{{ title }}</h1>
+        <div id="table-container" class="container">
             <table id="datatable"
                    class="table table-striped table-responsive dynamic-datatable compact"
                    width="70vw">
                 <div class="container" id="table-buttons"></div>
             </table>
         </div>
-        {% include 'components/formModal.html' with form=form modal_id="form-modal" form_id="form" modal_label="Añadir activo" %}
-    {% endblock body %}
+        {% include "components/formModal.html" with form=form modal_id="form-modal" form_id="form" modal_label="Añadir activo" %}
+    {% endblock content %}
 {% endif %}
 {% block script %}
     <script language="javascript">
-  //Estas variables son utilizadas por el archivo javascript, django las renderiza por medio del lenguaje de plantillas
-  const target_view = "{{target_view}}" //Esta es la dirección del api que utiliza esta vista
-  const columns = [ //Aquí se renderizan las columnas de la tabla dinamicamente
-  {% for column in columns %} 
-  {data: "{{column}}",title: "{{column|capfirst}}", width: "10%"},  //capfirst es un filtro para poner la primer letra de la columna en mayúscula
-  {%endfor%}
-  ]
-  
-  const add = {{request.user|can_write|_and:add|strip_quotes}}
-  const controls = {{request.user|can_write|strip_quotes}}
+      //Estas variables son utilizadas por el archivo javascript, django las renderiza por medio del lenguaje de plantillas
+      const target_view = "{{target_view}}" //Esta es la dirección del api que utiliza esta vista
+      const columns = [ //Aquí se renderizan las columnas de la tabla dinamicamente
+      {% for column in columns %} 
+      {data: "{{column}}",title: "{{column|capfirst|replace_spaces}}", width: "10%"},  //capfirst es un filtro para poner la primer letra de la columna en mayúscula
+      {%endfor%}
+      ]
+      
+      const add = {{request.user|can_write|_and:add|strip_quotes}}
+
+      const edit = {{request.user|can_write|_and:edit|strip_quotes}}
+ 
     </script>
     {% comment %} Este es el archivo javascript que interactua con la tabla, está en la carpeta static/js/table.js {% endcomment %}
     <script src="{% static 'dist/js/table.js'%}"></script>

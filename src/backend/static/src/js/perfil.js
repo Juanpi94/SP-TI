@@ -1,4 +1,4 @@
-import { Err, Fetcher, Success } from "./utils";
+import { axiosInstance, Err, Success } from "./utils";
 
 const passwordInput = $("#password");
 const repeatedPasswordInput = $("#repeat-password");
@@ -19,19 +19,17 @@ submitBtn.on("click", () => {
 			if (password !== repeatedPassword) {
 				repeatedPasswordInput.setInvalid("Las contraseña repetida no coincide");
 			} else {
-				let fetcher = new Fetcher().getFetcher();
-				fetcher("/api/auth/change_password/", {
-					body: JSON.stringify({ password }),
-					method: "POST",
-				}).then((res) => {
-					if (res.status === 202) {
-						Success.fire("Se cambio la contraseña con éxito");
-						bootstrap.Modal.getInstance($("#change-password-modal")).hide();
-						return;
-					}
+				axiosInstance
+					.post("/api/auth/change_password/", { password: password })
+					.then((res) => {
+						if (res.status === 202) {
+							Success.fire("Se cambio la contraseña con éxito");
+							bootstrap.Modal.getInstance($("#change-password-modal")).hide();
+							return;
+						}
 
-					Err.fire("Error al cambiar la contraseña");
-				});
+						Err.fire("Error al cambiar la contraseña");
+					});
 			}
 		} else {
 			repeatedPasswordInput.setInvalid("Rellene el campo");

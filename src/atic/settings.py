@@ -37,12 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rest_framework',
     'django_filters',
     'constance',
     "constance.backends.database",
     'backend',
     "phonenumber_field",
+
+
 ]
 
 MIDDLEWARE = [
@@ -139,7 +142,7 @@ LOGIN_URL = "/login"
 
 LOGOUT_REDIRECT_URL = "/"
 
-
+LOGIN_REDIRECT_URL = "plaqueados"
 # Constance settings
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'

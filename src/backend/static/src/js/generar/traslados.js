@@ -1,71 +1,26 @@
-import { getCsrf, Warning, Success, Err, toPdf, axiosInstance } from "../utils";
+import {
+	getCsrf,
+	Warning,
+	Success,
+	Err,
+	toPdf,
+	axiosInstance,
+	PLAQUEADO,
+	NO_PLAQUEADO,
+} from "../utils";
 
 import Swal from "sweetalert2";
 // Se obtiene el cross-site request forgery token
 
 const table = $("#activos-table").DataTable();
-// // Se inicializa la tabla de activos
-// const table = $("#activos-table").DataTable({
-// 	dom: "t",
-// 	pageLength: 100,
-// 	language: {
-// 		emptyTable: "Aún no hay datos para esta tabla",
-// 	},
-// 	rowId: "id",
-// 	columns: [
-// 		{ data: "id", render: idRenderer, sortable: false },
-// 		{ data: "placa", title: "Placa" },
-// 		{ data: "marca", title: "Marca" },
-// 		{ data: "modelo", title: "Modelo" },
-// 		{ data: "serie", title: "Serie" },
-// 		{ data: "ubicacion", title: "Ubicación Actual" },
-// 		{ data: "destino", title: "Destino", render: destinoRender },
-// 		{
-// 			data: null,
-// 			title: "controles",
-// 			render: controlesRender,
-// 			name: "controles",
-// 		},
-// 	],
-// });
-
-// // Se inicializa los select2
-// $("select").select2({
-// 	language: {
-// 		noResults: () => "No hay resultados para esta busqueda",
-// 	},
-// 	theme: "default",
-// });
-
-// $(".select2-container").addClass("col");
-
-// function idRenderer(id) {
-// 	return `<input name="id-input" type='hidden' value="${id}"/>`;
-// }
-// function controlesRender() {
-// 	return "<button data-action='delete-row' class='traslados-control' title='control'> <i data-feather='x-circle'></i></button>";
-// }
-
-// function destinoRender() {
-// 	return destinoSelect;
-// }
-
-// table.on("draw.dt", () => {
-// 	$("[data-action=delete-row]").on("click", deleteRowHandler);
-// 	$(".destino-select").removeAttr("id");
-// 	$(".destino-select").select2();
-
-// 	feather.replace();
-// });
-
-
 
 $("[data-action=pdf]").on("click", () => {
-	$(".pdf-container").toggleClass("export");
 	table.column("controles:name").visible(false);
-	const motivoTextArea = $("#id_motivo");
+	const pdfContainer = $(".pdf-container").clone();
+	pdfContainer.addClass("export");
+	const motivoTextArea = pdfContainer.find("#id_motivo");
 	const text = motivoTextArea.val();
-	const motivoPdf = $("#motivo_for_pdf");
+	const motivoPdf = pdfContainer.find("#motivo_for_pdf");
 	const scrollHeight = motivoTextArea.prop("scrollHeight");
 	const finalHeight =
 		scrollHeight == 0 ? motivoTextArea.height() : scrollHeight;
@@ -73,60 +28,18 @@ $("[data-action=pdf]").on("click", () => {
 	motivoPdf.text(text);
 	motivoPdf.height(finalHeight);
 	motivoPdf.show();
-	// const opts = {
-	// 	html2canvas: { scale: 3 },
-	// 	margin: [40, 0, 22, 0],
-	// 	jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-	// 	pagebreak: {
-	// 		avoid: "tr",
-	// 		mode: ["avoid-all", "css", "legacy"],
-	// 	},
-	// };
 
 	const worker = toPdf(
-		$(".pdf-container")[0],
+		pdfContainer[0],
 		`Traslado-${new Date().toISOString()}.pdf`
 	);
 	worker.then(() => {
-		$(".pdf-container").toggleClass("export");
 		table.column("controles:name").visible(true);
 		motivoPdf.text("");
 		motivoPdf.hide();
 		motivoTextArea.show();
 	});
 });
-
-// $("[data-action=add_placa]").on("click", async () => {
-// 	const id = $("#id_placa").select2("data")[0].id;
-
-// 	const repeated = table
-// 		.rows()
-// 		.data()
-// 		.toArray()
-// 		.some((activo) => {
-// 			return activo.id == id;
-// 		});
-
-// 	if (repeated) {
-// 		Err.fire("Este activo ya se agrego una vez");
-// 		return;
-// 	}
-
-// 	const response = await axiosInstance.get(plaqueadosView + id);
-// 	const data = response.data;
-// 	if (data.tramite) {
-// 		const confirmacion = await Swal.fire({
-// 			title:
-// 				"Este activo ya tiene un tramite en curso, ¿añadir de todas formas?",
-// 			showCancelButton: true,
-// 			confirmButtonText: "Añadir",
-// 			cancelButtonText: `Cancelar`,
-// 		});
-// 		if (!confirmacion.isConfirmed) return;
-// 	}
-// 	table.row.add(data).draw();
-// 	console.log("added");
-// });
 
 $("[data-action=load]").on("click", async () => {
 	const id = $("#id_tramite").select2("data")[0].id;
@@ -135,18 +48,6 @@ $("[data-action=load]").on("click", async () => {
 
 	tramite = await res.data;
 
-	/* 
-    detalles: "adsadsd"
-    estado: "Pendiente"
-    fecha: "2022-05-03"
-    id: 4
-    recipiente: 1
-    referencia: "ValidacionesTest-SP"
-    remitente: 2
-    solicitante: 1
-    tipo: "Traslado"
-    urgencia: "H"
-    */
 	const {
 		id: tramiteId,
 		detalles,
@@ -154,7 +55,8 @@ $("[data-action=load]").on("click", async () => {
 		recipiente,
 		referencia,
 		remitente,
-		activos,
+		activos_plaqueados,
+		activos_no_plaqueados,
 	} = tramite;
 
 	$("#id_consecutivo").val(referencia);
@@ -164,30 +66,54 @@ $("[data-action=load]").on("click", async () => {
 	$("#id_remitente").val(remitente).trigger("change");
 	$("#id_motivo").val(detalles);
 
+	const trasladosRes = await axiosInstance.get(trasladosView, {
+		params: {
+			tramite: tramiteId,
+		},
+	});
+	const traslados = trasladosRes.data;
 	if (table.data().count()) {
 		table.rows({ page: "current" }).remove();
 	}
 
-	for (let activo of activos) {
-		table.row.add(activo);
+	for (let activo of activos_plaqueados) {
+		let res = await axiosInstance.get(plaqueadosView, {
+			params: {
+				placa: activo,
+			},
+		});
+
+		let db_activo = res.data[0];
+		db_activo["tipo"] = PLAQUEADO;
+		db_activo["rowId"] = db_activo.placa;
+		table.row.add(db_activo);
+	}
+
+	for (let no_plaqueado of activos_no_plaqueados) {
+		let res = await axiosInstance.get(noPlaqueadosView, {
+			params: {
+				serie: no_plaqueado,
+			},
+		});
+		let db_no_plaqueado = res.data[0];
+		db_no_plaqueado["placa"] = "Sin placa";
+		db_no_plaqueado["tipo"] = NO_PLAQUEADO;
+		db_no_plaqueado["rowId"] = db_no_plaqueado.serie;
+		table.row.add(db_no_plaqueado);
 	}
 	table.draw();
-
-	let bodyDestinos = activos.map((activo) => activo.id);
-	let responseDestinos = await axiosInstance.post(
-		trasladosView + "get_destinos/",
-		{
-			activos: bodyDestinos,
-		}
-	);
-
-	let traslados = responseDestinos.data;
-
-	for (let traslado of traslados) {
-		$(`#${traslado.activo}`)
-			.find("select")
-			.select2("val", `${traslado.destino}`);
-	}
+	table
+		.rows()
+		.data()
+		.toArray()
+		.forEach((activo) => {
+			let traslado = traslados.find((traslado) =>
+				traslado.detalle.includes(activo.rowId)
+			);
+			$(`#${activo.rowId}`)
+				.find("select")
+				.select2("val", `${traslado.destino}`);
+		});
 });
 
 $("[data-action=subir-traslado]").on("click", subirTrasladoHandler);
@@ -199,9 +125,8 @@ async function subirTrasladoHandler(event) {
 	const remitente = $("#id_remitente").select2("data")[0].id;
 	const recipiente = $("#id_recipiente").select2("data")[0].id;
 	const detalles = $("#id_motivo").val();
-	const activos = $("[name=id-input]")
-		.map((i, input) => $(input).val())
-		.toArray();
+	const activos = table.rows().data().toArray();
+
 	const destinos = $("[name=destino]")
 		.map((i, input) => $(input).select2("data")[0].id)
 		.toArray()
@@ -214,7 +139,6 @@ async function subirTrasladoHandler(event) {
 		recipiente,
 		detalles,
 		solicitante: userId,
-		activos,
 	};
 
 	for (let field in body) {
@@ -232,33 +156,41 @@ async function subirTrasladoHandler(event) {
 		Err.fire(`Uno o más activos no tienen destino`);
 		return;
 	}
+	const activosPlaqueados = activos
+		.filter((activo) => activo.tipo === PLAQUEADO)
+		.map((activo) => activo.id);
+	const activosNoPlaqueados = activos
+		.filter((activo) => activo.tipo === NO_PLAQUEADO)
+		.map((activo) => activo.id);
 
-	const bodyTramites = JSON.stringify(body);
-	let bodyTraslados = activos.map((activo, idx) => {
+	let traslados = activos.map((activo, idx) => {
+		const tipo = activo.tipo === PLAQUEADO ? "PLAQUEADO" : "NO_PLAQUEADO";
 		return {
-			activo,
+			activo: activo.id,
+			tipo,
 			destino: destinos[idx],
 		};
 	});
-	bodyTraslados = JSON.stringify(bodyTraslados);
+	body["activosPlaqueados"] = activosPlaqueados;
+	body["activosNoPlaqueados"] = activosNoPlaqueados;
 
-	const tramiteResponse = await axiosInstance.post(tramitesView, bodyTramites);
-	const trasladosResponse = await axiosInstance.post(
-		trasladosView,
-		bodyTraslados
-	);
+	body["traslados"] = traslados;
+
+	const tramiteResponse = await axiosInstance
+		.post(tramitesView, body)
+		.catch((error) => {
+			if (error.request.status >= 300 && error.request.status < 500) {
+				Warning.fire({
+					text: "Error al añadir tramite",
+					footer: error.request.response,
+				});
+			} else if (error.request.status >= 500) {
+				Err.fire("Parece que hubo un error en el servidor");
+			}
+		});
 
 	const tramiteStatus = tramiteResponse.status;
 	if (tramiteStatus > 200 && tramiteStatus < 300) {
 		Success.fire("Se realizó el tramite con exito");
-	} else if (tramiteStatus === 400) {
-		const warningText = await tramiteResponse.text();
-
-		Warning.fire({
-			text: "Error con los datos ingresados",
-			footer: warningText,
-		});
-	} else if (tramiteStatus > 500) {
-		Err.fire("Hubo un problema con el servidor");
 	}
 }

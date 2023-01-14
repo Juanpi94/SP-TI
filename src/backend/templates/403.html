@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}
+    NO PERMITIDO
+{% endblock title %}
+{% block body %}
+    <div class="container d-flex justify-content-center align-items-center h-full bg-gray-400">
+        <div class="d-flex flex-column">
+            <h1 class="clr-red text-center">
+                NO TIENE PERMISO PARA
+                <br>
+                VER ESTA PÁGINA
+            </h1>
+            <p class="text-center">
+                <a href="{% url 'login' %}">Ingrese</a> con un usuario autorizado
+            </p>
+        </div>
+    </div>
+{% endblock body %}

@@ -18,15 +18,22 @@
 	background-color: white;
 	border: 0.3rem solid black;
 	overflow-x: hidden;
+	*:not(.btn) {
+		font-family: Arial, Helvetica, sans-serif !important;
+	}
 }
 
 .pdf-container.export {
 	border: none;
 	margin: 0;
 	padding: 0;
-}
-.pdf-container.export .controls {
-	display: none;
+	.controls {
+		display: none;
+	}
+	.sorting::before,
+	.sorting::after {
+		display: none;
+	}
 }
 
 .select2-container {

@@ -1,0 +1,20 @@
+@use "sass:color";
+
+@mixin button($color) {
+	background-color: $color !important;
+	border-color: $color;
+
+	@if lightness($color) < 50% {
+		color: white !important;
+	}
+
+	&:hover {
+		background-color: lighten($color, 20%) !important;
+	}
+}
+
+@mixin shadow($shadow...) {
+	box-shadow: $shadow;
+	-webkit-box-shadow: $shadow;
+	-moz-box-shadow: $shadow;
+}

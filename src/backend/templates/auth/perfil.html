@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block body %}
+{% block content %}
     {% csrf_token %}
     <div class="container p-4">
         <h1>{{ user.get_username }}</h1>
@@ -67,7 +67,7 @@
             </div>
         </div>
     </div>
-{% endblock %}
+{% endblock content %}
 {% block script %}
     <script src="{% static 'dist/js/perfil.js'%}"></script>
 {% endblock script %}

@@ -11496,7 +11496,7 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
 
 table.dataTable thead > tr > th.sorting:before, table.dataTable thead > tr > th.sorting:after, table.dataTable thead > tr > th.sorting_asc:before, table.dataTable thead > tr > th.sorting_asc:after, table.dataTable thead > tr > th.sorting_desc:before, table.dataTable thead > tr > th.sorting_desc:after, table.dataTable thead > tr > th.sorting_asc_disabled:before, table.dataTable thead > tr > th.sorting_asc_disabled:after, table.dataTable thead > tr > th.sorting_desc_disabled:before, table.dataTable thead > tr > th.sorting_desc_disabled:after, table.dataTable thead > tr > td.sorting:before, table.dataTable thead > tr > td.sorting:after, table.dataTable thead > tr > td.sorting_asc:before, table.dataTable thead > tr > td.sorting_asc:after, table.dataTable thead > tr > td.sorting_desc:before, table.dataTable thead > tr > td.sorting_desc:after, table.dataTable thead > tr > td.sorting_asc_disabled:before, table.dataTable thead > tr > td.sorting_asc_disabled:after, table.dataTable thead > tr > td.sorting_desc_disabled:before, table.dataTable thead > tr > td.sorting_desc_disabled:after {
   opacity: .125;
-  font-size: .9em;
+  font-size: .8em;
   line-height: 9px;
   display: block;
   position: absolute;
@@ -11504,12 +11504,12 @@ table.dataTable thead > tr > th.sorting:before, table.dataTable thead > tr > th.
 }
 
 table.dataTable thead > tr > th.sorting:before, table.dataTable thead > tr > th.sorting_asc:before, table.dataTable thead > tr > th.sorting_desc:before, table.dataTable thead > tr > th.sorting_asc_disabled:before, table.dataTable thead > tr > th.sorting_desc_disabled:before, table.dataTable thead > tr > td.sorting:before, table.dataTable thead > tr > td.sorting_asc:before, table.dataTable thead > tr > td.sorting_desc:before, table.dataTable thead > tr > td.sorting_asc_disabled:before, table.dataTable thead > tr > td.sorting_desc_disabled:before {
-  content: "▴";
+  content: "▲";
   bottom: 50%;
 }
 
 table.dataTable thead > tr > th.sorting:after, table.dataTable thead > tr > th.sorting_asc:after, table.dataTable thead > tr > th.sorting_desc:after, table.dataTable thead > tr > th.sorting_asc_disabled:after, table.dataTable thead > tr > th.sorting_desc_disabled:after, table.dataTable thead > tr > td.sorting:after, table.dataTable thead > tr > td.sorting_asc:after, table.dataTable thead > tr > td.sorting_desc:after, table.dataTable thead > tr > td.sorting_asc_disabled:after, table.dataTable thead > tr > td.sorting_desc_disabled:after {
-  content: "▾";
+  content: "▼";
   top: 50%;
 }
 
@@ -11699,6 +11699,10 @@ table.dataTable.table-striped > tbody > tr:nth-of-type(2n+1), table.dataTable > 
 table.dataTable > tbody > tr.selected > * {
   color: #fff;
   box-shadow: inset 0 0 0 9999px #0275d8e6;
+}
+
+table.dataTable > tbody > tr.selected a {
+  color: #090a0b;
 }
 
 table.dataTable.table-striped > tbody > tr.odd > * {

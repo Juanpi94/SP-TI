@@ -148,25 +148,83 @@ var _sweetalert2 = require("sweetalert2");
 var _sweetalert2Default = parcelHelpers.interopDefault(_sweetalert2);
 var _utils = require("../utils");
 const table = $("#activos-table").DataTable();
+table.column("destino:name").visible(false);
+table.column("ubicacion:name").visible(false);
+$("#fecha").on("click", ()=>{
+    $("#fecha-input")[0].showPicker();
+});
+$("#fecha-input").on("change", (event)=>{
+    let date = new Date(event.target.value.replace("-", "/"));
+    let year = new Intl.DateTimeFormat(undefined, {
+        year: "numeric"
+    }).format(date);
+    let month = new Intl.DateTimeFormat(undefined, {
+        month: "long"
+    }).format(date);
+    let day = new Intl.DateTimeFormat(undefined, {
+        day: "numeric"
+    }).format(date);
+    $("#fecha").text(`${day} de ${month.charAt(0).toUpperCase() + month.slice(1)} del ${year}`);
+});
 $("[data-action=pdf]").on("click", ()=>{
-    const pdfContainer = $(".pdf-container")[0].cloneNode(true);
-    pdfContainer.classList.toggle("export");
-    const worker = (0, _utils.toPdf)(pdfContainer, `Deshecho-${new Date().toISOString()}.pdf`);
-    worker.then(()=>{});
+    table.column("controles:name").visible(false);
+    const pdfContainer = $(".pdf-container").clone();
+    pdfContainer.addClass("export");
+    const worker = (0, _utils.toPdf)(pdfContainer[0], `Deshecho-${new Date().toISOString()}.pdf`);
+    worker.then(()=>{
+        table.column("controles:name").visible(true);
+    });
+});
+$("[data-action=load]").on("click", async ()=>{
+    const id = $("#id_deshechos").select2("val");
+    if (!id) return;
+    const { data  } = await (0, _utils.axiosInstance).get(tramitesView + id);
+    $("#deshecho-title").text(data.referencia);
+    let date = new Date(data.fecha.replace("-", "/"));
+    let year = new Intl.DateTimeFormat("sp", {
+        year: "numeric"
+    }).format(date);
+    let month = new Intl.DateTimeFormat("sp", {
+        month: "long"
+    }).format(date);
+    let day = new Intl.DateTimeFormat("sp", {
+        day: "2-digit"
+    }).format(date);
+    $("#fecha").text(`${day} de ${month} del ${year}`);
+    for (let activoPlaqueado of data["activos_plaqueados"]){
+        let { data: dataActivo  } = await (0, _utils.axiosInstance).get(plaqueadosView, {
+            params: {
+                placa: activoPlaqueado
+            }
+        });
+        table.row.add(dataActivo[0]).draw();
+    }
+    for (let activoNoPlaqueado of data["activos_no_plaqueados"]){
+        let { data: dataActivo1  } = await (0, _utils.axiosInstance).get(noPlaqueadosView, {
+            params: {
+                serie: activoNoPlaqueado
+            }
+        });
+        table.row.add(dataActivo1[0]).draw();
+    }
 });
 $("[data-action=subir-deshecho]").on("click", subirDeshecho);
 async function subirDeshecho() {
     const deshechoTitle = $("#deshecho-title").text();
-    const activos = $("[data-type=plaqueado]").map((i, input)=>$(input).val()).toArray();
+    const activos = table.rows().data().toArray();
+    const activosPlaqueados = activos.filter((activo)=>activo.tipo === (0, _utils.PLAQUEADO)).map((activo)=>activo.id);
+    const activosNoPlaqueados = activos.filter((activo)=>activo.tipo === (0, _utils.NO_PLAQUEADO)).map((activo)=>activo.id);
     if (activos.length === 0) (0, _sweetalert2Default.default).fire("Por favor a\xf1ada activos");
-    const noPlaqueados = $("[data-type=no_plaqueado").map((i, input)=>$(input).val()).toArray();
-    const body = {
+    let body = {
         referencia: deshechoTitle,
-        activos_plaqueados: activos,
-        activos_no_plaqueados: noPlaqueados
+        detalles: "DESHECHO",
+        solicitante: userId,
+        tipo: "Deshecho",
+        activosPlaqueados,
+        activosNoPlaqueados
     };
     try {
-        const res = await (0, _utils.axiosInstance).post(deshechosView, body);
+        const res = await (0, _utils.axiosInstance).post(tramitesView, body);
         (0, _utils.Success).fire("Se subio el deshecho con \xe9xito");
     } catch (exception) {
         (0, _utils.Err).fire("Hubo un error al subir el deshecho");
@@ -2768,6 +2826,8 @@ parcelHelpers.export(exports, "Warning", ()=>Warning);
 parcelHelpers.export(exports, "download", ()=>download);
 parcelHelpers.export(exports, "toExcel", ()=>toExcel);
 parcelHelpers.export(exports, "toPdf", ()=>toPdf);
+parcelHelpers.export(exports, "PLAQUEADO", ()=>PLAQUEADO);
+parcelHelpers.export(exports, "NO_PLAQUEADO", ()=>NO_PLAQUEADO);
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _sweetalert2 = require("sweetalert2");
@@ -2831,9 +2891,9 @@ const toPdf = (element, name)=>{
         },
         margin: [
             40,
-            0,
+            5,
             22,
-            0
+            5
         ],
         jsPDF: {
             unit: "mm",
@@ -2867,7 +2927,7 @@ const toPdf = (element, name)=>{
         const ucrLogo = document.getElementById("identificador-ucr-img");
         const srpLogo = document.getElementById("identificador-srp-img");
         pdf.addImage(ucrLogo, "png", 20, 5, 50, 30);
-        pdf.addImage(srpLogo, "jpg", width - 70, 15, 50, 15);
+        pdf.addImage(srpLogo, "jpg", width - 70, 15, 55, 15);
         pdf.line(0, height - 20, width, height - 20);
         pdf.setFontSize(13);
         pdf.setFont(pdf.getFont().fontName, "bold");
@@ -2885,6 +2945,8 @@ const toPdf = (element, name)=>{
     }).save(name);
     return worker;
 };
+const PLAQUEADO = 0;
+const NO_PLAQUEADO = 1;
 
 },{"axios":"jo6P5","sweetalert2":"1HyFr","html2pdf.js":"at6i8","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jo6P5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -6827,8 +6889,8 @@ function isAxiosError(payload) {
 exports.default = isAxiosError;
 
 },{"./../utils.js":"5By4s","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"at6i8":[function(require,module,exports) {
-var process = require("process");
 var global = arguments[3];
+var process = require("process");
 /*!
  * html2pdf.js v0.10.1
  * Copyright (c) 2021 Erik Koopmans
@@ -30590,7 +30652,7 @@ E.API.PDFObject = function() {
 }();
 exports.default = E;
 
-},{"@babel/runtime/helpers/typeof":"jgQjt","fflate":"61VnC","62cb41ca9aacd264":"26NyR","5cfe9e7f4345bad9":"7SKZT","74c34a64d3785c7a":"b0riJ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jgQjt":[function(require,module,exports) {
+},{"@babel/runtime/helpers/typeof":"jgQjt","fflate":"61VnC","62cb41ca9aacd264":"26NyR","5cfe9e7f4345bad9":"vA2pi","74c34a64d3785c7a":"l96IZ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jgQjt":[function(require,module,exports) {
 function _typeof(obj) {
     "@babel/helpers - typeof";
     return module.exports = _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj) {
@@ -32511,8 +32573,8 @@ function unzipSync(data) {
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"26NyR":[function(require,module,exports) {
 module.exports = Promise.resolve(module.bundle.root("j1W5C"));
 
-},{}],"7SKZT":[function(require,module,exports) {
-module.exports = require("./helpers/browser/js-loader")(require("./helpers/bundle-url").getBundleURL("b8PIt") + "../../purify.9cca540d.js").catch((err)=>{
+},{}],"vA2pi":[function(require,module,exports) {
+module.exports = require("./helpers/browser/js-loader")(require("./helpers/bundle-url").getBundleURL("b8PIt") + "../../purify.0a1fffb7.js").catch((err)=>{
     delete module.bundle.cache[module.id];
     throw err;
 }).then(()=>module.bundle.root("9Kzno"));
@@ -32613,8 +32675,8 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}],"b0riJ":[function(require,module,exports) {
-module.exports = require("./helpers/browser/js-loader")(require("./helpers/bundle-url").getBundleURL("b8PIt") + "../../index.es.0fcf784f.js").catch((err)=>{
+},{}],"l96IZ":[function(require,module,exports) {
+module.exports = require("./helpers/browser/js-loader")(require("./helpers/bundle-url").getBundleURL("b8PIt") + "../../index.es.1f22cab8.js").catch((err)=>{
     delete module.bundle.cache[module.id];
     throw err;
 }).then(()=>module.bundle.root("gt0ZF"));

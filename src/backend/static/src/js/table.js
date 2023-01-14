@@ -28,58 +28,62 @@ if ($("select").length) {
 
 // Esta función se encarga de inicializar la tabla
 let table = $("#datatable").DataTable({
+	scrollX: true,
+	rowId: "id",
 	ajax: { url: target_view, dataSrc: "" },
-	language: {
-		emptyTable: "Aún no hay datos para esta tabla",
-		zeroRecords: "No hay resultados para esta busqueda",
+	buttons: {
+		buttons: [
+			{
+				text: "Añadir",
+				className: "btn mt-3 btn-add",
+				action: () => {
+					$("#form")[0].reset();
+					$("#form-modal").showModal("Añadir registro");
+					$("#form").only("submit", (ev) => addSubmitHandler(ev));
+				},
+			},
+			{
+				text: "Exportar visibles a excel",
+				className: "btn  mt-3 btn-export-visibles",
+				action: () => {
+					const data = table.rows({ page: "current" }).data().toArray();
+
+					const parsedData = [];
+					for (let iterator = 0; iterator < data.length; iterator++) {
+						parsedData.push(data[iterator]);
+					}
+					toExcel(parsedData).then((res) => {
+						download(
+							new Blob([Buffer.from(res.data["data"], "hex")]),
+							`exported-${Date.now()}.xlsx`
+						);
+					});
+				},
+			},
+			{
+				text: "Exportar tabla a excel",
+				className: "btn mt-3 btn-export-all",
+				action: () => {
+					const data = table.rows().data().toArray();
+					console.log(data);
+					toExcel(data).then((res) => {
+						download(
+							new Blob([Buffer.from(res.data["data"], "hex")]),
+							`exportedTable-${Date.now()}.xlsx`
+						);
+					});
+				},
+			},
+		],
 	},
-	buttons: [
-		{
-			text: "Añadir",
-			className: "btn mt-3 btn-add",
-			action: () => {
-				$("#form")[0].reset();
-				$("#form-modal").showModal("Añadir registro");
-				$("#form").only("submit", (ev) => addSubmitHandler(ev));
-			},
-		},
-		{
-			text: "Exportar visibles a excel",
-			className: "btn  mt-3 btn-export-visibles",
-			action: () => {
-				const data = table.rows({ page: "current" }).data();
-				const parsedData = [];
-				for (let iterator = 0; iterator < data.length; iterator++) {
-					parsedData.push(data[iterator]);
-				}
-				toExcel(parsedData).then((res) => {
-					download(
-						new Blob([Buffer.from(res.data["data"], "hex")]),
-						`exported-${Date.now()}.xlsx`
-					);
-				});
-			},
-		},
-		{
-			text: "Exportar tabla a excel",
-			className: "btn mt-3 text-light btn-export-all",
-			action: () => {
-				const data = table.rows().data().toArray();
-				toExcel(data).then((res) => {
-					download(
-						new Blob([Buffer.from(res.data["data"], "hex")]),
-						`exportedTable-${Date.now()}.xlsx`
-					);
-				});
-			},
-		},
-	],
 	//Las columnas de la tabla, utiliza la variable que se define en table.html
 	columns: [
 		{
 			className: "dt-control",
 			orderable: false,
 			sortable: false,
+			searchable: false,
+
 			data: null,
 			defaultContent: "",
 		},
@@ -90,6 +94,7 @@ let table = $("#datatable").DataTable({
 			render: buttonsRender,
 			sortable: false,
 			searchable: false,
+			visible: edit,
 		},
 	],
 });
@@ -106,6 +111,8 @@ table.on("init.dt", () => {
 
 table.on("draw.dt", () => {
 	//Cada vez que la tabla se rerenderiza, añade los controladores correspondientes a los botones de añadir y eliminar
+	$("[data-action=edit]").off();
+	$("[data-action=delete]").off();
 	$("[data-action=edit]").on("click", editHandler);
 	$("[data-action=delete]").on("click", deleteHandler);
 	feather.replace();
@@ -124,15 +131,16 @@ async function editHandler(event) {
 	$("#form select").val("").trigger("change");
 	$("#form").only("submit", editSubmitHandler);
 	const id = $(this).data("id");
+
 	//Se le añade un data-id al formulario, para poder conectarse con el api
 	$("#form").data("id", id);
 
 	//Se hace un fetch de los datos del objeto que se quiere editar, luego se
 	//le adjunta dichos datos al formulario, para facilitar la edición
 	const res = await axiosInstance.get(target_view + id);
-	console.log(res);
-	const jsonData = res.data;
 
+	const jsonData = res.data;
+	console.log(jsonData);
 	for (key in jsonData) {
 		//Cada input del formulario tiene un id con el formato id_{nombre del dato}
 		//Lo que permite que se pueda hacer lo siguiente
@@ -141,6 +149,7 @@ async function editHandler(event) {
 		//Si el input existe se le incluye la información
 		if (input) {
 			input.val(jsonData[key]);
+			input.trigger("change");
 		}
 	}
 }
@@ -183,7 +192,7 @@ async function deleteHandler(event) {
 				showConfirmButton: false,
 				timer: swalAlertTimer,
 			});
-			table.ajax.reload();
+			table.row(`#${id}`).remove().draw();
 		} else {
 			Swal.fire({
 				icon: "error",
@@ -230,6 +239,8 @@ async function addSubmitHandler(event) {
 	const res = await axios.post(target_view, formData, {
 		headers: { "X-CSRFToken": getCsrf() },
 	});
+
+	console.log(res);
 	//201: Objeto creado
 	//400: El usuario ingreso mal un dato
 	//500+: Algo pasó en el servidor
@@ -241,9 +252,10 @@ async function addSubmitHandler(event) {
 			timer: swalAlertTimer,
 		});
 
+		console.log("añadir", res.data);
+		table.row.add(res.data).draw();
 		const addModal = bootstrap.Modal.getInstance($("#form-modal"));
 		addModal.hide();
-		table.ajax.reload();
 	} else if (res.status === 400) {
 		Swal.fire({
 			icon: "error",
@@ -288,7 +300,8 @@ async function editSubmitHandler(event) {
 		});
 
 		bootstrap.Modal.getInstance($("#form-modal")).hide();
-		table.ajax.reload();
+		table.row("#" + res.data.id).data(res.data);
+		table.draw();
 	} else if (res.status === 400) {
 		Swal.fire({
 			icon: "error",

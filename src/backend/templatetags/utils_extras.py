@@ -13,3 +13,9 @@ def strip_quotes_lower(string: str):
 def _and(val, secondVal):
     print(secondVal)
     return val and secondVal
+
+
+@register.filter(name="replace_spaces")
+@stringfilter
+def replace_splaces(val):
+    return val.replace("_", " ")

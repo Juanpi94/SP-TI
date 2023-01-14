@@ -1,0 +1,35 @@
+@each $colorName, $color in $colors {
+	.clr-#{$colorName} {
+		color: $color !important;
+	}
+
+	.bg-#{$colorName} {
+		background-color: $color !important;
+	}
+}
+
+.mb-10 {
+	margin-bottom: 10rem;
+}
+
+.hightlight-row-traslado {
+	background-color: $red !important;
+	td {
+		color: $white !important;
+	}
+}
+
+.hightlight-row-deshecho {
+	background-color: $purple !important;
+	td {
+		color: $white !important;
+	}
+}
+
+.h-full {
+	height: 100vh;
+}
+
+.w-fit {
+	width: fit-content !important;
+}
