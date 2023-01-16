@@ -6924,8 +6924,8 @@ function isAxiosError(payload) {
 exports.default = isAxiosError;
 
 },{"./../utils.js":"5By4s","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"at6i8":[function(require,module,exports) {
-var process = require("process");
 var global = arguments[3];
+var process = require("process");
 /*!
  * html2pdf.js v0.10.1
  * Copyright (c) 2021 Erik Koopmans
