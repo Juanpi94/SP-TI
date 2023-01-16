@@ -164,24 +164,59 @@ var _featherIconsDefault = parcelHelpers.interopDefault(_featherIcons);
     fill: "red",
     color: "white"
 };
+//Configuración predeterminada para todas las tablas de datatables, fundamentalmente las configuraciones de idioma
 (0, _jqueryDefault.default).extend(true, (0, _jqueryDefault.default).fn.dataTable.defaults, {
     language: {
         emptyTable: "A\xfan no hay datos para esta tabla",
-        zeroRecords: "No hay resultados para esta busqueda"
+        zeroRecords: "No hay resultados para esta busqueda",
+        pageLength: {
+            "-1": "Mostrar todas las filas",
+            _: "Mostrar %d filas"
+        },
+        paginate: {
+            first: "Primero",
+            last: "\xdaltimo",
+            next: "Siguiente",
+            previous: "Anterior"
+        },
+        info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+        infoFiltered: "(filtrado de un total de _MAX_ registros)",
+        searchPanes: {
+            clearMessage: "Borrar todo",
+            collapse: {
+                0: "Paneles de b\xfasqueda",
+                _: "Paneles de b\xfasqueda (%d)"
+            },
+            count: "{total}",
+            countFiltered: "{shown} ({total})",
+            emptyPanes: "Sin paneles de b\xfasqueda",
+            loadMessage: "Cargando paneles de b\xfasqueda",
+            title: "Filtros Activos - %d",
+            showMessage: "Mostrar Todo",
+            collapseMessage: "Colapsar Todo"
+        }
     }
 });
+//Funciones de jquery realizadas propias
 (0, _jqueryDefault.default).fn.extend({
+    check: function(forceCheck) {
+        if (this.attr("type") == "checkbox") this.prop("checked", forceCheck);
+    },
+    //Verifica si un input de un formulario es válido
     isValid: function() {
         return this[0].checkValidity();
     },
+    //Establece como inválido un input de un formulario
     setInvalid: function(msg) {
         this[0].setCustomValidity(msg);
         this[0].reportValidity();
     },
+    //Establece como válido un input de un formulario
     setValid: function() {
         this[0].setCustomValidity("");
         this[0].reportValidity();
     },
+    //Muestra un modal de bootstrap
     showModal: function(labelText) {
         let modal = new _bootstrap.Modal(this[0]);
         if (modal) {
@@ -190,6 +225,7 @@ var _featherIconsDefault = parcelHelpers.interopDefault(_featherIcons);
             modal.show();
         }
     },
+    //Enlaza un evento a un elemento, eliminando el resto de manejadores
     only: function(event, handler) {
         (0, _jqueryDefault.default)(this[0]).off();
         (0, _jqueryDefault.default)(this[0]).on(event, (ev)=>{

@@ -21,6 +21,10 @@
 	min-height: 7rem;
 	height: fit-content;
 	overflow: auto;
+
+	&.show {
+		display: block !important;
+	}
 }
 
 .footer {

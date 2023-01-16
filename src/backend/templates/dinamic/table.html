@@ -17,6 +17,7 @@
             </table>
         </div>
         {% include "components/formModal.html" with form=form modal_id="form-modal" form_id="form" modal_label="Añadir activo" %}
+        {% include "components/detailsModal.html" %}
     {% endblock content %}
 {% endif %}
 {% block script %}
@@ -35,5 +36,5 @@
  
     </script>
     {% comment %} Este es el archivo javascript que interactua con la tabla, está en la carpeta static/js/table.js {% endcomment %}
-    <script src="{% static 'dist/js/table.js'%}"></script>
+    <script src="{% static 'dist/js/table.js'%}" defer></script>
 {% endblock script %}

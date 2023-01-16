@@ -13,11 +13,36 @@ const table = $("#activos-table").DataTable();
 table.column("destino:name").visible(false);
 table.column("ubicacion:name").visible(false);
 
+let today = new Date();
+
+let year = new Intl.DateTimeFormat(undefined, { year: "numeric" }).format(
+	today
+);
+let month = new Intl.DateTimeFormat(undefined, { month: "2-digit" }).format(
+	today
+);
+let day = new Intl.DateTimeFormat(undefined, { day: "2-digit" }).format(today);
+
+$("#fecha-input").val(`${year}-${month}-${day}`);
 $("#fecha").on("click", () => {
 	$("#fecha-input")[0].showPicker();
 });
 
 $("#fecha-input").on("change", (event) => {
+	if (!event.target.value) {
+		let today = new Date();
+
+		let year = new Intl.DateTimeFormat(undefined, { year: "numeric" }).format(
+			today
+		);
+		let month = new Intl.DateTimeFormat(undefined, { month: "2-digit" }).format(
+			today
+		);
+		let day = new Intl.DateTimeFormat(undefined, { day: "2-digit" }).format(
+			today
+		);
+		event.target.value = `${year}-${month}-${day}`;
+	}
 	let date = new Date(event.target.value.replace("-", "/"));
 
 	let year = new Intl.DateTimeFormat(undefined, { year: "numeric" }).format(
@@ -84,8 +109,16 @@ $("[data-action=load]").on("click", async () => {
 $("[data-action=subir-deshecho]").on("click", subirDeshecho);
 async function subirDeshecho() {
 	const deshechoTitle = $("#deshecho-title").text();
+	const fecha = $("#fecha-input").val();
 	const activos = table.rows().data().toArray();
-
+	if (activos.length === 0) {
+		Swal.fire("Por favor añada activos");
+		return;
+	}
+	if (deshechoTitle == "") {
+		Err.fire("Por favor añada un titulo");
+		return;
+	}
 	const activosPlaqueados = activos
 		.filter((activo) => activo.tipo === PLAQUEADO)
 		.map((activo) => activo.id);
@@ -93,30 +126,27 @@ async function subirDeshecho() {
 		.filter((activo) => activo.tipo === NO_PLAQUEADO)
 		.map((activo) => activo.id);
 
-	if (activos.length === 0) {
-		Swal.fire("Por favor añada activos");
-	}
-
 	let body = {
 		referencia: deshechoTitle,
 		detalles: "DESHECHO",
 		solicitante: userId,
+		fecha,
 		tipo: "Deshecho",
 		activosPlaqueados,
 		activosNoPlaqueados,
 	};
 
- 
-		const res = await axiosInstance.post(tramitesView, body).catch((error) => {
-			if(error.request.status > 300 && error.request.status < 500){
-				Warning.fire({
-					text: "Error al añadir tramite",
-					footer: error.request.response
-				})
-			} else if(error.request.status >= 500){
-				Err.fire("Parece que hubo un error en el servidor");
-			}
-		});
-
+	const res = await axiosInstance.post(tramitesView, body).catch((error) => {
+		if (error.request.status > 300 && error.request.status < 500) {
+			Warning.fire({
+				text: "Error al añadir tramite",
+				footer: error.request.response,
+			});
+		} else if (error.request.status >= 500) {
+			Err.fire("Parece que hubo un error en el servidor");
+		}
+	});
+	if (res.status >= 200 && res.status <= 205) {
 		Success.fire("Se subio el deshecho con éxito");
+	}
 }

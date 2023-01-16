@@ -8,3 +8,10 @@
 .btn-export-all {
 	@include button(#a57e1a);
 }
+.btn-delete-all {
+	@include button($red);
+}
+
+.btn-deselect {
+	@include button($gray-800);
+}

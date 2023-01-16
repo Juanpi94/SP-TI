@@ -21,13 +21,15 @@ $("[data-action=pdf]").on("click", () => {
 	const motivoTextArea = pdfContainer.find("#id_motivo");
 	const text = motivoTextArea.val();
 	const motivoPdf = pdfContainer.find("#motivo_for_pdf");
-	const scrollHeight = motivoTextArea.prop("scrollHeight");
+	console.log(motivoPdf);
+	const scrollHeight = $("#id_motivo").prop("scrollHeight");
 	const finalHeight =
-		scrollHeight == 0 ? motivoTextArea.height() : scrollHeight;
+		scrollHeight == 0 ? $("#id_motivo").height() : scrollHeight;
 	motivoTextArea.hide();
 	motivoPdf.text(text);
+
 	motivoPdf.height(finalHeight);
-	motivoPdf.show();
+	motivoPdf.addClass("show");
 
 	const worker = toPdf(
 		pdfContainer[0],
@@ -35,9 +37,6 @@ $("[data-action=pdf]").on("click", () => {
 	);
 	worker.then(() => {
 		table.column("controles:name").visible(true);
-		motivoPdf.text("");
-		motivoPdf.hide();
-		motivoTextArea.show();
 	});
 });
 

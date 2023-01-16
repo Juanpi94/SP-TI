@@ -13,7 +13,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
 from rest_framework.response import Response
 from backend import models
-from backend.serializers import CompraSerializer, DeshechoSerializer, FuncionariosSerializer, NoPlaqueadosSerializer, PlaqueadosSerializer, SubtipoSerializer, TallerSerializer, TipoSerializer, TramitesCreateSerializer, TramitesSerializer, TrasladosSerializer, UbicacionesSerializer, UserSerializer
+from backend.serializers import CompraSerializer, DeshechoSerializer, FuncionariosSerializer, NoPlaqueadosSerializer, PlaqueadosSerializer, RedSerializer, SubtipoSerializer, TallerSerializer, TipoSerializer, TramitesCreateSerializer, TramitesSerializer, TrasladosSerializer, UbicacionesSerializer, UserSerializer
 from rest_framework.decorators import action
 import pandas as pd
 from django.core.exceptions import ObjectDoesNotExist
@@ -90,7 +90,9 @@ class TramitesApiViewset(ModelViewSet):
         data = request.data
         activos_plaqueados = data.pop("activosPlaqueados")
         activos_no_plaqueados = data.pop("activosNoPlaqueados")
+
         taller = None
+
         if data.get("taller"):
             taller = data.pop("taller")
         serializer = TramitesCreateSerializer(data=data)
@@ -101,6 +103,7 @@ class TramitesApiViewset(ModelViewSet):
             taller_db = models.Taller()
             taller_db.beneficiario = taller.get("beneficiario")
             taller_db.destinatario = taller.get("destinatario")
+            taller_db.autor = taller.get("autor")
             taller_db.tramite = tramite
             taller_db.save()
 
@@ -208,6 +211,11 @@ class CompraApiViewset(ModelViewSet):
 class UserApiViewset(ModelViewSet):
     queryset = models.User.objects.all()
     serializer_class = UserSerializer
+
+
+class RedApiViewset(ModelViewSet):
+    queryset = models.Red.objects.all()
+    serializer_class = RedSerializer
 
 
 class ImportarActivosApiView(APIView):
@@ -338,11 +346,6 @@ class ChangePasswordView(APIView):
         return Response(None, status.HTTP_202_ACCEPTED)
 
 
-"""
-{'_0': 2019.0, 'placa': 400882, 'zona': 'Instalaciones Cocal', 'nombre': 'Proyector', 'tipo': 'Proyector', 'subtipo': 'Rendimiento Intermedio', 'marca': 'EPSON', 'modelo': 'PowerLite W42+', 'serie': 'X4JA8300237', 'valor': 389700, 'garantia__': '25-08-2020', 'detalle': 'Referencia Garantía fecha acta de asignación de activos', 'custodio': 'Oriester Abarca Hernández', 'unidad': 'Coord de Docencia', 'coordinador_unidad': 'Oriester Abarca Hernández', 'ubicacion': 'Coord de Docencia', 'estado': 'Óptimo', 'descripcion_estado': 'Equipo dentro del período de garantía', 'codigo_partida': '5-01-07-01', 'descripcion_partida': 'Equipo educacional y cultural', 'fecha_ingreso': '11-01-2019', 'numero_orden_de_compra_o_referencia': 205018, 'origen_presupuesto': '190-000-1050', 'decision_inicial': 'Pendiente', 'numero_solicitud': '2018-1634', 'numero_procedimiento': '2014LN-000005-0000900001', 'numero_factura': '00100001010000007898', 'nombre__proveedor': 'Epson Costa Rica S.A', 'telefono_proveedor': 25887855, 'correo_empresa': 'facturaelectronica@epson.co.cr', 'detalles_de_presupuesto': 'Docencia-Demanda-SP-TI-Traslado-040-2019', 'informe_tecnico': nan, 'fecha_registro': '15-01-2019', 'observacion_de_ingreso': 'pendiente', 'traslado': 'SP-TI-Traslado-040-2019', 'filtros_presu': 'Docencia-Demanda-SP-TI-Traslado-040-2019', 'tipo_presupuesto': 'Ordinario', 'tipo_de_compra': 'Demanda', 'mac': nan, 'ip': nan, 'ip_switch': nan, '_41': nan, '_42': nan}
-"""
-
-
 class ImportarReportePlaqueados(APIView):
     permission_classes = [AllowAny]
 
@@ -355,7 +358,7 @@ class ImportarReportePlaqueados(APIView):
             self.replaceColumn, axis="columns")
         redirect_url = reverse("importar_reporte_plaqueados")
         exitos = 0
-        activos_totales = 0
+        activos_totales = len(excel_file)
 
         def format_date(x):
             format = "%d-%m-%y"
@@ -365,8 +368,12 @@ class ImportarReportePlaqueados(APIView):
                 return datetime.now()
 
         for row in excel_file.itertuples(index=False):
-            activos_totales += 1
+            print(row)
+
             activo = row._asdict()
+
+            if models.Activos_Plaqueados.objects.filter(placa=activo["placa"]).first() is not None or type(activo["placa"]) is not str:
+                continue
             activo_db = models.Activos_Plaqueados()
             activo_db.placa = str(activo["placa"])
             activo_db.nombre = activo["nombre"]
@@ -386,6 +393,7 @@ class ImportarReportePlaqueados(APIView):
             activo_db.tipo = tipo_db
             activo_db.subtipo = subtipo_db
             ubicacion_db = None
+
             if type(activo["ubicacion"]) == str:
                 ubicacion_db = models.Ubicaciones.objects.filter(
                     ubicacion__contains=activo["ubicacion"]).first()
@@ -397,13 +405,15 @@ class ImportarReportePlaqueados(APIView):
                         elif "cocal" in activo["zona"].lower():
                             ubicacion_db.instalacion = models.Ubicaciones.InstalacionChoices.COCAL
                         else:
-                            break
+                            continue
                         ubicacion_db.ubicacion = activo["ubicacion"]
                         funcionario_db = models.Funcionarios.objects.filter(
                             nombre_completo__contains=activo["custodio"]).first()
                         if(funcionario_db is not None):
                             ubicacion_db.custodio = funcionario_db
                             ubicacion_db.save()
+                        else:
+                            ubicacion_db = None
             if ubicacion_db is not None:
                 activo_db.ubicacion = ubicacion_db
 
@@ -433,11 +443,26 @@ class ImportarReportePlaqueados(APIView):
 
             if traslado_db is not None:
                 activo_db.tramites.add(traslado_db)
+
+            red_db = None
+            if type(activo["mac"]) is str:
+
+                red_db = models.Red.objects.filter(MAC=activo["mac"]).first()
+
+                if red_db is None:
+                    red_db = models.Red()
+                    red_db.MAC = activo["mac"] or ""
+                    red_db.IP = activo["ip"] or ""
+                    red_db.IP_switch = activo["ip_switch"] or ""
+                    red_db.save()
+
+            if red_db is not None:
+                activo_db.red = red_db
             try:
                 activo_db.save()
                 exitos += 1
             except Exception as ex:
                 print(ex)
-                pass
+                continue
         message = f"Se incluyeron {exitos} de {activos_totales} activos totales"
         return redirect(f"{redirect_url}?message={message}")

@@ -150,21 +150,45 @@ var _utils = require("../utils");
 const table = $("#activos-table").DataTable();
 table.column("destino:name").visible(false);
 table.column("ubicacion:name").visible(false);
+let today = new Date();
+let year = new Intl.DateTimeFormat(undefined, {
+    year: "numeric"
+}).format(today);
+let month = new Intl.DateTimeFormat(undefined, {
+    month: "2-digit"
+}).format(today);
+let day = new Intl.DateTimeFormat(undefined, {
+    day: "2-digit"
+}).format(today);
+$("#fecha-input").val(`${year}-${month}-${day}`);
 $("#fecha").on("click", ()=>{
     $("#fecha-input")[0].showPicker();
 });
 $("#fecha-input").on("change", (event)=>{
+    if (!event.target.value) {
+        let today = new Date();
+        let year = new Intl.DateTimeFormat(undefined, {
+            year: "numeric"
+        }).format(today);
+        let month = new Intl.DateTimeFormat(undefined, {
+            month: "2-digit"
+        }).format(today);
+        let day = new Intl.DateTimeFormat(undefined, {
+            day: "2-digit"
+        }).format(today);
+        event.target.value = `${year}-${month}-${day}`;
+    }
     let date = new Date(event.target.value.replace("-", "/"));
-    let year = new Intl.DateTimeFormat(undefined, {
+    let year1 = new Intl.DateTimeFormat(undefined, {
         year: "numeric"
     }).format(date);
-    let month = new Intl.DateTimeFormat(undefined, {
+    let month1 = new Intl.DateTimeFormat(undefined, {
         month: "long"
     }).format(date);
-    let day = new Intl.DateTimeFormat(undefined, {
+    let day1 = new Intl.DateTimeFormat(undefined, {
         day: "numeric"
     }).format(date);
-    $("#fecha").text(`${day} de ${month.charAt(0).toUpperCase() + month.slice(1)} del ${year}`);
+    $("#fecha").text(`${day1} de ${month1.charAt(0).toUpperCase() + month1.slice(1)} del ${year1}`);
 });
 $("[data-action=pdf]").on("click", ()=>{
     table.column("controles:name").visible(false);
@@ -211,24 +235,35 @@ $("[data-action=load]").on("click", async ()=>{
 $("[data-action=subir-deshecho]").on("click", subirDeshecho);
 async function subirDeshecho() {
     const deshechoTitle = $("#deshecho-title").text();
+    const fecha = $("#fecha-input").val();
     const activos = table.rows().data().toArray();
+    if (activos.length === 0) {
+        (0, _sweetalert2Default.default).fire("Por favor a\xf1ada activos");
+        return;
+    }
+    if (deshechoTitle == "") {
+        (0, _utils.Err).fire("Por favor a\xf1ada un titulo");
+        return;
+    }
     const activosPlaqueados = activos.filter((activo)=>activo.tipo === (0, _utils.PLAQUEADO)).map((activo)=>activo.id);
     const activosNoPlaqueados = activos.filter((activo)=>activo.tipo === (0, _utils.NO_PLAQUEADO)).map((activo)=>activo.id);
-    if (activos.length === 0) (0, _sweetalert2Default.default).fire("Por favor a\xf1ada activos");
     let body = {
         referencia: deshechoTitle,
         detalles: "DESHECHO",
         solicitante: userId,
+        fecha,
         tipo: "Deshecho",
         activosPlaqueados,
         activosNoPlaqueados
     };
-    try {
-        const res = await (0, _utils.axiosInstance).post(tramitesView, body);
-        (0, _utils.Success).fire("Se subio el deshecho con \xe9xito");
-    } catch (exception) {
-        (0, _utils.Err).fire("Hubo un error al subir el deshecho");
-    }
+    const res = await (0, _utils.axiosInstance).post(tramitesView, body).catch((error)=>{
+        if (error.request.status > 300 && error.request.status < 500) (0, _utils.Warning).fire({
+            text: "Error al a\xf1adir tramite",
+            footer: error.request.response
+        });
+        else if (error.request.status >= 500) (0, _utils.Err).fire("Parece que hubo un error en el servidor");
+    });
+    if (res.status >= 200 && res.status <= 205) (0, _utils.Success).fire("Se subio el deshecho con \xe9xito");
 }
 
 },{"sweetalert2":"1HyFr","../utils":"xZHcx","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"1HyFr":[function(require,module,exports) {
@@ -6889,8 +6924,8 @@ function isAxiosError(payload) {
 exports.default = isAxiosError;
 
 },{"./../utils.js":"5By4s","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"at6i8":[function(require,module,exports) {
-var global = arguments[3];
 var process = require("process");
+var global = arguments[3];
 /*!
  * html2pdf.js v0.10.1
  * Copyright (c) 2021 Erik Koopmans

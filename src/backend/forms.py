@@ -3,7 +3,7 @@ from django.forms import ModelForm, DateField, Select, SelectDateWidget, TextInp
 from django import forms
 
 
-from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Compra, Deshecho, Funcionarios, Tramites, Ubicaciones, Tipo, Subtipo
+from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Compra, Deshecho, Funcionarios, Tramites, Ubicaciones, Tipo, Subtipo, Red
 from backend.widgets import DatePickerInput
 from django.contrib.auth.models import User
 from phonenumber_field.formfields import PhoneNumberField
@@ -157,4 +157,10 @@ class CompraForm(forms.ModelForm):
 class UserForm(ModelForm):
     class Meta:
         model = User
+        exclude = ["id"]
+
+
+class RedForm(ModelForm):
+    class Meta:
+        model = Red
         exclude = ["id"]

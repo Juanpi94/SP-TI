@@ -12167,6 +12167,10 @@ tbody {
   margin: 0 2rem;
 }
 
+.dt-button.disabled {
+  display: none;
+}
+
 table .sorting_disabled:after, table .sorting_disabled:before {
   display: none !important;
 }
@@ -12174,6 +12178,13 @@ table .sorting_disabled:after, table .sorting_disabled:before {
 table td {
   border-right: 1px solid #8b8b8b;
   font-size: .9rem;
+}
+
+table td.select-column input {
+  width: 1rem;
+  height: 1rem;
+  margin: auto;
+  display: block;
 }
 
 table .detail-table {
@@ -12227,6 +12238,26 @@ table .detail-row .detail-data {
   background-color: #e1b544 !important;
 }
 
+.btn-delete-all {
+  border-color: #e74a3b;
+  color: #fff !important;
+  background-color: #e74a3b !important;
+}
+
+.btn-delete-all:hover {
+  background-color: #f29e96 !important;
+}
+
+.btn-deselect {
+  border-color: #5a5c69;
+  color: #fff !important;
+  background-color: #5a5c69 !important;
+}
+
+.btn-deselect:hover {
+  background-color: #8c8e9d !important;
+}
+
 .topbar {
   height: 4.375rem;
   padding: 0 2rem;
@@ -12253,9 +12284,11 @@ table .detail-row .detail-data {
 }
 
 .topbar .search-result-container .search-result-list .search-result-item a {
-  padding: .3rem;
+  width: 100%;
+  padding-left: .3rem;
   text-decoration: none;
   text-emphasis-style: none;
+  display: block;
 }
 
 .topbar .search-result-container .search-result-list .search-result-item:hover {
@@ -12911,6 +12944,10 @@ body {
   padding: 0 .2rem;
   display: none;
   overflow: auto;
+}
+
+.motivoPdf.show {
+  display: block !important;
 }
 
 .footer {

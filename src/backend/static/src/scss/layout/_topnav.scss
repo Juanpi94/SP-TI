@@ -21,8 +21,10 @@
 			.search-result-item {
 				a {
 					text-decoration: none;
-					padding: 0.3rem;
+					padding-left: 0.3rem;
 					text-emphasis-style: none;
+					width: 100%;
+					display: block;
 				}
 
 				&:hover {

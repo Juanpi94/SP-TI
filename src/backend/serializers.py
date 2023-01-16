@@ -3,7 +3,7 @@ from dataclasses import field
 from django.forms import SlugField
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Compra, Deshecho, Funcionarios, Subtipo, Taller, Tipo, Tramites, Traslados, Ubicaciones
+from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Compra, Deshecho, Funcionarios, Subtipo, Taller, Tipo, Tramites, Traslados, Ubicaciones, Red
 from django.contrib.auth.models import User
 
 
@@ -77,7 +77,7 @@ class TramitesCreateSerializer(ModelSerializer):
         slug_field="nombre_completo", queryset=Funcionarios.objects.all(), required=False)
     remitente = serializers.SlugRelatedField(
         slug_field="nombre_completo", queryset=Funcionarios.objects.all(), required=False)
-
+    fecha = serializers.DateField(input_formats=["%Y-%m-%d", "iso-8601"])
     traslados = serializers.ReadOnlyField()
 
     class Meta:
@@ -154,5 +154,15 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-
         exclude = ["password"]
+
+
+class RedSerializer(ModelSerializer):
+    placa = serializers.StringRelatedField(
+        source="activos_plaqueados_set.last.placa", default="")
+    serie = serializers.StringRelatedField(
+        source="activos_no_plaqueados_set.last.serie", default="")
+
+    class Meta:
+        model = Red
+        fields = "__all__"

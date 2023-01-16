@@ -43,6 +43,15 @@
                         <th class="bg-teal clr-white">
                             Informe Técnico
                         </th>
+                        <th class="bg-blue clr-white">
+                            MAC
+                        </th>
+                        <th class="bg-blue clr-white">
+                            IP
+                        </th>
+                        <th class="bg-blue clr-white">
+                            IP SWITCH
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -133,6 +142,15 @@
                             </td>
                             <td>
                                 {{ row.compra.informe_tecnico }}
+                            </td>
+                            <td>
+                                {{ row.red.MAC }}
+                            </td>
+                            <td>
+                                {{ row.red.IP }}
+                            </td>
+                            <td>
+                                {{ row.red.IP_SWITCH }}
                             </td>
                         </tr>
                     {% endfor %}

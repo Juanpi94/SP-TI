@@ -3,6 +3,7 @@ from tkinter import CASCADE
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from django.db import models
+from django.utils.timezone import now
 
 # Create your models here.
 
@@ -55,6 +56,7 @@ class Activo(models.Model):
     compra = models.ForeignKey("Compra", on_delete=models.SET_NULL, null=True)
     estado = models.CharField(
         max_length=25, choices=Estados.choices, default=Estados.OPTIMO)
+    red = models.ForeignKey(to="Red", on_delete=models.SET_NULL, null=True)
 
     class Meta:
         abstract = True
@@ -138,7 +140,7 @@ class Tramites(models.Model):
     tipo = models.CharField(
         max_length=12, choices=TiposTramites.choices, default=TiposTramites.TRASLADO)
     detalles = models.CharField(max_length=900)
-    fecha = models.DateField(auto_now_add=True)
+    fecha = models.DateField(default=now)
     estado = models.CharField(
         max_length=12, choices=TiposEstado.choices, default=TiposEstado.PENDIENTE)
 
@@ -147,7 +149,7 @@ class Tramites(models.Model):
 
 
 class Traslados(models.Model):
-    fecha = models.DateField(auto_now_add=True)
+
     destino = models.ForeignKey(
         to=Ubicaciones, on_delete=models.DO_NOTHING, related_name="+")
     tramite = models.ForeignKey(to=Tramites, on_delete=models.CASCADE)
@@ -158,7 +160,7 @@ class Traslados(models.Model):
 
 
 class Deshecho(models.Model):
-    fecha = models.DateField(auto_now_add=True)
+
     tramite = models.ForeignKey(to=Tramites, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -169,8 +171,9 @@ class Taller(models.Model):
     tramite = models.ForeignKey(to=Tramites, on_delete=models.CASCADE)
     destinatario = models.CharField(max_length=200)
     beneficiario = models.CharField(max_length=200)
+    autor = models.CharField(max_length=200)
 
-    
+
 class Compra(models.Model):
     numero_orden_compra = models.CharField(max_length=15, primary_key=True)
     numero_solicitud = models.CharField(max_length=150, blank=True)
@@ -186,3 +189,13 @@ class Compra(models.Model):
 
     def __str__(self):
         return self.numero_orden_compra
+
+
+class Red(models.Model):
+    MAC = models.CharField(max_length=45, unique=True)
+    IP = models.CharField(max_length=20, blank=True, default="")
+    IP6 = models.CharField(max_length=40, blank=True, default="")
+    IP_switch = models.CharField(max_length=80, blank=True, default="")
+
+    def __str__(self):
+        return self.MAC

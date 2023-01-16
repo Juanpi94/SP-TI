@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from django.contrib.auth.decorators import login_required
 from backend import views
 from backend import api_views
-from backend.api_views import CompraApiViewset, DeshechoApiViewset, FuncionariosApiViewset, NoPlaqueadosApiViewSet, PlaqueadosApiViewset, SubtipoApiViewSet, TallerApiViewset, TipoApiViewset, TramitesApiViewset, TrasladosApiViewset, UbicacionesApiViewset, UserApiViewset
+from backend.api_views import CompraApiViewset, DeshechoApiViewset, FuncionariosApiViewset, NoPlaqueadosApiViewSet, PlaqueadosApiViewset, RedApiViewset, SubtipoApiViewSet, TallerApiViewset, TipoApiViewset, TramitesApiViewset, TrasladosApiViewset, UbicacionesApiViewset, UserApiViewset
 
 
 def protected(view): return login_required(view, "/login")
@@ -34,6 +34,7 @@ urlpatterns = [
     path("desecho/", views.Deshecho_View.as_view(), name="deshecho"),
     path("compra/", views.Compra_View.as_view(), name="compra"),
     path("users/", views.Users_View.as_view(), name="users"),
+    path("red/", views.Red_Table_View.as_view(), name="red"),
     path("reportes/plaqueados", views.Reporte_Plaqueados.as_view(),
          name="reporte_plaqueados"),
     path("reportes/plaqueados/2-old", views.Reporte_Plaqueados_2_old.as_view(),
@@ -75,6 +76,7 @@ router.register(r"compra", CompraApiViewset, "compra")
 router.register(r"user", UserApiViewset, "user")
 
 router.register(r"taller", TallerApiViewset, "taller")
+router.register(r"red", RedApiViewset, "red")
 apiurlpatterns = [
     path('', include(router.urls)),
     path("importar/activos", api_views.ImportarActivosApiView.as_view(),

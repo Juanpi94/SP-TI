@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.views.generic import TemplateView, RedirectView
 from backend import models
 from backend.exceptions import ArgMissingException
-from backend.forms import CompraForm, DeshechoExportForm, FuncionariosForm, NoPlaqueadosForm, PlaqueadosForm, TallerExportForm, TipoForm, TramitesExportForm, TramitesForm, UbicacionesForm, SubtipoForm, UserForm
+from backend.forms import CompraForm, DeshechoExportForm, FuncionariosForm, NoPlaqueadosForm, PlaqueadosForm, RedForm, TallerExportForm, TipoForm, TramitesExportForm, TramitesForm, UbicacionesForm, SubtipoForm, UserForm
 
 
 class Table():
@@ -50,7 +50,7 @@ class Table_View(ReadPermMixin, TemplateView):
         El formulario que se utiliza para las ediciones y creaciones
     add: bool, optional
         Determina si habrá o no un formulario para crear registros (default=True)
-    add: bool, optional
+    edit: bool, optional
         Determina se podrá editar un registro(default=True)
     title : str
         Titulo de la tabla
@@ -225,6 +225,8 @@ class Deshecho_View (WritePermMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['form'] = DeshechoExportForm()
         return context
+
+
 class Taller_View (WritePermMixin, TemplateView):
     template_name = "generar/taller.html"
 
@@ -322,3 +324,13 @@ class Reporte_Plaqueados_4_old(Reporte_Plaqueados):
         context["rows"] = data
         context["title"] = "Reporte de activos plaqueados con 4 años de antigüedad"
         return context
+
+
+class Red_Table_View(Table_View):
+    target_view = "red-list"
+    columns = "__all__"
+    model = models.Red
+    title = "Red Plaqueados"
+    form = RedForm
+    columns = ["placa", "serie", "MAC", "IP", "IP6", "IP_switch"]
+    exclude = ["id", "activos_plaqueados", "activos_plaqueados"]

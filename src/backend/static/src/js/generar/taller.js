@@ -4,6 +4,7 @@ import {
 	NO_PLAQUEADO,
 	PLAQUEADO,
 	Success,
+	toPdf,
 	Warning,
 } from "../utils";
 
@@ -11,12 +12,41 @@ const table = $("#activos-table").DataTable();
 table.column("destino:name").visible(false);
 table.column("ubicacion:name").visible(false);
 
+$("[data-action=pdf]").on("click", () => {
+	table.column("controles:name").visible(false);
+	const pdfContainer = $(".pdf-container").clone();
+	pdfContainer.addClass("export");
+
+	const motivoTextArea = pdfContainer.find("#id_motivo");
+	const text = motivoTextArea.val();
+	const motivoPdf = pdfContainer.find("#motivo_for_pdf");
+	console.log(motivoPdf);
+	const scrollHeight = $("#id_motivo").prop("scrollHeight");
+	const finalHeight =
+		scrollHeight == 0 ? $("#id_motivo").height() : scrollHeight;
+	motivoTextArea.hide();
+	motivoPdf.text(text);
+
+	motivoPdf.height(finalHeight);
+	motivoPdf.addClass("show");
+
+	const worker = toPdf(
+		pdfContainer[0],
+		`Envio_Taller-${new Date().toISOString()}.pdf`
+	);
+
+	worker.then(() => {
+		table.column("controles:name").visible(true);
+	});
+});
+
 $("[data-action=subir-taller]").on("click", async () => {
 	const boleta = $("#id_boleta").val();
 	const fecha = $("#id_fecha").val();
 	const destinatario = $("#destinatario-input").val();
 	const beneficiario = $("#beneficiario-input").val();
 	const motivo = $("#id_motivo").val();
+	const autor = $("#autor-input").val();
 	const activos = table.rows().data().toArray();
 	const activosPlaqueados = activos
 		.filter((activo) => activo.tipo === PLAQUEADO)
@@ -30,6 +60,7 @@ $("[data-action=subir-taller]").on("click", async () => {
 		taller: {
 			destinatario,
 			beneficiario,
+			autor,
 		},
 		solicitante: userId,
 		detalles: motivo,
@@ -44,6 +75,7 @@ $("[data-action=subir-taller]").on("click", async () => {
 		beneficiario,
 		detalles: motivo,
 		fecha,
+		autor,
 	};
 	for (let field in testBody) {
 		if (!testBody[field]) {
@@ -54,6 +86,7 @@ $("[data-action=subir-taller]").on("click", async () => {
 
 	if (activos.length == 0) {
 		Err.fire("Por favor añada activos");
+		return;
 	}
 
 	const res = await axiosInstance.post(tramitesView, body).catch((error) => {
