@@ -28,7 +28,6 @@
                         <th class="bg-orange clr-white">Ingreso</th>
                         <th class="bg-green clr-white">Ubicacion Anterior</th>
                         <th class="bg-green clr-white">Ubicacion</th>
-                        <th class="bg-green clr-white">Instalacion</th>
                         <th class="bg-green clr-white">Custodio</th>
                         <th class="bg-indigo clr-white">Tipo de tramite</th>
                         <th class="bg-indigo clr-white">Estado de tramite</th>
@@ -40,9 +39,7 @@
                         <th class="bg-teal clr-white">Número Factura</th>
                         <th class="bg-teal clr-white">Proveedor</th>
                         <th class="bg-teal clr-white">Detalles de Ingreso</th>
-                        <th class="bg-teal clr-white">
-                            Informe Técnico
-                        </th>
+                        <th class="bg-teal clr-white">Informe Técnico</th>
                         <th class="bg-blue clr-white">
                             MAC
                         </th>
@@ -61,7 +58,7 @@
                                 {{ row.serie }}
                             </td>
                             <td>
-                                {{ row.ubicacion }}
+                                {{ row.ubicacion.instalacion }}
                             </td>
                             <td>
                                 {{ row.tipo }}
@@ -95,9 +92,6 @@
                             </td>
                             <td>
                                 {{ row.ubicacion.ubicacion }}
-                            </td>
-                            <td>
-                                {{ row.ubicacion.instalacion }}
                             </td>
                             <td>
                                 {{ row.ubicacion.custodio }}

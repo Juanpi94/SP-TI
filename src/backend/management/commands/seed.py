@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from backend.models import Activos_Plaqueados, Ubicaciones, Funcionarios, User, Tipo, Subtipo, Compra
+from backend.models import Activos_Plaqueados, Proveedor, Ubicaciones, Funcionarios, User, Tipo, Subtipo, Compra
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from django.core.management import call_command
@@ -7,18 +7,24 @@ from django.core.management import call_command
 import datetime
 import json
 import os
+from atic.settings import BASE_DIR
 
 
 class Command(BaseCommand):
     help = "Ingresa registros a la base de datos"
 
+    def add_arguments(self, parser):
+        parser.add_argument("--no-flush", action="store_true",
+                            help="Realizar seed sin eliminar información en la base de datos")
+
     def handle(self, *args, **options):
-        call_command("flush")
-        self.stdout.write(self.style.SUCCESS("Base de datos limpia!"))
-        json_file_path = os.path.join(
-            os.path.abspath(os.path.dirname('manage.py')),
-            'seed_dump.json'
-        )
+
+        if(options["no_flush"] is False):
+            call_command("flush")
+            self.stdout.write(self.style.SUCCESS("Base de datos limpia!"))
+        json_file_path = os.path.join(BASE_DIR,
+                                      'seed_dump.json'
+                                      )
 
         with open(json_file_path, encoding="UTF-8") as file:
 
@@ -147,11 +153,17 @@ class Command(BaseCommand):
                     compra_db.decision_inicial = compra["decision_inicial"]
                     compra_db.numero_solicitud = compra["numero_solicitud"]
                     compra_db.numero_factura = compra["numero_factura"]
-                    compra_db.telefono_proveedor = compra["telefono_proveedor"]
-                    compra_db.proveedor = compra["nombre_proveedor"]
-                    compra_db.correo_proveedor = compra["correo_empresa"]
+                    proveedor_db = Proveedor.objects.filter(
+                        nombre=compra["nombre_proveedor"]).first()
+                    if proveedor_db is None:
+                        proveedor_db = Proveedor()
+                        proveedor_db.telefono = compra["telefono_proveedor"]
+                        proveedor_db.nombre = compra["nombre_proveedor"]
+                        proveedor_db.correo = compra["correo_empresa"]
+                        proveedor_db.save()
                     compra_db.detalle = compra["detalles_presupuesto"]
                     compra_db.informe_tecnico = compra["informe_tecnico"]
+                    compra_db.proveedor = proveedor_db
                     compra_db.save()
 
                     random_activo = Activos_Plaqueados.objects.exclude(
@@ -165,7 +177,7 @@ class Command(BaseCommand):
                         f"La compra {compra_db.numero_orden_compra} carece de un dato importante"))
 
             self.stdout.write(self.style.SUCCESS(
-                f"Se añadieron {exitos} Compras de {registros}"))
+                f"Se añadieron {exitos} Compras y proveedores de {registros}"))
 
             User.objects.create_superuser(
                 username="admin", email="Admin@gmail.com", password="AdminPassword")

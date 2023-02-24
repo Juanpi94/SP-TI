@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.utils.timezone import now
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Create your models here.
 
@@ -26,6 +27,7 @@ class Subtipo(models.Model):
 
 class Activo(models.Model):
     class Estados(models.TextChoices):
+        __empty__ = "--------"
         DESHECHO = "Deshecho", _("Deshecho")
         EN_USO = "En uso", _("En uso")
         FUNCIONAL = "Funcional", _("Funcional")
@@ -97,12 +99,15 @@ class Funcionarios(models.Model):
 
 class Ubicaciones(models.Model):
     class InstalacionChoices(models.TextChoices):
-        ESPARZA = "Esparza", _("Sede de Esparza")
-        COCAL = "Cocal", _("Sede del Cocal")
+        __empty__ = "--------"
+        ESPARZA = "Esparza", _("Instalación de Esparza")
+        COCAL = "Cocal", _("Instalación del Cocal")
     ubicacion = models.CharField(max_length=120, default="NA", unique=True)
     instalacion = models.CharField(
         max_length=10, choices=InstalacionChoices.choices, default=InstalacionChoices.ESPARZA)
     custodio = models.ForeignKey(to=Funcionarios, on_delete=models.DO_NOTHING)
+    unidad = models.ForeignKey(
+        to="Unidad", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.ubicacion
@@ -124,13 +129,17 @@ class Permissions(models.Model):
 
 class Tramites(models.Model):
     class TiposTramites(models.TextChoices):
+        __empty__ = "--------"
         TRASLADO = 'Traslado', _('Traslado')
         DESHECHO = 'Deshecho', _('Deshecho')
         TALLER = 'Taller', _('Taller')
 
     class TiposEstado(models.TextChoices):
+        __empty__ = "--------"
         PENDIENTE = 'Pendiente', _('Pendiente')
         FINALIZADO = 'Finalizado', _('Finalizado')
+        EN_PROCESO = "En Proceso", _("En Proceso")
+        ACEPTADO = "Aceptado", _("Aceptado")
     referencia = models.CharField(max_length=120, unique=True)
     solicitante = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     remitente = models.ForeignKey(
@@ -181,9 +190,8 @@ class Compra(models.Model):
     decision_inicial = models.CharField(max_length=100, blank=True)
     numero_procedimiento = models.CharField(max_length=120, blank=True)
     numero_factura = models.CharField(max_length=120, blank=True)
-    proveedor = models.CharField(max_length=300, blank=True)
-    telefono_proveedor = models.CharField(max_length=100, blank=True)
-    correo_proveedor = models.CharField(max_length=120, blank=True)
+    proveedor = models.ForeignKey(
+        to="Proveedor", on_delete=models.SET_NULL, null=True)
     detalle = models.CharField(max_length=300, blank=True)
     informe_tecnico = models.CharField(max_length=120, blank=True)
 
@@ -199,3 +207,19 @@ class Red(models.Model):
 
     def __str__(self):
         return self.MAC
+
+
+class Proveedor(models.Model):
+    nombre = models.CharField(max_length=230, unique=True)
+    telefono = models.CharField(max_length=10)
+    correo = models.EmailField()
+
+    def __str__(self) -> str:
+        return self.nombre
+
+
+class Unidad(models.Model):
+    codigo = models.CharField(max_length=5, primary_key=True)
+    nombre = models.CharField(max_length=120, null=True)
+    coordinador = models.ForeignKey(
+        to=Funcionarios, on_delete=models.SET_NULL, null=True)

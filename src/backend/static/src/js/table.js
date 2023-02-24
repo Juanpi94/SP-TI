@@ -21,6 +21,12 @@ function main() {
 	//Se inicializan los select, si existen
 	if ($("select").length) {
 		$("select").select2({
+			templateSelection: function (data) {
+				if (data.id == "") {
+					return "seleccione una opción";
+				}
+				return data.text;
+			},
 			language: {
 				noResults: () => "No hay resultados para esta busqueda",
 			},
@@ -32,7 +38,7 @@ function main() {
 			.data("select2")
 			.on("open", function () {
 				if (this) {
-					this.dropdown._positionDropdown();
+					// this.dropdown._positionDropdown();
 				}
 			});
 	}
@@ -40,10 +46,20 @@ function main() {
 	// Esta función se encarga de inicializar la tabla
 	let table = $("#datatable").DataTable({
 		scrollX: true,
-		rowId: "id",
+		rowId: (data) => {
+			return data[Object.keys(data)[0]];
+		},
 		ajax: { url: target_view, dataSrc: "" },
 		buttons: {
 			buttons: [
+				{
+					extend: "print",
+					text: "Imprimir",
+					className: "btn mt-3 btn-print",
+					exportOptions: {
+						columns: [":not(.not-exportable)"],
+					},
+				},
 				{
 					text: "Añadir",
 					className: "btn mt-3 btn-add",
@@ -53,40 +69,35 @@ function main() {
 							return;
 						}
 						$("#form")[0].reset();
+						$("#form select").val("").trigger("change");
 						$("#form-modal").showModal("Añadir registro");
 						$("#form").only("submit", (ev) => addSubmitHandler(ev));
 					},
 				},
 				{
+					extend: "pdf",
+				},
+				{
+					extend: "excel",
 					text: "Exportar visibles a excel",
-					className: "btn  mt-3 btn-export-visibles",
-					action: () => {
-						const data = table.rows({ page: "current" }).data().toArray();
-
-						const parsedData = [];
-						for (let iterator = 0; iterator < data.length; iterator++) {
-							parsedData.push(data[iterator]);
-						}
-						toExcel(parsedData).then((res) => {
-							download(
-								new Blob([Buffer.from(res.data["data"], "hex")]),
-								`exported-${Date.now()}.xlsx`
-							);
-						});
+					className: "btn mt-3 btn-export-visibles",
+					title: `${
+						document.title
+					}-visibles-${new Date().toLocaleTimeString()}`,
+					exportOptions: {
+						columns: [":not(.not-exportable)"],
+						modifier: {
+							page: "current",
+						},
 					},
 				},
 				{
+					extend: "excel",
 					text: "Exportar tabla a excel",
 					className: "btn mt-3 btn-export-all",
-					action: () => {
-						const data = table.rows().data().toArray();
-						console.log(data);
-						toExcel(data).then((res) => {
-							download(
-								new Blob([Buffer.from(res.data["data"], "hex")]),
-								`exportedTable-${Date.now()}.xlsx`
-							);
-						});
+					title: `${document.title}-${new Date().toLocaleTimeString()}`,
+					exportOptions: {
+						columns: [":not(.not-exportable)"],
 					},
 				},
 
@@ -105,16 +116,18 @@ function main() {
 						});
 
 						if (result.isConfirmed) {
-							const rows = table.rows(".selected").data().toArray();
 							let exitos = 0;
-							for (let row of rows) {
+							let rows = table.rows(".selected");
+							for (let rowIdx of rows) {
+								let row = table.row(rowIdx);
+
 								const { status } = await axiosInstance.delete(
-									target_view + row.id
+									target_view + row.id()
 								);
 
-								table.row(`#${row.id}`).remove().draw();
+								row.remove().draw();
 								if (status >= 200 && status <= 205) {
-									exitos++;
+									exitos += 1;
 								}
 							}
 							table.draw();
@@ -133,9 +146,9 @@ function main() {
 					enabled: false,
 					name: "deselect",
 					action: () => {
-						$(".selected").removeClass("selected");
-
-						$("[name=select-checkbox]").check(false);
+						const rows = table.rows(".selected").nodes().to$();
+						rows.removeClass("selected");
+						rows.find("input[type=checkbox]").check(false);
 						table.button("delete-all:name").disable();
 						table.button("deselect:name").disable();
 					},
@@ -148,7 +161,7 @@ function main() {
 				data: null,
 				title: "Seleccionar",
 				render: selectRender,
-				className: "select-column",
+				className: "select-column not-exportable",
 				sortable: false,
 				searchable: false,
 			},
@@ -156,6 +169,7 @@ function main() {
 			{
 				data: "id",
 				title: "Acciones",
+				className: "not-exportable",
 				render: buttonsRender,
 				sortable: false,
 				searchable: false,
@@ -176,7 +190,14 @@ function main() {
 	$("#datatable").on("click", "[data-action=edit]", editHandler);
 	$("#datatable").on("click", "[data-action=delete]", deleteHandler);
 	$("#datatable").on("click", "[data-action=show]", showDetailsHandler);
-
+	$("thead .select-column").on("click", () => {
+		if ($(".selected").length) return;
+		const rows = table.rows(".selected").nodes().to$();
+		rows.toggleClass("selected");
+		rows.find("input[type=checkbox]").check(true);
+		table.button("delete-all:name").enable();
+		table.button("deselect:name").enable();
+	});
 	table.on("draw.dt", feather.replace);
 
 	$("#form-modal")
@@ -197,12 +218,8 @@ function main() {
 		//Se le añade un data-id al formulario, para poder conectarse con el api
 		$("#form").data("id", id);
 
-		//Se hace un fetch de los datos del objeto que se quiere editar, luego se
-		//le adjunta dichos datos al formulario, para facilitar la edición
-		const res = await axiosInstance.get(target_view + id);
+		const jsonData = table.row(`#${id}`).data();
 
-		const jsonData = res.data;
-		console.log(jsonData);
 		for (key in jsonData) {
 			//Cada input del formulario tiene un id con el formato id_{nombre del dato}
 			//Lo que permite que se pueda hacer lo siguiente
@@ -232,7 +249,8 @@ function main() {
 			if (target_view.includes("plaqueados")) {
 				const row = table.row($(this).parents("tr"));
 				const rowData = row.data();
-				if (rowData.tramite) {
+				console.log(rowData);
+				if (rowData.tramites.length > 0) {
 					const result = await Swal.fire({
 						title:
 							"El registro se encuentra actualmente en un tramite, ¿eliminar de todas formas?",
@@ -242,11 +260,27 @@ function main() {
 						confirmButtonColor: "red",
 					});
 
-					if (result.isDenied) return;
+					if (result.isDenied || result.isDismissed) return;
 				}
 			}
 
-			const { status } = await axiosInstance.delete(target_view + id);
+			const errorHandler = (error) => {
+				if (error.request.status >= 300 && error.request.status < 500) {
+					Warning.fire({
+						text: "Error al eliminar el registro",
+						footer: error.request.response,
+					});
+				} else if (error.request.status >= 500) {
+					Err.fire("Parece que hubo un error en el servidor");
+				}
+				return error.request;
+			};
+			Swal.fire("Cargando solicitud");
+			Swal.showLoading();
+			const { status } = await axiosInstance
+				.delete(target_view + id)
+				.catch(errorHandler);
+			Swal.hideLoading();
 			//El codigo 204 es el que por general retorna luego de una eliminación
 			if (status === 204) {
 				Swal.fire({
@@ -281,12 +315,12 @@ function main() {
 
 		//Se crea un objeto con el formdata para poder acceder a las keys y a los valores más facilmente
 
-		const formattedFormData = Object.fromEntries(formData);
-
-		for (key in formattedFormData) {
+		const rawFormData = Object.fromEntries(formData);
+		const formattedFormData = {};
+		for (key in rawFormData) {
 			//Declarar los datos vacios como null ayuda al api a procesar más facilmente los datos
-			if (formattedFormData[key] === "") {
-				formattedFormData[key] = null;
+			if (rawFormData[key] !== "") {
+				formattedFormData[key] = rawFormData[key];
 			}
 		}
 		return formattedFormData;
@@ -298,41 +332,43 @@ function main() {
 		if (!sanitizeForm(event.target)) return;
 		//Si es valido, crea un formData con los datos del formulario: https://developer.mozilla.org/es/docs/Web/API/FormData
 		const formData = getSanitizedFormData(event.target);
-		//Se crea un texto json con los datos del formulario, luego se le adjuntan a la petición AJAX
-		const res = await axios.post(target_view, formData, {
-			headers: { "X-CSRFToken": getCsrf() },
-		});
 
-		console.log(res);
+		const errorHandler = (error) => {
+			if (error.request.status >= 300 && error.request.status < 500) {
+				Warning.fire({
+					text: "Error al añadir el registro",
+					footer: error.request.response,
+				});
+			} else if (error.request.status >= 500) {
+				Err.fire("Parece que hubo un error en el servidor");
+			}
+
+			return error.request;
+		};
+		//Se crea un texto json con los datos del formulario, luego se le adjuntan a la petición AJAX
 		//201: Objeto creado
 		//400: El usuario ingreso mal un dato
 		//500+: Algo pasó en el servidor
-		if (res.status === 201) {
+
+		Swal.fire("Cargando solicitud");
+		Swal.showLoading();
+		const res = await axios
+			.post(target_view, formData, {
+				headers: { "X-CSRFToken": getCsrf() },
+			})
+			.catch(errorHandler);
+		Swal.hideLoading();
+		if (res.status > 200 && res.status <= 205) {
 			Swal.fire({
 				icon: "success",
-				title: "Se añadió el activo con exito",
+				title: "Se añadió el registro con exito",
 				showConfirmButton: false,
 				timer: swalAlertTimer,
 			});
 
-			console.log("añadir", res.data);
 			table.row.add(res.data).draw();
 			const addModal = bootstrap.Modal.getInstance($("#form-modal"));
 			addModal.hide();
-		} else if (res.status === 400) {
-			Swal.fire({
-				icon: "error",
-				title: "Hay errores en los datos ingresados",
-				showConfirmButton: false,
-				timer: swalAlertTimer,
-			});
-		} else if (res.status > 500) {
-			Swal.fire({
-				icon: "error",
-				title: "Error con el servidor",
-				showConfirmButton: false,
-				timer: swalAlertTimer,
-			});
 		}
 	}
 
@@ -361,11 +397,15 @@ function main() {
 			} else if (error.request.status >= 500) {
 				Err.fire("Parece que hubo un error en el servidor");
 			}
+			return error.request;
 		};
+
+		Swal.fire("Cargando solicitud");
+		Swal.showLoading();
 		const res = await axiosInstance
 			.put(target_view + id, formData)
 			.catch(errorHandler);
-
+		Swal.hideLoading();
 		if (res.status === 200) {
 			Swal.fire({
 				icon: "success",

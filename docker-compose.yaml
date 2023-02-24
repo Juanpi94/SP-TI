@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  atic_app:
+      build: .
+      volumes:
+        - static:/src/static
+        - ./src/atic/:/src/atic
+      environment:
+        - DATABASE=atic
+        - USER=atic_user
+        - PASSWORD=root
+        - HOST=mysql_db
+        - DEBUG=1  
+        - SECRET=@aJ1xTcsgYR$3PN%RRF$D*!OWEjvFOV*5T#84Ww#3c%#DYQCi^
+      depends_on:
+        mysql_db:
+          condition: service_healthy
+  mysql_db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "s5!!2oLFX633"
+      MYSQL_DATABASE: "atic"
+      MYSQL_USER: "atic_user"
+      MYSQL_PASSWORD: "root"
+      MYSQL_PORT: "3306"
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: "mysqladmin ping -h mysql_db -u $$MYSQL_USER --password=$$MYSQL_PASSWORD"
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+ 
+  nginx: 
+    image: nginx
+    ports:
+      - 8000:80
+    volumes:
+      - ./config/nginx/conf.d:/etc/nginx/conf.d
+      - static:/src/static
+    environment:
+      - VIRTUAL_HOST=atic
+    depends_on:
+      - atic_app
+volumes:
+  .:
+  static: 
+  mysql_data:

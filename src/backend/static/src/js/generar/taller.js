@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import {
 	axiosInstance,
 	Err,
@@ -88,7 +89,8 @@ $("[data-action=subir-taller]").on("click", async () => {
 		Err.fire("Por favor añada activos");
 		return;
 	}
-
+	Swal.fire("Cargando solicitud");
+	Swal.showLoading();
 	const res = await axiosInstance.post(tramitesView, body).catch((error) => {
 		if (error.request.status >= 300 && error.request.status < 500) {
 			Warning.fire({
@@ -99,7 +101,7 @@ $("[data-action=subir-taller]").on("click", async () => {
 			Err.fire("Parece que hubo un error en el servidor");
 		}
 	});
-
+	Swal.hideLoading();
 	if (res.status > 200 && res.status <= 205) {
 		Success.fire("El tramite " + boleta + " se añadió con exito");
 	}

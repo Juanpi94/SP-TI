@@ -13,7 +13,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
 from rest_framework.response import Response
 from backend import models
-from backend.serializers import CompraSerializer, DeshechoSerializer, FuncionariosSerializer, NoPlaqueadosSerializer, PlaqueadosSerializer, RedSerializer, SubtipoSerializer, TallerSerializer, TipoSerializer, TramitesCreateSerializer, TramitesSerializer, TrasladosSerializer, UbicacionesSerializer, UserSerializer
+from backend.serializers import CompraSerializer, DeshechoSerializer, FuncionariosSerializer, NoPlaqueadosSerializer, PlaqueadosSerializer, ProveedorSerializer, RedSerializer, SubtipoSerializer, TallerSerializer, TipoSerializer, TramitesCreateSerializer, TramitesSerializer, TrasladosSerializer, UbicacionesSerializer, UnidadSerializer, UserSerializer
 from rest_framework.decorators import action
 import pandas as pd
 from django.core.exceptions import ObjectDoesNotExist
@@ -31,28 +31,29 @@ class CustomModelViewset(ModelViewSet):
             return self.serializer_class
 
 
-class PlaqueadosApiViewset(ModelViewSet):
+class AuthMixin:
+    permission_classes = [IsAuthenticated]
+
+
+class PlaqueadosApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Activos_Plaqueados.objects.all()
     serializer_class = PlaqueadosSerializer
 
-    permission_classes = [AllowAny]
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('serie', "placa")
 
 
-class NoPlaqueadosApiViewSet(ModelViewSet):
+class NoPlaqueadosApiViewSet(AuthMixin, ModelViewSet):
     queryset = models.Activos_No_Plaqueados.objects.all()
     serializer_class = NoPlaqueadosSerializer
 
-    permission_classes = [AllowAny]
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('serie',)
 
 
-class TramitesApiViewset(ModelViewSet):
+class TramitesApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Tramites.objects.all()
     serializer_class = TramitesSerializer
-    permission_classes = [AllowAny]
 
     def perform_update(self, serializer):
 
@@ -163,63 +164,68 @@ class TramitesApiViewset(ModelViewSet):
         return serializer.save()
 
 
-class DeshechoApiViewset(ModelViewSet):
+class DeshechoApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Deshecho.objects.all()
     serializer_class = DeshechoSerializer
-    permission_classes = [AllowAny]
 
 
-class TrasladosApiViewset(ModelViewSet):
+class TrasladosApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Traslados.objects.all()
     serializer_class = TrasladosSerializer
-    permission_classes = [AllowAny]
+
     filter_backends = (DjangoFilterBackend,)
 
 
-class TallerApiViewset(ModelViewSet):
+class TallerApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Taller.objects.all()
     serializer_class = TallerSerializer
-    permission_classes = [AllowAny]
+
     filter_backends = (DjangoFilterBackend)
 
 
-class FuncionariosApiViewset(ModelViewSet):
+class FuncionariosApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Funcionarios.objects.all()
     serializer_class = FuncionariosSerializer
 
 
-class TipoApiViewset(ModelViewSet):
+class TipoApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Tipo.objects.all()
     serializer_class = TipoSerializer
 
 
-class SubtipoApiViewSet(ModelViewSet):
+class SubtipoApiViewSet(AuthMixin, ModelViewSet):
     queryset = models.Subtipo.objects.all()
     serializer_class = SubtipoSerializer
 
 
-class UbicacionesApiViewset(ModelViewSet):
+class UbicacionesApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Ubicaciones.objects.all()
     serializer_class = UbicacionesSerializer
 
 
-class CompraApiViewset(ModelViewSet):
+class CompraApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Compra.objects.all()
     serializer_class = CompraSerializer
 
 
-class UserApiViewset(ModelViewSet):
+class UserApiViewset(AuthMixin, ModelViewSet):
     queryset = models.User.objects.all()
     serializer_class = UserSerializer
 
 
-class RedApiViewset(ModelViewSet):
+class RedApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Red.objects.all()
     serializer_class = RedSerializer
 
+class ProveedorApiViewset(AuthMixin, ModelViewSet):
+    queryset = models.Proveedor.objects.all()
+    serializer_class = ProveedorSerializer
 
+class UnidadApiViewset(AuthMixin, ModelViewSet):
+    queryset = models.Unidad.objects.all()
+    serializer_class = UnidadSerializer
 class ImportarActivosApiView(APIView):
-    permission_classes = [AllowAny]
+
     columns = ["nombre", "placa", "detalle", "marca",
                "serie",	"valor", "modelo", "garantia", "ubicacion"]
 
@@ -265,7 +271,7 @@ class ImportarActivosApiView(APIView):
 
 
 class ImportarActivosNoPlaqueadosApiView(APIView):
-    permission_classes = [AllowAny]
+
     columns = ["nombre", "detalle", "marca",
                "serie",	"valor", "modelo", "garantia", "ubicacion"]
 
@@ -311,7 +317,6 @@ class ImportarActivosNoPlaqueadosApiView(APIView):
 
 
 class ExportarHojaDeCalculo(APIView):
-    permission_classes = [AllowAny]
 
     def post(self, request, format=None):
 
@@ -329,17 +334,18 @@ class ExportarHojaDeCalculo(APIView):
                 {"bold": True, "fg_color": "#FCD5B4"})
 
             for col_num, value in enumerate(parsed_json.columns.values):
-                worksheet.write(0, col_num + 1, value, header_fmt)
+
+                worksheet.write(
+                    0, col_num + 1, value.replace(" ", "").replace("_", " ").strip(), header_fmt)
             writer.save()
             return Response({"data": b.getbuffer().hex()})
 
 
 class ChangePasswordView(APIView):
-    permission_classes = [AllowAny]
 
     def post(self, request, format=None):
         json_data = request.data
-        print(request.user)
+
         password = json_data['password']
         request.user.set_password(password)
         request.user.save()
@@ -347,14 +353,13 @@ class ChangePasswordView(APIView):
 
 
 class ImportarReportePlaqueados(APIView):
-    permission_classes = [AllowAny]
 
     def replaceColumn(self, column):
         return column.strip().replace(" ", "_").replace("ñ", "n").replace("í", "i").replace("é", "e").replace("ó", "o").lower()
 
     def post(self, request, format=None):
         file = request.FILES['file']
-        excel_file = pd.read_excel(file).rename(
+        excel_file = pd.read_excel(file, na_values=["Sin Placa", "Sin placa", "sin placa", "Pendiente"]).rename(
             self.replaceColumn, axis="columns")
         redirect_url = reverse("importar_reporte_plaqueados")
         exitos = 0
@@ -368,14 +373,19 @@ class ImportarReportePlaqueados(APIView):
                 return datetime.now()
 
         for row in excel_file.itertuples(index=False):
-            print(row)
 
             activo = row._asdict()
-
-            if models.Activos_Plaqueados.objects.filter(placa=activo["placa"]).first() is not None or type(activo["placa"]) is not str:
+            print(activo)
+            if models.Activos_Plaqueados.objects.filter(placa=activo["placa"]).first() is not None or models.Activos_No_Plaqueados.objects.filter(serie=activo["serie"]).first() is not None:
                 continue
-            activo_db = models.Activos_Plaqueados()
-            activo_db.placa = str(activo["placa"])
+
+            activo_db = None
+            if pd.isnull(activo["placa"]):
+                activo_db = models.Activos_No_Plaqueados()
+            else:
+                activo_db = models.Activos_Plaqueados()
+                activo_db.placa = str(activo["placa"])
+
             activo_db.nombre = activo["nombre"]
             activo_db.marca = activo["marca"]
             activo_db.modelo = activo["modelo"]
@@ -387,6 +397,8 @@ class ImportarReportePlaqueados(APIView):
 
             tipo_db = models.Tipo.objects.filter(
                 nombre__contains=activo["tipo"]).first()
+
+                
             subtipo_db = models.Subtipo.objects.filter(
                 nombre__contains=activo["subtipo"]).first()
 
@@ -394,12 +406,14 @@ class ImportarReportePlaqueados(APIView):
             activo_db.subtipo = subtipo_db
             ubicacion_db = None
 
-            if type(activo["ubicacion"]) == str:
+            if pd.isnull(activo["ubicacion"]) is False:
                 ubicacion_db = models.Ubicaciones.objects.filter(
-                    ubicacion__contains=activo["ubicacion"]).first()
-                if(ubicacion_db is None):
+                    ubicacion__icontains=activo["ubicacion"]).first()
+
+                if ubicacion_db is None:
+
                     ubicacion_db = models.Ubicaciones()
-                    if type(activo["zona"]) == str:
+                    if pd.isnull(activo["zona"]) is False:
                         if "esparza" in activo["zona"].lower():
                             ubicacion_db.instalacion = models.Ubicaciones.InstalacionChoices.ESPARZA
                         elif "cocal" in activo["zona"].lower():
@@ -407,29 +421,54 @@ class ImportarReportePlaqueados(APIView):
                         else:
                             continue
                         ubicacion_db.ubicacion = activo["ubicacion"]
-                        funcionario_db = models.Funcionarios.objects.filter(
-                            nombre_completo__contains=activo["custodio"]).first()
-                        if(funcionario_db is not None):
-                            ubicacion_db.custodio = funcionario_db
+
+                        if pd.isnull(activo["custodio"]) is False:
+                            nombre = " ".join(
+                                activo["custodio"].split(" ")[:2])
+
+                            funcionario_db = models.Funcionarios.objects.filter(
+                                nombre_completo__icontains=nombre).first()
+
+                            if funcionario_db is not None:
+                                ubicacion_db.custodio = funcionario_db
+                            else:
+                                funcionario_db = models.Funcionarios()
+                                funcionario_db.cedula = "PENDIENTE"
+                                funcionario_db.nombre_completo = activo["custodio"]
+                                funcionario_db.save()
+                                ubicacion_db.custodio = funcionario_db
+
                             ubicacion_db.save()
                         else:
                             ubicacion_db = None
+                    else:
+                        ubicacion_db = None
             if ubicacion_db is not None:
                 activo_db.ubicacion = ubicacion_db
 
             compra_db = None
-            if type(activo['numero_orden_de_compra_o_referencia']) is str:
+            if pd.isnull(activo['numero_orden_de_compra_o_referencia']) is False:
                 compra_db = models.Compra.objects.filter(
-                    numero_orden_compra__contains=activo['numero_orden_de_compra_o_referencia']).first()
+                    numero_orden_compra=activo['numero_orden_de_compra_o_referencia']).first()
 
                 if compra_db is not None:
                     compra_db = models.Compra()
+
                     compra_db.numero_orden_compra = activo['numero_orden_de_compra_o_referencia']
                     compra_db.numero_factura = activo["numero_factura"]
                     compra_db.numero_procedimiento = activo["numero_procedimiento"]
-                    compra_db.proveedor = activo["nombre_proveedor"]
-                    compra_db.telefono_proveedor = activo["telefono_proveedor"]
-                    compra_db.correo_proveedor = activo["correo_empresa"]
+
+                    if pd.isnull(activo["nombre_proveedor"]) is False:
+                        proveedor_db = models.Proveedor.objects.filter(
+                            nombre=activo["nombre_proveedor"]).first()
+                        if proveedor_db is None:
+                            proveedor_db = models.Proveedor()
+                            proveedor_db.nombre = activo["nombre_proveedor"]
+                            proveedor_db.telefono = activo["telefono_proveedor"]
+                            proveedor_db.correo = activo["correo_empresa"]
+                            proveedor_db.save()
+                        compra_db.proveedor = proveedor_db
+
                     compra_db.detalle = activo["detalles_de_presupuesto"]
                     compra_db.informe_tecnico = activo["informe_tecnico"]
                     compra_db.origen_presupuesto = activo["origen_presupuesto"]
@@ -439,13 +478,13 @@ class ImportarReportePlaqueados(APIView):
                 activo_db.compra = compra_db
 
             traslado_db = models.Tramites.objects.filter(
-                referencia__contains=activo["traslado"]).first()
+                referencia=activo["traslado"]).first()
 
             if traslado_db is not None:
                 activo_db.tramites.add(traslado_db)
 
             red_db = None
-            if type(activo["mac"]) is str:
+            if pd.isnull(activo["mac"]) is False:
 
                 red_db = models.Red.objects.filter(MAC=activo["mac"]).first()
 

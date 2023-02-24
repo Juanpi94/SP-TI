@@ -4,5 +4,5 @@ node_modules
 .parcel-cache
 .idea
 
-src/backend/static/dist
+/src/backend/static/dist
 

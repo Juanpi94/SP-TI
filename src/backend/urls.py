@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from django.contrib.auth.decorators import login_required
 from backend import views
 from backend import api_views
-from backend.api_views import CompraApiViewset, DeshechoApiViewset, FuncionariosApiViewset, NoPlaqueadosApiViewSet, PlaqueadosApiViewset, RedApiViewset, SubtipoApiViewSet, TallerApiViewset, TipoApiViewset, TramitesApiViewset, TrasladosApiViewset, UbicacionesApiViewset, UserApiViewset
+from backend.api_views import CompraApiViewset, DeshechoApiViewset, FuncionariosApiViewset, NoPlaqueadosApiViewSet, PlaqueadosApiViewset, ProveedorApiViewset, RedApiViewset, SubtipoApiViewSet, TallerApiViewset, TipoApiViewset, TramitesApiViewset, TrasladosApiViewset, UbicacionesApiViewset, UnidadApiViewset, UserApiViewset
 
 
 def protected(view): return login_required(view, "/login")
@@ -48,6 +48,9 @@ urlpatterns = [
          name="reporte_no_plaqueados_2"),
     path("reportes/no-plaqueados/4-old", views.Reporte_No_Plaqueados_4_old.as_view(),
          name="reporte_no_plaqueados_4"),
+    path("traslados", views.Traslados_Table_View.as_view(), name="traslados"),
+    path("proveedores", views.Proveedores_Table_View.as_view(), name="proveedores"),
+    path("unidades", views.Unidades_Table_View.as_view(), name="unidades"),
     path("", include("django.contrib.auth.urls")),
 
 ]
@@ -77,6 +80,8 @@ router.register(r"user", UserApiViewset, "user")
 
 router.register(r"taller", TallerApiViewset, "taller")
 router.register(r"red", RedApiViewset, "red")
+router.register(r"proveedor", ProveedorApiViewset, "proveedor")
+router.register(r"unidades", UnidadApiViewset, "unidades")
 apiurlpatterns = [
     path('', include(router.urls)),
     path("importar/activos", api_views.ImportarActivosApiView.as_view(),

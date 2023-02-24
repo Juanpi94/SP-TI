@@ -3,36 +3,40 @@ from django.forms import ModelForm, DateField, Select, SelectDateWidget, TextInp
 from django import forms
 
 
-from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Compra, Deshecho, Funcionarios, Tramites, Ubicaciones, Tipo, Subtipo, Red
+from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Compra, Deshecho, Funcionarios, Proveedor, Tramites, Traslados, Ubicaciones, Tipo, Subtipo, Red, Unidad
 from backend.widgets import DatePickerInput
 from django.contrib.auth.models import User
 from phonenumber_field.formfields import PhoneNumberField
 
 
 class PlaqueadosForm(ModelForm):
-    garantia = DateField(required=False, widget=DatePickerInput)
+    garantia = DateField(required=False, widget=DatePickerInput,
+                         help_text="Formato para fechas: DD/MM/YYYY o DD-MM-YYYY")
     fecha_ingreso = DateField(required=False, widget=DatePickerInput)
     ubicacion = forms.ModelChoiceField(
         queryset=Ubicaciones.objects.all(), required=False, to_field_name="ubicacion")
     compra = forms.ModelChoiceField(
         queryset=Compra.objects.all(), required=False)
     observacion = forms.CharField(widget=Textarea(
-        attrs={"class": "plaqueadosTextarea"}), label="Observacion", required=False)
+        attrs={"class": "plaqueadosTextarea"}), label="Observación", required=False)
 
     field_order = ["placa"]
 
     def __init__(self, *args, **kwargs):
         super(PlaqueadosForm, self).__init__(*args, **kwargs)
-        print(*args)
+
         self.fields['tipo'].required = False
         self.fields['subtipo'].required = False
         self.fields['serie'].required = False
+        self.fields["red"].required = False
+        self.fields["compra"].label = "Número orden compra o referencia"
 
     class Meta:
         model = Activos_Plaqueados
         help_texts = {
             'garantia': "Formato para fechas: DD/MM/YYYY o DD-MM-YYYY"
         }
+
         exclude = ["id", "traslado", "tramites", "ubicacion_anterior"]
 
 
@@ -146,8 +150,6 @@ class SubtipoForm(forms.ModelForm):
 
 
 class CompraForm(forms.ModelForm):
-    telefono_proveedor = PhoneNumberField(region="CR")
-    correo_proveedor = forms.EmailField()
 
     class Meta:
         model = Compra
@@ -155,12 +157,32 @@ class CompraForm(forms.ModelForm):
 
 
 class UserForm(ModelForm):
+    field_order = ["first_name", "last_name", "username", "email"]
+
     class Meta:
         model = User
-        exclude = ["id"]
+        exclude = ["id", "date_joined"]
 
 
 class RedForm(ModelForm):
     class Meta:
         model = Red
+        exclude = ["id"]
+
+
+class TrasladosForm (ModelForm):
+    class Meta:
+        model = Traslados
+        exclude = ["id"]
+
+
+class ProveedorForm(ModelForm):
+    class Meta:
+        model = Proveedor
+        exclude = ["id"]
+
+
+class UnidadForm(ModelForm):
+    class Meta:
+        model = Unidad
         exclude = ["id"]

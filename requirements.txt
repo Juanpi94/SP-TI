@@ -28,6 +28,7 @@ Markdown==3.3.6
 mysqlclient==2.1.0
 numpy==1.22.4
 odfpy==1.4.1
+openpyxl==3.0.10
 pandas==1.4.2
 pathspec==0.10.1
 phonenumbers==8.13.2
@@ -45,3 +46,4 @@ tqdm==4.64.1
 tzdata==2022.1
 XlsxWriter==3.0.6
 zipp==3.8.0
+gunicorn==19.9.0

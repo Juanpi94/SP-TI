@@ -4,11 +4,19 @@ import "select2/dist/css/select2.min.css";
 import "datatables.net-bs4/css/dataTables.bootstrap4.css";
 import select2 from "select2";
 import $ from "jquery";
-import dt from "datatables.net-bs4";
-import buttons from "datatables.net-buttons";
+
+import "datatables.net-bs4";
+import "datatables.net-buttons";
+import jsZip from "jszip";
+import "datatables.net-buttons/js/buttons.print.min.mjs";
+
+import buttonsHtml5 from "datatables.net-buttons/js/buttons.html5";
+
 import * as bootstrap from "bootstrap";
 import feather from "feather-icons";
 
+buttonsHtml5(window, $);
+window.JSZip = jsZip;
 feather.icons["x-circle"].attrs = {
 	...feather.icons["x-circle"].attrs,
 	fill: "red",

@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.views.generic import TemplateView, RedirectView
 from backend import models
 from backend.exceptions import ArgMissingException
-from backend.forms import CompraForm, DeshechoExportForm, FuncionariosForm, NoPlaqueadosForm, PlaqueadosForm, RedForm, TallerExportForm, TipoForm, TramitesExportForm, TramitesForm, UbicacionesForm, SubtipoForm, UserForm
+from backend.forms import CompraForm, DeshechoExportForm, FuncionariosForm, NoPlaqueadosForm, PlaqueadosForm, ProveedorForm, RedForm, TallerExportForm, TipoForm, TramitesExportForm, TramitesForm, TrasladosForm, UbicacionesForm, SubtipoForm, UnidadForm, UserForm
 
 
 class Table():
@@ -93,7 +93,7 @@ class Table_View(ReadPermMixin, TemplateView):
 class Activos_Plaqueados_View(Table_View):
 
     target_view = "plaqueados-list"
-    columns = ["placa", "nombre", "marca", "modelo",
+    columns = ["fecha_ingreso", "placa", "nombre", "marca", "modelo",
                "serie", "valor", "garantia", "observacion", "compra"]
     exclude = ["id", "deshecho"]
     model = models.Activos_Plaqueados
@@ -334,3 +334,31 @@ class Red_Table_View(Table_View):
     form = RedForm
     columns = ["placa", "serie", "MAC", "IP", "IP6", "IP_switch"]
     exclude = ["id", "activos_plaqueados", "activos_plaqueados"]
+
+
+class Traslados_Table_View(Table_View):
+    target_view = "traslados-list"
+    columns = ["destino_proximo", "tramite", "detalle",
+               "activos_plaqueados", "activos_no_plaqueados"]
+    model = models.Traslados
+    title = "Traslados"
+    form = TrasladosForm
+    exclude = ["id"]
+
+
+class Proveedores_Table_View(Table_View):
+    target_view = "proveedor-list"
+    columns = "__all__"
+    exclude = ["id", "compra"]
+    title = "Proveedores"
+    model = models.Proveedor
+    form = ProveedorForm
+
+
+class Unidades_Table_View(Table_View):
+    target_view = "unidades-list"
+    columns = "__all__"
+    exclude = ["id", "ubicaciones"]
+    title = "Unidades Universitarias"
+    model = models.Unidad
+    form = UnidadForm

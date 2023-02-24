@@ -4,12 +4,12 @@ const columns = $("th")
 	.toArray()
 	.map((header, index) => {
 		return {
-			name: header.textContent.replace(" ", "_"),
-			data: header.textContent.replace(" ", "_"),
+			name: header.textContent.trim().replaceAll(" ", "_"),
+			data: header.textContent.trim().replaceAll(" ", "_"),
 			targets: index,
 		};
 	});
-
+console.log(columns);
 const table = $("#datatable").DataTable({
 	scrollX: true,
 	columns,

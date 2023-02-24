@@ -3,8 +3,8 @@ from dataclasses import field
 from django.forms import SlugField
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Compra, Deshecho, Funcionarios, Subtipo, Taller, Tipo, Tramites, Traslados, Ubicaciones, Red
-from django.contrib.auth.models import User
+from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Compra, Deshecho, Funcionarios, Proveedor, Subtipo, Taller, Tipo, Tramites, Traslados, Ubicaciones, Red, Unidad
+from django.contrib.auth.models import User, Group
 
 
 class DualRelatedField(serializers.RelatedField):
@@ -101,6 +101,20 @@ class UbicacionesSerializer(ModelSerializer):
 
 
 class TrasladosSerializer(ModelSerializer):
+    tramite = serializers.SlugRelatedField(
+        queryset=Tramites.objects.all(), slug_field="referencia")
+    destino_proximo = serializers.SlugRelatedField(
+        slug_field="ubicacion", source="destino", read_only=True)
+    activos_plaqueados = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='placa', source="tramite.activos_plaqueados_set")
+
+    activos_no_plaqueados = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='serie', source="tramite.activos_no_plaqueados_set")
+
     class Meta:
         model = Traslados
         fields = "__all__"
@@ -143,6 +157,8 @@ class SubtipoSerializer(ModelSerializer):
 
 
 class CompraSerializer(ModelSerializer):
+    proveedor = serializers.SlugRelatedField(
+        slug_field="nombre", queryset=Proveedor.objects.all())
 
     class Meta:
         model = Compra
@@ -150,11 +166,30 @@ class CompraSerializer(ModelSerializer):
 
 
 class UserSerializer(ModelSerializer):
-    nombre = serializers.CharField(source="first_name")
+    nombre = serializers.CharField(
+        source="first_name",  read_only=True)
+    groups = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Group.objects.all())
+
+    def validate_groups(self, value):
+
+        if type(value) is str:
+            return [value]
+        elif type(value) is list:
+            return value
+
+        raise serializers.ValidationError(
+            "El campo grupos debe de ser una lista")
+
+    def to_internal_value(self, data):
+
+        data['groups'] = self.validate_groups(data['groups'])
+        return super().to_internal_value(data)
 
     class Meta:
         model = User
         exclude = ["password"]
+        extra_kwards = {"groups": {"required": True}}
 
 
 class RedSerializer(ModelSerializer):
@@ -165,4 +200,16 @@ class RedSerializer(ModelSerializer):
 
     class Meta:
         model = Red
+        fields = "__all__"
+
+
+class ProveedorSerializer(ModelSerializer):
+    class Meta:
+        model = Proveedor
+        fields = "__all__"
+
+
+class UnidadSerializer(ModelSerializer):
+    class Meta:
+        model = Unidad
         fields = "__all__"

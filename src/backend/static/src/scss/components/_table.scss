@@ -15,6 +15,14 @@ table {
 			display: none !important;
 		}
 	}
+	tbody {
+		tr {
+			transition: background-color 250ms ease-in-out;
+			&:hover {
+				background-color: $gray-400 !important;
+			}
+		}
+	}
 	td {
 		font-size: 0.9rem;
 		border-right: 1px solid rgb(139, 139, 139);
@@ -28,26 +36,6 @@ table {
 			}
 		}
 	}
-
-	.detail-table {
-		padding-left: 50px;
-		width: 100%;
-		table-layout: auto;
-
-		tbody {
-			width: fit-content;
-		}
-	}
-
-	.detail-row {
-		width: fit-content;
-		.detail-title {
-			width: 1px;
-		}
-		.detail-data {
-			word-wrap: break-word;
-			word-break: break-all;
-			white-space: break-spaces;
-		}
-	}
 }
+
+ 

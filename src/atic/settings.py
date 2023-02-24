@@ -13,21 +13,23 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from collections import OrderedDict
 from pathlib import Path
 import os
+import dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG")
 
-ALLOWED_HOSTS = []
+DEBUG = bool(int(os.environ.get("DEBUG", "0")))
 
+ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000',
+                        "http://127.0.0.1:8000", "http://atic.com:8000", "http://atic:8000"]
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,15 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'rest_framework',
     'django_filters',
     'constance',
     "constance.backends.database",
     'backend',
     "phonenumber_field",
-
-
 ]
 
 MIDDLEWARE = [
@@ -90,7 +89,8 @@ DATABASES = {
         'NAME': os.environ.get("DATABASE"),
         'USER': os.environ.get("USER"),
         'PASSWORD': os.environ.get("PASSWORD"),
-        'HOST': os.environ.get("HOST"),
+        'HOST': os.environ.get("HOST", "mysql_db"),
+        'PORT': os.environ.get("PORT", '3306')
     }
 }
 
@@ -132,6 +132,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

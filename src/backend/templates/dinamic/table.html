@@ -3,7 +3,7 @@
 {% load auth_extras %}
 {% load utils_extras %}
 {% block title %}
-    Activos
+    {{ title }}
 {% endblock title %}
 {% if request.user|can_read %}
     {% block content %}

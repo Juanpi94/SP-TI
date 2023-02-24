@@ -1,4 +1,4 @@
-call ..\venv\Scripts\activate.bat
+call .\venv\Scripts\activate.bat
 
-start "python server" /b py manage.py runserver
-start "start web bundler" /b npm --prefix ./backend run dev
+start "python server" /b py ./src/manage.py runserver
+start "start web bundler" /b npm --prefix ./src/backend run dev

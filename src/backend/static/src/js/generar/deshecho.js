@@ -136,6 +136,8 @@ async function subirDeshecho() {
 		activosNoPlaqueados,
 	};
 
+	Swal.fire("Cargando solicitud");
+	Swal.showLoading();
 	const res = await axiosInstance.post(tramitesView, body).catch((error) => {
 		if (error.request.status > 300 && error.request.status < 500) {
 			Warning.fire({
@@ -146,6 +148,9 @@ async function subirDeshecho() {
 			Err.fire("Parece que hubo un error en el servidor");
 		}
 	});
+
+	Swal.fire("Cargando solicitud");
+	Swal.hideLoading();
 	if (res.status >= 200 && res.status <= 205) {
 		Success.fire("Se subio el deshecho con éxito");
 	}

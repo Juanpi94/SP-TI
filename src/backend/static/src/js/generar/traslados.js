@@ -174,7 +174,8 @@ async function subirTrasladoHandler(event) {
 	body["activosNoPlaqueados"] = activosNoPlaqueados;
 
 	body["traslados"] = traslados;
-
+	Swal.fire("Cargando solicitud");
+	Swal.showLoading();
 	const tramiteResponse = await axiosInstance
 		.post(tramitesView, body)
 		.catch((error) => {
@@ -187,7 +188,7 @@ async function subirTrasladoHandler(event) {
 				Err.fire("Parece que hubo un error en el servidor");
 			}
 		});
-
+	Swal.hideLoading();
 	const tramiteStatus = tramiteResponse.status;
 	if (tramiteStatus > 200 && tramiteStatus < 300) {
 		Success.fire("Se realizó el tramite con exito");

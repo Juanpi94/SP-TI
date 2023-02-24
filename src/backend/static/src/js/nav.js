@@ -80,6 +80,10 @@ const links = [
 		href: "/compra/",
 	},
 	{
+		name: "Activos | Red",
+		href: "/red/",
+	},
+	{
 		name: "Trámites | Traslado",
 		href: "/generar/traslados",
 	},
