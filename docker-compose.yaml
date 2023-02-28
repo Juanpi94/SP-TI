@@ -12,7 +12,8 @@ services:
         - PASSWORD=root
         - HOST=mysql_db
         - DEBUG=1  
-        - SECRET=@aJ1xTcsgYR$3PN%RRF$D*!OWEjvFOV*5T#84Ww#3c%#DYQCi^
+        - SECRET=@aJ1xTcsgYR$$3PN%RRF$$D*!OWEjvFOV*5T#84Ww#3c%#DYQCi^
+        - CSRF_IP=192.0.0.1
       depends_on:
         mysql_db:
           condition: service_healthy

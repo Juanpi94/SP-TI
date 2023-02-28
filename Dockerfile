@@ -22,11 +22,15 @@ RUN npm install -y
 
 RUN npm run build;
 
+RUN rm -r .parcel-cache
+
 WORKDIR /
 
 RUN python3 src/manage.py collectstatic
-RUN ls -l
-RUN ls config -l
+
+RUN rm -r ./src/backend/static/dist
+RUN rm -r ./src/backend/static/assets
+
 CMD ["gunicorn", "-c", "config/gunicorn/conf.py", "--bind", ":8000", "--chdir", "src", "atic.wsgi:application"]
 
 # CMD ["python3", "src/manage.py", "runserver"]

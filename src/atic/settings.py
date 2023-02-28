@@ -29,7 +29,7 @@ DEBUG = bool(int(os.environ.get("DEBUG", "0")))
 
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = ['http://localhost:8000',
-                        "http://127.0.0.1:8000", "http://atic.com:8000", "http://atic:8000"]
+                        "http://127.0.0.1:8000", "http://atic.com:8000", "http://atic:8000", os.environ.get("CSRF_IP")]
 # Application definition
 
 INSTALLED_APPS = [
