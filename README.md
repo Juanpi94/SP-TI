@@ -40,7 +40,7 @@ source ./venv/Scripts/activate
 ## Opcional
 
 - **Seed**: El comando `py manage.py seed` carga la base de datos con información de prueba, ideal para el desarrollo.
-- **Build**: El comando `npm run build` es utilizado para generar archivos de javascript y css optimizados y mificados, destinados a producción.
+- **Build**: El comando `npm run build` es utilizado para generar archivos de javascript y css optimizados y minificados, destinados a producción.
 
 ## Documentación adicional
 
@@ -48,3 +48,5 @@ source ./venv/Scripts/activate
 - **Django secret**: https://docs.djangoproject.com/en/4.1/ref/settings/#secret-key
 - **Sass**: https://sass-lang.com/documentation/
 - **Datatables**: https://datatables.net/
+- **Docker**: https://docs.docker.com/get-started/
+
