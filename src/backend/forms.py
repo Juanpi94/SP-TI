@@ -163,26 +163,3 @@ class UserForm(ModelForm):
         model = User
         exclude = ["id", "date_joined"]
 
-
-class RedForm(ModelForm):
-    class Meta:
-        model = Red
-        exclude = ["id"]
-
-
-class TrasladosForm (ModelForm):
-    class Meta:
-        model = Traslados
-        exclude = ["id"]
-
-
-class ProveedorForm(ModelForm):
-    class Meta:
-        model = Proveedor
-        exclude = ["id"]
-
-
-class UnidadForm(ModelForm):
-    class Meta:
-        model = Unidad
-        exclude = ["id"]

@@ -1,9 +1,9 @@
 from datetime import datetime
-from http.client import HTTPResponse
+
 from io import BytesIO
 import json
 from math import isnan
-from urllib import request
+
 from django.shortcuts import redirect
 from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
@@ -12,12 +12,18 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.request import Request
 from backend import models
-from backend.serializers import CompraSerializer, DeshechoSerializer, FuncionariosSerializer, NoPlaqueadosSerializer, PlaqueadosSerializer, ProveedorSerializer, RedSerializer, SubtipoSerializer, TallerSerializer, TipoSerializer, TramitesCreateSerializer, TramitesSerializer, TrasladosSerializer, UbicacionesSerializer, UnidadSerializer, UserSerializer
+from backend.serializers import CompraSerializer, DeshechoSerializer, FuncionariosSerializer, NoPlaqueadosSerializer, \
+    PlaqueadosSerializer, ProveedorSerializer, RedSerializer, SubtipoSerializer, TallerSerializer, TipoSerializer, \
+    TramitesCreateSerializer, TramitesSerializer, TramitesUpdateSerializer, TrasladosSerializer, UbicacionesSerializer, \
+    UnidadSerializer, UserSerializer, PlaqueadosCreateSerializer
 from rest_framework.decorators import action
 import pandas as pd
 from django.core.exceptions import ObjectDoesNotExist
 import pandas.io.formats.excel
+
+
 # ModelViewset con la capacidad de especificar más de un serializador, dependiendo de la acción
 
 
@@ -25,7 +31,7 @@ class CustomModelViewset(ModelViewSet):
     retrieve_serializer = None
 
     def get_serializer_class(self):
-        if(self.action == "retrieve"):
+        if self.action == "retrieve":
             return self.retrieve_serializer
         else:
             return self.serializer_class
@@ -37,10 +43,15 @@ class AuthMixin:
 
 class PlaqueadosApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Activos_Plaqueados.objects.all()
-    serializer_class = PlaqueadosSerializer
 
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('serie', "placa")
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return PlaqueadosSerializer
+        else:
+            return PlaqueadosCreateSerializer
 
 
 class NoPlaqueadosApiViewSet(AuthMixin, ModelViewSet):
@@ -55,15 +66,82 @@ class TramitesApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Tramites.objects.all()
     serializer_class = TramitesSerializer
 
-    def perform_update(self, serializer):
+    def add_activos_to_tramite(self, data, tramite):
+        activos_plaqueados = data.pop("activosPlaqueados")
+        activos_no_plaqueados = data.pop("activosNoPlaqueados")
+        for activo in activos_plaqueados:
+            activo_db = models.Activos_Plaqueados.objects.get(id=activo)
+            activo_db.tramites.add(tramite)
+            if (tramite.tipo == models.Tramites.TiposTramites.DESHECHO):
+                activo_db.estado = models.Activo.Estados.PROCESO_DESHECHO
+            activo_db.save()
 
-        estado_anterior = models.Tramites.objects.filter(
-            referencia=serializer.validated_data["referencia"]).first().estado
-        tramite = serializer.save()
+            if (tramite.tipo == models.Tramites.TiposTramites.TRASLADO):
+                traslados = data['traslados']
+                plaqueados = list(filter(lambda traslado: traslado["tipo"] ==
+                                                          "PLAQUEADO" and traslado["activo"] == activo_db.id,
+                                         traslados))
 
-        if tramite.estado == models.Tramites.TiposEstado.FINALIZADO and estado_anterior == models.Tramites.TiposEstado.PENDIENTE:
+                if (len(plaqueados) == 0):
+                    continue
+                traslado = plaqueados[0]
+                traslado_db = models.Traslados()
+                traslado_db.destino = models.Ubicaciones.objects.get(
+                    id=traslado["destino"])
+                traslado_db.tramite = tramite
+                traslado_db.detalle = "Plaqueado: " + activo_db.placa
+                traslado_db.save()
 
-            if tramite.tipo == models.Tramites.TiposTramites.TRASLADO:
+        for activo in activos_no_plaqueados:
+            activo_db = models.Activos_No_Plaqueados.objects.get(id=activo)
+            activo_db.tramites.add(tramite)
+            if (tramite.tipo == models.Tramites.TiposTramites.DESHECHO):
+                activo_db.estado = models.Activo.Estados.PROCESO_DESHECHO
+            activo_db.save()
+
+            if (tramite.tipo == models.Tramites.TiposTramites.TRASLADO):
+                traslados = data['traslados']
+                no_plaqueados = list(filter(lambda traslado: traslado["tipo"] ==
+                                                             "NO_PLAQUEADO" and traslado["activo"] == activo_db.id,
+                                            traslados))
+                if (len(no_plaqueados) == 0):
+                    continue
+                traslado = no_plaqueados[0]
+                traslado_db = models.Traslados()
+                traslado_db.destino = models.Ubicaciones.objects.get(
+                    id=traslado["destino"])
+                traslado_db.tramite = tramite
+                traslado_db.detalle = "No Plaqueado: " + activo_db.serie
+                traslado_db.save()
+        pass
+
+    def get_serializer_class(self):
+        if (self.request.method == "PUT"):
+            return TramitesUpdateSerializer
+        if (self.request.method == "POST"):
+            return TramitesCreateSerializer
+        return super().get_serializer_class()
+
+    def perform_update(self, serializer: TramitesSerializer):
+
+        anterior = models.Tramites.objects.filter(
+            referencia=serializer.validated_data["referencia"]).first()
+
+        if (anterior is None):
+            serializer.validated_data["estado"] = models.Tramites.TiposEstado.PENDIENTE
+            return serializer.save(
+                solicitante=self.request.user)
+
+        estado_anterior = anterior.estado
+
+        tramite: models.Tramites = serializer.save(
+            solicitante=self.request.user)
+
+        tramite.activos_plaqueados_set.clear()
+        tramite.activos_no_plaqueados_set.clear()
+        self.add_activos_to_tramite(self.request.data, tramite)
+        if tramite.estado == tramite.TiposEstado.FINALIZADO and estado_anterior == tramite.TiposEstado.PENDIENTE:
+            if tramite.tipo == tramite.TiposTramites.TRASLADO:
                 for activo_plaqueado in tramite.activos_plaqueados_set.all():
                     activo_plaqueado.ubicacion_anterior = activo_plaqueado.ubicacion
                     activo_plaqueado.ubicacion = models.Traslados.objects.filter(
@@ -76,7 +154,7 @@ class TramitesApiViewset(AuthMixin, ModelViewSet):
                         detalle__contains=activo_no_plaqueado.serie).first().destino
                     activo_no_plaqueado.save()
 
-            elif tramite.tipo == models.Tramites.TiposTramites.DESHECHO:
+            elif tramite.tipo == tramite.TiposTramites.DESHECHO:
                 for activo_plaqueado in tramite.activos_plaqueados_set.all():
                     activo_plaqueado.estado = models.Activo.Estados.DESHECHO
                     activo_plaqueado.save()
@@ -86,17 +164,13 @@ class TramitesApiViewset(AuthMixin, ModelViewSet):
 
         return tramite
 
-    def create(self, request):
-
+    def create(self, request: Request):
         data = request.data
-        activos_plaqueados = data.pop("activosPlaqueados")
-        activos_no_plaqueados = data.pop("activosNoPlaqueados")
-
         taller = None
-
         if data.get("taller"):
             taller = data.pop("taller")
-        serializer = TramitesCreateSerializer(data=data)
+
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         tramite = self.perform_create(serializer)
 
@@ -113,49 +187,7 @@ class TramitesApiViewset(AuthMixin, ModelViewSet):
             deshecho_db.tramite = tramite
             deshecho_db.save()
 
-        for activo in activos_plaqueados:
-            activo_db = models.Activos_Plaqueados.objects.get(id=activo)
-            activo_db.tramites.add(tramite)
-            if(tramite.tipo == models.Tramites.TiposTramites.DESHECHO):
-                activo_db.estado = models.Activo.Estados.PROCESO_DESHECHO
-            activo_db.save()
-
-            if(tramite.tipo == models.Tramites.TiposTramites.TRASLADO):
-                traslados = data['traslados']
-                plaqueados = list(filter(lambda traslado: traslado["tipo"] ==
-                                         "PLAQUEADO" and traslado["activo"] == activo_db.id, traslados))
-
-                if(len(plaqueados) == 0):
-                    continue
-                traslado = plaqueados[0]
-                traslado_db = models.Traslados()
-                traslado_db.destino = models.Ubicaciones.objects.get(
-                    id=traslado["destino"])
-                traslado_db.tramite = tramite
-                traslado_db.detalle = "Plaqueado: " + activo_db.placa
-                traslado_db.save()
-
-        for activo in activos_no_plaqueados:
-            activo_db = models.Activos_No_Plaqueados.objects.get(id=activo)
-            activo_db.tramites.add(tramite)
-            if(tramite.tipo == models.Tramites.TiposTramites.DESHECHO):
-                activo_db.estado = models.Activo.Estados.PROCESO_DESHECHO
-            activo_db.save()
-
-            if(tramite.tipo == models.Tramites.TiposTramites.TRASLADO):
-                traslados = data['traslados']
-                no_plaqueados = list(filter(lambda traslado: traslado["tipo"] ==
-                                            "NO_PLAQUEADO" and traslado["activo"] == activo_db.id, traslados))
-                if(len(no_plaqueados) == 0):
-                    continue
-                traslado = no_plaqueados[0]
-                traslado_db = models.Traslados()
-                traslado_db.destino = models.Ubicaciones.objects.get(
-                    id=traslado["destino"])
-                traslado_db.tramite = tramite
-                traslado_db.detalle = "No Plaqueado: " + activo_db.serie
-                traslado_db.save()
-
+        self.add_activos_to_tramite(data, tramite)
         headers = self.get_success_headers(serializer.data)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
@@ -217,17 +249,20 @@ class RedApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Red.objects.all()
     serializer_class = RedSerializer
 
+
 class ProveedorApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Proveedor.objects.all()
     serializer_class = ProveedorSerializer
 
+
 class UnidadApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Unidad.objects.all()
     serializer_class = UnidadSerializer
-class ImportarActivosApiView(APIView):
 
+
+class ImportarActivosApiView(APIView):
     columns = ["nombre", "placa", "detalle", "marca",
-               "serie",	"valor", "modelo", "garantia", "ubicacion"]
+               "serie", "valor", "modelo", "garantia", "ubicacion"]
 
     optional_columns = ['ubicacion', 'garantia']
     model = models.Activos_Plaqueados
@@ -243,22 +278,22 @@ class ImportarActivosApiView(APIView):
             row_dict = row._asdict()
             for item in row_dict:
                 value = row_dict[item]
-                if(type(value) == float and isnan(value) and item not in self.optional_columns):
+                if (type(value) == float and isnan(value) and item not in self.optional_columns):
                     message = f'Error al importar activos, asegurese que el campo {item} tenga valores'
                     error = True
                     return redirect(f"{redirect_url}?message={message}&error={error}")
 
-            if(row_dict['ubicacion']):
+            if (row_dict['ubicacion']):
                 try:
                     row_dict['ubicacion'] = models.Ubicaciones.objects.get(
                         nombre__icontains=row_dict['ubicacion'])
                 except ObjectDoesNotExist:
                     activos_erroneos.append(
                         f"{row_dict['nombre']} : {row_dict['placa']}")
-                    print("printed")
+
                     skip_current = True
             for optional_column in self.optional_columns:
-                if(type(row_dict[optional_column]) == float and isnan(row_dict[optional_column])):
+                if (type(row_dict[optional_column]) == float and isnan(row_dict[optional_column])):
                     row_dict.pop(optional_column)
 
             if (not skip_current):
@@ -271,9 +306,8 @@ class ImportarActivosApiView(APIView):
 
 
 class ImportarActivosNoPlaqueadosApiView(APIView):
-
     columns = ["nombre", "detalle", "marca",
-               "serie",	"valor", "modelo", "garantia", "ubicacion"]
+               "serie", "valor", "modelo", "garantia", "ubicacion"]
 
     optional_columns = ['ubicacion', 'garantia']
     model = models.Activos_No_Plaqueados
@@ -289,22 +323,22 @@ class ImportarActivosNoPlaqueadosApiView(APIView):
             row_dict = row._asdict()
             for item in row_dict:
                 value = row_dict[item]
-                if(type(value) == float and isnan(value) and item not in self.optional_columns):
+                if (type(value) == float and isnan(value) and item not in self.optional_columns):
                     message = f'Error al importar activos, asegurese que el campo {item} tenga valores'
                     error = True
                     return redirect(f"{redirect_url}?message={message}&error={error}")
 
-            if(row_dict['ubicacion']):
+            if (row_dict['ubicacion']):
                 try:
                     row_dict['ubicacion'] = models.Ubicaciones.objects.get(
                         nombre__icontains=row_dict['ubicacion'])
                 except ObjectDoesNotExist:
                     activos_erroneos.append(
                         f"{row_dict['nombre']} : {row_dict['placa']}")
-                    print("printed")
+
                     skip_current = True
             for optional_column in self.optional_columns:
-                if(type(row_dict[optional_column]) == float and isnan(row_dict[optional_column])):
+                if (type(row_dict[optional_column]) == float and isnan(row_dict[optional_column])):
                     row_dict.pop(optional_column)
 
             if (not skip_current):
@@ -319,7 +353,6 @@ class ImportarActivosNoPlaqueadosApiView(APIView):
 class ExportarHojaDeCalculo(APIView):
 
     def post(self, request, format=None):
-
         json_data = request.data
 
         parsed_json = pd.DataFrame(json.loads(json_data['data']))
@@ -334,7 +367,6 @@ class ExportarHojaDeCalculo(APIView):
                 {"bold": True, "fg_color": "#FCD5B4"})
 
             for col_num, value in enumerate(parsed_json.columns.values):
-
                 worksheet.write(
                     0, col_num + 1, value.replace(" ", "").replace("_", " ").strip(), header_fmt)
             writer.save()
@@ -355,9 +387,10 @@ class ChangePasswordView(APIView):
 class ImportarReportePlaqueados(APIView):
 
     def replaceColumn(self, column):
-        return column.strip().replace(" ", "_").replace("ñ", "n").replace("í", "i").replace("é", "e").replace("ó", "o").lower()
+        return column.strip().replace(" ", "_").replace("ñ", "n").replace("í", "i").replace("é", "e").replace("ó",
+                                                                                                              "o").lower()
 
-    def post(self, request, format=None):
+    def post(self, request: Request, format=None):
         file = request.FILES['file']
         excel_file = pd.read_excel(file, na_values=["Sin Placa", "Sin placa", "sin placa", "Pendiente"]).rename(
             self.replaceColumn, axis="columns")
@@ -375,8 +408,10 @@ class ImportarReportePlaqueados(APIView):
         for row in excel_file.itertuples(index=False):
 
             activo = row._asdict()
-            print(activo)
-            if models.Activos_Plaqueados.objects.filter(placa=activo["placa"]).first() is not None or models.Activos_No_Plaqueados.objects.filter(serie=activo["serie"]).first() is not None:
+
+            if models.Activos_Plaqueados.objects.filter(
+                    placa=activo["placa"]).first() is not None or models.Activos_No_Plaqueados.objects.filter(
+                serie=activo["serie"]).first() is not None:
                 continue
 
             activo_db = None
@@ -398,7 +433,6 @@ class ImportarReportePlaqueados(APIView):
             tipo_db = models.Tipo.objects.filter(
                 nombre__contains=activo["tipo"]).first()
 
-                
             subtipo_db = models.Subtipo.objects.filter(
                 nombre__contains=activo["subtipo"]).first()
 

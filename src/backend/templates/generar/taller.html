@@ -12,11 +12,12 @@
     <div class="container w-50 my-4">
         <div class="row header-controls justify-content-center flex-column align-items-center gap-4">
             {{ form.talleres }}
-            <button class="btn btn-secondary col-2" data-action="load">Cargar deshecho</button>
+            <button class="btn btn-secondary col-2" data-action="load">Cargar taller</button>
             <button class="btn btn-primary col-2" data-action="pdf">Guardar pdf</button>
         </div>
     </div>
     <main class="page-container container flex-column">
+        <input type="hidden" id="tramite-id" value="-1">
         <div class="pdf-container container">
             <div class="row body-row gap-4 justify-content-center mt-3">
                 <h3 class="text-uppercase text-center fs-4">Salida de equipo a taller externo</h3>
@@ -92,8 +93,9 @@
             </div>
         </div>
         <div class="container justify-content-center my-4">
-            <div class="row justify-content-center">
-                <button data-action="subir-taller" class="btn btn-primary col-6">Subir taller</button>
+            <div class="row justify-content-center gy-4">
+                <button data-action="subir-taller" class="btn btn-primary col-7">Subir taller</button>
+                <button data-action="editar-taller" class="btn btn-secondary col-7 d-none">Editar taller</button>
             </div>
         </div>
     </main>
@@ -104,7 +106,6 @@
 	const plaqueadosView = `{% url 'plaqueados-list' %}`;
     const noPlaqueadosView = `{% url 'no_plaqueados-list' %}`
     const tallerView = `{% url 'taller-list'%}`
-	const userId = "{{request.user.id}}";
     </script>
     <script src="{%static 'dist/js/generar/globals.js'%}"></script>
     <script src="{%static 'dist/js/generar/taller.js'%}"></script>

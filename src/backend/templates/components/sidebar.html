@@ -1,0 +1,22 @@
+{% load auth_extras %}
+{% load static %}
+{% with toggler="components/side-section-toggler.html" dropdownItem="components/side-section-dropdown-item.html" %}
+
+    <aside id="sidebar-menu" class="sidebar-wrapper pt-4">
+        <div class="sidebar-group">
+            <p class="sidebar-group-title ps-4">Administration</p>
+            <div class="sidebar-section ps-4">
+                {% include toggler with title="Admin" %}
+                <ul class="custom-dropdown-menu">
+                    {% include dropdownItem with text="Link" href="#" %}
+                    {% include dropdownItem with text="Link" href="#" %}
+                    {% include dropdownItem with text="Link" href="#" %}
+                    {% include dropdownItem with text="Link" href="#" %}
+                </ul>
+            </div>
+        </div>
+        <span class="sidebar-group-divider"></span>
+    </aside>
+
+{% endwith %}
+<!-- End of Sidebar -->

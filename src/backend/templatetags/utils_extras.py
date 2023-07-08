@@ -1,5 +1,6 @@
 from django import template
 from django.template.defaultfilters import stringfilter
+
 register = template.Library()
 
 
@@ -11,7 +12,6 @@ def strip_quotes_lower(string: str):
 
 @register.filter(name="_and")
 def _and(val, secondVal):
-    print(secondVal)
     return val and secondVal
 
 

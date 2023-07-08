@@ -1,10 +1,8 @@
-from email.mime import base
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
 from django.contrib.auth.decorators import login_required
 from backend import views
 from backend import api_views
-from backend.api_views import CompraApiViewset, DeshechoApiViewset, FuncionariosApiViewset, NoPlaqueadosApiViewSet, PlaqueadosApiViewset, ProveedorApiViewset, RedApiViewset, SubtipoApiViewSet, TallerApiViewset, TipoApiViewset, TramitesApiViewset, TrasladosApiViewset, UbicacionesApiViewset, UnidadApiViewset, UserApiViewset
+from backend.routers import api_router
 
 
 def protected(view): return login_required(view, "/login")
@@ -55,35 +53,8 @@ urlpatterns = [
 
 ]
 
-
-# api urls
-router = DefaultRouter()
-
-
-router.register(r"plaqueados", PlaqueadosApiViewset, basename="plaqueados")
-router.register(r"tramites", TramitesApiViewset, basename="tramites")
-router.register(r"traslados", TrasladosApiViewset, basename="traslados")
-router.register(r"no_plaqueados", NoPlaqueadosApiViewSet,
-                basename="no_plaqueados")
-
-router.register(r"funcionarios", FuncionariosApiViewset,
-                basename="funcionarios")
-router.register(r"ubicaciones", UbicacionesApiViewset, "ubicaciones")
-
-router.register(r"tipo", TipoApiViewset, "tipo")
-router.register(r"subtipos", SubtipoApiViewSet, "subtipo")
-router.register(r"deshecho", DeshechoApiViewset, "deshecho")
-
-router.register(r"compra", CompraApiViewset, "compra")
-
-router.register(r"user", UserApiViewset, "user")
-
-router.register(r"taller", TallerApiViewset, "taller")
-router.register(r"red", RedApiViewset, "red")
-router.register(r"proveedor", ProveedorApiViewset, "proveedor")
-router.register(r"unidades", UnidadApiViewset, "unidades")
 apiurlpatterns = [
-    path('', include(router.urls)),
+    path('', include(api_router.urls)),
     path("importar/activos", api_views.ImportarActivosApiView.as_view(),
          name="api-importar-activos"),
     path("importar/no-plaqueados", api_views.ImportarActivosNoPlaqueadosApiView.as_view(),

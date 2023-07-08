@@ -6,6 +6,7 @@ from django.db import models
 from django.utils.timezone import now
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+
 # Create your models here.
 
 
@@ -38,27 +39,27 @@ class Activo(models.Model):
         OPTIMO = "Optimo", _("Optimo")
         PROCESO_DESHECHO = "Proceso de deshecho", _("Proceso de deshecho")
         USO_ACADEMICO = "Uso academico", _("Uso academico")
-    observacion = models.CharField(max_length=300, blank=True, null=True)
-    nombre = models.CharField(max_length=120)
-    marca = models.CharField(max_length=200)
-    valor = models.CharField(max_length=200, null=True)
-    modelo = models.CharField(max_length=200)
-    serie = models.CharField(max_length=200, null=True)
-    garantia = models.DateField(null=True)
-    fecha_ingreso = models.DateField(null=True)
-    fecha_registro = models.DateField(auto_now_add=True)
+
+    observacion = models.CharField(max_length=300, blank=True, null=True, verbose_name="Observación")
+    nombre = models.CharField(max_length=120, verbose_name="Nombre");
+    marca = models.CharField(max_length=200, verbose_name="Marca")
+    valor = models.CharField(max_length=200, null=True, verbose_name="Valor")
+    modelo = models.CharField(max_length=200, verbose_name="Modelo")
+    serie = models.CharField(max_length=200, null=True, verbose_name="Serie")
+    garantia = models.DateField(null=True, verbose_name="Garantia")
+    fecha_ingreso = models.DateField(null=True, verbose_name="Fecha de Ingreso")
+    fecha_registro = models.DateField(auto_now_add=True, verbose_name="Fecha de Registro")
     ubicacion = models.ForeignKey(
-        to="Ubicaciones", on_delete=models.DO_NOTHING, null=True)
+        to="Ubicaciones", on_delete=models.DO_NOTHING, null=True, verbose_name="Ubicación")
 
-    tramites = models.ManyToManyField(to="Tramites")
-
-    tipo = models.ForeignKey(Tipo, on_delete=models.SET_NULL, null=True)
+    tramites = models.ManyToManyField(to="Tramites", verbose_name="Tramites")
+    tipo = models.ForeignKey(Tipo, on_delete=models.SET_NULL, null=True, verbose_name="Tipo")
     subtipo = models.ForeignKey(
-        Subtipo, on_delete=models.SET_NULL, null=True)
-    compra = models.ForeignKey("Compra", on_delete=models.SET_NULL, null=True)
+        Subtipo, on_delete=models.SET_NULL, null=True, verbose_name="Subtipo")
+    compra = models.ForeignKey("Compra", on_delete=models.SET_NULL, null=True, verbose_name="Compra")
     estado = models.CharField(
-        max_length=25, choices=Estados.choices, default=Estados.OPTIMO)
-    red = models.ForeignKey(to="Red", on_delete=models.SET_NULL, null=True)
+        max_length=25, choices=Estados.choices, default=Estados.OPTIMO, verbose_name="Estado")
+    red = models.ForeignKey(to="Red", on_delete=models.SET_NULL, null=True, verbose_name="Red")
 
     class Meta:
         abstract = True
@@ -102,6 +103,7 @@ class Ubicaciones(models.Model):
         __empty__ = "--------"
         ESPARZA = "Esparza", _("Instalación de Esparza")
         COCAL = "Cocal", _("Instalación del Cocal")
+
     ubicacion = models.CharField(max_length=120, default="NA", unique=True)
     instalacion = models.CharField(
         max_length=10, choices=InstalacionChoices.choices, default=InstalacionChoices.ESPARZA)
@@ -140,6 +142,7 @@ class Tramites(models.Model):
         FINALIZADO = 'Finalizado', _('Finalizado')
         EN_PROCESO = "En Proceso", _("En Proceso")
         ACEPTADO = "Aceptado", _("Aceptado")
+
     referencia = models.CharField(max_length=120, unique=True)
     solicitante = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     remitente = models.ForeignKey(
@@ -158,10 +161,10 @@ class Tramites(models.Model):
 
 
 class Traslados(models.Model):
-
     destino = models.ForeignKey(
         to=Ubicaciones, on_delete=models.DO_NOTHING, related_name="+")
-    tramite = models.ForeignKey(to=Tramites, on_delete=models.CASCADE)
+    tramite = models.ForeignKey(
+        to=Tramites, on_delete=models.CASCADE, related_name="traslados")
     detalle = models.CharField(max_length=120, default="")
 
     class Meta:
@@ -169,7 +172,6 @@ class Traslados(models.Model):
 
 
 class Deshecho(models.Model):
-
     tramite = models.ForeignKey(to=Tramites, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -177,7 +179,8 @@ class Deshecho(models.Model):
 
 
 class Taller(models.Model):
-    tramite = models.ForeignKey(to=Tramites, on_delete=models.CASCADE)
+    tramite = models.OneToOneField(
+        to=Tramites, on_delete=models.CASCADE, related_name="taller")
     destinatario = models.CharField(max_length=200)
     beneficiario = models.CharField(max_length=200)
     autor = models.CharField(max_length=200)

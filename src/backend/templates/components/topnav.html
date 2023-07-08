@@ -1,29 +1,40 @@
-<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+{% load static %}
+
+<nav class="navbar navbar-expand topbar mb-4 static-top shadow px-4 bg-dark justify-content-between"
+     data-bs-theme="dark">
+    <div class="d-flex align-items-center">
+        <button class="btn" type="button" id="side-menu-toggler">
+            <i class="bi bi-list fs-3 clr-white"></i>
+        </button>
+
+        <a href="" class="navbar-brand">ATIC</a>
+    </div>
+
     <!-- Sidebar Toggle (Topbar) -->
     <button id="sidebarToggleTop"
             class="btn btn-link d-md-none rounded-circle mr-3">
         <i data-feather="menu"></i>
     </button>
     <!-- Topbar Search -->
-    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search position-relative">
-        <div class="input-group">
-            <input type="text"
-                   class="form-control bg-light border-1 small"
-                   placeholder="Buscar en atic..."
-                   aria-label="Search"
-                   aria-describedby="basic-addon2"
-                   id="nav-search-input"/>
-        </div>
-        <div class="search-result-container hidden">
-            <ul class="search-result-list">
-                <template id="search-item-template">
-                    <li class="search-result-item">
-                        <a href="#" class="result-link"></a>
-                    </li>
-                </template>
-            </ul>
-        </div>
-    </form>
+    <!--    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search position-relative">-->
+    <!--        <div class="input-group">-->
+    <!--            <input type="text"-->
+    <!--                   class="form-control bg-light border-1 small"-->
+    <!--                   placeholder="Buscar en atic..."-->
+    <!--                   aria-label="Search"-->
+    <!--                   aria-describedby="basic-addon2"-->
+    <!--                   id="nav-search-input"/>-->
+    <!--        </div>-->
+    <!--        <div class="search-result-container hidden">-->
+    <!--            <ul class="search-result-list">-->
+    <!--                <template id="search-item-template">-->
+    <!--                    <li class="search-result-item">-->
+    <!--                        <a href="#" class="result-link"></a>-->
+    <!--                    </li>-->
+    <!--                </template>-->
+    <!--            </ul>-->
+    <!--        </div>-->
+    <!--    </form>-->
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
@@ -40,7 +51,7 @@
         </li>
         <div class="topbar-divider d-none d-sm-block"></div>
         <!-- Nav Item - User Information -->
-        <li class="nav-item dropdown no-arrow">
+        <li class="nav-item dropdown no-arrow me-5">
             <a class="nav-link dropdown-toggle"
                href="#"
                id="userDropdown"
@@ -52,8 +63,8 @@
                 <i data-feather="user"></i>
             </a>
             <!-- Dropdown - User Information -->
-            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                 aria-labelledby="userDropdown">
+            <ul class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                aria-labelledby="userDropdown">
                 <a class="dropdown-item" href="{% url "perfil" %}">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     Perfil
@@ -67,7 +78,7 @@
                     <i data-feather="log-out" class="mr-2 text-gray-400"></i>
                     Logout
                 </a>
-            </div>
+            </ul>
         </li>
     </ul>
 </nav>
