@@ -24,10 +24,11 @@
 
   .custom-dropdown-menu {
     border: none !important;
-    padding-left: 2rem;
+    padding-left: 1.2rem;
+    padding-top: .2rem;
     display: block !important;
     transform-origin: top;
-    max-height: 10rem;
+    max-height: 50rem;
     transition: max-height ease-in-out 300ms;
     overflow: hidden;
     list-style: none;
@@ -82,5 +83,11 @@
     height: 1px;
     background-color: vars.$gray-500;
     margin: 1rem 0;
+  }
+
+  .sidebar-footer {
+    height: fit-content;
+    margin-top: auto;
+    margin-bottom: 5rem;
   }
 }

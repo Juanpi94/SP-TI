@@ -8,6 +8,7 @@ from django.http import HttpResponseNotFound
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import TemplateView, RedirectView
+from rest_framework.renderers import JSONRenderer
 from rest_framework.viewsets import ModelViewSet
 
 from backend import models
@@ -15,6 +16,7 @@ from backend.api_views import PlaqueadosApiViewset
 from backend.exceptions import ArgMissingException
 from backend.forms import DeshechoExportForm, TallerExportForm, TramitesExportForm
 from backend.routers import api_router
+from backend.serializers import PlaqueadosSerializer, PlaqueadosReportSerializer, UbicacionesSerializer
 from backend.types import ColumnDefs, HorizontalAligns
 
 
@@ -63,15 +65,6 @@ class Table_View(ReadPermMixin, TemplateView):
     exclude = []
     target_view = None
 
-    def post(self, request):
-        if (not request.POST["id"]):
-            return HttpResponseNotFound()
-
-        object = self.model.objects.get(id=request.POST["id"])
-        form = self.get_edit_form()
-        form.initial = object
-        pass
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         self.check_args()
@@ -113,9 +106,10 @@ class Table_View(ReadPermMixin, TemplateView):
         fields: list[any] = self.model._meta.get_fields()
 
         for field in filter(lambda _field: _field.name != "id", fields):
+            title = field.__dict__.get("verbose_name", field.name)
             defs.append({
                 "field": field.name,
-                "title": field.verbose_name.title() or field.name.title(),
+                "title": title.title(),
             })
 
         if len(self.exclude) > 0:
@@ -154,10 +148,23 @@ class Table_View(ReadPermMixin, TemplateView):
     def get_edit_form(self):
         """
         Genera una clase basada en el modelo automaticamente, para las ediciones
-        Por defecto retorna el mismo formulario que get_form
+        Por defecto, utiliza los mismos parametros que get_form_fields y get_form_metafields
         :return: El formulario para editar
         """
-        return self.get_form()
+        fields = self.get_form_fields()
+
+        def init(self, *args, **kwargs):
+            super(django.forms.ModelForm, self).__init__(*args, **kwargs)
+            for field_name, field in self.fields.items():
+                field.required = False
+
+        meta = type("Meta", (), self.get_form_metafields())
+        form = type("DynamicModelForm", (django.forms.ModelForm,), {
+            'Meta': meta,
+            '__init__': init,
+            **fields
+        })
+        return form()
 
     def get_form_fields(self) -> dict:
         """
@@ -188,7 +195,6 @@ class Activos_Plaqueados_View(Table_View):
     target_view = "plaqueados"
     model = models.Activos_Plaqueados
     title = "Activos plaqueados"
-    custom_script = "dist/js/table/activosCustom.js"
 
     def get_form_metafields(self) -> dict:
         metafields = super().get_form_metafields()
@@ -201,7 +207,8 @@ class Activos_Plaqueados_View(Table_View):
         return metafields
 
     def get_values(self) -> QuerySet:
-        return self.get_queryset().values("id", "nombre", "tipo__nombre", "subtipo__nombre", "ubicacion__ubicacion",
+        return self.get_queryset().values("id", "placa", "nombre", "tipo__nombre", "subtipo__nombre",
+                                          "ubicacion__ubicacion",
                                           "marca",
                                           "modelo", "valor", "garantia",
                                           "observacion")
@@ -226,44 +233,27 @@ class Activos_Plaqueados_View(Table_View):
 
 
 class Tramites_View(Table_View):
-    target_view = "tramites-list"
-    columns = ["referencia", "activos_plaqueados", "activos_no_plaqueados",
-               "solicitante", "tipo", "detalles", "fecha", "estado"]
-    exclude = ["id", "activos",
-               "traslados", "deshecho"]
+    target_view = "tramites"
     model = models.Tramites
-
     add = False
     title = "Tramites"
 
 
 class Activos_No_Plaqueados_View(Table_View):
-    target_view = "no_plaqueados-list"
-    columns = ["serie", "nombre", "marca",
-               "modelo", "valor", "garantia", "observacion"]
-    exclude = ["id", "deshecho", "fecha_ingreso", "tramites"]
+    target_view = "no_plaqueados"
     model = models.Activos_No_Plaqueados
-
     title = "Activos no plaqueados"
-    custom_script = "dist/js/table/activosCustom.js"
 
 
 class Funcionarios_View(Table_View):
-    target_view = "funcionarios-list"
-    columns = "__all__"
-    exclude = ["id", "ubicaciones"]
+    target_view = "funcionarios"
     model = models.Funcionarios
-
     title = "Funcionarios"
 
 
 class Ubicaciones_View(Table_View):
     target_view = "ubicaciones-list"
-    columns = "__all__"
-    exclude = ["id", "activos_plaqueados",
-               "activos_no_plaqueados", "plaqueados", "no_plaqueados"]
     model = models.Ubicaciones
-
     title = "Ubicaciones"
 
 
@@ -273,6 +263,10 @@ class Generar_Tramite_View(WritePermMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = TramitesExportForm()
+
+        ubicaciones_data = models.Ubicaciones.objects.all()
+        context["ubicaciones"] = ubicaciones_data.values()
+        
         return context
 
 
@@ -308,38 +302,31 @@ class Perfil_View(LoginRequiredMixin, TemplateView):
 
 
 class Tipo_View(Table_View):
-    target_view = "tipo-list"
-    columns = ["nombre", "detalle"]
-    exclude = ["id", "activos_plaqueados", "activos_no_plaqueados"]
+    target_view = "tipo"
     model = models.Tipo
-
     title = "Tipos de activos"
 
 
 class Subtipo_View(Table_View):
-    target_view = "subtipo-list"
-    columns = "__all__"
-    exclude = ["id", "activos_plaqueados", "activos_no_plaqueados"]
+    target_view = "subtipo"
     model = models.Subtipo
-
     title = "Subtipos de activos"
 
 
 class Compra_View(Table_View):
-    target_view = "compra-list"
-    columns = "__all__"
-    exclude = ["id", "activos_plaqueados", "activos_no_plaqueados"]
+    target_view = "compra"
     model = models.Compra
-
     title = "Compras"
+
+    def get_values(self) -> QuerySet:
+        qs = super().get_values().annotate(id=F("numero_orden_compra"))
+        return qs
 
 
 class Users_View(Table_View):
-    target_view = "user-list"
-    columns = ["nombre", "username"]
-    exclude = ["id", "password"]
+    target_view = "user"
+    exclude = ["password"]
     model = models.User
-
     title = "Usuarios"
 
 
@@ -362,25 +349,24 @@ class Taller_View(WritePermMixin, TemplateView):
 
 
 class Reporte_Plaqueados(ReadPermMixin, TemplateView):
-    template_name = "reportes/reportePlaqueados.html"
+    template_name = "reportes/reporte.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         data = models.Activos_Plaqueados.objects.prefetch_related().all()
-        context["rows"] = data
+        context["data"] = PlaqueadosReportSerializer(data, many=True).data
         context["title"] = "Reporte de activos plaqueados"
         return context
 
 
 class Reporte_No_Plaqueados(ReadPermMixin, TemplateView):
-    template_name = "reportes/reporteNoPlaqueados.html"
+    template_name = "reportes/reporte.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         data = models.Activos_No_Plaqueados.objects.prefetch_related().all()
-        context["rows"] = data
+        context["data"] = list(data.values())
         context["title"] = "Reporte de activos no plaqueados"
-
         return context
 
 
@@ -452,36 +438,24 @@ class Reporte_Plaqueados_4_old(Reporte_Plaqueados):
 
 
 class Red_Table_View(Table_View):
-    target_view = "red-list"
-    columns = "__all__"
+    target_view = "red"
     model = models.Red
     title = "Red Plaqueados"
 
-    columns = ["placa", "serie", "MAC", "IP", "IP6", "IP_switch"]
-    exclude = ["id", "activos_plaqueados", "activos_plaqueados"]
-
 
 class Traslados_Table_View(Table_View):
-    target_view = "traslados-list"
-    columns = ["destino_proximo", "tramite", "detalle",
-               "activos_plaqueados", "activos_no_plaqueados"]
+    target_view = "traslados"
     model = models.Traslados
     title = "Traslados"
 
-    exclude = ["id"]
-
 
 class Proveedores_Table_View(Table_View):
-    target_view = "proveedor-list"
-    columns = "__all__"
-    exclude = ["id", "compra"]
+    target_view = "proveedor"
     title = "Proveedores"
     model = models.Proveedor
 
 
 class Unidades_Table_View(Table_View):
-    target_view = "unidades-list"
-    columns = "__all__"
-    exclude = ["id", "ubicaciones"]
+    target_view = "unidades"
     title = "Unidades Universitarias"
     model = models.Unidad

@@ -1,1 +1,2 @@
-<li class="dropdown-link"><a href="{{ href }}">{{ text }}</a></li>
+{% url href as link %}
+<li class="dropdown-link"><a href="{{ link }}">{{ text }}</a></li>

@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Server and Webpack" type="CompoundRunConfigurationType">
+    <toRun name="watch" type="js.build_tools.npm" />
+    <toRun name="runserver" type="PythonConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>

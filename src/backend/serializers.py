@@ -16,15 +16,15 @@ class PlaqueadosSerializer(ModelSerializer):
 
 
 class PlaqueadosCreateSerializer(ModelSerializer):
-    tramites = serializers.PrimaryKeyRelatedField(many=True, queryset=Tramites.objects.all())
+    tramites = serializers.PrimaryKeyRelatedField(many=True, required=False, queryset=Tramites.objects.all())
 
     def to_representation(self, instance):
         return {
             "id": instance.id,
             "nombre": instance.nombre,
             "tipo__nombre": instance.tipo.nombre,
-            "subtipo__nombre": instance.subtipo.nombre,
-            "ubicacion__ubicacion": instance.ubicacion.ubicacion,
+            "subtipo__nombre": instance.subtipo.nombre if instance.subtipo else None,
+            "ubicacion__ubicacion": instance.ubicacion.ubicacion if instance.ubicacion else None,
             "marca": instance.marca,
             "valor": instance.valor,
             "garantia": instance.garantia,
@@ -206,8 +206,14 @@ class SubtipoSerializer(ModelSerializer):
 
 
 class CompraSerializer(ModelSerializer):
-    proveedor = serializers.SlugRelatedField(
-        slug_field="nombre", queryset=Proveedor.objects.all())
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        return {
+            "id": instance.numero_orden_compra,
+            **representation
+        }
 
     class Meta:
         model = Compra
@@ -261,4 +267,43 @@ class ProveedorSerializer(ModelSerializer):
 class UnidadSerializer(ModelSerializer):
     class Meta:
         model = Unidad
+        fields = "__all__"
+
+
+# REPORTES
+class UbicacionReportSerializer(ModelSerializer):
+    class Meta:
+        model = Ubicaciones
+        fields = "__all__"
+
+
+class CompraReportSerializer(ModelSerializer):
+    class Meta:
+        model = Compra
+        fields = "__all__"
+
+
+class TramitesReportSerializer(ModelSerializer):
+    class Meta:
+        model = Tramites
+        fields = ["tipo", "estado"]
+
+
+class RedReportSerializer(ModelSerializer):
+    class Meta:
+        model = Red
+        fields = "__all__"
+
+
+class PlaqueadosReportSerializer(ModelSerializer):
+    tramites = TramitesReportSerializer(many=True, read_only=True)
+    ubicacion = UbicacionReportSerializer(read_only=True)
+    ubicacion_anterior = UbicacionReportSerializer(read_only=True)
+    tipo = serializers.StringRelatedField(read_only=True)
+    subtipo = serializers.StringRelatedField(read_only=True)
+    compra = CompraSerializer(read_only=True)
+    red = RedReportSerializer(read_only=True)
+
+    class Meta:
+        model = Activos_Plaqueados
         fields = "__all__"

@@ -47,6 +47,7 @@ body {
   grid-template-rows: vars.$top-nav-space 1fr;
   grid-template-columns: vars.$side-nav-space vars.$content-space;
   transition: grid-template-columns ease-in-out 200ms;
+  height: 100%;
 
   &.hide-side {
     grid-template-columns: 0 vars.$content-space;

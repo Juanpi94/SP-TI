@@ -1,4 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
+from django.core.management.color import Style
+
 from backend.models import Activos_Plaqueados, Proveedor, Ubicaciones, Funcionarios, User, Tipo, Subtipo, Compra
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
@@ -12,16 +14,28 @@ from atic.settings import BASE_DIR
 
 class Command(BaseCommand):
     help = "Ingresa registros a la base de datos"
+    silent = False
+
+    def write(self, styled_msg: Style):
+        if self.silent: return
+
+        self.stdout.write(styled_msg)
 
     def add_arguments(self, parser):
         parser.add_argument("--no-flush", action="store_true",
                             help="Realizar seed sin eliminar información en la base de datos")
+        parser.add_argument("--flush", action="store_true",
+                            help="Elimina la información de la base de datos, sin necesitar confirmacion")
+        parser.add_argument("--silent", action="store_true", help="Silencia los mensajes por consola")
 
     def handle(self, *args, **options):
-
-        if(options["no_flush"] is False):
-            call_command("flush")
-            self.stdout.write(self.style.SUCCESS("Base de datos limpia!"))
+        self.silent = options["silent"]
+        if options["no_flush"] is False:
+            if options["flush"] is True:
+                call_command("flush", "--no-input")
+            else:
+                call_command("flush")
+            self.write(self.style.SUCCESS("Base de datos limpia!"))
         json_file_path = os.path.join(BASE_DIR,
                                       'seed_dump.json'
                                       )
@@ -47,7 +61,7 @@ class Command(BaseCommand):
                 db_activo.fecha_ingreso = datetime.datetime.now()
                 db_activo.save()
                 exitos += 1
-            self.stdout.write(self.style.SUCCESS(
+            self.write(self.style.SUCCESS(
                 f"Se añadieron {exitos} activos de {registros}"))
             # FUNCIONARIOS
             funcionarios = data["funcionarios"]
@@ -57,11 +71,11 @@ class Command(BaseCommand):
 
             for funcionario in funcionarios:
                 if funcionario["nombre_completo"] == "Vacante":
-                    self.stdout.write(self.style.ERROR(
+                    self.write(self.style.ERROR(
                         f"Funcionario {funcionario['nombre_completo']} tiene un nombre invalido"))
                     continue
                 if funcionario["nombre_completo"] in funcionarios_repeated:
-                    self.stdout.write(self.style.ERROR(
+                    self.write(self.style.ERROR(
                         f"Funcionario {funcionario['nombre_completo']} tiene un nombre repetido"))
                     continue
                 db_funcionario = Funcionarios()
@@ -73,7 +87,7 @@ class Command(BaseCommand):
                 db_funcionario.save()
                 funcionarios_repeated.append(db_funcionario.nombre_completo)
                 exitos += 1
-            self.stdout.write(self.style.SUCCESS(
+            self.write(self.style.SUCCESS(
                 f"Se añadieron {exitos} funcionarios de {registros}"))
             # UBICACIONES
             ubicaciones = data["ubicaciones"]
@@ -82,7 +96,7 @@ class Command(BaseCommand):
             ubicaciones_repeated = []
             for ubicacion in ubicaciones:
                 if ubicacion['ubicacion'] in ubicaciones_repeated:
-                    self.stdout.write(self.style.ERROR(
+                    self.write(self.style.ERROR(
                         f"Ubicacion {ubicacion} tiene un nombre repetido"))
                     continue
                 mock_custodio = Funcionarios.objects.get(id=1)
@@ -92,7 +106,7 @@ class Command(BaseCommand):
                 db_ubicacion.save()
                 ubicaciones_repeated.append(db_ubicacion.ubicacion)
                 exitos += 1
-            self.stdout.write(self.style.SUCCESS(
+            self.write(self.style.SUCCESS(
                 f"Se añadieron {exitos} ubicaciones de {registros}"))
             # USUARIOS
             usuarios = data["usuarios"]
@@ -101,15 +115,14 @@ class Command(BaseCommand):
             usuarios_repeated = []
             for usuario in usuarios:
                 if usuario['username'] in usuarios_repeated:
-
-                    self.stdout.write(self.style.ERROR(
+                    self.write(self.style.ERROR(
                         f"Usuario {usuario['username']} tiene un nombre de usuario repetido"))
                     continue
                 usuarios_repeated.append(usuario["username"])
                 User.objects.create_user(
                     username=usuario['username'], email=usuario["email"], password=usuario["password"])
                 exitos += 1
-            self.stdout.write(self.style.SUCCESS(
+            self.write(self.style.SUCCESS(
                 f"Se añadieron {exitos} usuarios de {registros}"))
             # TIPOS
             tipos = data["tipos"]
@@ -123,7 +136,7 @@ class Command(BaseCommand):
                 tipo_db.save()
                 exitos += 1
 
-            self.stdout.write(self.style.SUCCESS(
+            self.write(self.style.SUCCESS(
                 f"Se añadieron {exitos} tipos de {registros}"))
             # SUBTIPOS
             subtipos = data["subtipos"]
@@ -137,7 +150,7 @@ class Command(BaseCommand):
                 subtipo_db.save()
                 exitos += 1
 
-            self.stdout.write(self.style.SUCCESS(
+            self.write(self.style.SUCCESS(
                 f"Se añadieron {exitos} subtipos de {registros}"))
 
             # COMPRAS
@@ -173,15 +186,15 @@ class Command(BaseCommand):
 
                     exitos += 1
                 except KeyError:
-                    self.stdout.write(self.style.ERROR(
+                    self.write(self.style.ERROR(
                         f"La compra {compra_db.numero_orden_compra} carece de un dato importante"))
 
-            self.stdout.write(self.style.SUCCESS(
+            self.write(self.style.SUCCESS(
                 f"Se añadieron {exitos} Compras y proveedores de {registros}"))
 
             User.objects.create_superuser(
                 username="admin", email="Admin@gmail.com", password="AdminPassword")
-            self.stdout.write(self.style.SUCCESS(
+            self.write(self.style.SUCCESS(
                 "Se creó super usuario admin"))
             content_type = ContentType(app_label="backend", model="global")
             content_type.save()
@@ -199,8 +212,8 @@ class Command(BaseCommand):
             lector = User.objects.get(username="Lector")
             lector.groups.add(lector_group)
 
-            self.stdout.write(self.style.SUCCESS(
+            self.write(self.style.SUCCESS(
                 "Se crearon permisos"))
 
-            self.stdout.write(self.style.SUCCESS(
+            self.write(self.style.SUCCESS(
                 "Se crearon grupos"))

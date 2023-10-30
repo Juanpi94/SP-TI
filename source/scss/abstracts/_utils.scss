@@ -1,35 +1,43 @@
 @each $colorName, $color in $colors {
-	.clr-#{$colorName} {
-		color: $color !important;
-	}
+  .clr-#{$colorName} {
+    color: $color !important;
+  }
 
-	.bg-#{$colorName} {
-		background-color: $color !important;
-	}
+  .bg-#{$colorName} {
+    background-color: $color !important;
+  }
 }
 
 .mb-10 {
-	margin-bottom: 10rem;
+  margin-bottom: 10rem;
 }
 
 .hightlight-row-traslado {
-	background-color: $red !important;
-	td {
-		color: $white !important;
-	}
+  background-color: $red !important;
+
+  td {
+    color: $white !important;
+  }
 }
 
 .hightlight-row-deshecho {
-	background-color: $purple !important;
-	td {
-		color: $white !important;
-	}
+  background-color: $purple !important;
+
+  td {
+    color: $white !important;
+  }
 }
 
 .h-full {
-	height: 100vh;
+  height: 100vh;
 }
 
 .w-fit {
-	width: fit-content !important;
+  width: fit-content !important;
+}
+
+@for $i from 1 through 5 {
+  .g-cols-#{$i} {
+    grid-template-columns: repeat($i, 1fr);
+  }
 }

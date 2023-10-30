@@ -10,7 +10,7 @@
         {% csrf_token %}
         <h1 class="ms-4 mb-1 fs-2">{{ title }}</h1>
         <div id="table-container" class="container m-0 pt-1 ps-4">
-            <div id="table-controls" class="row mb-3">
+            <div id="table-controls" class="row">
                 <div class="btn-toolbar col-9 justify-content-between" role="toolbar">
                     <div class="btn-group" data-atic-group="manipulate">
                         <button data-atic-action="add" data-bs-toggle="modal" data-bs-target="#form-modal"
@@ -37,6 +37,16 @@
 
 
                 </div>
+                <div class="row my-2 d-flex align-items-end gap-3">
+                    <div class="col-3">
+                        <label for="select-field-input">Campo</label>
+                        <select name="" id="select-field-input"></select>
+                    </div>
+                    <div class="col-5">
+                        <label for="search-input">Buscar</label>
+                        <input type="text" class="form-control mb-0" id="search-input">
+                    </div>
+                </div>
 
             </div>
             <div id="tabulator-table" class="row">
@@ -45,7 +55,7 @@
         </div>
         {% include "components/formModal.html" with form=form modal_id="form-modal" form_id="add-form" modal_label="Añadir activo" %}
         {% include "components/formModal.html" with form=edit_form modal_id="edit-form-modal" form_id="edit-form" modal_label="Editar activo" %}
-        <!--        {% include "components/detailsModal.html" %}-->
+        {% include "components/detailsModal.html" %}
     {% endblock content %}
 {% endif %}
 {% block script %}
@@ -60,7 +70,7 @@
         const edit =
         {{request.user|can_write|_and:edit|strip_quotes}}
     </script>
-    {% comment %} Este es el archivo javascript que interactua con la tabla, está en la carpeta static/js/table.js {% endcomment %}
+    {% comment %} Este es el archivo javascript que interactua con la tabla{% endcomment %}
     <script src="{% static 'js/table.bundle.js' %}" defer></script>
     {% if custom_script %}
         <script src="{% static custom_script %}" defer></script>

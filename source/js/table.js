@@ -1,24 +1,37 @@
 import "bootstrap";
 import {TabulatorFull as Tabulator} from "tabulator-tables";
-import superjson from "superjson";
 import Choices from "choices.js";
 import axios from "axios";
-import * as sweetalert2 from "sweetalert2";
 import Swal from "sweetalert2";
-import {Exception} from "sass";
+import config from "./config";
+import XLSX from "./xlsx";
+import {Modal} from "bootstrap";
 
-const data = document.getElementById("data");
 
+/**
+ * Django necesita el token CSRF por seeguridad, esta función la recupera con el fin
+ * de incorporarla en los headers de axios
+ * @returns {string} El token CSRF
+ */
 const getCSRFToken = () => {
     const tokenElement = document.querySelector("[name=csrfmiddlewaretoken]");
     return tokenElement.value;
 }
+
+
+//SETUP
+//Elemento con los datos json del activo
+const data = document.getElementById("data");
+
+// Instancia de axios para hacer llamadas al backend
 const api = axios.create({
+    // eslint-disable-next-line no-undef
     baseURL: `/api/${target_view}/`, headers: {
         "X-CSRFToken": getCSRFToken()
     }
 })
 
+// Los botones en la parte superior de la tabla
 const buttons = {
     "add": document.querySelector("[data-atic-action=add]"),
     "deleteSelected": document.querySelector("[data-atic-action=delete-selected]"),
@@ -27,36 +40,58 @@ const buttons = {
     "exportVisibles": document.querySelector("[data-atic-action=export-visible]"),
     "deselect": document.querySelector("[data-atic-action=deselect]"),
 };
+//El input de busqueda
+const searchInput = document.querySelector("#search-input")
+// El formulario de adición
 const addForm = document.querySelector("#add-form");
+
+//El formulario de edición
 const editForm = document.querySelector("#edit-form");
+
+//El modal de detalles
+const detailModal = document.querySelector("#detail-modal");
+
 /**
  * Tag con el que etiquetar los valores nulos
  * @type {string}
  */
 const NULL_TAG = '"---"'
+
+//Se toma el texto del elemento data, se reemplaza los valores nulos con el NULL_TAG y luego se convierte
+// En un objecto nativo de javascript
 let jsonData = JSON.parse(data.textContent.replaceAll("null", NULL_TAG))
 
 
+//Se inicializa la tabla
 const table = new Tabulator("#tabulator-table", {
     data: jsonData["data"],
-    autoColumns: true,
     autoColumnsDefinitions: jsonData["columnDefs"] == "null" ? false : jsonData["columnDefs"],
-    pagination: true,
-    paginationSize: 5,
-    paginationSizeSelector: [5, 10, 25, 50, 100],
-
+    ...config.table
 });
 
+// Filtro para la busqueda de registros
+function matchAny(data, filterParams) {
+    for (let key in data) {
+        let fieldVal = data[key];
+        if (typeof fieldVal !== "string") {
+            fieldVal = fieldVal.toString();
+        }
+
+        if (fieldVal.toLowerCase().includes(filterParams.value.toLowerCase())) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+//Se inicializan los select con ChoicesJS y luego se colocan en arreglos correspondientes
 const addChoices = []
 const editChoices = []
-const choicesOpts = {}
-addForm.querySelectorAll("select").forEach(element => addChoices.push(new Choices(element, choicesOpts)));
-editForm.querySelectorAll("select").forEach(element => editChoices.push(new Choices(element, choicesOpts)));
+let fieldChoice = null;
 
-/**
- *
- * @param {HTMLSelectElement} element
- */
+addForm.querySelectorAll("select").forEach(element => addChoices.push(new Choices(element, config.choicesJS)));
+editForm.querySelectorAll("select").forEach(element => editChoices.push(new Choices(element, config.choicesJS)));
 
 
 table.on("dataLoaded", init_listeners)
@@ -69,19 +104,70 @@ function init_listeners() {
     table.on("rowSelected", onRowSelected);
     table.on("rowDeselected", onRowDeselected);
 
+    searchInput.addEventListener("keyup", onSearch);
+
+    let choices = table.getColumns("visible").map((col) => {
+        const def = col.getDefinition();
+
+        if (typeof def.title === "undefined" || def.title === "Controls" || def.title === "id") {
+            return null;
+        }
+        return {value: def.field, label: def.title}
+    }).filter(choice => choice !== null)
+
+    fieldChoice = new Choices(document.querySelector("#select-field-input"), {choices, shouldSort: false});
+
     //Add button listeners
     buttons["deselect"].addEventListener("click", onDeselectAll)
+    buttons["deleteSelected"].addEventListener("click", onDeleteSelected);
+    buttons["exportVisibles"].addEventListener("click", onExportVisibles);
+    buttons["exportAll"].addEventListener("click", onExportAll);
+    buttons["print"].addEventListener("click", onPrint);
+    //Add form listeners
     addForm.addEventListener("submit", onCreateRecord);
     editForm.addEventListener("submit", onEditSingle);
 
-    document.querySelector("#form-modal [data-atic-action=submit]").addEventListener("click", () => addForm.requestSubmit());
-    document.querySelector("#edit-form-modal [data-atic-action=submit]").addEventListener("click", () => editForm.requestSubmit());
+    document.querySelector("#add-form-btn").addEventListener("click", () => addForm.requestSubmit());
+    document.querySelector("#edit-form-btn").addEventListener("click", () => editForm.requestSubmit());
     document.querySelector("#edit-form-modal").addEventListener("show.bs.modal", onShowEditModal)
+    document.querySelector("#edit-form-modal").addEventListener("hide.bs.modal", onHideEditModal)
 }
 
 function addControlListeners() {
-    document.querySelectorAll("[data-atic-action=delete]").forEach(el => el.addEventListener("click", onDeleteSingle));
-    document.querySelectorAll("[data-atic-action=show]").forEach(el => el.addEventListener("click", onShowSingle));
+
+    table.on("cellClick", (e, cell) => {
+        if (cell.getElement().classList.contains("controls-cell")) {
+            const closestBtn = e.target.closest("button");
+
+            if (typeof closestBtn.dataset !== "undefined" && "aticAction" in closestBtn.dataset) {
+                const action = closestBtn.dataset.aticAction;
+
+                if (action === "delete") {
+                    onDeleteSingle(e, closestBtn.dataset.aticId);
+                } else if (action === "show") {
+                    onShowSingle(e, closestBtn.dataset.aticId);
+                }
+            }
+        }
+    });
+
+
+    table.on("cellClick", (e, cell) => {
+        const classList = cell.getElement().classList;
+        if (classList.contains("controls-cell") || classList.contains("selection-cell")) return;
+        const value = cell.getValue();
+        if (!value) return;
+        navigator.clipboard.writeText(value.toString());
+
+        Swal.fire({
+            icon: "success",
+            toast: true,
+            title: "Copiado",
+            position: "bottom",
+            showConfirmButton: false,
+            timer: 1500,
+        })
+    });
 }
 
 function addControlColumns() {
@@ -89,13 +175,17 @@ function addControlColumns() {
         title: "Controls",
         field: "id",
         formatter: getControlColumn,
+        cssClass: "controls-cell",
         sorter: false,
         headerSort: false,
+        print: false,
     }, false,).then(addControlListeners);
     table.addColumn({
         formatter: "rowSelection",
         titleFormatter: "rowSelection",
-        headerSort: false
+        cssClass: "selection-cell",
+        headerSort: false,
+        print: false,
     }, true);
 }
 
@@ -107,13 +197,13 @@ function getControlColumn(cell) {
     return `
     <div class="btn-group">
         <button class="btn btn-primary clr-white" data-bs-toggle="modal" data-bs-target="#edit-form-modal"  data-atic-action="edit" data-atic-id="${id}">
-            <i class="bi bi-pencil-fill"></i>
+            <i class="bi bi-pencil-fill user-select-none"></i>
         </button>
         <button class="btn btn-danger clr-white" data-atic-action="delete" data-atic-id="${id}">
-            <i class="bi bi-trash-fill"></i>
+            <i class="bi bi-trash-fill user-select-none"></i>
          </button>
         <button class="btn btn-success clr-white" data-atic-action="show" data-atic-id="${id}">
-             <i class="bi bi-eye-fill"></i>
+             <i class="bi bi-eye-fill user-select-none"></i>
         </button>
     </div>
     `
@@ -121,6 +211,83 @@ function getControlColumn(cell) {
 
 
 //Listeners
+
+/**
+ *
+ * @param {KeyboardEvent} event
+ */
+function onSearch(event) {
+    const value = event.target.value;
+
+    if (value.trim() === "") {
+        table.clearFilter();
+        return;
+    }
+
+    table.setFilter(fieldChoice.getValue(true), "like", value);
+}
+
+function onPrint() {
+    table.print("all");
+}
+
+/**
+ *
+ * @param {MouseEvent} event
+ */
+function onExportVisibles(event) {
+    const data = [];
+    const columns = [];
+    const content = table.getData("visible");
+    table.getColumns().forEach((col) => {
+        const def = col.getDefinition();
+
+        if (typeof def.title === "undefined" || def.title === "Controls") {
+            return;
+        }
+        columns.push({label: def.title, field: def.field});
+    })
+
+    content.forEach(contentData => {
+        const rowData = {};
+        columns.forEach((col) => {
+            rowData[col.label] = contentData[col.field]
+        });
+        data.push(rowData)
+    });
+
+    const xlsx = new XLSX(data, `export-visibles-${new Date().toISOString()}`, getCSRFToken());
+
+    xlsx.download().catch(console.error);
+
+}
+
+function onExportAll() {
+    const data = [];
+    const columns = [];
+    const content = table.getData("All");
+    table.getColumns().forEach((col) => {
+        const def = col.getDefinition();
+
+        if (typeof def.title === "undefined" || def.title === "Controls") {
+            return;
+        }
+        columns.push({label: def.title, field: def.field});
+    })
+
+    content.forEach(contentData => {
+        const rowData = {};
+        columns.forEach((col) => {
+            rowData[col.label] = contentData[col.field]
+        });
+        data.push(rowData)
+    });
+
+    const xlsx = new XLSX(data, `export-all-${new Date().toISOString()}`, getCSRFToken());
+
+    xlsx.download().catch(console.error);
+}
+
 function onRowSelected() {
     buttons["deselect"].toggleAttribute("disabled", false);
     buttons["deleteSelected"].toggleAttribute("disabled", false);
@@ -147,13 +314,13 @@ async function onCreateRecord(event) {
     const formData = new FormData(event.target);
     const dataObject = {};
 
-    formData.forEach((value, key, parent) => {
+    formData.forEach((value, key) => {
         dataObject[key] = value;
     });
     for (let choicesItem of addChoices) {
         const name = choicesItem.passedElement.element.name;
 
-        if (dataObject.hasOwnProperty(name)) {
+        if (name in dataObject) {
             dataObject[name] = choicesItem.getValue(true);
         }
     }
@@ -168,7 +335,7 @@ async function onCreateRecord(event) {
  */
 async function onShowEditModal(event) {
 
-    if (event.relatedTarget.dataset.hasOwnProperty("aticId")) {
+    if ("aticId" in event.relatedTarget.dataset) {
         const id = event.relatedTarget.dataset.aticId;
         const response = await api.get(`${id}`);
         if (response.status >= 200 && response.status < 205) {
@@ -209,12 +376,17 @@ async function onShowEditModal(event) {
     }
 }
 
+function onHideEditModal() {
+    resetForm(editForm)
+    editChoices.forEach(choice => choice.setChoiceByValue(""));
+}
+
 /**
  * @param {MouseEvent} event
  */
 async function onEditSingle(event) {
     event.preventDefault();
-    if (event.target.dataset.hasOwnProperty("aticId")) {
+    if ("aticId" in event.target.dataset) {
         const id = event.target.dataset.aticId;
         const formData = new FormData(editForm);
         const dataObject = {};
@@ -241,16 +413,87 @@ async function onEditSingle(event) {
 
 /**
  * @param {MouseEvent} event
+ * @param {string} id
  */
-function onDeleteSingle(event) {
+function onDeleteSingle(event, id) {
+    Swal.fire({
+        icon: "warning",
+        "text": "¿Seguro que quiere eliminar este registro?",
+        showCancelButton: true,
+        confirmButtonText: "Eliminar"
+    }).then(res => {
+        if (res.isConfirmed) {
+            if (typeof id == "undefined") {
+                Swal.fire({
+                    icon: "Error",
+                    text: "No es posible eliminar este activo",
+                });
+                return;
+            }
+            api.delete(`${id}/`).then((res) => {
+                table.deleteRow(parseInt(id));
+                onDeleteSuccess(res);
+            }).catch(onDeleteError);
+        }
+    });
+}
+
+/**
+ *
+ * @param {MouseEvent} event
+ */
+async function onDeleteSelected(event) {
+    if (table.getSelectedRows().length === 0) {
+        return;
+    }
+    const res = await Swal.fire({
+        icon: "warning",
+        "text": "Está a punto de eliminar varios registros, ¿Continuar?",
+        showCancelButton: true,
+    });
+    if (res.isConfirmed) {
+        const rows = table.getSelectedRows();
+        let deletedRows = 0;
+        for (const row of rows) {
+            const id = row.getIndex();
+            try {
+                await api.delete(`${id}/`);
+                deletedRows++;
+                row.delete();
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        Swal.fire({
+            icon: "success",
+            text: `Se eliminaron ${deletedRows} registros de ${rows.length}`
+        })
+    }
 
 }
 
 /**
  * @param {MouseEvent} event
+ * @param {string} id
  */
-function onShowSingle(event) {
+function onShowSingle(event, id) {
+    api.get(`${id}`).then(res => {
+        const template = detailModal.querySelector("#detail-template");
+        const detailBody = detailModal.querySelector(".modal-body");
 
+
+        for (const key in res.data) {
+            const detailSection = template.content.cloneNode(true);
+            const title = detailSection.querySelector(".detail-title");
+            const info = detailSection.querySelector(".detail-info");
+            title.textContent = key;
+            info.textContent = res.data[key];
+            detailBody.appendChild(detailSection);
+        }
+
+        Modal.getOrCreateInstance(detailModal).show();
+    }).catch(onShowSingleError);
 }
 
 /**
@@ -309,8 +552,48 @@ function onEditSuccess(response) {
         title: "Modificación realizada con éxito",
     });
     const data = response.data;
-    console.log(data)
+
     table.updateData([data]);
+}
+
+/**
+ *
+ * @param {axios.AxiosError} error
+ */
+function onDeleteError(error) {
+    if (error) {
+        Swal.fire(
+            {
+                icon: "error",
+                text: "Ocurrió un error al eliminar el registro",
+                footer: JSON.stringify(error.response.data),
+            }
+        )
+    }
+}
+
+/**
+ *
+ * @param {axios.AxiosResponse} response
+ */
+function onDeleteSuccess(response) {
+    Swal.fire({
+        icon: "success",
+        title: "Se eliminó el registro con exito",
+    });
+
+}
+
+/**
+ *
+ * @param {axios.AxiosError} response
+ */
+function onShowSingleError(error) {
+    console.error(error)
+    Swal.fire({
+        icon: "error",
+        title: "Hubo un problema al extraer los datos"
+    })
 }
 
 /**

@@ -43,23 +43,23 @@ class Activo(models.Model):
     observacion = models.CharField(max_length=300, blank=True, null=True, verbose_name="Observación")
     nombre = models.CharField(max_length=120, verbose_name="Nombre");
     marca = models.CharField(max_length=200, verbose_name="Marca")
-    valor = models.CharField(max_length=200, null=True, verbose_name="Valor")
+    valor = models.CharField(max_length=200, blank=True, verbose_name="Valor")
     modelo = models.CharField(max_length=200, verbose_name="Modelo")
-    serie = models.CharField(max_length=200, null=True, verbose_name="Serie")
+    serie = models.CharField(max_length=200, blank=True, verbose_name="Serie")
     garantia = models.DateField(null=True, verbose_name="Garantia")
     fecha_ingreso = models.DateField(null=True, verbose_name="Fecha de Ingreso")
     fecha_registro = models.DateField(auto_now_add=True, verbose_name="Fecha de Registro")
     ubicacion = models.ForeignKey(
         to="Ubicaciones", on_delete=models.DO_NOTHING, null=True, verbose_name="Ubicación")
 
-    tramites = models.ManyToManyField(to="Tramites", verbose_name="Tramites")
+    tramites = models.ManyToManyField(to="Tramites", blank=True, verbose_name="Tramites")
     tipo = models.ForeignKey(Tipo, on_delete=models.SET_NULL, null=True, verbose_name="Tipo")
     subtipo = models.ForeignKey(
-        Subtipo, on_delete=models.SET_NULL, null=True, verbose_name="Subtipo")
-    compra = models.ForeignKey("Compra", on_delete=models.SET_NULL, null=True, verbose_name="Compra")
+        Subtipo, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Subtipo")
+    compra = models.ForeignKey("Compra", on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Compra")
     estado = models.CharField(
         max_length=25, choices=Estados.choices, default=Estados.OPTIMO, verbose_name="Estado")
-    red = models.ForeignKey(to="Red", on_delete=models.SET_NULL, null=True, verbose_name="Red")
+    red = models.ForeignKey(to="Red", on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Red")
 
     class Meta:
         abstract = True
@@ -68,7 +68,7 @@ class Activo(models.Model):
 class Activos_Plaqueados(Activo):
     placa = models.CharField(max_length=30)
     ubicacion_anterior = models.ForeignKey(
-        to="Ubicaciones", on_delete=models.DO_NOTHING, null=True, related_name="plaqueados")
+        to="Ubicaciones", on_delete=models.DO_NOTHING, blank=True, null=True, related_name="plaqueados")
 
     def __str__(self) -> str:
         return self.placa

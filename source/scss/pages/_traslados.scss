@@ -1,39 +1,49 @@
 .departamento {
-	font-size: 0.8rem;
+  font-size: 0.8rem;
 }
 
 .textarea {
-	width: 35rem;
-	height: 7rem;
+  width: 35rem;
+  height: 7rem;
 }
 
 .motivoPdf {
-	display: none;
-	width: 35rem;
-	text-overflow: clip;
-	overflow: hidden;
-	white-space: pre-wrap;
-	padding: 0 0.2rem;
-	border: 0.1rem black solid;
-	line-break: normal;
-	word-wrap: break-word;
-	inline-size: 35rem;
-	min-height: 7rem;
-	height: fit-content;
-	overflow: auto;
+  display: none;
+  width: 35rem;
+  text-overflow: clip;
+  overflow: hidden;
+  white-space: pre-wrap;
+  padding: 0 0.2rem;
+  border: 0.1rem black solid;
+  line-break: normal;
+  word-wrap: break-word;
+  inline-size: 35rem;
+  min-height: 7rem;
+  height: fit-content;
+  overflow: auto;
 
-	&.show {
-		display: block !important;
-	}
+  &.show {
+    display: block !important;
+  }
 }
 
 .footer {
-	font-size: smaller;
-	vertical-align: bottom;
+  font-size: smaller;
+  vertical-align: bottom;
 }
 
 .invisible-textinput {
-	width: 100%;
-	min-width: fit-content;
-	border: none;
+  width: 100%;
+  min-width: fit-content;
+  border: none;
+}
+
+
+$max_adder_height: 2.82rem;
+.adder-text {
+  max-height: $max_adder_height;
+}
+
+.adder-button {
+  max-height: $max_adder_height;
 }

@@ -13,12 +13,10 @@ const __SOURCE_DIR__ = path.resolve(__dirname, "source") + "/";
 const config = {
     entry: {
         main: __SOURCE_DIR__ + "js/main.js",
-        table: {
-            import: __SOURCE_DIR__ + "js/table.js",
-            dependOn: "bootstrap"
-        },
+        table: __SOURCE_DIR__ + "js/table.js",
+        report: __SOURCE_DIR__ + "js/report.js",
+        traslado: __SOURCE_DIR__ + "js/tramites/traslado.js"
 
-        bootstrap: "bootstrap",
     },
     output: {
         path: path.resolve(__dirname, 'src/backend/static/js'),

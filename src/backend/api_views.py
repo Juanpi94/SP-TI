@@ -1,9 +1,11 @@
 from datetime import datetime
+from http.client import HTTPResponse
 
 from io import BytesIO
 import json
 from math import isnan
 
+from django.http import FileResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
@@ -355,22 +357,24 @@ class ExportarHojaDeCalculo(APIView):
     def post(self, request, format=None):
         json_data = request.data
 
-        parsed_json = pd.DataFrame(json.loads(json_data['data']))
-        with BytesIO() as b:
-            writer = pd.ExcelWriter(b, engine="xlsxwriter", mode="xlswriter")
-            pandas.io.formats.excel.header_style = None
-            parsed_json.to_excel(writer, sheet_name="Reporte")
-            worksheet = writer.sheets["Reporte"]
-            workbook = writer.book
-            worksheet.autofit()
-            header_fmt = workbook.add_format(
-                {"bold": True, "fg_color": "#FCD5B4"})
+        parsed_json = pd.DataFrame(json_data)
+        b = BytesIO()
+        writer = pd.ExcelWriter(b, engine="xlsxwriter", mode="xlswriter")
+        pandas.io.formats.excel.header_style = None
+        parsed_json.to_excel(writer, sheet_name="Reporte")
+        worksheet = writer.sheets["Reporte"]
+        workbook = writer.book
+        worksheet.autofit()
+        header_fmt = workbook.add_format(
+            {"bold": True, "fg_color": "#FCD5B4"})
 
-            for col_num, value in enumerate(parsed_json.columns.values):
-                worksheet.write(
-                    0, col_num + 1, value.replace(" ", "").replace("_", " ").strip(), header_fmt)
-            writer.save()
-            return Response({"data": b.getbuffer().hex()})
+        for col_num, value in enumerate(parsed_json.columns.values):
+            worksheet.write(
+                0, col_num + 1, value.replace(" ", "").replace("_", " ").strip(), header_fmt)
+        writer.save()
+        b.seek(0)
+        response = FileResponse(b, filename="export.xlsx", as_attachment=True)
+        return response
 
 
 class ChangePasswordView(APIView):
