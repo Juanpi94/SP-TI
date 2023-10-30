@@ -4,7 +4,7 @@
 
 - Tener instalado Python3 https://www.python.org/downloads/
 - Tener instalado Node JS https://nodejs.org/es/
-- De forma preferible contar con el editor de código VSCode https://code.visualstudio.com/
+- De forma preferible contar con el editor de código PyCharm Professional https://www.jetbrains.com/es-es/pycharm/
 
 ## Pasos para configurar el proyecto
 
@@ -27,26 +27,41 @@ source ./venv/Scripts/activate
 
 5. instalar las dependencias de python con el comando, desde la carpeta raíz (misma carpeta donde está el requirements.txt)
    `pip install -r requirements.txt`
-6. Instalar las dependencias de nodejs
-   1. ir a src/backend
-   2. ejecutar el comando `npm install`
-7. Ejecutar los archivos init:
-   - Si está en un entorno windows, ejecutar el archivo init.bat dandole click o desde la terminal:
-     `./init.bat`
-   - Si está en un entorno linux, o está utilizando WSL (https://ubuntu.com/wsl) ejecute el archivo init.sh:
-     `./init.sh`
-   - El archivo init ejecuta el comando `npm run dev` y `py manage.py runserver` de forma simultanea, lo cuál facilita el desarrollo y es ideal utilizarlo cada vez que mantenga el proyecto
+6. Instalar las dependencias de nodejs (misma carpeta donde está el package.json)
+   1.Ejecutar `npm i` en la raíz del proyecto
 
-## Opcional
+
+# Mantener El proyecto
+El proyecto utiliza django para correr el servidor web y el backend, y webpack para compilar el javascript.
+
+## Comando para ejecutar el backend
+```bash
+py src/manage.py runserver
+```
+## Comando para ejecutar webpack
+```
+npm run build
+# O si quiere que webpack compile mientras trabaja
+npm run watch
+```
+
+# Opcional
 
 - **Seed**: El comando `py manage.py seed` carga la base de datos con información de prueba, ideal para el desarrollo.
 - **Build**: El comando `npm run build` es utilizado para generar archivos de javascript y css optimizados y minificados, destinados a producción.
+
+## Troubleshooting
+- Los archivos javascript que genera webpack terminan en .bundle.js, tenga eso en cuenta a la hora de añadirlos al html
+- Todos los estilos están en main.css, por lo que al añadir nuevos estilos no es necesario que los agregue al html
+- Si crea un nuevo archivo de javascript para separar el código (code splitting), recuerde añadir el archivo al webpack.config.js
 
 ## Documentación adicional
 
 - **Django**: https://www.djangoproject.com/
 - **Django secret**: https://docs.djangoproject.com/en/4.1/ref/settings/#secret-key
+- **Django Rest Framework**: https://www.django-rest-framework.org/
 - **Sass**: https://sass-lang.com/documentation/
-- **Datatables**: https://datatables.net/
+- **Tabulator**: https://tabulator.info/
+- **Webpack**: https://webpack.js.org/
 - **Docker**: https://docs.docker.com/get-started/
 
