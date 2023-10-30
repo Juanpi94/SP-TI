@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load auth_extras %}
+{% load utils_extras %}
+{% block title %}
+    {{ title }}
+{% endblock title %}
+{% if request.user|can_read %}
+    {% block content %}
+        {% csrf_token %}
+        <div id="table-container" class="container py-4">
+            <h1 class="ms-5 mb-1 fs-2">{{ title }}</h1>
+            <div id="tabulator-table" class="reporte-plaqueados"></div>
+        </div>
+    {% endblock content %}
+{% endif %}
+{% block script %}
+
+    {{ data|json_script:"data" }}
+    {% comment %} Este es el archivo javascript que interactua con la tabla, está en la carpeta static/js/table.js {% endcomment %}
+    <script src="{% static '/js/report.bundle.js' %}"></script>
+{% endblock script %}

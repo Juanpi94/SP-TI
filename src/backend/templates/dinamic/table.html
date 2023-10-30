@@ -8,33 +8,73 @@
 {% if request.user|can_read %}
     {% block content %}
         {% csrf_token %}
-        <h1 class="ms-5 mb-1 fs-2">{{ title }}</h1>
-        <div id="table-container" class="container">
-            <table id="datatable"
-                   class="table table-striped table-responsive dynamic-datatable compact"
-                   width="70vw">
-                <div class="container" id="table-buttons"></div>
-            </table>
+        <h1 class="ms-4 mb-1 fs-2">{{ title }}</h1>
+        <div id="table-container" class="container m-0 pt-1 ps-4">
+            <div id="table-controls" class="row">
+                <div class="btn-toolbar col-9 justify-content-between" role="toolbar">
+                    <div class="btn-group" data-atic-group="manipulate">
+                        <button data-atic-action="add" data-bs-toggle="modal" data-bs-target="#form-modal"
+                                class="col-1 btn btn-add">Añadir
+                        </button>
+                        <button data-atic-action="delete-selected" class="col-1 btn btn-delete-all" disabled>Eliminar
+                            seleccionados
+                        </button>
+                    </div>
+
+                    <div class="btn-group" data-atic-group="export">
+                        <button class="col-1 btn btn-print" data-atic-action="print">Imprimir</button>
+                        <button class="col-1 btn btn-export-visibles" data-atic-action="export-visible">Exportar
+                            visibles
+                        </button>
+                        <button class="col-1 btn btn-export-all" data-atic-action="export-all">Exportar
+                            Todos
+                        </button>
+                    </div>
+                    <div class="btn-group" data-atic-group="deselect">
+                        <button class="col-1 btn btn-deselect" data-atic-action="deselect" disabled>Deseleccionar
+                        </button>
+                    </div>
+
+
+                </div>
+                <div class="row my-2 d-flex align-items-end gap-3">
+                    <div class="col-3">
+                        <label for="select-field-input">Campo</label>
+                        <select name="" id="select-field-input"></select>
+                    </div>
+                    <div class="col-5">
+                        <label for="search-input">Buscar</label>
+                        <input type="text" class="form-control mb-0" id="search-input">
+                    </div>
+                </div>
+
+            </div>
+            <div id="tabulator-table" class="row">
+
+            </div>
         </div>
-        {% include "components/formModal.html" with form=form modal_id="form-modal" form_id="form" modal_label="Añadir activo" %}
+        {% include "components/formModal.html" with form=form modal_id="form-modal" form_id="add-form" modal_label="Añadir activo" %}
+        {% include "components/formModal.html" with form=edit_form modal_id="edit-form-modal" form_id="edit-form" modal_label="Editar activo" %}
         {% include "components/detailsModal.html" %}
     {% endblock content %}
 {% endif %}
 {% block script %}
-    <script language="javascript">
-      //Estas variables son utilizadas por el archivo javascript, django las renderiza por medio del lenguaje de plantillas
-      const target_view = "{{target_view}}" //Esta es la dirección del api que utiliza esta vista
-      const columns = [ //Aquí se renderizan las columnas de la tabla dinamicamente
-      {% for column in columns %} 
-      {data: "{{column}}",title: "{{column|capfirst|replace_spaces}}", width: "10%"},  //capfirst es un filtro para poner la primer letra de la columna en mayúscula
-      {%endfor%}
-      ]
-      
-      const add = {{request.user|can_write|_and:add|strip_quotes}}
+    {{ data|json_script:"data" }}
+    <script type="application/javascript">
+        //Estas variables son utilizadas por el archivo javascript, django las renderiza por medio del lenguaje de plantillas
+        const target_view = "{{target_view}}" //Esta es la dirección del api que utiliza esta vista
 
-      const edit = {{request.user|can_write|_and:edit|strip_quotes}}
- 
+        const add =
+        {{request.user|can_write|_and:add|strip_quotes}}
+
+        const edit =
+        {{request.user|can_write|_and:edit|strip_quotes}}
     </script>
-    {% comment %} Este es el archivo javascript que interactua con la tabla, está en la carpeta static/js/table.js {% endcomment %}
-    <script src="{% static 'dist/js/table.js'%}" defer></script>
+    {% comment %} Este es el archivo javascript que interactua con la tabla{% endcomment %}
+    <script src="{% static 'js/table.bundle.js' %}" defer></script>
+    {% if custom_script %}
+        <script src="{% static custom_script %}" defer></script>
+    {% endif %}
+
+
 {% endblock script %}

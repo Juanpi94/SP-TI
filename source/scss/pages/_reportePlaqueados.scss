@@ -1,0 +1,25 @@
+@use "../abstracts/variables" as vars;
+
+
+$sections: (
+        "Activo": vars.$orange,
+        "Ubicación": vars.$green,
+        "Tramites": vars.$indigo,
+        "Compra": vars.$teal,
+        "Red": vars.$blue,
+);
+
+.reporte-plaqueados {
+  .tabulator-headers {
+    @each $name, $color in $sections {
+      .tabulator-col[aria-title="#{$name}"] {
+        background-color: $color !important;
+        color: white !important;
+
+        .tabulator-col {
+          background: none !important;
+        }
+      }
+    }
+  }
+}

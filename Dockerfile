@@ -22,8 +22,6 @@ RUN npm install -y
 
 RUN npm run build;
 
-RUN rm -r .parcel-cache
-
 WORKDIR /
 
 RUN python3 src/manage.py collectstatic

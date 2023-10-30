@@ -15,8 +15,9 @@ services:
         - SECRET=@aJ1xTcsgYR$$3PN%RRF$$D*!OWEjvFOV*5T#84Ww#3c%#DYQCi^
         - CSRF_IP=192.0.0.1
       depends_on:
-        mysql_db:
-          condition: service_healthy
+        - mysql_db:
+            condition:
+              service_healthy
   mysql_db:
     image: mysql
     environment:

@@ -24,12 +24,10 @@
                 ATIC
             {% endblock title %}
         </title>
+ 
         <link rel="stylesheet"
               type="text/css"
-              href="https://cdn.datatables.net/v/bs5/dt-1.11.5/b-2.2.2/datatables.min.css"/>
-        <link rel="stylesheet"
-              type="text/css"
-              href="{% static 'dist/scss/main.css' %}"/>
+              href="{% static 'css/main.css' %}"/>
         {% block head %}
         {% endblock head %}
     </head>
@@ -37,23 +35,24 @@
         <body>
             {% block body %}
                 <div class="main-section">
-                    <header class="position-relative">
+                    <header class="main-header">
                         {% block header %}
-                            {% include "components/sidenav.html" %}
+                            {% if request.path != "/login/" %}
+                                {% include "components/topnav.html" %}
+                            {% endif %}
                         {% endblock header %}
                     </header>
-                    <div class="wrapper">
-                        {% if request.path != "/login/" %}
-                            {% include "components/topnav.html" %}
-                        {% endif %}
-                        <div class="content">
-                            {% block content %}
-                            {% endblock content %}
-                        </div>
-                    </div>
+
+                    {% include "components/sidebar.html" %}
+                    <main class="content">
+                        {% block content %}
+                        {% endblock content %}
+                    </main>
+
                 </div>
-                <script src="{% static 'dist/main.js'%}"></script>
-                <script src="{% static 'dist/js/nav.js'%}" defer></script>
+                <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+                <script src="{% static 'js/main.bundle.js'%}" defer></script>
+                <script src="{% static 'js/nav.bundle.js' %}"></script>
                 {% block script %}
                 {% endblock script %}
             {% endblock body %}

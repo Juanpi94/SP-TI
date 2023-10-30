@@ -1,0 +1,80 @@
+@use "../abstracts/variables" as vars;
+
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #ededed;
+  margin: 0;
+  padding: 0;
+}
+
+.text-white {
+  color: azure;
+}
+
+.message {
+  width: fit-content;
+}
+
+.dynamic-datatable tr td {
+  max-width: 15rem;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.border-none {
+  border: none;
+}
+
+.plaqueadosTextarea {
+  height: 8rem;
+}
+
+.detalles-textarea {
+  height: 7rem;
+  padding-left: 0.4rem;
+}
+
+.main-section {
+  display: grid;
+  grid-template-rows: vars.$top-nav-space 1fr;
+  grid-template-columns: vars.$side-nav-space vars.$content-space;
+  transition: grid-template-columns ease-in-out 200ms;
+  height: 100%;
+
+  &.hide-side {
+    grid-template-columns: 0 vars.$content-space;
+  }
+}
+
+
+.ms-6 {
+  margin-inline-start: 5rem;
+}
+
+.h-fit {
+  height: fit-content;
+}
+
+.w-fit {
+  width: fit-content;
+}
+
+.wrapper {
+  flex: 1 0 auto;
+}
+
+.content {
+  min-height: 80vh;
+  min-width: 100%;
+  overflow-x: auto;
+  padding-top: 1rem;
+  padding-left: 1rem;
+}
