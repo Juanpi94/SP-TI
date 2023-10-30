@@ -21,6 +21,7 @@ module.exports = {
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "rules": {
-    }
+    ignorePatterns: ["webpack.config.js", "postcss.config.js", "src/backend/static/js/*"],
+    "rules": {}
 }
+
