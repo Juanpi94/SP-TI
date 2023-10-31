@@ -27,3 +27,5 @@ venv
 */.env
 
 db
+
+./src/static

@@ -4,9 +4,15 @@ node_modules
 .parcel-cache
 .idea
 
-src/backend/static/js/*
-src/backend/static/css/*
+__pycache__
+
+src/backend/static/css/
+src/backend/static/js/
+
+src/static/*
+src/static
 
 .vscode
 .vscode/*
-!.vscode/tasks.json
+!tasks.json
+
