@@ -3,21 +3,15 @@ from datetime import datetime
 from django.db.models import F, QuerySet
 import django.forms
 from django.forms import DateInput
-from django.http import HttpResponseNotFound
 
-from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import TemplateView, RedirectView
-from rest_framework.renderers import JSONRenderer
-from rest_framework.viewsets import ModelViewSet
-
 from backend import models
-from backend.api_views import PlaqueadosApiViewset
 from backend.exceptions import ArgMissingException
 from backend.forms import DeshechoExportForm, TallerExportForm, TramitesExportForm
-from backend.routers import api_router
-from backend.serializers import PlaqueadosSerializer, PlaqueadosReportSerializer, UbicacionesSerializer
-from backend.types import ColumnDefs, HorizontalAligns
+from backend.serializers import PlaqueadosReportSerializer
+from backend.types import ColumnDefs
+from typing import List
 
 
 class ReadPermMixin(LoginRequiredMixin, PermissionRequiredMixin):
@@ -96,14 +90,14 @@ class Table_View(ReadPermMixin, TemplateView):
     def get_queryset(self):
         return self.model.objects.all()
 
-    def get_column_defs(self) -> list[ColumnDefs]:
+    def get_column_defs(self) -> List[ColumnDefs]:
         """
         Las tablas funcionan con la libreria Tabulator, la cuál acepta definiciones de columnas para
         modificar el comportamiento y aspecto de la tabla
         :return: Una lista de diccionarios con definiciones de columnas
         """
         defs = [{"field": "id", "visible": False}]
-        fields: list[any] = self.model._meta.get_fields()
+        fields: List[any] = self.model._meta.get_fields()
 
         for field in filter(lambda _field: _field.name != "id", fields):
             title = field.__dict__.get("verbose_name", field.name)
@@ -116,13 +110,13 @@ class Table_View(ReadPermMixin, TemplateView):
             return self._parse_column_defs_with_exclusions(defs)
         return defs
 
-    def _parse_column_defs_with_exclusions(self, defs: list[ColumnDefs]) -> list[ColumnDefs]:
+    def _parse_column_defs_with_exclusions(self, defs: List[ColumnDefs]) -> List[ColumnDefs]:
         """
         Aplica las exclusiones a la lista de definiciones
         :param defs:
         :return:
         """
-        new_defs: list[ColumnDefs] = []
+        new_defs: List[ColumnDefs] = []
 
         for col_def in defs:
             new_defs.append({
@@ -213,7 +207,7 @@ class Activos_Plaqueados_View(Table_View):
                                           "modelo", "valor", "garantia",
                                           "observacion")
 
-    def get_column_defs(self) -> list[ColumnDefs]:
+    def get_column_defs(self) -> List[ColumnDefs]:
         defs = super().get_column_defs()
         defs.extend([
             {
@@ -266,7 +260,7 @@ class Generar_Tramite_View(WritePermMixin, TemplateView):
 
         ubicaciones_data = models.Ubicaciones.objects.all()
         context["ubicaciones"] = ubicaciones_data.values()
-        
+
         return context
 
 

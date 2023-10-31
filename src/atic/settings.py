@@ -14,9 +14,9 @@ from collections import OrderedDict
 from pathlib import Path
 import os
 import dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -79,7 +79,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'atic.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -93,7 +92,6 @@ DATABASES = {
         'PORT': os.environ.get("PORT", '3306')
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -113,7 +111,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -125,16 +122,14 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
@@ -149,7 +144,6 @@ LOGIN_REDIRECT_URL = "plaqueados"
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
-
 CONSTANCE_CONFIG = OrderedDict({
     'TITULO_ENCARGADO_BIENES': ("Sra", "Titulo de encargad@ de bienes"),
     'NOMBRE_ENCARGADO_BIENES': ("Yontil Villalobos Mora", "Nombre de encargad@ de bienes"),
@@ -159,7 +153,6 @@ CONSTANCE_CONFIG = OrderedDict({
     "NOMBRE_ATIC": ("Julio Rayo", "Nombre de encargad@ atic"),
     "CARGO_ATIC": ("Encargado ATIC", "Cargo de encargad@ atic"),
 })
-
 
 # Phone Number
 
