@@ -2,22 +2,23 @@ version: "3"
 
 services:
   atic_app:
-      build: .
-      volumes:
-        - static:/src/static
-        - ./src/atic/:/src/atic
-      environment:
-        - DATABASE=atic
-        - USER=atic_user
-        - PASSWORD=root
-        - HOST=mysql_db
-        - DEBUG=1  
-        - SECRET=@aJ1xTcsgYR$$3PN%RRF$$D*!OWEjvFOV*5T#84Ww#3c%#DYQCi^
-        - CSRF_IP=192.0.0.1
-      depends_on:
-        - mysql_db:
-            condition:
-              service_healthy
+    build: .
+    volumes:
+      - static:/ATIC/src/static
+      - ./src/atic/:/src/atic
+    environment:
+      - DATABASE=atic
+      - USER=atic_user
+      - PASSWORD=root
+      - HOST=mysql_db
+      - DEBUG=1
+      - SECRET=@aJ1xTcsgYR$$3PN%RRF$$D*!OWEjvFOV*5T#84Ww#3c%#DYQCi^
+      - CSRF_IP=https://192.0.0.1
+    depends_on:
+      mysql_db:
+        condition:
+          service_healthy
+
   mysql_db:
     image: mysql
     environment:
@@ -25,15 +26,14 @@ services:
       MYSQL_DATABASE: "atic"
       MYSQL_USER: "atic_user"
       MYSQL_PASSWORD: "root"
-      MYSQL_PORT: "3306"
+      MYSQL_PORT: "3307"
     ports:
-      - "3306:3306"
+      - "3307:3307"
 
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
       test: "mysqladmin ping -h mysql_db -u $$MYSQL_USER --password=$$MYSQL_PASSWORD"
-      start_period: 5s
       interval: 5s
       timeout: 5s
       retries: 10
@@ -43,8 +43,8 @@ services:
     restart: always
     ports:
       - 8080:8080
- 
-  nginx: 
+
+  nginx:
     image: nginx
     ports:
       - 8000:80
@@ -57,5 +57,5 @@ services:
       - atic_app
 volumes:
   .:
-  static: 
+  static:
   mysql_data:

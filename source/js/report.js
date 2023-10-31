@@ -57,19 +57,18 @@ const colDefinitions = [
 
 
 ]
+
 // eslint-disable-next-line no-unused-vars
-
-
 const data = document.getElementById("data").textContent;
 const json = JSON.parse(data.trim());
 
 const sanitizedJSON = json.map(entry => {
-
     return {
         ...entry,
         tramite: entry.tramites && entry.tramites.length ? entry.tramites.at(-1) : null
     }
 })
+
 
 function highlightRow(row) {
     const data = row.getData();
