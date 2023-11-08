@@ -6,8 +6,8 @@
     
     color: black; /* Establece el color del texto en blanco para que contraste con el fondo negro */
 }
-label{
+.detail-title{
+    text-transform: capitalize;
     font-size: 24px;
-    font-weight: 300;
 }
 
