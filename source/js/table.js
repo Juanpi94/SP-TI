@@ -482,7 +482,14 @@ function onShowSingle(event, id) {
         const template = detailModal.querySelector("#detail-template");
         const detailBody = detailModal.querySelector(".modal-body");
 
-
+        let child = detailBody.firstChild;
+        
+        while(child ){
+         
+            child.remove()
+            child = detailBody.firstChild
+        }
+     
         for (const key in res.data) {
             const detailSection = template.content.cloneNode(true);
             const title = detailSection.querySelector(".detail-title");
@@ -491,6 +498,7 @@ function onShowSingle(event, id) {
             info.textContent = res.data[key];
             detailBody.appendChild(detailSection);
         }
+
 
         Modal.getOrCreateInstance(detailModal).show();
     }).catch(onShowSingleError);
