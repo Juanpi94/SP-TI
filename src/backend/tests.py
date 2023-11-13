@@ -12,6 +12,7 @@ from selenium.webdriver.edge.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import TimeoutException
 
+
 from backend.models import Activos_Plaqueados
 
 
@@ -37,7 +38,8 @@ class StaticSeleniumLiveServerTestCase(StaticLiveServerTestCase):
 
         if User.objects.filter(username=admin_user).count() > 0:
             return [admin_user, admin_pass]
-        User.objects.create_user(username=admin_user, password=admin_pass, email="admin@admin.com", is_superuser=True)
+        User.objects.create_user(
+            username=admin_user, password=admin_pass, email="admin@admin.com", is_superuser=True)
         return [admin_user, admin_pass]
 
     def login(self):
@@ -46,7 +48,8 @@ class StaticSeleniumLiveServerTestCase(StaticLiveServerTestCase):
         self.selenium.get(self.live_server_url)
         username_input = self.selenium.find_element(By.ID, "id_username")
         password_input = self.selenium.find_element(By.ID, "id_password")
-        submit_input = self.selenium.find_element(By.CSS_SELECTOR, "[type=submit]")
+        submit_input = self.selenium.find_element(
+            By.CSS_SELECTOR, "[type=submit]")
         username_input.send_keys(admin_user)
         password_input.send_keys(admin_pass)
         submit_input.click()
@@ -99,7 +102,8 @@ class TableTest(StaticSeleniumLiveServerTestCase):
         print("\n")
 
     def test_add(self):
-        add_btn = self.selenium.find_element(By.CSS_SELECTOR, "[data-atic-action=add]")
+        add_btn = self.selenium.find_element(
+            By.CSS_SELECTOR, "[data-atic-action=add]")
         add_btn.click()
 
         for key, value in self.test_record.items():
@@ -109,9 +113,11 @@ class TableTest(StaticSeleniumLiveServerTestCase):
                 form_input.send_keys(value)
             else:
                 if form_input.find_element(By.XPATH, "..") is not None:
-                    parent_select = form_input.find_element(By.XPATH, "..").find_element(By.XPATH, "..")
+                    parent_select = form_input.find_element(
+                        By.XPATH, "..").find_element(By.XPATH, "..")
                     parent_select.click()
-                    choice = parent_select.find_element(By.ID, f"choices--id_{key}-item-choice-3")
+                    choice = parent_select.find_element(
+                        By.ID, f"choices--id_{key}-item-choice-3")
                     ActionChains(self.selenium).click(choice).perform()
 
         submit_btn = self.selenium.find_element(By.ID, "add-form-btn")
@@ -120,19 +126,23 @@ class TableTest(StaticSeleniumLiveServerTestCase):
         try:
             el = WebDriverWait(self.selenium, 12).until(
                 lambda d: d.find_element(By.XPATH, f"//div[text()='{self.test_record.get('nombre')}']"))
-            qs = Activos_Plaqueados.objects.filter(nombre__exact=self.test_record.get("nombre"))
-            self.assertGreater(qs.count(), 0, msg="The record was not added to the database")
+            qs = Activos_Plaqueados.objects.filter(
+                nombre__exact=self.test_record.get("nombre"))
+            self.assertGreater(
+                qs.count(), 0, msg="The record was not added to the database")
 
         except TimeoutException:
             self.fail("The added record was not added to the table")
 
     def test_delete(self):
-        delete_btn = self.selenium.find_element(By.CSS_SELECTOR, "[data-atic-action=delete]")
+        delete_btn = self.selenium.find_element(
+            By.CSS_SELECTOR, "[data-atic-action=delete]")
         record_id = delete_btn.get_attribute("data-atic-record_id")
 
         delete_btn.click()
 
-        confirmation_btn = self.selenium.find_element(By.CLASS_NAME, "swal2-confirm")
+        confirmation_btn = self.selenium.find_element(
+            By.CLASS_NAME, "swal2-confirm")
         confirmation_btn.click()
         try:
             WebDriverWait(self.selenium, 10).until_not(
@@ -142,7 +152,50 @@ class TableTest(StaticSeleniumLiveServerTestCase):
 
         qs = Activos_Plaqueados.objects.filter(id=record_id)
 
-        self.assertEqual(qs.count(), 0, "Record still exists even after deletion")
+        self.assertEqual(
+            qs.count(), 0, "Record still exists even after deletion")
 
     def test_edit(self):
-        pass
+        # Obtener el registro actual
+
+        edit_btn = self.selenium.find_element(
+            By.CSS_SELECTOR, "[data-atic-action=edit]")
+
+        id_registro = edit_btn.get_attribute("data-atic-id")
+        record_activo = Activos_Plaqueados.objects.get(id=id_registro)
+
+        edit_btn.click()
+
+        edit_form = self.selenium.find_element(By.ID, "edit-form")
+
+        name_input = edit_form.find_element(By.ID, "id_nombre")
+        mark_input = edit_form.find_element(By.ID, "id_marca")
+        model_input = edit_form.find_element(By.ID, "id_modelo")
+
+        new_name = "PC-Lenovo"
+        new_mark = "Lenovo"
+        new_model = "A2b-002"
+
+        name_input.clear()
+        mark_input.clear()
+        model_input.clear()
+
+        name_input.send_keys(new_name)
+        mark_input.send_keys(new_mark)
+        model_input.send_keys(new_model)
+
+        modal_footer = self.selenium.find_element(
+            By.CSS_SELECTOR, '#edit-form-modal > div > div > div.modal-footer')
+        confirmation_btn = modal_footer.find_element(
+            By.CSS_SELECTOR, '[data-atic-action=submit]')
+
+        confirmation_btn.click()
+
+        updated_activo = Activos_Plaqueados.objects.get(id=id_registro)
+
+        self.assertEqual(record_activo.nombre, updated_activo.nombre,
+                         "Nombre no coincide después de la edición")
+        self.assertEqual(record_activo.marca, updated_activo.marca,
+                         "Marca no coincide después de la edición")
+        self.assertEqual(record_activo.modelo, updated_activo.modelo,
+                         "Modelo no coincide después de la edición")
