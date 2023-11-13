@@ -3,8 +3,8 @@ import {TabulatorFull as Tabulator} from "tabulator-tables";
 import Choices from "choices.js";
 import axios from "axios";
 import Swal from "sweetalert2";
-import config from "./config";
-import XLSX from "./xlsx";
+import _config from "./_config";
+import _xlsx from "./_xlsx";
 import {Modal} from "bootstrap";
 
 
@@ -66,7 +66,7 @@ let jsonData = JSON.parse(data.textContent.replaceAll("null", NULL_TAG))
 const table = new Tabulator("#tabulator-table", {
     data: jsonData["data"],
     autoColumnsDefinitions: jsonData["columnDefs"] == "null" ? false : jsonData["columnDefs"],
-    ...config.table
+    ..._config.table
 });
 
 // Filtro para la busqueda de registros
@@ -90,8 +90,8 @@ const addChoices = []
 const editChoices = []
 let fieldChoice = null;
 
-addForm.querySelectorAll("select").forEach(element => addChoices.push(new Choices(element, config.choicesJS)));
-editForm.querySelectorAll("select").forEach(element => editChoices.push(new Choices(element, config.choicesJS)));
+addForm.querySelectorAll("select").forEach(element => addChoices.push(new Choices(element, _config.choicesJS)));
+editForm.querySelectorAll("select").forEach(element => editChoices.push(new Choices(element, _config.choicesJS)));
 
 
 table.on("dataLoaded", init_listeners)
@@ -256,7 +256,7 @@ function onExportVisibles(event) {
         data.push(rowData)
     });
 
-    const xlsx = new XLSX(data, `export-visibles-${new Date().toISOString()}`, getCSRFToken());
+    const xlsx = new _xlsx(data, `export-visibles-${new Date().toISOString()}`, getCSRFToken());
 
     xlsx.download().catch(console.error);
 
@@ -283,7 +283,7 @@ function onExportAll() {
         data.push(rowData)
     });
 
-    const xlsx = new XLSX(data, `export-all-${new Date().toISOString()}`, getCSRFToken());
+    const xlsx = new _xlsx(data, `export-all-${new Date().toISOString()}`, getCSRFToken());
 
     xlsx.download().catch(console.error);
 }

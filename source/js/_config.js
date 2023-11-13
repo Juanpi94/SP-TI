@@ -38,10 +38,10 @@ const table = {
  */
 const choicesJS = {}
 
-const config = {
+const _config = {
     table,
     choicesJS
 }
 
 
-export default config
+export default _config
