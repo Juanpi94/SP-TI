@@ -22,7 +22,7 @@ class PlaqueadosCreateSerializer(ModelSerializer):
         return {
             "id": instance.id,
             "nombre": instance.nombre,
-            "tipo__nombre": instance.tipo.nombre,
+            "tipo__nombre": instance.tipo.nombre if instance.tipo else None,
             "subtipo__nombre": instance.subtipo.nombre if instance.subtipo else None,
             "ubicacion__ubicacion": instance.ubicacion.ubicacion if instance.ubicacion else None,
             "marca": instance.marca,
