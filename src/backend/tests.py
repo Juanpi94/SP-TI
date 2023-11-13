@@ -162,7 +162,6 @@ class TableTest(StaticSeleniumLiveServerTestCase):
             By.CSS_SELECTOR, "[data-atic-action=edit]")
 
         id_registro = edit_btn.get_attribute("data-atic-id")
-        record_activo = Activos_Plaqueados.objects.get(id=id_registro)
 
         edit_btn.click()
 
@@ -173,7 +172,7 @@ class TableTest(StaticSeleniumLiveServerTestCase):
         model_input = edit_form.find_element(By.ID, "id_modelo")
 
         new_name = "PC-Lenovo"
-        new_mark = "Lenovo"
+        new_brand = "Lenovo"
         new_model = "A2b-002"
 
         name_input.clear()
@@ -181,7 +180,7 @@ class TableTest(StaticSeleniumLiveServerTestCase):
         model_input.clear()
 
         name_input.send_keys(new_name)
-        mark_input.send_keys(new_mark)
+        mark_input.send_keys(new_brand)
         model_input.send_keys(new_model)
 
         modal_footer = self.selenium.find_element(
@@ -191,11 +190,11 @@ class TableTest(StaticSeleniumLiveServerTestCase):
 
         confirmation_btn.click()
 
-        updated_activo = Activos_Plaqueados.objects.get(id=id_registro)
+        record_activo = Activos_Plaqueados.objects.get(id=id_registro)
 
-        self.assertEqual(record_activo.nombre, updated_activo.nombre,
+        self.assertEqual(record_activo.nombre, new_name,
                          "Nombre no coincide después de la edición")
-        self.assertEqual(record_activo.marca, updated_activo.marca,
+        self.assertEqual(record_activo.marca, new_brand,
                          "Marca no coincide después de la edición")
-        self.assertEqual(record_activo.modelo, updated_activo.modelo,
+        self.assertEqual(record_activo.modelo, new_model,
                          "Modelo no coincide después de la edición")
