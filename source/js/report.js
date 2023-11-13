@@ -1,5 +1,5 @@
 import {TabulatorFull as Tabulator} from "tabulator-tables";
-import config from "./config";
+import _config from "./_config";
 
 
 const colDefinitions = [
@@ -84,7 +84,7 @@ const table = new Tabulator("#tabulator-table", {
     columns: colDefinitions,
     rowFormatter: highlightRow,
     placeholder: "NA",
-    ...config.table,
+    ..._config.table,
     autoColumns: false,
 });
 

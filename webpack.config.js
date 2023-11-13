@@ -1,6 +1,7 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 
 const path = require('path');
+const fs = require("fs");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isProduction = process.env.NODE_ENV == 'production';
@@ -9,15 +10,39 @@ const isProduction = process.env.NODE_ENV == 'production';
 const stylesHandler = MiniCssExtractPlugin.loader;
 
 const __SOURCE_DIR__ = path.resolve(__dirname, "source") + "/";
+const __JS_SOURCE_DIR__ = path.join(__SOURCE_DIR__, "/js");
+
+/**
+ * @returns {{[key: string]: string}} The dictionary with the name / path of the files
+ */
+function getJavascriptFiles() {
+    const jsFiles = {};
+    /**
+     * @type {(dir: string) => void}
+     */
+    const scanFolder = (dir) => {
+        const files = fs.readdirSync(dir);
+
+        for (const file of files) {
+            const filePath = path.join(dir, file);
+            const stat = fs.statSync(filePath);
+            if (stat.isDirectory()) {
+                scanFolder(filePath)
+            } else if (path.extname(file) === ".js") {
+                const fileName = path.parse(file).name;
+                if (!fileName.startsWith("_")) {
+                    jsFiles[fileName] = filePath;
+                }
+            }
+        }
+    }
+
+    scanFolder(__JS_SOURCE_DIR__);
+    return jsFiles;
+}
 
 const config = {
-    entry: {
-        main: __SOURCE_DIR__ + "js/main.js",
-        table: __SOURCE_DIR__ + "js/table.js",
-        report: __SOURCE_DIR__ + "js/report.js",
-        traslado: __SOURCE_DIR__ + "js/tramites/traslado.js"
-
-    },
+    entry: getJavascriptFiles(),
     output: {
         path: path.resolve(__dirname, 'src/backend/static/js'),
         filename: "[name].bundle.js"

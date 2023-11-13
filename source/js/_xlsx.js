@@ -1,6 +1,6 @@
 import axios from "axios";
 
-class XLSX {
+class _xlsx {
     constructor(data, filename, csrfToken) {
         this.data = data;
         this.filename = filename;
@@ -26,4 +26,4 @@ class XLSX {
     }
 }
 
-export default XLSX;
+export default _xlsx;
