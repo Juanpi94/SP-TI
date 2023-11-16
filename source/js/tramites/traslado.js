@@ -1,4 +1,3 @@
-
 import Choices from "choices.js";
 
 
@@ -68,6 +67,5 @@ document.addEventListener("DOMContentLoaded", function () {
     })
 
 });
-
 
 

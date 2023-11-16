@@ -6,18 +6,27 @@
 {% endblock title %}
 {% block content %}
     {% csrf_token %}
-    {% include "components/pdfHeader.html" %}
-    <div class="container w-50 my-4">
-        <div class="row header-controls justify-content-center flex-column align-items-center gap-4">
-            {{ form.deshechos }}
-            <button class="btn btn-secondary col-2" data-action="load">Cargar deshecho</button>
-            <button class="btn btn-primary col-2" data-action="pdf">Guardar pdf</button>
+   
+       
+ 
+        <div class="container py-5 w-50 ">
+            <div class="row  header-controls">
+                {{ form.deshechos }}
+                <div class="mt-3 d-grid gap-2 d-md-flex justify-content-md-center">
+                    <button  class="btn btn-secondary" data-action="load">Cargar deshecho</button>
+                    <button  class="btn btn-primary " data-action="pdf">Guardar pdf</button>
+                    
+                </div>
+                
+            </div>
         </div>
-    </div>
+        {% include "components/pdfHeader.html" %}
+    <!-- ----------------------------------------------------------------------------------------------->
+   
     <main class="page-container container flex-column">
-
         <input type="hidden" id="tramite-id" value="-1">
-        <div class="pdf-container container">
+        <div class="pdf-container container mt-3">
+            <!--*********************************************************************************-->
             <div class="row align-items-end flex-column">
                 <p id="deshecho-title"
                    class="deshecho-id w-fit m-0 me-3"
@@ -31,23 +40,36 @@
                        id="fecha-input"
                        class="fw-bold w-fit m-0 me-3 opacity-0"/>
             </div>
+        
             <div class="row body-row gap-4 justify-content-center">
-                <h3 class="text-uppercase text-center fs-4">Informe Técnico de Deshecho</h3>
-                <div class="row justify-content-center controls">
-                    <label for="{{ form.placa.id_form_label }}"
-                           class="col-md-auto fs-6 text-secondary">
-                        Placa:
-                    </label
-                    >
-                    {{ form.placa }}
-                    <button data-action="add_placa" class="btn btn-primary col-2 fs-6">Añadir placa</button>
-                    <label for="activo-serie-select" class="col-md-auto fs-6 text-secondary">
-                        Serie:
-                    </label
-                    >
-                    {{ form.serie }}
-                    <button data-action="add_serie" class="btn btn-primary col-2 fs-6">Añadir serie</button>
+                <h4 class="text-uppercase text-center fs-4 mb-3">Informe Técnico de Deshecho</h3>
+              
+                <div class="d-grid g-cols-2 justify-content-center controls px-3 gap-3">
+
+                    <div class="input-group mb-3 col-4">
+                        <label for="{{ form.placa.id_form_label }}"
+                               class="input-group-text m-0 adder-text">
+                            Placa:
+                        </label
+                        >
+                        {{ form.placa }}
+                        <button data-action="add_placa" class="btn btn-primary adder-button z-0">
+                            <i class="bi bi-plus fs-4"></i>
+                        </button>
+                    </div>
+                    <div class="input-group mb-3 col-4">
+                        <label for="activo-serie-select" class="input-group-text m-0 adder-text">
+                            Serie:
+                        </label
+                        >
+                        {{ form.serie }}
+                        <button data-action="add_serie" class="btn btn-primary m-0 adder-button z-0">
+                            <i class="bi bi-plus fs-4"></i>
+                        </button>
+                    </div>
+    
                 </div>
+                
                 <div class="table-wrapper mt-4" data-spacing="2">
                     <table id="activos-table" class="table table-striped table-responsive mb-5">
                     </table>
@@ -56,13 +78,16 @@
 
 
                 </div>
-                <div class="row justify-content-center controls gap-2">
-                    <button data-action="add"
+                <div class="row py-3">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            
+                            <button data-action="add"
                             data-target="3"
-                            class="col-2 h-fit btn btn-primary">Añadir espacio</button>
-                    <button data-action="substract"
+                            class=" btn btn-primary">Añadir espacio</button>
+                             <button data-action="substract"
                             data-target="3"
-                            class="col-2 h-fit btn btn-secondary">Reducir espacio</button>
+                            class=" btn btn-secondary">Reducir espacio</button>
+                        </div>
                 </div>
                 <div class="pdf-notes">
                     <p class="note">
@@ -84,22 +109,28 @@
                             <p class="m-0">VB Encargado Área TI.</p>
                         </div>
                     </div>
-                    <div class="row justify-content-center controls gap-2">
-                        <button data-action="add" data-target="1" class="col-2 h-fit btn btn-primary">Añadir espacio</button>
-                        <button data-action="substract"
-                                data-target="1"
-                                class="col-2 h-fit btn btn-secondary">Reducir espacio</button>
+                    <div class="row py-3">
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <button data-action="add" data-target="1" class="btn btn-primary">Añadir espacio</button>
+                            <button data-action="substract"
+                                    data-target="1"
+                                    class="btn btn-secondary">Reducir espacio</button>
+                        </div>
+
+                       
                     </div>
                 </div>
             </div>
         </div>
         <div class="container justify-content-center my-4">
             <div class="row justify-content-center gy-3">
-                <button data-action="subir-deshecho" class="btn btn-primary col-7">Subir deshecho</button>
+                <button data-action="subir-deshecho" class="btn btn-primary col-6">Subir deshecho</button>
                 <button data-action="editar-deshecho" class="btn btn-secondary col-7 d-none">Editar deshecho</button>
             </div>
         </div>
     </main>
+    
 {% endblock content %}
 {% block script %}
     <script language="javascript">
