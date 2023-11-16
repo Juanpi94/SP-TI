@@ -1,3 +1,20 @@
+import Choices from "choices.js";
+
+
+const deshechosSelect = new Choices('select[name="talleres"]', {
+    classNames: { containerOuter: "choices col-12 me-3" },
+    itemSelectText: 'select',
+
+
+});
+
+const placa_select = new Choices("#id_placa", {
+    classNames: { containerOuter: "choices form-select" }
+})
+const serie_select = new Choices("#id_serie", {
+    classNames: { containerOuter: "choices form-select" }
+})
+
 document.addEventListener("DOMContentLoaded", function () {
 
     // Obténer los botones de "Añadir espacio"
