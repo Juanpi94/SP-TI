@@ -5,7 +5,7 @@ node_modules
 .idea
 
 __pycache__
-
+*/**/__pycache__
 src/backend/static/css/
 src/backend/static/js/
 
