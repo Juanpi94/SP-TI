@@ -26,7 +26,7 @@ class Subtipo(models.Model):
         return self.nombre
 
 
-class Activo(models.Model):
+class Activos(models.Model):
     class Estados(models.TextChoices):
         __empty__ = "--------"
         DESHECHO = "Deshecho", _("Deshecho")
@@ -40,6 +40,16 @@ class Activo(models.Model):
         PROCESO_DESHECHO = "Proceso de deshecho", _("Proceso de deshecho")
         USO_ACADEMICO = "Uso academico", _("Uso academico")
 
+    class Identificadores(models.TextChoices):
+        PLAQUEADO = "Plaqueado", _("Plaqueado")
+        NO_PLAQUEADO = "No plaqueado", _("No plaqueado")
+        PENDIENTE = "Pendiente", _("Pendiente")
+
+    identificador = models.CharField(max_length=13, choices=Identificadores.choices, default=Identificadores.PLAQUEADO,
+                                     verbose_name="Identificador")
+    placa = models.CharField(max_length=30, blank=True)
+    ubicacion_anterior = models.ForeignKey(
+        to="Ubicaciones", on_delete=models.DO_NOTHING, blank=True, null=True, related_name="anterior")
     observacion = models.CharField(max_length=300, blank=True, null=True, verbose_name="Observación")
     nombre = models.CharField(max_length=120, verbose_name="Nombre");
     marca = models.CharField(max_length=200, verbose_name="Marca")
@@ -61,25 +71,10 @@ class Activo(models.Model):
         max_length=25, choices=Estados.choices, default=Estados.OPTIMO, verbose_name="Estado")
     red = models.ForeignKey(to="Red", on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Red")
 
-    class Meta:
-        abstract = True
-
-
-class Activos_Plaqueados(Activo):
-    placa = models.CharField(max_length=30)
-    ubicacion_anterior = models.ForeignKey(
-        to="Ubicaciones", on_delete=models.DO_NOTHING, blank=True, null=True, related_name="plaqueados")
-
-    def __str__(self) -> str:
+    def __str__(self):
+        if self.placa.strip() == "":
+            return self.serie
         return self.placa
-
-
-class Activos_No_Plaqueados(Activo):
-    ubicacion_anterior = models.ForeignKey(
-        to="Ubicaciones", on_delete=models.DO_NOTHING, null=True, related_name="no_plaqueados")
-
-    def __str__(self) -> str:
-        return self.serie
 
 
 class Funcionarios(models.Model):

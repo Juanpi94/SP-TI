@@ -1,8 +1,8 @@
-from django.forms import ModelForm, DateField, Select, SelectDateWidget, TextInput, Textarea
+from django.forms import ModelForm, DateField, Select, HiddenInput, SelectDateWidget, TextInput, Textarea
 from django import forms
 
-from backend.models import Activos_No_Plaqueados, Activos_Plaqueados, Compra, Deshecho, Funcionarios, Proveedor, \
-    Tramites, Traslados, Ubicaciones, Tipo, Subtipo, Red, Unidad
+from backend.models import Compra, Deshecho, Funcionarios, Proveedor, \
+    Tramites, Traslados, Ubicaciones, Tipo, Subtipo, Red, Unidad, Activos
 from backend.widgets import DatePickerInput
 from django.contrib.auth.models import User
 from phonenumber_field.formfields import PhoneNumberField
@@ -12,8 +12,7 @@ class PlaqueadosForm(ModelForm):
     garantia = DateField(required=False, widget=DatePickerInput,
                          help_text="Formato para fechas: DD/MM/YYYY o DD-MM-YYYY")
     fecha_ingreso = DateField(required=False, widget=DatePickerInput)
-    ubicacion = forms.ModelChoiceField(
-        queryset=Ubicaciones.objects.all(), required=False, to_field_name="ubicacion")
+    ubicacion = forms.ModelChoiceField(queryset=Ubicaciones.objects.all(), required=False, to_field_name="ubicacion")
     compra = forms.ModelChoiceField(
         queryset=Compra.objects.all(), required=False)
     observacion = forms.CharField(widget=Textarea(
@@ -31,7 +30,7 @@ class PlaqueadosForm(ModelForm):
         self.fields["compra"].label = "Número orden compra o referencia"
 
     class Meta:
-        model = Activos_Plaqueados
+        model = Activos
         help_texts = {
             'garantia': "Formato para fechas: DD/MM/YYYY o DD-MM-YYYY"
         }
@@ -43,8 +42,10 @@ class NoPlaqueadosForm(PlaqueadosForm):
     field_order = ["serie", "nombre", "marca", "valor", "modelo", "garantia",
                    "fecha_ingreso", "ubicacion", "tipo", "subtipo", "observacion"]
 
+    identificador = HiddenInput({"value": "plaqueado", })
+
     class Meta:
-        model = Activos_No_Plaqueados
+        model = Activos
         help_texts = {
             'garantia': "Formato para fechas: DD/MM/YYYY o DD-MM-YYYY"
         }
@@ -89,9 +90,9 @@ class TramitesExportForm(forms.Form):
     ), empty_label="--Remitente--", label="de:", widget=Select(attrs=attrs_col), to_field_name="nombre_completo")
     motivo = forms.CharField(widget=Textarea(
         attrs={"class": "textarea p-2"}), label="Motivo o Observaciones")
-    placa = forms.ModelChoiceField(queryset=Activos_Plaqueados.objects.all(
+    placa = forms.ModelChoiceField(queryset=Activos.objects.all(
     ), empty_label="--placa", label="Placa:", to_field_name="id", widget=Select(attrs=attrs_col))
-    serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(
+    serie = SerieChoiceField(queryset=Activos.objects.all(
     ), empty_label="--serie", label="Serie:", to_field_name="id", widget=Select(attrs=attrs_col))
 
 
@@ -99,9 +100,9 @@ class DeshechoExportForm(forms.Form):
     deshechos = forms.ModelChoiceField(queryset=Tramites.objects.filter(tipo=Tramites.TiposTramites.DESHECHO),
                                        empty_label="--seleccione tramite a cargar", label=None,
                                        widget=Select(attrs={'class': 'col-12 tramite-select'}))
-    placa = forms.ModelChoiceField(queryset=Activos_Plaqueados.objects.all(
+    placa = forms.ModelChoiceField(queryset=Activos.objects.all(
     ), empty_label="--placa", label="Placa:", to_field_name="id", widget=Select(attrs=attrs_col))
-    serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(
+    serie = SerieChoiceField(queryset=Activos.objects.all(
     ), empty_label="--serie", label="Serie:", to_field_name="id", widget=Select(attrs=attrs_col))
 
 
@@ -116,9 +117,9 @@ class TallerExportForm(forms.Form):
         attrs={"class": "col-2 taller-input"}))
     motivo = forms.CharField(widget=Textarea(
         attrs={"class": "textarea mt-4"}), label="Motivo o Observaciones")
-    placa = forms.ModelChoiceField(queryset=Activos_Plaqueados.objects.all(
+    placa = forms.ModelChoiceField(queryset=Activos.objects.all(
     ), empty_label="--placa", label="Placa:", to_field_name="id", widget=Select(attrs=attrs_col))
-    serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(
+    serie = SerieChoiceField(queryset=Activos.objects.all(
     ), empty_label="--serie", label="Serie:", to_field_name="id", widget=Select(attrs=attrs_col))
 
 
