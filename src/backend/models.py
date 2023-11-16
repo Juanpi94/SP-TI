@@ -17,6 +17,9 @@ class Tipo(models.Model):
     def __str__(self) -> str:
         return self.nombre
 
+    class Meta:
+        verbose_name_plural = "Tipos"
+
 
 class Subtipo(models.Model):
     nombre = models.CharField(max_length=120, null=False)
@@ -24,6 +27,9 @@ class Subtipo(models.Model):
 
     def __str__(self) -> str:
         return self.nombre
+
+    class Meta:
+        verbose_name_plural = "Subtipos"
 
 
 class Activos(models.Model):
@@ -83,6 +89,9 @@ class Activos(models.Model):
             return self.serie
         return self.placa
 
+    class Meta:
+        verbose_name_plural = "Activos"
+
 
 class Funcionarios(models.Model):
     cedula = models.CharField(max_length=120)
@@ -130,6 +139,9 @@ class Permissions(models.Model):
             ("respaldos", "puede respaldar la base de datos")
         ]
 
+    class Meta:
+        verbose_name_plural = "Permissions"
+
 
 class Tramites(models.Model):
     class TiposTramites(models.TextChoices):
@@ -161,6 +173,9 @@ class Tramites(models.Model):
     def __str__(self) -> str:
         return self.referencia
 
+    class Meta:
+        verbose_name_plural = "Tramites"
+
 
 class Traslados(models.Model):
     destino = models.ForeignKey(
@@ -179,6 +194,9 @@ class Deshecho(models.Model):
     def __str__(self):
         return self.tramite.referencia
 
+    class Meta:
+        verbose_name_plural = "Deshechos"
+
 
 class Taller(models.Model):
     tramite = models.OneToOneField(
@@ -186,6 +204,9 @@ class Taller(models.Model):
     destinatario = models.CharField(max_length=200)
     beneficiario = models.CharField(max_length=200)
     autor = models.CharField(max_length=200)
+
+    class Meta:
+        verbose_name_plural = "Talleres"
 
 
 class Compra(models.Model):
@@ -203,6 +224,9 @@ class Compra(models.Model):
     def __str__(self):
         return self.numero_orden_compra
 
+    class Meta:
+        verbose_name_plural = "Compras"
+
 
 class Red(models.Model):
     MAC = models.CharField(max_length=45, unique=True)
@@ -213,6 +237,9 @@ class Red(models.Model):
     def __str__(self):
         return self.MAC
 
+    class Meta:
+        verbose_name_plural = "Red"
+
 
 class Proveedor(models.Model):
     nombre = models.CharField(max_length=230, unique=True)
@@ -221,6 +248,9 @@ class Proveedor(models.Model):
 
     def __str__(self) -> str:
         return self.nombre
+
+    class Meta:
+        verbose_name_plural = "Proveedores"
 
 
 class Unidad(models.Model):
@@ -231,3 +261,6 @@ class Unidad(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    class Meta:
+        verbose_name_plural = "Unidades"
