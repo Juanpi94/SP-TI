@@ -50,26 +50,33 @@ class Activos(models.Model):
     placa = models.CharField(max_length=30, blank=True)
     ubicacion_anterior = models.ForeignKey(
         to="Ubicaciones", on_delete=models.DO_NOTHING, blank=True, null=True, related_name="anterior")
-    observacion = models.CharField(max_length=300, blank=True, null=True, verbose_name="Observación")
-    nombre = models.CharField(max_length=120, verbose_name="Nombre");
+    observacion = models.CharField(
+        max_length=300, blank=True, null=True, verbose_name="Observación")
+    nombre = models.CharField(max_length=120, verbose_name="Nombre")
     marca = models.CharField(max_length=200, verbose_name="Marca")
     valor = models.CharField(max_length=200, blank=True, verbose_name="Valor")
     modelo = models.CharField(max_length=200, verbose_name="Modelo")
     serie = models.CharField(max_length=200, blank=True, verbose_name="Serie")
     garantia = models.DateField(null=True, verbose_name="Garantia")
-    fecha_ingreso = models.DateField(null=True, verbose_name="Fecha de Ingreso")
-    fecha_registro = models.DateField(auto_now_add=True, verbose_name="Fecha de Registro")
+    fecha_ingreso = models.DateField(
+        null=True, verbose_name="Fecha de Ingreso")
+    fecha_registro = models.DateField(
+        auto_now_add=True, verbose_name="Fecha de Registro")
     ubicacion = models.ForeignKey(
         to="Ubicaciones", on_delete=models.DO_NOTHING, null=True, verbose_name="Ubicación")
 
-    tramites = models.ManyToManyField(to="Tramites", blank=True, verbose_name="Tramites")
-    tipo = models.ForeignKey(Tipo, on_delete=models.SET_NULL, null=True, verbose_name="Tipo")
+    tramites = models.ManyToManyField(
+        to="Tramites", blank=True, verbose_name="Tramites")
+    tipo = models.ForeignKey(
+        Tipo, on_delete=models.SET_NULL, null=True, verbose_name="Tipo")
     subtipo = models.ForeignKey(
         Subtipo, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Subtipo")
-    compra = models.ForeignKey("Compra", on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Compra")
+    compra = models.ForeignKey(
+        "Compra", on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Compra")
     estado = models.CharField(
         max_length=25, choices=Estados.choices, default=Estados.OPTIMO, verbose_name="Estado")
-    red = models.ForeignKey(to="Red", on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Red")
+    red = models.ForeignKey(
+        to="Red", on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Red")
 
     def __str__(self):
         if self.placa.strip() == "":
@@ -221,3 +228,6 @@ class Unidad(models.Model):
     nombre = models.CharField(max_length=120, null=True)
     coordinador = models.ForeignKey(
         to=Funcionarios, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.nombre
