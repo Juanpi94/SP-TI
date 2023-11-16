@@ -2,8 +2,8 @@ from datetime import datetime
 
 from django.db.models import F, QuerySet
 import django.forms
-from django.forms import DateInput
-
+from django.forms import DateInput, HiddenInput, CharField
+from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import TemplateView, RedirectView
 from backend import models
@@ -187,8 +187,13 @@ class Table_View(ReadPermMixin, TemplateView):
 
 class Activos_Plaqueados_View(Table_View):
     target_view = "plaqueados"
-    model = models.Activos_Plaqueados
+    model = models.Activos
     title = "Activos plaqueados"
+
+    def get_form_fields(self) -> dict:
+        return {
+            "identificador": forms.ChoiceField(choices=(("Plaqueado", "Plaqueado"), ("Pendiente", "Pendiente")))
+        }
 
     def get_form_metafields(self) -> dict:
         metafields = super().get_form_metafields()
@@ -235,8 +240,25 @@ class Tramites_View(Table_View):
 
 class Activos_No_Plaqueados_View(Table_View):
     target_view = "no_plaqueados"
-    model = models.Activos_No_Plaqueados
+    model = models.Activos
     title = "Activos no plaqueados"
+
+    def get_form_metafields(self) -> dict:
+        metafields = super().get_form_metafields()
+        metafields["exclude"] = ["placa", "identificador"]
+        return metafields
+
+    def get_form_fields(self) -> dict:
+        return {
+            "identificador": CharField(widget=HiddenInput({"value": "No plaqueado"})),
+            "ubicacion": forms.ModelChoiceField(queryset=models.Ubicaciones.objects.all(), required=False,
+                                                to_field_name="ubicacion"),
+            "ubicacion_anterior": forms.ModelChoiceField(queryset=models.Ubicaciones.objects.all(), required=False, ),
+            "field_order": ["serie"]
+        }
+
+    def get_queryset(self):
+        return models.Activos.objects.filter(identificador="No plaqueado")
 
 
 class Funcionarios_View(Table_View):

@@ -44,7 +44,7 @@ class AuthMixin:
 
 
 class PlaqueadosApiViewset(AuthMixin, ModelViewSet):
-    queryset = models.Activos_Plaqueados.objects.all()
+    queryset = models.Activos.objects.all()
 
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('serie', "placa")
@@ -57,7 +57,7 @@ class PlaqueadosApiViewset(AuthMixin, ModelViewSet):
 
 
 class NoPlaqueadosApiViewSet(AuthMixin, ModelViewSet):
-    queryset = models.Activos_No_Plaqueados.objects.all()
+    queryset = models.Activos.objects.all()
     serializer_class = NoPlaqueadosSerializer
 
     filter_backends = (DjangoFilterBackend,)
@@ -260,96 +260,6 @@ class ProveedorApiViewset(AuthMixin, ModelViewSet):
 class UnidadApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Unidad.objects.all()
     serializer_class = UnidadSerializer
-
-
-class ImportarActivosApiView(APIView):
-    columns = ["nombre", "placa", "detalle", "marca",
-               "serie", "valor", "modelo", "garantia", "ubicacion"]
-
-    optional_columns = ['ubicacion', 'garantia']
-    model = models.Activos_Plaqueados
-
-    def post(self, request, format=None):
-        file = request.FILES['file']
-        excel_file = pd.read_excel(file, usecols=self.columns)
-        activos_erroneos = []
-        redirect_url = reverse("importar-activos")
-        success_number = 0
-        skip_current = False
-        for row in excel_file.itertuples(index=False):
-            row_dict = row._asdict()
-            for item in row_dict:
-                value = row_dict[item]
-                if (type(value) == float and isnan(value) and item not in self.optional_columns):
-                    message = f'Error al importar activos, asegurese que el campo {item} tenga valores'
-                    error = True
-                    return redirect(f"{redirect_url}?message={message}&error={error}")
-
-            if (row_dict['ubicacion']):
-                try:
-                    row_dict['ubicacion'] = models.Ubicaciones.objects.get(
-                        nombre__icontains=row_dict['ubicacion'])
-                except ObjectDoesNotExist:
-                    activos_erroneos.append(
-                        f"{row_dict['nombre']} : {row_dict['placa']}")
-
-                    skip_current = True
-            for optional_column in self.optional_columns:
-                if (type(row_dict[optional_column]) == float and isnan(row_dict[optional_column])):
-                    row_dict.pop(optional_column)
-
-            if (not skip_current):
-                self.model.objects.create(**row_dict)
-                success_number += 1
-            skip_current = False
-        error = False
-        message = f"{success_number} activos importados con éxito, {activos_erroneos.__len__()} activos érroneos: {', '.join(activos_erroneos) if activos_erroneos.__len__() else 'No hubieron errores'}"
-        return redirect(f"{redirect_url}?message={message}&error={error}")
-
-
-class ImportarActivosNoPlaqueadosApiView(APIView):
-    columns = ["nombre", "detalle", "marca",
-               "serie", "valor", "modelo", "garantia", "ubicacion"]
-
-    optional_columns = ['ubicacion', 'garantia']
-    model = models.Activos_No_Plaqueados
-
-    def post(self, request, format=None):
-        file = request.FILES['file']
-        excel_file = pd.read_excel(file, usecols=self.columns)
-        activos_erroneos = []
-        redirect_url = reverse("importar-activos")
-        success_number = 0
-        skip_current = False
-        for row in excel_file.itertuples(index=False):
-            row_dict = row._asdict()
-            for item in row_dict:
-                value = row_dict[item]
-                if (type(value) == float and isnan(value) and item not in self.optional_columns):
-                    message = f'Error al importar activos, asegurese que el campo {item} tenga valores'
-                    error = True
-                    return redirect(f"{redirect_url}?message={message}&error={error}")
-
-            if (row_dict['ubicacion']):
-                try:
-                    row_dict['ubicacion'] = models.Ubicaciones.objects.get(
-                        nombre__icontains=row_dict['ubicacion'])
-                except ObjectDoesNotExist:
-                    activos_erroneos.append(
-                        f"{row_dict['nombre']} : {row_dict['placa']}")
-
-                    skip_current = True
-            for optional_column in self.optional_columns:
-                if (type(row_dict[optional_column]) == float and isnan(row_dict[optional_column])):
-                    row_dict.pop(optional_column)
-
-            if (not skip_current):
-                self.model.objects.create(**row_dict)
-                success_number += 1
-            skip_current = False
-        error = False
-        message = f"{success_number} activos importados con éxito, {activos_erroneos.__len__()} activos érroneos: {', '.join(activos_erroneos) if activos_erroneos.__len__() else 'No hubieron errores'}"
-        return redirect(f"{redirect_url}?message={message}&error={error}")
 
 
 class ExportarHojaDeCalculo(APIView):

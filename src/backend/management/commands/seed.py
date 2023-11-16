@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.core.management.color import Style
 
-from backend.models import Activos_Plaqueados, Proveedor, Ubicaciones, Funcionarios, User, Tipo, Subtipo, Compra
+from backend.models import Activos, Proveedor, Ubicaciones, Funcionarios, User, Tipo, Subtipo, Compra
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from django.core.management import call_command
@@ -35,7 +35,7 @@ class Command(BaseCommand):
                 call_command("flush", "--no-input")
             else:
                 call_command("flush")
-            self.write(self.style.SUCCESS("Base de datos limpia!"))
+                self.write(self.style.SUCCESS("Base de datos limpia!"))
         json_file_path = os.path.join(BASE_DIR,
                                       'seed_dump.json'
                                       )
@@ -49,7 +49,7 @@ class Command(BaseCommand):
 
             exitos = 0
             for activo in activos:
-                db_activo = Activos_Plaqueados()
+                db_activo = Activos()
                 db_activo.placa = activo["placa"]
                 db_activo.observacion = activo["detalle"] or ""
                 db_activo.nombre = activo["nombre"]
@@ -179,7 +179,7 @@ class Command(BaseCommand):
                     compra_db.proveedor = proveedor_db
                     compra_db.save()
 
-                    random_activo = Activos_Plaqueados.objects.exclude(
+                    random_activo = Activos.objects.exclude(
                         compra__isnull=False)[0]
                     random_activo.compra = compra_db
                     random_activo.save()

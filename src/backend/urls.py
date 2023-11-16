@@ -55,10 +55,6 @@ urlpatterns = [
 
 apiurlpatterns = [
     path('', include(api_router.urls)),
-    path("importar/activos", api_views.ImportarActivosApiView.as_view(),
-         name="api-importar-activos"),
-    path("importar/no-plaqueados", api_views.ImportarActivosNoPlaqueadosApiView.as_view(),
-         name="api-importar-no-plaqueados"),
     path("importar/reporte-plaqueados", api_views.ImportarReportePlaqueados.as_view(),
          name="api-importar-reporte-plaqueados"),
     path("exportar/", api_views.ExportarHojaDeCalculo.as_view()),

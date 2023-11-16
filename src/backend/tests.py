@@ -12,8 +12,7 @@ from selenium.webdriver.edge.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import TimeoutException
 
-
-from backend.models import Activos_Plaqueados
+from backend.models import Activos
 
 
 class StaticSeleniumLiveServerTestCase(StaticLiveServerTestCase):
@@ -78,6 +77,7 @@ class LoginTest(StaticSeleniumLiveServerTestCase):
 
 class TableTest(StaticSeleniumLiveServerTestCase):
     test_record = {
+        "identificador": "plaqueado",
         "nombre": "Pantalla Led",
         "observacion": "Plaqueado del 15 de julio",
         "marca": "Samsung",
@@ -126,7 +126,7 @@ class TableTest(StaticSeleniumLiveServerTestCase):
         try:
             el = WebDriverWait(self.selenium, 12).until(
                 lambda d: d.find_element(By.XPATH, f"//div[text()='{self.test_record.get('nombre')}']"))
-            qs = Activos_Plaqueados.objects.filter(
+            qs = Activos.objects.filter(
                 nombre__exact=self.test_record.get("nombre"))
             self.assertGreater(
                 qs.count(), 0, msg="The record was not added to the database")
@@ -150,7 +150,7 @@ class TableTest(StaticSeleniumLiveServerTestCase):
         except TimeoutException:
             self.fail("Element was not deleted from table")
 
-        qs = Activos_Plaqueados.objects.filter(id=record_id)
+        qs = Activos.objects.filter(id=record_id)
 
         self.assertEqual(
             qs.count(), 0, "Record still exists even after deletion")
@@ -190,7 +190,7 @@ class TableTest(StaticSeleniumLiveServerTestCase):
 
         confirmation_btn.click()
 
-        record_activo = Activos_Plaqueados.objects.get(id=id_registro)
+        record_activo = Activos.objects.get(id=id_registro)
 
         self.assertEqual(record_activo.nombre, new_name,
                          "Nombre no coincide después de la edición")
