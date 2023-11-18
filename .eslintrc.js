@@ -3,7 +3,7 @@ module.exports = {
         "browser": true,
         "es2021": true
     },
-    "extends": "eslint:recommended",
+    "extends": ["eslint:recommended"],
     "overrides": [
         {
             "env": {
@@ -17,11 +17,12 @@ module.exports = {
             }
         }
     ],
+
     "parserOptions": {
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
     ignorePatterns: ["webpack.config.js", "postcss.config.js", "src/backend/static/js/*"],
-    "rules": {}
+
 }
 

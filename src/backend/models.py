@@ -56,9 +56,8 @@ class Activos(models.Model):
     placa = models.CharField(max_length=30, blank=True)
     ubicacion_anterior = models.ForeignKey(
         to="Ubicaciones", on_delete=models.DO_NOTHING, blank=True, null=True, related_name="anterior")
-    observacion = models.CharField(
-        max_length=300, blank=True, null=True, verbose_name="Observación")
-    nombre = models.CharField(max_length=120, verbose_name="Nombre")
+    observacion = models.CharField(max_length=500, blank=True, null=True, verbose_name="Observación")
+    nombre = models.CharField(max_length=120, verbose_name="Nombre");
     marca = models.CharField(max_length=200, verbose_name="Marca")
     valor = models.CharField(max_length=200, blank=True, verbose_name="Valor")
     modelo = models.CharField(max_length=200, verbose_name="Modelo")
@@ -243,7 +242,7 @@ class Red(models.Model):
 
 class Proveedor(models.Model):
     nombre = models.CharField(max_length=230, unique=True)
-    telefono = models.CharField(max_length=10)
+    telefono = models.CharField(max_length=16)
     correo = models.EmailField()
 
     def __str__(self) -> str:

@@ -24,6 +24,7 @@ from rest_framework.decorators import action
 import pandas as pd
 from django.core.exceptions import ObjectDoesNotExist
 import pandas.io.formats.excel
+from backend.import_helper import ImportModule
 
 
 # ModelViewset con la capacidad de especificar más de un serializador, dependiendo de la acción
@@ -300,156 +301,26 @@ class ChangePasswordView(APIView):
 
 class ImportarReportePlaqueados(APIView):
 
-    def replaceColumn(self, column):
-        return column.strip().replace(" ", "_").replace("ñ", "n").replace("í", "i").replace("é", "e").replace("ó",
-                                                                                                              "o").lower()
-
     def post(self, request: Request, format=None):
+        if "file" not in request.FILES:
+            return Response({"message": "Bad Request"}, 400)
         file = request.FILES['file']
-        excel_file = pd.read_excel(file, na_values=["Sin Placa", "Sin placa", "sin placa", "Pendiente"]).rename(
-            self.replaceColumn, axis="columns")
-        redirect_url = reverse("importar_reporte_plaqueados")
-        exitos = 0
-        activos_totales = len(excel_file)
+        update = "update" in request.data
+        excel_file = pd.read_excel(file)
+        activos_data = excel_file.iloc[:, :16]
+        fecha_registro_data = excel_file.iloc[:, 33]
+        compras = excel_file.iloc[:, 22]
 
-        def format_date(x):
-            format = "%d-%m-%y"
-            try:
-                return datetime.strptime(x, format)
-            except:
-                return datetime.now()
+        activos_data["fecha_registro"] = fecha_registro_data
+        activos_data["compras"] = compras
+        activos_data = activos_data.values
+        compras_data = excel_file.iloc[:, 21:32].values
 
-        for row in excel_file.itertuples(index=False):
-
-            activo = row._asdict()
-
-            if models.Activos_Plaqueados.objects.filter(
-                    placa=activo["placa"]).first() is not None or models.Activos_No_Plaqueados.objects.filter(
-                serie=activo["serie"]).first() is not None:
-                continue
-
-            activo_db = None
-            if pd.isnull(activo["placa"]):
-                activo_db = models.Activos_No_Plaqueados()
-            else:
-                activo_db = models.Activos_Plaqueados()
-                activo_db.placa = str(activo["placa"])
-
-            activo_db.nombre = activo["nombre"]
-            activo_db.marca = activo["marca"]
-            activo_db.modelo = activo["modelo"]
-            activo_db.serie = activo["serie"]
-            activo_db.valor = activo["valor"]
-            activo_db.garantia = format_date(activo["garantia"])
-            activo_db.observacion = activo["detalle"]
-            activo_db.fecha_ingreso = format_date(activo["fecha_ingreso"])
-
-            tipo_db = models.Tipo.objects.filter(
-                nombre__contains=activo["tipo"]).first()
-
-            subtipo_db = models.Subtipo.objects.filter(
-                nombre__contains=activo["subtipo"]).first()
-
-            activo_db.tipo = tipo_db
-            activo_db.subtipo = subtipo_db
-            ubicacion_db = None
-
-            if pd.isnull(activo["ubicacion"]) is False:
-                ubicacion_db = models.Ubicaciones.objects.filter(
-                    ubicacion__icontains=activo["ubicacion"]).first()
-
-                if ubicacion_db is None:
-
-                    ubicacion_db = models.Ubicaciones()
-                    if pd.isnull(activo["zona"]) is False:
-                        if "esparza" in activo["zona"].lower():
-                            ubicacion_db.instalacion = models.Ubicaciones.InstalacionChoices.ESPARZA
-                        elif "cocal" in activo["zona"].lower():
-                            ubicacion_db.instalacion = models.Ubicaciones.InstalacionChoices.COCAL
-                        else:
-                            continue
-                        ubicacion_db.ubicacion = activo["ubicacion"]
-
-                        if pd.isnull(activo["custodio"]) is False:
-                            nombre = " ".join(
-                                activo["custodio"].split(" ")[:2])
-
-                            funcionario_db = models.Funcionarios.objects.filter(
-                                nombre_completo__icontains=nombre).first()
-
-                            if funcionario_db is not None:
-                                ubicacion_db.custodio = funcionario_db
-                            else:
-                                funcionario_db = models.Funcionarios()
-                                funcionario_db.cedula = "PENDIENTE"
-                                funcionario_db.nombre_completo = activo["custodio"]
-                                funcionario_db.save()
-                                ubicacion_db.custodio = funcionario_db
-
-                            ubicacion_db.save()
-                        else:
-                            ubicacion_db = None
-                    else:
-                        ubicacion_db = None
-            if ubicacion_db is not None:
-                activo_db.ubicacion = ubicacion_db
-
-            compra_db = None
-            if pd.isnull(activo['numero_orden_de_compra_o_referencia']) is False:
-                compra_db = models.Compra.objects.filter(
-                    numero_orden_compra=activo['numero_orden_de_compra_o_referencia']).first()
-
-                if compra_db is not None:
-                    compra_db = models.Compra()
-
-                    compra_db.numero_orden_compra = activo['numero_orden_de_compra_o_referencia']
-                    compra_db.numero_factura = activo["numero_factura"]
-                    compra_db.numero_procedimiento = activo["numero_procedimiento"]
-
-                    if pd.isnull(activo["nombre_proveedor"]) is False:
-                        proveedor_db = models.Proveedor.objects.filter(
-                            nombre=activo["nombre_proveedor"]).first()
-                        if proveedor_db is None:
-                            proveedor_db = models.Proveedor()
-                            proveedor_db.nombre = activo["nombre_proveedor"]
-                            proveedor_db.telefono = activo["telefono_proveedor"]
-                            proveedor_db.correo = activo["correo_empresa"]
-                            proveedor_db.save()
-                        compra_db.proveedor = proveedor_db
-
-                    compra_db.detalle = activo["detalles_de_presupuesto"]
-                    compra_db.informe_tecnico = activo["informe_tecnico"]
-                    compra_db.origen_presupuesto = activo["origen_presupuesto"]
-                    compra_db.save()
-
-            if compra_db is not None:
-                activo_db.compra = compra_db
-
-            traslado_db = models.Tramites.objects.filter(
-                referencia=activo["traslado"]).first()
-
-            if traslado_db is not None:
-                activo_db.tramites.add(traslado_db)
-
-            red_db = None
-            if pd.isnull(activo["mac"]) is False:
-
-                red_db = models.Red.objects.filter(MAC=activo["mac"]).first()
-
-                if red_db is None:
-                    red_db = models.Red()
-                    red_db.MAC = activo["mac"] or ""
-                    red_db.IP = activo["ip"] or ""
-                    red_db.IP_switch = activo["ip_switch"] or ""
-                    red_db.save()
-
-            if red_db is not None:
-                activo_db.red = red_db
-            try:
-                activo_db.save()
-                exitos += 1
-            except Exception as ex:
-                print(ex)
-                continue
-        message = f"Se incluyeron {exitos} de {activos_totales} activos totales"
-        return redirect(f"{redirect_url}?message={message}")
+        summary = {}
+        compras_summary = ImportModule.import_compras(compras_data, update)
+        activos_summary = ImportModule.import_activos(activos_data, update)
+        no_plaqueados_summary = ImportModule.import_no_plaqueados(activos_data, update)
+        summary["Activos_Plaqueados"] = activos_summary
+        summary["Activos_No_Plaqueados"] = no_plaqueados_summary
+        summary["Compras"] = compras_summary
+        return Response(summary, 200)

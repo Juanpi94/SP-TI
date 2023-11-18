@@ -4,22 +4,61 @@
     Importar reporte
 {% endblock title %}
 {% block content %}
+    <template id="result-body-template">
+        <ul class="container list-group pt-0" name="content">
+        </ul>
+    </template>
+    <template id="result-item-template">
+        <li class="row list-group-item">
+            <button class="btn btn-primary clr-white" type="button" name="title" data-bs-toggle="collapse"
+                    data-bs-target=""
+                    aria-expanded="false" aria-controls="">
+            </button>
+            <div class="collapse" name="collapse-container">
+                <ul class="card card-body list-group mt-2" name="summary">
+                </ul>
+            </div>
+        </li>
+    </template>
+    <template id="result-item-row">
+        <li class="d-flex justify-content-between list-group-item">
+            <p class="text-capitalize" name="key"></p>
+            <p name="value"></p>
+        </li>
+    </template>
+    <template id="result-sub-item-template">
+        <li class="list-group-item row">
+
+            <button class="btn btn-danger clr-white" type="button" name="title" data-bs-toggle="collapse"
+                    data-bs-target=""
+                    aria-expanded="false" aria-controls="">
+            </button>
+            <div name="content" class="collapse text-start">
+
+            </div>
+        </li>
+    </template>
     <form action="{% url 'api-importar-reporte-plaqueados' %}"
           method="post"
+          id="import-form"
           enctype="multipart/form-data"
           class="p-4 ms-6">
         {% csrf_token %}
-        {% if message %}
-            <div class="my-3 p-2 d-flex align-items-center message {{ error|yesno:"bg-danger, bg-success" }}">
-                <p class="form-text text-white p-0 m-0">{{ message }}</p>
-            </div>
-        {% endif %}
         <a href="{% get_media_prefix %}documents/plantilla_importar_reporte_plaqueados_2022.xlsx"
            class="link">Descargar plantilla</a>
         <div class="mb-3">
             <label for="input-file" class="form-label">Ingrese el archivo de excel aquí</label>
-            <input id="input-file" name="file" type="file" class="form-control" required />
+            <input id="input-file" name="file" type="file" class="form-control" required/>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" value="update" name="update" id="update-check">
+            <label for="update-check" class="form-check-label">
+                Actualizar: Esta opción actualiza registros que ya existen en la base de datos, usar con precaución.
+            </label>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 {% endblock content %}
+{% block script %}
+    <script type="application/javascript" src="{% static "js/import.bundle.js" %}"></script>
+{% endblock script %}
