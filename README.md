@@ -53,7 +53,7 @@ npm run watch
 ## Troubleshooting
 - Los archivos javascript que genera webpack terminan en .bundle.js, tenga eso en cuenta a la hora de añadirlos al html
 - Todos los estilos están en main.css, por lo que al añadir nuevos estilos no es necesario que los agregue al html
-- Si crea un nuevo archivo de javascript para separar el código (code splitting), recuerde añadir el archivo al webpack.config.js
+- En el la carpeta `source/js` los archivos javascript que comiencen con underscore `_` son ignorados y no se compilan.
 
 ## Documentación adicional
 
