@@ -25,3 +25,11 @@ class ColumnDefs(TypedDict, total=False):
     minWidth: str
     maxWidth: str
     headerSort: bool
+
+
+class ImportResult(TypedDict):
+    total: int
+    created: int
+    failed: int
+    omitted: int
+    errors: list[str]

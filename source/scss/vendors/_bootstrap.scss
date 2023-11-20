@@ -34,6 +34,9 @@
 @import "bootstrap/scss/transitions";
 @import "bootstrap/scss/forms/form-control";
 @import "bootstrap/scss/forms/input-group";
+@import "bootstrap/scss/list-group";
+@import "bootstrap/scss/forms/form-check";
+
 // 7. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`
 @import "bootstrap/scss/utilities/api";
 
@@ -43,5 +46,9 @@ $bootstrap-icons-font-dir: "~bootstrap-icons/font/fonts";
 
 .row {
   --bs-gutter-x: 0;
+}
+
+.btn-primary {
+  --bs-btn-color: white;
 }
 

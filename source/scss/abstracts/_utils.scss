@@ -41,3 +41,7 @@
     grid-template-columns: repeat($i, 1fr);
   }
 }
+
+.white-pre-line {
+  white-space: pre-line;
+}

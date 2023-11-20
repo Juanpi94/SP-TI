@@ -1,8 +1,11 @@
 from django.contrib import admin
-from backend.models import Funcionarios, Tipo, Traslados, Ubicaciones, Unidad, Proveedor, Red, Compra, Taller, Deshecho, Tramites, Permissions, Activos, Subtipo
+from backend.models import Funcionarios, Tipo, Traslados, Ubicaciones, Unidad, Proveedor, Red, Compra, Taller, Deshecho, \
+    Tramites, Permissions, Activos_Plaqueados, Activos_No_Plaqueados, Subtipo
+
 admin.site.site_title = "ATIC Admin"
 
 admin.site.site_header = "Administración de ATIC"
+
 
 # Register your models here.
 
@@ -55,7 +58,11 @@ class TramitesAdmin(admin.ModelAdmin):
     pass
 
 
-class ActivosAdmin(admin.ModelAdmin):
+class ActivosPlaqueadosAdmin(admin.ModelAdmin):
+    pass
+
+
+class ActivosNoPlaqueadosAdmin(admin.ModelAdmin):
     pass
 
 
@@ -75,5 +82,6 @@ admin.site.register(Taller, TallerAdmin)
 admin.site.register(Deshecho, DeshechoAdmin)
 admin.site.register(Tramites, TramitesAdmin)
 admin.site.register(Permissions, PermissionAdmin)
-admin.site.register(Activos, ActivosAdmin)
+admin.site.register(Activos_Plaqueados, ActivosPlaqueadosAdmin)
+admin.site.register(Activos_No_Plaqueados, ActivosNoPlaqueadosAdmin)
 admin.site.register(Subtipo, SubtiposAdmin)
