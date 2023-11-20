@@ -45,7 +45,7 @@ class AuthMixin:
 
 
 class PlaqueadosApiViewset(AuthMixin, ModelViewSet):
-    queryset = models.Activos.objects.all()
+    queryset = models.Activos_Plaqueados.objects.all()
 
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('serie', "placa")
@@ -58,7 +58,7 @@ class PlaqueadosApiViewset(AuthMixin, ModelViewSet):
 
 
 class NoPlaqueadosApiViewSet(AuthMixin, ModelViewSet):
-    queryset = models.Activos.objects.all()
+    queryset = models.Activos_No_Plaqueados.objects.all()
     serializer_class = NoPlaqueadosSerializer
 
     filter_backends = (DjangoFilterBackend,)
@@ -75,17 +75,17 @@ class TramitesApiViewset(AuthMixin, ModelViewSet):
         for activo in activos_plaqueados:
             activo_db = models.Activos_Plaqueados.objects.get(id=activo)
             activo_db.tramites.add(tramite)
-            if (tramite.tipo == models.Tramites.TiposTramites.DESHECHO):
+            if tramite.tipo == models.Tramites.TiposTramites.DESHECHO:
                 activo_db.estado = models.Activo.Estados.PROCESO_DESHECHO
             activo_db.save()
 
-            if (tramite.tipo == models.Tramites.TiposTramites.TRASLADO):
+            if tramite.tipo == models.Tramites.TiposTramites.TRASLADO:
                 traslados = data['traslados']
                 plaqueados = list(filter(lambda traslado: traslado["tipo"] ==
                                                           "PLAQUEADO" and traslado["activo"] == activo_db.id,
                                          traslados))
 
-                if (len(plaqueados) == 0):
+                if len(plaqueados) == 0:
                     continue
                 traslado = plaqueados[0]
                 traslado_db = models.Traslados()
@@ -98,16 +98,18 @@ class TramitesApiViewset(AuthMixin, ModelViewSet):
         for activo in activos_no_plaqueados:
             activo_db = models.Activos_No_Plaqueados.objects.get(id=activo)
             activo_db.tramites.add(tramite)
-            if (tramite.tipo == models.Tramites.TiposTramites.DESHECHO):
+            if tramite.tipo == models.Tramites.TiposTramites.DESHECHO:
                 activo_db.estado = models.Activo.Estados.PROCESO_DESHECHO
             activo_db.save()
 
-            if (tramite.tipo == models.Tramites.TiposTramites.TRASLADO):
+            if tramite.tipo == models.Tramites.TiposTramites.TRASLADO:
                 traslados = data['traslados']
                 no_plaqueados = list(filter(lambda traslado: traslado["tipo"] ==
                                                              "NO_PLAQUEADO" and traslado["activo"] == activo_db.id,
                                             traslados))
-                if (len(no_plaqueados) == 0):
+                if len(no_plaqueados) != 0:
+                    pass
+                else:
                     continue
                 traslado = no_plaqueados[0]
                 traslado_db = models.Traslados()
@@ -119,9 +121,9 @@ class TramitesApiViewset(AuthMixin, ModelViewSet):
         pass
 
     def get_serializer_class(self):
-        if (self.request.method == "PUT"):
+        if self.request.method == "PUT":
             return TramitesUpdateSerializer
-        if (self.request.method == "POST"):
+        if self.request.method == "POST":
             return TramitesCreateSerializer
         return super().get_serializer_class()
 
@@ -130,7 +132,7 @@ class TramitesApiViewset(AuthMixin, ModelViewSet):
         anterior = models.Tramites.objects.filter(
             referencia=serializer.validated_data["referencia"]).first()
 
-        if (anterior is None):
+        if anterior is None:
             serializer.validated_data["estado"] = models.Tramites.TiposEstado.PENDIENTE
             return serializer.save(
                 solicitante=self.request.user)
@@ -215,7 +217,7 @@ class TallerApiViewset(AuthMixin, ModelViewSet):
     queryset = models.Taller.objects.all()
     serializer_class = TallerSerializer
 
-    filter_backends = (DjangoFilterBackend)
+    filter_backends = DjangoFilterBackend
 
 
 class FuncionariosApiViewset(AuthMixin, ModelViewSet):
@@ -319,8 +321,6 @@ class ImportarReportePlaqueados(APIView):
         summary = {}
         compras_summary = ImportModule.import_compras(compras_data, update)
         activos_summary = ImportModule.import_activos(activos_data, update)
-        no_plaqueados_summary = ImportModule.import_no_plaqueados(activos_data, update)
         summary["Activos_Plaqueados"] = activos_summary
-        summary["Activos_No_Plaqueados"] = no_plaqueados_summary
         summary["Compras"] = compras_summary
         return Response(summary, 200)

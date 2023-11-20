@@ -1,12 +1,10 @@
-from django import utils
-from django.core import exceptions
 from django.db import DataError, IntegrityError
-from django.db.models import Q
-
-from backend import models, utils
-from backend.models import Activos, Compra, Proveedor
+from backend import models
+from backend.models import Activos_Plaqueados, Activos_No_Plaqueados, Compra, Proveedor
 from backend.types import ImportResult
 from pandas import isna
+
+from backend.utils import dateutils
 
 
 class ImportModule:
@@ -35,23 +33,24 @@ class ImportModule:
             [placa, zona, nombre, tipo, subtipo, marca, modelo, serie, valor, garantia, detalle, custodio, unidad,
              coordinador, ubicacion, estado, registro_fecha, compra] = row
 
-            placa = str(placa)
-            if (placa.strip() == ""):
+            if isna(placa) or placa.strip() == "":
+                details["failed"] += 1
+                details["errors"].append(f"Placa vacia en fila {row_number}")
                 continue
-            details["total"] += 1
-            identificador = "Pendiente" if placa.lower() == "pendiente" else "Plaqueado"
-            garantia = None if isna(garantia) else utils.try_parse_date(str(garantia))
-            registro_fecha = None if isna(registro_fecha) else utils.try_parse_date(str(registro_fecha))
-            qs = Activos.objects.filter(placa=placa)
+
+            garantia = None if isna(garantia) else dateutils.try_parse_date(str(garantia))
+            registro_fecha = None if isna(registro_fecha) else dateutils.try_parse_date(str(registro_fecha))
+            qs = Activos_Plaqueados.objects.filter(placa=placa)
             if qs.count() > 1 and update:
                 activo = qs[0]
             elif qs.count() > 1:
                 details["omitted"] += 1
                 continue
             else:
-                activo = Activos(placa=placa, nombre=nombre, identificador=identificador, observacion=detalle,
-                                 valor=valor, serie=serie, marca=marca, modelo=modelo, garantia=garantia, estado=estado,
-                                 fecha_registro=registro_fecha)
+                activo = Activos_Plaqueados(placa=placa, nombre=nombre, observacion=detalle,
+                                            valor=valor, serie=serie, marca=marca, modelo=modelo, garantia=garantia,
+                                            estado=estado,
+                                            fecha_registro=registro_fecha)
             if not isna(tipo) and tipo.strip():
                 tipo_db, _ = models.Tipo.objects.get_or_create(defaults={"detalle": ""}, nombre=tipo)
 
@@ -107,29 +106,31 @@ class ImportModule:
             "errors": []
         }
         for idx, row in enumerate(data):
-            assert len(row) == 18, "Se envio una cantidad incorrecta de datos " + str(len(row))
+            assert len(row) == 17, "Se envio una cantidad incorrecta de datos " + str(len(row))
 
             row_number = idx + 2
-            [placa, zona, nombre, tipo, subtipo, marca, modelo, serie, valor, garantia, detalle, custodio, unidad,
+            [zona, nombre, tipo, subtipo, marca, modelo, serie, valor, garantia, detalle, custodio, unidad,
              coordinador, ubicacion, estado, registro_fecha, compra] = row
 
             placa = str(placa)
-            if placa != "":
+            if isna(serie) or serie.strip() == "":
+                details["failed"] += 1
+                details["errors"].append(f"Activo no plaqueado sin serie en fila {row_number}")
                 continue
             details["total"] += 1
-            identificador = "No plaqueado"
-            garantia = None if isna(garantia) else utils.try_parse_date(str(garantia))
-            registro_fecha = None if isna(registro_fecha) else utils.try_parse_date(str(registro_fecha))
-            qs = Activos.objects.filter(placa=placa)
+            garantia = None if isna(garantia) else dateutils.try_parse_date(str(garantia))
+            registro_fecha = None if isna(registro_fecha) else dateutils.try_parse_date(str(registro_fecha))
+            qs = Activos_No_Plaqueados.objects.filter(placa=placa)
             if qs.count() > 1 and update:
                 activo = qs[0]
             elif qs.count() > 1:
                 details["omitted"] += 1
                 continue
             else:
-                activo = Activos(placa=placa, nombre=nombre, identificador=identificador, observacion=detalle,
-                                 valor=valor, serie=serie, marca=marca, modelo=modelo, garantia=garantia, estado=estado,
-                                 fecha_registro=registro_fecha)
+                activo = Activos_No_Plaqueados(placa=placa, nombre=nombre, observacion=detalle,
+                                               valor=valor, serie=serie, marca=marca, modelo=modelo, garantia=garantia,
+                                               estado=estado,
+                                               fecha_registro=registro_fecha)
             if not isna(tipo) and tipo.strip():
                 tipo_db, _ = models.Tipo.objects.get_or_create(defaults={"detalle": ""}, nombre=tipo)
 

@@ -2,8 +2,10 @@ from dataclasses import field
 from django.forms import SlugField
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
+
+from backend import utils
 from backend.models import Compra, Deshecho, Funcionarios, Proveedor, \
-    Subtipo, Taller, Tipo, Tramites, Traslados, Ubicaciones, Red, Unidad, Activos
+    Subtipo, Taller, Tipo, Tramites, Traslados, Ubicaciones, Red, Unidad, Activos_No_Plaqueados, Activos_Plaqueados
 from django.contrib.auth.models import User, Group
 
 
@@ -11,7 +13,7 @@ class PlaqueadosSerializer(ModelSerializer):
     tramites = serializers.PrimaryKeyRelatedField(many=True, queryset=Tramites.objects.all())
 
     class Meta:
-        model = Activos
+        model = Activos_Plaqueados
         fields = "__all__"
 
 
@@ -32,7 +34,7 @@ class PlaqueadosCreateSerializer(ModelSerializer):
         }
 
     class Meta:
-        model = Activos
+        model = Activos_Plaqueados
         fields = "__all__"
 
 
@@ -43,8 +45,8 @@ class NoPlaqueadosSerializer(ModelSerializer):
     ), slug_field="ubicacion", allow_null=True)
 
     class Meta:
-        model = Activos
-        exclude = ["placa"]
+        model = Activos_No_Plaqueados
+        fields = "__all__"
 
 
 class TrasladosSerializer(ModelSerializer):
@@ -69,9 +71,9 @@ class TrasladosSerializer(ModelSerializer):
 
 class TallerSerializer(ModelSerializer):
     activos_plaqueados = serializers.PrimaryKeyRelatedField(
-        queryset=Activos.objects.all(), many=True, allow_null=True)
+        queryset=Activos_Plaqueados.objects.all(), many=True, allow_null=True)
     activos_no_plaqueados = serializers.PrimaryKeyRelatedField(
-        queryset=Activos.objects.all(), many=True, allow_null=True)
+        queryset=Activos_No_Plaqueados.objects.all(), many=True, allow_null=True)
 
     class Meta:
         model = Taller
@@ -184,9 +186,9 @@ class UbicacionesSerializer(ModelSerializer):
 
 class DeshechoSerializer(ModelSerializer):
     activos_plaqueados = serializers.PrimaryKeyRelatedField(
-        queryset=Activos.objects.all(), many=True, allow_null=True)
+        queryset=Activos_Plaqueados.objects.all(), many=True, allow_null=True)
     activos_no_plaqueados = serializers.PrimaryKeyRelatedField(
-        queryset=Activos.objects.all(), many=True, allow_null=True)
+        queryset=Activos_No_Plaqueados.objects.all(), many=True, allow_null=True)
 
     class Meta:
         model = Deshecho
@@ -305,5 +307,5 @@ class PlaqueadosReportSerializer(ModelSerializer):
     red = RedReportSerializer(read_only=True)
 
     class Meta:
-        model = Activos
+        model = Activos_Plaqueados
         fields = "__all__"
