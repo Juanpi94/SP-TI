@@ -10,7 +10,8 @@ from django.contrib.auth.models import User, Group
 
 
 class PlaqueadosSerializer(ModelSerializer):
-    tramites = serializers.PrimaryKeyRelatedField(many=True, queryset=Tramites.objects.all())
+    tramites = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Tramites.objects.all())
 
     class Meta:
         model = Activos_Plaqueados
@@ -18,16 +19,18 @@ class PlaqueadosSerializer(ModelSerializer):
 
 
 class PlaqueadosCreateSerializer(ModelSerializer):
-    tramites = serializers.PrimaryKeyRelatedField(many=True, required=False, queryset=Tramites.objects.all())
+    tramites = serializers.PrimaryKeyRelatedField(
+        many=True, required=False, queryset=Tramites.objects.all())
 
     def to_representation(self, instance):
         return {
-            "id": instance.id,
+            "placa": instance.placa,
             "nombre": instance.nombre,
             "tipo__nombre": instance.tipo.nombre if instance.tipo else None,
             "subtipo__nombre": instance.subtipo.nombre if instance.subtipo else None,
             "ubicacion__ubicacion": instance.ubicacion.ubicacion if instance.ubicacion else None,
             "marca": instance.marca,
+            "serie": instance.serie,
             "valor": instance.valor,
             "garantia": instance.garantia,
             "observacion": instance.observacion
@@ -135,7 +138,7 @@ class TramitesUpdateSerializer(ModelSerializer):
     def validate_recipiente(self, value):
 
         if "tipo" in dict.keys(self.initial_data) and self.initial_data[
-            "tipo"] == Tramites.TiposTramites.DESHECHO and value == None:
+                "tipo"] == Tramites.TiposTramites.DESHECHO and value == None:
             return value
         elif value == "" or value is None:
             raise serializers.ValidationError(

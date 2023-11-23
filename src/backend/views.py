@@ -13,6 +13,8 @@ from backend.serializers import PlaqueadosReportSerializer
 from backend.types import ColumnDefs
 from typing import List
 
+from django.shortcuts import render
+
 
 class ReadPermMixin(LoginRequiredMixin, PermissionRequiredMixin):
     login_url = "/login"
@@ -83,8 +85,7 @@ class Table_View(ReadPermMixin, TemplateView):
             "tabulator": {
                 "autoColumns": self.auto_columns,
                 "columnDefs": self.get_column_defs(),
-                "id_field": self.id_field, }
-            ,
+                "id_field": self.id_field, },
             "data": list(self.get_values())}
         return context
 
@@ -324,7 +325,7 @@ class Importar_Reporte_Plaqueados(WritePermMixin, ImportTemplateView):
 
 
 class Importar_Reporte_No_Plaqueados(WritePermMixin, ImportTemplateView):
-    template_name = "importar/repoteNoPlaqueados.html"
+    template_name = "importar/reporteNoPlaqueados.html"
 
 
 class Perfil_View(LoginRequiredMixin, TemplateView):

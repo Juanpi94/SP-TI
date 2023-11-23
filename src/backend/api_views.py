@@ -82,7 +82,7 @@ class TramitesApiViewset(AuthMixin, ModelViewSet):
             if tramite.tipo == models.Tramites.TiposTramites.TRASLADO:
                 traslados = data['traslados']
                 plaqueados = list(filter(lambda traslado: traslado["tipo"] ==
-                                                          "PLAQUEADO" and traslado["activo"] == activo_db.id,
+                                         "PLAQUEADO" and traslado["activo"] == activo_db.id,
                                          traslados))
 
                 if len(plaqueados) == 0:
@@ -105,7 +105,7 @@ class TramitesApiViewset(AuthMixin, ModelViewSet):
             if tramite.tipo == models.Tramites.TiposTramites.TRASLADO:
                 traslados = data['traslados']
                 no_plaqueados = list(filter(lambda traslado: traslado["tipo"] ==
-                                                             "NO_PLAQUEADO" and traslado["activo"] == activo_db.id,
+                                            "NO_PLAQUEADO" and traslado["activo"] == activo_db.id,
                                             traslados))
                 if len(no_plaqueados) != 0:
                     pass
