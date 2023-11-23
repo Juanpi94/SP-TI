@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     const currentSelect = new Choices(selectElement)
 
-                    console.log(currentSelect)
+                    console.log(currentSelectw)
 
 
                     return container.innerHTML
