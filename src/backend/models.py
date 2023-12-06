@@ -46,8 +46,9 @@ class AbstractActivo(models.Model):
         PROCESO_DESHECHO = "Proceso de deshecho", _("Proceso de deshecho")
         USO_ACADEMICO = "Uso academico", _("Uso academico")
 
-    observacion = models.CharField(max_length=500, blank=True, null=True, verbose_name="Observación")
-    nombre = models.CharField(max_length=120, verbose_name="Nombre");
+    observacion = models.CharField(
+        max_length=500, blank=True, null=True, verbose_name="Observación")
+    nombre = models.CharField(max_length=120, verbose_name="Nombre")
     marca = models.CharField(max_length=200, verbose_name="Marca")
     valor = models.CharField(max_length=200, blank=True, verbose_name="Valor")
     modelo = models.CharField(max_length=200, verbose_name="Modelo")
@@ -78,7 +79,8 @@ class AbstractActivo(models.Model):
 
 class Activos_Plaqueados(AbstractActivo):
     placa = models.CharField(max_length=20, primary_key=True)
-    serie = models.CharField(max_length=200, null=True, blank=True, verbose_name="Serie")
+    serie = models.CharField(max_length=200, null=True,
+                             blank=True, verbose_name="Serie")
     ubicacion_anterior = models.ForeignKey(
         to="Ubicaciones", on_delete=models.DO_NOTHING, blank=True, null=True, related_name="plaqueados")
 

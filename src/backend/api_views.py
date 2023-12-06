@@ -25,7 +25,9 @@ import pandas as pd
 from django.core.exceptions import ObjectDoesNotExist
 import pandas.io.formats.excel
 from backend.import_helper import ImportModule
-
+from rest_framework.decorators import api_view
+from django.http import HttpResponseServerError
+from backend.models import Activos_Plaqueados
 
 # ModelViewset con la capacidad de especificar más de un serializador, dependiendo de la acción
 
@@ -63,6 +65,42 @@ class NoPlaqueadosApiViewSet(AuthMixin, ModelViewSet):
 
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('serie',)
+
+
+class GenerarTramiteView(APIView):
+
+    def post(self, request):
+        try:
+
+            activos_plaqueados = request.data.pop('activos_plaqueados')
+
+            traslados = request.data.pop('traslados')
+
+            print(traslados)
+
+            tramite_serializer = TramitesCreateSerializer(
+                data=request.data, context={"request": request})
+            print("llegue aqui")
+            try:
+                tramite_serializer.is_valid(True)
+            except Exception as e:
+                print(e)
+                return HttpResponseServerError()
+            tramite = tramite_serializer.save()
+
+            plaqueados = Activos_Plaqueados.objects.filter(
+                placa__in=activos_plaqueados)
+
+            for plaqueado in plaqueados:
+                plaqueado.tramites.add(tramite)
+
+            return Response("Tramite create succesfully", status=status.HTTP_201_CREATED)
+
+            # return Response(tramite_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            # Registra la excepción para su análisis
+            print(f"Error: {e}")
+            return HttpResponseServerError()
 
 
 class TramitesApiViewset(AuthMixin, ModelViewSet):
