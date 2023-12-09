@@ -4,8 +4,12 @@ node_modules
 .parcel-cache
 .idea
 
+.config
 __pycache__
 */**/__pycache__
+
+.mypy_cache
+
 src/backend/static/css/
 src/backend/static/js/
 
@@ -16,3 +20,5 @@ src/static
 .vscode/*
 !tasks.json
 
+./error.log
+./info.log

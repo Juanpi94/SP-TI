@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import logging
 from collections import OrderedDict
 from pathlib import Path
 import os
@@ -24,7 +24,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-
 DEBUG = bool(int(os.environ.get("DEBUG", "0")))
 
 ALLOWED_HOSTS = ['*']
@@ -58,6 +57,63 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'atic.urls'
+
+LOG_FILE_NAME = "../{0}" if DEBUG else "/ATIC-LOGS/{0}"
+LOGGING = {
+    "version": 1,
+    "filters": {
+        "debug": {
+            "()": "django.utils.log.RequireDebugTrue"
+        },
+        "prod": {
+            "()": "django.utils.log.RequireDebugFalse"
+        }
+    },
+    "formatters": {
+        "verbose": {
+            "format": "{asctime} - {module} - {thread:d} - {message}",
+            "style": "{"
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "filters": ["debug"]
+
+        },
+        "file_info": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filters": ["prod"],
+            "filename": LOG_FILE_NAME.format("info.log")
+        },
+        "file_error": {
+            "level": "ERROR",
+            "class": "logging.FileHandler",
+            "formatter": "verbose",
+            "filename": LOG_FILE_NAME.format("error.log")
+        }
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "atic.errors": {
+            "handlers": ["file_error", "console"],
+            "level": "ERROR",
+            "propagate": False
+        },
+        "atic.info": {
+            "handlers": ["file_info"],
+            "level": "INFO",
+
+            "propagate": False
+        }
+    }
+}
 
 TEMPLATES = [
     {

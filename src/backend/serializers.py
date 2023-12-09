@@ -1,16 +1,25 @@
-from dataclasses import field
-from django.forms import SlugField
-from rest_framework.serializers import ModelSerializer
+from backend.models import (Activos_No_Plaqueados, Activos_Plaqueados, Compra,
+                            Deshecho, Funcionarios, Proveedor, Red, Subtipo,
+                            Taller, Tipo, Tramites, Traslados, Ubicaciones,
+                            Unidad)
+from django.contrib.auth.models import Group, User
 from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 
-from backend import utils
-from backend.models import Compra, Deshecho, Funcionarios, Proveedor, \
-    Subtipo, Taller, Tipo, Tramites, Traslados, Ubicaciones, Red, Unidad, Activos_No_Plaqueados, Activos_Plaqueados
-from django.contrib.auth.models import User, Group
+
+class UbicacionesSerializer(ModelSerializer):
+    custodio = serializers.SlugRelatedField(
+        slug_field="nombre_completo", queryset=Funcionarios.objects.all())
+
+    class Meta:
+        model = Ubicaciones
+        fields = "__all__"
 
 
 class PlaqueadosSerializer(ModelSerializer):
-    tramites = serializers.PrimaryKeyRelatedField(many=True, queryset=Tramites.objects.all())
+    tramites = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Tramites.objects.all())
+    ubicacion = UbicacionesSerializer()
 
     class Meta:
         model = Activos_Plaqueados
@@ -18,16 +27,18 @@ class PlaqueadosSerializer(ModelSerializer):
 
 
 class PlaqueadosCreateSerializer(ModelSerializer):
-    tramites = serializers.PrimaryKeyRelatedField(many=True, required=False, queryset=Tramites.objects.all())
+    tramites = serializers.PrimaryKeyRelatedField(
+        many=True, required=False, queryset=Tramites.objects.all())
 
     def to_representation(self, instance):
         return {
-            "id": instance.id,
+            "placa": instance.placa,
             "nombre": instance.nombre,
             "tipo__nombre": instance.tipo.nombre if instance.tipo else None,
             "subtipo__nombre": instance.subtipo.nombre if instance.subtipo else None,
             "ubicacion__ubicacion": instance.ubicacion.ubicacion if instance.ubicacion else None,
             "marca": instance.marca,
+            "serie": instance.serie,
             "valor": instance.valor,
             "garantia": instance.garantia,
             "observacion": instance.observacion
@@ -155,10 +166,8 @@ class TramitesUpdateSerializer(ModelSerializer):
 
 
 class TramitesCreateSerializer(ModelSerializer):
-    recipiente = serializers.SlugRelatedField(
-        slug_field="nombre_completo", queryset=Funcionarios.objects.all(), required=False)
-    remitente = serializers.SlugRelatedField(
-        slug_field="nombre_completo", queryset=Funcionarios.objects.all(), required=False)
+    recipiente = serializers.PrimaryKeyRelatedField(queryset=Funcionarios.objects.all(), required=True)
+    remitente = serializers.PrimaryKeyRelatedField(queryset=Funcionarios.objects.all(), required=True)
     fecha = serializers.DateField(input_formats=["%Y-%m-%d", "iso-8601"])
     traslados = serializers.ReadOnlyField()
     solicitante = serializers.HiddenField(
@@ -172,15 +181,6 @@ class TramitesCreateSerializer(ModelSerializer):
 class FuncionariosSerializer(ModelSerializer):
     class Meta:
         model = Funcionarios
-        fields = "__all__"
-
-
-class UbicacionesSerializer(ModelSerializer):
-    custodio = serializers.SlugRelatedField(
-        slug_field="nombre_completo", queryset=Funcionarios.objects.all())
-
-    class Meta:
-        model = Ubicaciones
         fields = "__all__"
 
 

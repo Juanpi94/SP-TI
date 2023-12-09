@@ -37,7 +37,8 @@ class TramitesExportForm(forms.Form):
                                      widget=Select(attrs={'class': 'col-12 tramite-select'}))
     consecutivo = forms.CharField(
         label="Consecutivo:", max_length=100, widget=TextInput(attrs={"class": "form-input"}))
-    fecha = forms.DateField(widget=DatePickerInput(attrs={"class": "form-input"}))
+    fecha = forms.DateField(widget=DatePickerInput(
+        attrs={"class": "form-input"}))
     destino = forms.ModelChoiceField(queryset=Ubicaciones.objects.all(
     ), empty_label="--seleccionar ubicación", label=None, widget=Select(attrs={'class': 'col destino-select'}))
     recipiente = forms.ModelChoiceField(queryset=Funcionarios.objects.all(
@@ -47,9 +48,9 @@ class TramitesExportForm(forms.Form):
     motivo = forms.CharField(widget=Textarea(
         attrs={"class": "textarea p-2"}), label="Motivo o Observaciones")
     placa = forms.ModelChoiceField(queryset=Activos_Plaqueados.objects.all(
-    ), empty_label="--placa", label="Placa:", to_field_name="id", widget=Select(attrs=attrs_col))
+    ), empty_label="--placa", label="Placa:", to_field_name="placa", widget=Select(attrs=attrs_col))
     serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(
-    ), empty_label="--serie", label="Serie:", to_field_name="id", widget=Select(attrs=attrs_col))
+    ), empty_label="--serie", label="Serie:", to_field_name="serie", widget=Select(attrs=attrs_col))
 
 
 class DeshechoExportForm(forms.Form):

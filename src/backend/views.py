@@ -1,17 +1,18 @@
 from datetime import datetime
+from typing import List
 
-from django.db.models import F, QuerySet
 import django.forms
-from django.forms import DateInput
-from django import forms
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.views.generic import TemplateView, RedirectView
 from backend import models
+from backend.custom_types import ColumnDefs
 from backend.exceptions import ArgMissingException
 from backend.forms import DeshechoExportForm, TallerExportForm, TramitesExportForm
 from backend.serializers import PlaqueadosReportSerializer
-from backend.types import ColumnDefs
-from typing import List
+from django import forms
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.db.models import F, QuerySet
+from django.forms import DateInput
+from django.shortcuts import render
+from django.views.generic import RedirectView, TemplateView
 
 
 class ReadPermMixin(LoginRequiredMixin, PermissionRequiredMixin):
@@ -73,7 +74,7 @@ class Table_View(ReadPermMixin, TemplateView):
         self.check_args()
 
         context["target_view"] = self.target_view
-        context['add'] = self.add
+        context["add"] = self.add
         context["edit"] = self.edit
         context["title"] = self.title
         context["custom_script"] = self.custom_script
@@ -83,9 +84,10 @@ class Table_View(ReadPermMixin, TemplateView):
             "tabulator": {
                 "autoColumns": self.auto_columns,
                 "columnDefs": self.get_column_defs(),
-                "id_field": self.id_field, }
-            ,
-            "data": list(self.get_values())}
+                "id_field": self.id_field,
+            },
+            "data": list(self.get_values()),
+        }
         return context
 
     def check_args(self):
@@ -97,7 +99,7 @@ class Table_View(ReadPermMixin, TemplateView):
         non_optional_args = ["model", "target_view"]
         missing_args = [arg for arg in non_optional_args if arg not in keys]
 
-        if (len(missing_args)):
+        if len(missing_args):
             raise ArgMissingException(*missing_args)
 
     def get_queryset(self):
@@ -114,10 +116,12 @@ class Table_View(ReadPermMixin, TemplateView):
 
         for field in filter(lambda _field: _field.name != "id", fields):
             title = field.__dict__.get("verbose_name", field.name)
-            defs.append({
-                "field": field.name,
-                "title": title.title(),
-            })
+            defs.append(
+                {
+                    "field": field.name,
+                    "title": title.title(),
+                }
+            )
 
         if len(self.exclude) > 0:
             defs = self._parse_column_defs_with_exclusions(defs)
@@ -126,14 +130,16 @@ class Table_View(ReadPermMixin, TemplateView):
 
         return defs
 
-    def _parse_column_defs_with_exclusions(self, defs: List[ColumnDefs]) -> List[ColumnDefs]:
+    def _parse_column_defs_with_exclusions(
+            self, defs: List[ColumnDefs]
+    ) -> List[ColumnDefs]:
         """
         Aplica las exclusiones a la lista de definiciones
         :param defs:
         :return:
         """
         for i in range(len(defs)):
-            defs[i]["visible"] = defs["i"]["field"] in self.exclude
+            defs[i]["visible"] = defs[i]["field"] not in self.exclude
         return defs
 
     def _order_column_defs(self, defs: List[ColumnDefs]) -> List[ColumnDefs]:
@@ -160,10 +166,9 @@ class Table_View(ReadPermMixin, TemplateView):
         """
         fields = self.get_form_fields()
         meta = type("Meta", (), self.get_form_metafields())
-        form = type("DynamicModelForm", (django.forms.ModelForm,), {
-            'Meta': meta,
-            **fields
-        })
+        form = type(
+            "DynamicModelForm", (django.forms.ModelForm,), {"Meta": meta, **fields}
+        )
 
         return form()
 
@@ -181,11 +186,11 @@ class Table_View(ReadPermMixin, TemplateView):
                 field.required = False
 
         meta = type("Meta", (), self.get_form_metafields())
-        form = type("DynamicModelForm", (django.forms.ModelForm,), {
-            'Meta': meta,
-            '__init__': init,
-            **fields
-        })
+        form = type(
+            "DynamicModelForm",
+            (django.forms.ModelForm,),
+            {"Meta": meta, "__init__": init, **fields},
+        )
         return form()
 
     def get_form_fields(self) -> dict:
@@ -200,10 +205,7 @@ class Table_View(ReadPermMixin, TemplateView):
         Genera los campos Meta del formulario
         :return:  Los campos Meta del formulario
         """
-        return {
-            "model": self.model,
-            "fields": "__all__"
-        }
+        return {"model": self.model, "fields": "__all__"}
 
     def get_values(self) -> QuerySet:
         """
@@ -218,38 +220,46 @@ class Activos_Plaqueados_View(Table_View):
     model = models.Activos_Plaqueados
     title = "Activos plaqueados"
     id_field = "placa"
+    defs_order = ["placa"]
 
     def get_form_fields(self) -> dict:
-        return {
-            "field_order": ["placa"]
-        }
+        return {"field_order": ["placa"]}
 
     def get_form_metafields(self) -> dict:
         metafields = super().get_form_metafields()
         metafields["widgets"] = {
             "garantia": DateInput(
-                attrs={'type': 'date', "placeholder": "yyyy-mm-dd (DOB)", "class": "date-form-input"}),
+                attrs={
+                    "type": "date",
+                    "placeholder": "yyyy-mm-dd (DOB)",
+                    "class": "date-form-input",
+                }
+            ),
             "fecha_ingreso": DateInput(
-                attrs={'type': 'date', "placeholder": "yyyy-mm-dd (DOB)", "class": "date-form-input"}),
+                attrs={
+                    "type": "date",
+                    "placeholder": "yyyy-mm-dd (DOB)",
+                    "class": "date-form-input",
+                }
+            ),
         }
         return metafields
 
     def get_column_defs(self) -> List[ColumnDefs]:
         defs = super().get_column_defs()
-        defs.extend([
-            {
-                "field": "ubicacion__ubicacion",
-                "title": "Ubicacion",
-            },
-            {
-                "field": "tipo__nombre",
-                "title": "Tipo",
-            },
-            {
-                "field": "subtipo__nombre",
-                "title": "Subtipo"
-            }
-        ])
+        defs.extend(
+            [
+                {
+                    "field": "ubicacion__ubicacion",
+                    "title": "Ubicacion",
+                },
+                {
+                    "field": "tipo__nombre",
+                    "title": "Tipo",
+                },
+                {"field": "subtipo__nombre", "title": "Subtipo"},
+            ]
+        )
         return defs
 
 
@@ -258,6 +268,7 @@ class Tramites_View(Table_View):
     model = models.Tramites
     add = False
     title = "Tramites"
+    exclude = ["id", "activos_plaqueados", "activos_no_plaqueados", "traslados", "deshecho", "taller"]
 
 
 class Activos_No_Plaqueados_View(Table_View):
@@ -269,10 +280,16 @@ class Activos_No_Plaqueados_View(Table_View):
 
     def get_form_fields(self) -> dict:
         return {
-            "ubicacion": forms.ModelChoiceField(queryset=models.Ubicaciones.objects.all(), required=False,
-                                                to_field_name="ubicacion"),
-            "ubicacion_anterior": forms.ModelChoiceField(queryset=models.Ubicaciones.objects.all(), required=False, ),
-            "field_order": ["serie"]
+            "ubicacion": forms.ModelChoiceField(
+                queryset=models.Ubicaciones.objects.all(),
+                required=False,
+                to_field_name="ubicacion",
+            ),
+            "ubicacion_anterior": forms.ModelChoiceField(
+                queryset=models.Ubicaciones.objects.all(),
+                required=False,
+            ),
+            "field_order": ["serie"],
         }
 
     def get_values(self) -> QuerySet:
@@ -296,7 +313,7 @@ class Generar_Tramite_View(WritePermMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = TramitesExportForm()
+        context["form"] = TramitesExportForm()
 
         ubicaciones_data = models.Ubicaciones.objects.all()
         context["ubicaciones"] = ubicaciones_data.values()
@@ -311,11 +328,11 @@ class ImportTemplateView(TemplateView):
         message = queryparams.get("message")
         error = queryparams.get("error")
 
-        if (error):
+        if error:
             error = True if error == "True" else False
 
-        context['message'] = message
-        context['error'] = error
+        context["message"] = message
+        context["error"] = error
         return context
 
 
@@ -324,7 +341,7 @@ class Importar_Reporte_Plaqueados(WritePermMixin, ImportTemplateView):
 
 
 class Importar_Reporte_No_Plaqueados(WritePermMixin, ImportTemplateView):
-    template_name = "importar/repoteNoPlaqueados.html"
+    template_name = "importar/reporteNoPlaqueados.html"
 
 
 class Perfil_View(LoginRequiredMixin, TemplateView):
@@ -335,18 +352,22 @@ class Tipo_View(Table_View):
     target_view = "tipo"
     model = models.Tipo
     title = "Tipos de activos"
+    exclude = ["activos_plaqueados", "activos_no_plaqueados", "id"]
 
 
 class Subtipo_View(Table_View):
     target_view = "subtipo"
     model = models.Subtipo
     title = "Subtipos de activos"
+    exclude = ["activos_plaqueados", "activos_no_plaqueados", "id"]
 
 
 class Compra_View(Table_View):
     target_view = "compra"
     model = models.Compra
     title = "Compras"
+
+    exclude = ["activos_plaqueados", "activos_no_plaqueados", "id"]
 
     def get_values(self) -> QuerySet:
         qs = super().get_values().annotate(id=F("numero_orden_compra"))
@@ -365,7 +386,7 @@ class Deshecho_View(WritePermMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = DeshechoExportForm()
+        context["form"] = DeshechoExportForm()
         return context
 
 
@@ -374,7 +395,7 @@ class Taller_View(WritePermMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = TallerExportForm()
+        context["form"] = TallerExportForm()
         return context
 
 
@@ -401,17 +422,17 @@ class Reporte_No_Plaqueados(ReadPermMixin, TemplateView):
 
 
 class Reporte_No_Plaqueados_2_old(Reporte_No_Plaqueados):
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         two_years_ago = datetime.now()
-        if (two_years_ago.day == 29 and two_years_ago.month == 2):
+        if two_years_ago.day == 29 and two_years_ago.month == 2:
             two_years_ago = two_years_ago.replace(day=28)
         two_years_ago = two_years_ago.replace(year=two_years_ago.year - 2)
 
         data = models.Activos_No_Plaqueados.objects.prefetch_related().filter(
-            fecha_ingreso__lte=two_years_ago)
+            fecha_ingreso__lte=two_years_ago
+        )
         context["rows"] = data
         context["title"] = "Reporte de activos no plaqueados con 2 años de antigüedad"
 
@@ -419,49 +440,49 @@ class Reporte_No_Plaqueados_2_old(Reporte_No_Plaqueados):
 
 
 class Reporte_No_Plaqueados_4_old(Reporte_No_Plaqueados):
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         four_years_ago = datetime.now()
-        if (four_years_ago.day == 29 and four_years_ago.month == 2):
+        if four_years_ago.day == 29 and four_years_ago.month == 2:
             four_years_ago = four_years_ago.replace(day=28)
         four_years_ago = four_years_ago.replace(year=four_years_ago.year - 4)
 
         data = models.Activos_No_Plaqueados.objects.prefetch_related().filter(
-            fecha_ingreso__lte=four_years_ago)
+            fecha_ingreso__lte=four_years_ago
+        )
         context["rows"] = data
         context["title"] = "Reporte de activos no plaqueados con 4 años de antigüedad"
         return context
 
 
 class Reporte_Plaqueados_2_old(Reporte_Plaqueados):
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         two_years_ago = datetime.now()
-        if (two_years_ago.day == 29 and two_years_ago.month == 2):
+        if two_years_ago.day == 29 and two_years_ago.month == 2:
             two_years_ago = two_years_ago.replace(day=28)
         two_years_ago = two_years_ago.replace(year=two_years_ago.year - 2)
 
         data = models.Activos_Plaqueados.objects.prefetch_related().filter(
-            fecha_ingreso__lte=two_years_ago)
+            fecha_ingreso__lte=two_years_ago
+        )
         context["rows"] = data
         context["title"] = "Reporte de activos plaqueados con 2 años de antigüedad"
         return context
 
 
 class Reporte_Plaqueados_4_old(Reporte_Plaqueados):
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         four_years_ago = datetime.now()
-        if (four_years_ago.day == 29 and four_years_ago.month == 2):
+        if four_years_ago.day == 29 and four_years_ago.month == 2:
             four_years_ago = four_years_ago.replace(day=28)
         four_years_ago = four_years_ago.replace(year=four_years_ago.year - 4)
 
         data = models.Activos_Plaqueados.objects.prefetch_related().filter(
-            fecha_ingreso__lte=four_years_ago)
+            fecha_ingreso__lte=four_years_ago
+        )
         context["rows"] = data
         context["title"] = "Reporte de activos plaqueados con 4 años de antigüedad"
         return context

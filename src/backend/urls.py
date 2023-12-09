@@ -37,6 +37,7 @@ urlpatterns = [
          name="reporte_plaqueados_2"),
     path("reportes/plaqueados/4-old", views.Reporte_Plaqueados_4_old.as_view(),
          name="reporte_plaqueados_4"),
+
     path("reportes/no-plaqueados", views.Reporte_No_Plaqueados.as_view(),
          name="reporte_no_plaqueados"),
 
@@ -49,12 +50,17 @@ urlpatterns = [
     path("unidades", views.Unidades_Table_View.as_view(), name="unidades"),
     path("", include("django.contrib.auth.urls")),
 
+
+
 ]
 
 apiurlpatterns = [
     path('', include(api_router.urls)),
     path("importar/reporte-plaqueados", api_views.ImportarReportePlaqueados.as_view(),
          name="api-importar-reporte-plaqueados"),
+    path("generar/tramite/traslado/", api_views.GenerarTramiteView.as_view(),
+         name="generar-traslado"),
+
     path("exportar/", api_views.ExportarHojaDeCalculo.as_view()),
     path("auth/change_password/", api_views.ChangePasswordView.as_view())
 ]

@@ -47,3 +47,20 @@ $max_adder_height: 2.82rem;
 .adder-button {
   max-height: $max_adder_height;
 }
+
+.tabulator-cell {
+  white-space: normal;
+}
+
+#activos-table {
+  overflow: visible;
+
+  .tabulator-cell:last-of-type {
+    overflow: visible;
+  }
+
+  .tabulator-tableholder {
+    overflow: visible;
+  }
+}
+
