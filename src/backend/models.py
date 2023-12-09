@@ -1,10 +1,11 @@
 from email.policy import default
 from tkinter import CASCADE
+
 from django.contrib.auth.models import User
-from django.utils.translation import gettext_lazy as _
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.timezone import now
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils.translation import gettext_lazy as _
 
 
 # Create your models here.
@@ -15,7 +16,7 @@ class Tipo(models.Model):
     detalle = models.CharField(max_length=200, blank=True)
 
     def __str__(self) -> str:
-        return self.nombre
+        return self.nombre.__str__()
 
     class Meta:
         verbose_name_plural = "Tipos"
@@ -26,7 +27,7 @@ class Subtipo(models.Model):
     detalle = models.CharField(max_length=200, blank=True)
 
     def __str__(self) -> str:
-        return self.nombre
+        return self.nombre.__str__()
 
     class Meta:
         verbose_name_plural = "Subtipos"
@@ -79,8 +80,7 @@ class AbstractActivo(models.Model):
 
 class Activos_Plaqueados(AbstractActivo):
     placa = models.CharField(max_length=20, primary_key=True)
-    serie = models.CharField(max_length=200, null=True,
-                             blank=True, verbose_name="Serie")
+    serie = models.CharField(max_length=200, null=True, blank=True, verbose_name="Serie", unique=True)
     ubicacion_anterior = models.ForeignKey(
         to="Ubicaciones", on_delete=models.DO_NOTHING, blank=True, null=True, related_name="plaqueados")
 
@@ -220,7 +220,7 @@ class Taller(models.Model):
 
 
 class Compra(models.Model):
-    numero_orden_compra = models.CharField(max_length=15, primary_key=True)
+    numero_orden_compra = models.CharField(max_length=40, primary_key=True)
     numero_solicitud = models.CharField(max_length=150, blank=True)
     origen_presupuesto = models.CharField(max_length=200, blank=True)
     decision_inicial = models.CharField(max_length=100, blank=True)

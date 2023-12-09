@@ -1,7 +1,7 @@
 FROM python:3.9
 
 RUN mkdir ATIC
-
+RUN mkdir ATIC-LOGS
 WORKDIR /ATIC
 COPY . .
 
