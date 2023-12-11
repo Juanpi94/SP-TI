@@ -51,6 +51,8 @@ class Table_View(ReadPermMixin, TemplateView):
         Titulo de la tabla
     exclude: list[str], optional
         Excluye columnas de la tabla
+    exclude_data: bool, optional
+        Determina si el arreglo de exclude también excluye los datos enviados por JSON
     custom_script: str
         Vinculo hacia un archivo javascript para personalizar una tabla
     defs_order: list[str]
@@ -66,6 +68,7 @@ class Table_View(ReadPermMixin, TemplateView):
     custom_script = ""
     model: django.db.models.Model = None
     exclude = []
+    exclude_data = False
     target_view = None
     defs_order = []
 
@@ -102,7 +105,7 @@ class Table_View(ReadPermMixin, TemplateView):
         if len(missing_args):
             raise ArgMissingException(*missing_args)
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return self.model.objects.all()
 
     def get_column_defs(self) -> List[ColumnDefs]:
@@ -138,9 +141,11 @@ class Table_View(ReadPermMixin, TemplateView):
         :param defs:
         :return:
         """
+        filtered_defs = []
         for i in range(len(defs)):
-            defs[i]["visible"] = defs[i]["field"] not in self.exclude
-        return defs
+            if defs[i]["field"] not in self.exclude:
+                filtered_defs.append(defs[i])
+        return filtered_defs
 
     def _order_column_defs(self, defs: List[ColumnDefs]) -> List[ColumnDefs]:
         """
@@ -182,8 +187,8 @@ class Table_View(ReadPermMixin, TemplateView):
 
         def init(self, *args, **kwargs):
             super(django.forms.ModelForm, self).__init__(*args, **kwargs)
-            for field_name, field in self.fields.items():
-                field.required = False
+            # for field_name, field in self.fields.items():
+            #     field.required = False
 
         meta = type("Meta", (), self.get_form_metafields())
         form = type(
@@ -212,7 +217,12 @@ class Table_View(ReadPermMixin, TemplateView):
         Convierte el queryset de modelos en un queryset de diccionarios
         :return: Queryset de diccionarios
         """
-        return self.get_queryset().values()
+        if len(self.exclude) == 0 or self.exclude_data == False:
+            return self.get_queryset().values()
+        fields = [f.name for f in self.model._meta.get_fields()]
+        fields = list(filter(lambda x: x not in self.exclude, fields))
+        print(fields)
+        return self.get_queryset().values(*fields)
 
 
 class Activos_Plaqueados_View(Table_View):
@@ -221,6 +231,7 @@ class Activos_Plaqueados_View(Table_View):
     title = "Activos plaqueados"
     id_field = "placa"
     defs_order = ["placa"]
+    exclude = ["tramites", ]
 
     def get_form_fields(self) -> dict:
         return {"field_order": ["placa"]}
@@ -245,22 +256,9 @@ class Activos_Plaqueados_View(Table_View):
         }
         return metafields
 
-    def get_column_defs(self) -> List[ColumnDefs]:
-        defs = super().get_column_defs()
-        defs.extend(
-            [
-                {
-                    "field": "ubicacion__ubicacion",
-                    "title": "Ubicacion",
-                },
-                {
-                    "field": "tipo__nombre",
-                    "title": "Tipo",
-                },
-                {"field": "subtipo__nombre", "title": "Subtipo"},
-            ]
-        )
-        return defs
+    def get_values(self) -> QuerySet:
+        return super().get_values().annotate(tipo=F("tipo__nombre"), subtipo=F("subtipo__nombre"),
+                                             ubicacion=F("ubicacion__ubicacion"))
 
 
 class Tramites_View(Table_View):
@@ -268,7 +266,7 @@ class Tramites_View(Table_View):
     model = models.Tramites
     add = False
     title = "Tramites"
-    exclude = ["id", "activos_plaqueados", "activos_no_plaqueados", "traslados", "deshecho", "taller"]
+    exclude = ["activos_plaqueados", "activos_no_plaqueados", "traslados", "deshecho", "taller"]
 
 
 class Activos_No_Plaqueados_View(Table_View):
@@ -352,14 +350,14 @@ class Tipo_View(Table_View):
     target_view = "tipo"
     model = models.Tipo
     title = "Tipos de activos"
-    exclude = ["activos_plaqueados", "activos_no_plaqueados", "id"]
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
 
 
 class Subtipo_View(Table_View):
     target_view = "subtipo"
     model = models.Subtipo
     title = "Subtipos de activos"
-    exclude = ["activos_plaqueados", "activos_no_plaqueados", "id"]
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
 
 
 class Compra_View(Table_View):
@@ -367,7 +365,7 @@ class Compra_View(Table_View):
     model = models.Compra
     title = "Compras"
 
-    exclude = ["activos_plaqueados", "activos_no_plaqueados", "id"]
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
 
     def get_values(self) -> QuerySet:
         qs = super().get_values().annotate(id=F("numero_orden_compra"))
@@ -376,7 +374,8 @@ class Compra_View(Table_View):
 
 class Users_View(Table_View):
     target_view = "user"
-    exclude = ["password"]
+    exclude = ["password", "logentry", "tramites", "is_superuser", "is_staff", "groups", "user_permissions"]
+    exclude_data = True
     model = models.User
     title = "Usuarios"
 
@@ -429,11 +428,11 @@ class Reporte_No_Plaqueados_2_old(Reporte_No_Plaqueados):
         if two_years_ago.day == 29 and two_years_ago.month == 2:
             two_years_ago = two_years_ago.replace(day=28)
         two_years_ago = two_years_ago.replace(year=two_years_ago.year - 2)
-
-        data = models.Activos_No_Plaqueados.objects.prefetch_related().filter(
+        print(two_years_ago)
+        data = models.Activos_No_Plaqueados.objects.all().filter(
             fecha_ingreso__lte=two_years_ago
         )
-        context["rows"] = data
+        context["data"] = list(data.values())
         context["title"] = "Reporte de activos no plaqueados con 2 años de antigüedad"
 
         return context
@@ -451,7 +450,7 @@ class Reporte_No_Plaqueados_4_old(Reporte_No_Plaqueados):
         data = models.Activos_No_Plaqueados.objects.prefetch_related().filter(
             fecha_ingreso__lte=four_years_ago
         )
-        context["rows"] = data
+        context["data"] = list(data.values())
         context["title"] = "Reporte de activos no plaqueados con 4 años de antigüedad"
         return context
 
@@ -464,10 +463,8 @@ class Reporte_Plaqueados_2_old(Reporte_Plaqueados):
             two_years_ago = two_years_ago.replace(day=28)
         two_years_ago = two_years_ago.replace(year=two_years_ago.year - 2)
 
-        data = models.Activos_Plaqueados.objects.prefetch_related().filter(
-            fecha_ingreso__lte=two_years_ago
-        )
-        context["rows"] = data
+        data = models.Activos_Plaqueados.objects.filter(fecha_ingreso__year__lte=str(two_years_ago.year))
+        context["data"] = list(data.values())
         context["title"] = "Reporte de activos plaqueados con 2 años de antigüedad"
         return context
 
@@ -483,7 +480,7 @@ class Reporte_Plaqueados_4_old(Reporte_Plaqueados):
         data = models.Activos_Plaqueados.objects.prefetch_related().filter(
             fecha_ingreso__lte=four_years_ago
         )
-        context["rows"] = data
+        context["data"] = list(data.values())
         context["title"] = "Reporte de activos plaqueados con 4 años de antigüedad"
         return context
 
@@ -492,6 +489,7 @@ class Red_Table_View(Table_View):
     target_view = "red"
     model = models.Red
     title = "Red Plaqueados"
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
 
 
 class Traslados_Table_View(Table_View):

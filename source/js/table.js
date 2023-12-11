@@ -72,6 +72,7 @@ if (id_field == "null") {
 const table = new Tabulator("#tabulator-table", {
   data: jsonData["data"],
   autoColumns: autoColumns,
+  index: id_field,
   columns: columnDefs,
   ..._config.table
 });
@@ -119,8 +120,27 @@ function init_listeners() {
   addForm.addEventListener("submit", onCreateRecord);
   editForm.addEventListener("submit", onEditSingle);
 
-  document.querySelector("#add-form-btn").addEventListener("click", () => addForm.requestSubmit());
-  document.querySelector("#edit-form-btn").addEventListener("click", () => editForm.requestSubmit());
+  document.querySelector("#add-form-btn").addEventListener("click", () => {
+    addForm.querySelectorAll("select").forEach(select => {
+      if ((select.value === null || select.value === "") && select.required) {
+        const label = addForm.querySelector(`label[for="${select.id}"]`).firstChild.textContent
+        Swal.fire({icon: "warning", text: "Campo " + label + " vacio, verifique los datos"})
+        return
+      }
+    })
+    addForm.requestSubmit()
+  });
+  document.querySelector("#edit-form-btn").addEventListener("click", () => {
+    editForm.querySelectorAll("select").forEach(select => {
+      if ((select.value === null || select.value === "") && select.required) {
+        const label = addForm.querySelector(`label[for="${select.id}"]`).firstChild.textContent
+        Swal.fire({icon: "warning", text: "Campo " + label + " vacio, verifique los datos"})
+        return
+      }
+    })
+    editForm.requestSubmit()
+
+  });
   document.querySelector("#edit-form-modal").addEventListener("show.bs.modal", onShowEditModal)
   document.querySelector("#edit-form-modal").addEventListener("hide.bs.modal", onHideEditModal)
 }
@@ -129,8 +149,11 @@ function addControlListeners() {
 
   table.on("cellClick", (e, cell) => {
     if (cell.getElement().classList.contains("controls-cell")) {
-      const closestBtn = e.target.closest("button");
 
+      const closestBtn = e.target.closest("button");
+      if (closestBtn === null) {
+        return
+      }
       if (typeof closestBtn.dataset !== "undefined" && "aticAction" in closestBtn.dataset) {
         const action = closestBtn.dataset.aticAction;
 
@@ -307,6 +330,9 @@ async function onCreateRecord(event) {
   const dataObject = {};
 
   formData.forEach((value, key) => {
+    if (value.trim() === "") {
+      value = null;
+    }
     dataObject[key] = value;
   });
   for (let choicesItem of addChoices) {
@@ -384,7 +410,7 @@ async function onEditSingle(event) {
     const dataObject = {};
 
     formData.forEach((value, key) => {
-      if (value == null || value == "NA") {
+      if (value === null || value === "NA" || value === "") {
         return;
       }
       dataObject[key] = value
@@ -554,8 +580,7 @@ function onEditSuccess(response) {
     title: "Modificación realizada con éxito",
   });
   const data = response.data;
-
-  table.updateData([data]);
+  table.updateRow(data[id_field], data);
 }
 
 /**
