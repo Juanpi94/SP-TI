@@ -8,8 +8,7 @@ from rest_framework.serializers import ModelSerializer
 
 
 class UbicacionesSerializer(ModelSerializer):
-    custodio = serializers.SlugRelatedField(
-        slug_field="nombre_completo", queryset=Funcionarios.objects.all())
+    custodio = serializers.PrimaryKeyRelatedField(queryset=Funcionarios.objects.all())
 
     class Meta:
         model = Ubicaciones
