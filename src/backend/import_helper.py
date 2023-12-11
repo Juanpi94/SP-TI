@@ -26,7 +26,7 @@ class ImportModule:
             "errors": [],
         }
         for idx, row in enumerate(data):
-            assert len(row) == 18, "Se envio una cantidad incorrecta de datos " + str(
+            assert len(row) == 19, "Se envio una cantidad incorrecta de datos " + str(
                 len(row)
             )
 
@@ -40,7 +40,8 @@ class ImportModule:
                 marca,
                 modelo,
                 serie,
-                valor,
+                valor_colones,
+                valor_dolares,
                 garantia,
                 detalle,
                 custodio,
@@ -76,7 +77,8 @@ class ImportModule:
                     placa=placa,
                     nombre=nombre,
                     observacion=detalle,
-                    valor=valor,
+                    valor_colones=valor_colones,
+                    valor_dolares=valor_dolares,
                     serie=serie,
                     marca=marca,
                     modelo=modelo,
@@ -151,7 +153,7 @@ class ImportModule:
             "errors": [],
         }
         for idx, row in enumerate(data):
-            assert len(row) == 17, "Se envio una cantidad incorrecta de datos " + str(
+            assert len(row) == 18, "Se envio una cantidad incorrecta de datos " + str(
                 len(row)
             )
 
@@ -164,7 +166,8 @@ class ImportModule:
                 marca,
                 modelo,
                 serie,
-                valor,
+                valor_colones,
+                valor_dolares,
                 garantia,
                 detalle,
                 custodio,
@@ -176,7 +179,6 @@ class ImportModule:
                 compra,
             ] = row
 
-            placa = str(placa)
             if isna(serie):
                 details["failed"] += 1
                 details["errors"].append(
@@ -192,7 +194,7 @@ class ImportModule:
                 if isna(registro_fecha)
                 else dateutils.try_parse_date(str(registro_fecha))
             )
-            qs = Activos_No_Plaqueados.objects.filter(placa=placa)
+            qs = Activos_No_Plaqueados.objects.filter(serie=serie)
             if qs.count() > 1 and update:
                 activo = qs[0]
             elif qs.count() > 1:
@@ -200,10 +202,10 @@ class ImportModule:
                 continue
             else:
                 activo = Activos_No_Plaqueados(
-                    placa=placa,
                     nombre=nombre,
                     observacion=detalle,
-                    valor=valor,
+                    valor_colones=valor_colones,
+                    valor_dolares=valor_dolares,
                     serie=serie,
                     marca=marca,
                     modelo=modelo,

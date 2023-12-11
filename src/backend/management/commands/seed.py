@@ -1,8 +1,10 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.core.management.color import Style
+from faker import Faker
 
+import backend.utils.dateutils
 from backend.models import Proveedor, Ubicaciones, Funcionarios, User, Tipo, Subtipo, Compra, \
-    Activos_Plaqueados
+    Activos_Plaqueados, Activos_No_Plaqueados
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from django.core.management import call_command
@@ -11,6 +13,7 @@ import datetime
 import json
 import os
 from atic.settings import BASE_DIR
+from backend.utils.dateutils import try_parse_date
 
 
 class Command(BaseCommand):
@@ -40,30 +43,12 @@ class Command(BaseCommand):
         json_file_path = os.path.join(BASE_DIR,
                                       'seed_dump.json'
                                       )
+        fake = Faker()
+        # Give faker a seed so the provided values are predictable
+        Faker.seed(1234)
 
         with open(json_file_path, encoding="UTF-8") as file:
-
-            # ACTIVO
             data = json.load(file)
-            activos = data["activos"]
-            registros = len(activos)
-
-            exitos = 0
-            for activo in activos:
-                db_activo = Activos_Plaqueados()
-                db_activo.placa = activo["placa"]
-                db_activo.observacion = activo["detalle"] or ""
-                db_activo.nombre = activo["nombre"]
-                db_activo.marca = activo["marca"]
-                db_activo.modelo = activo["modelo"]
-                db_activo.serie = activo["serie"]
-                db_activo.valor = activo["valor"]
-                db_activo.garantia = activo["garantia"]
-                db_activo.fecha_ingreso = datetime.datetime.now()
-                db_activo.save()
-                exitos += 1
-            self.write(self.style.SUCCESS(
-                f"Se añadieron {exitos} activos de {registros}"))
             # FUNCIONARIOS
             funcionarios = data["funcionarios"]
             registros = len(funcionarios)
@@ -80,7 +65,7 @@ class Command(BaseCommand):
                         f"Funcionario {funcionario['nombre_completo']} tiene un nombre repetido"))
                     continue
                 db_funcionario = Funcionarios()
-                db_funcionario.cedula = funcionario["cedula"]
+                db_funcionario.cedula = fake.unique.numerify("#-####-####")
                 db_funcionario.nombre_completo = funcionario["nombre_completo"]
                 db_funcionario.correo_institucional = funcionario["correo_institucional"]
                 db_funcionario.correo_personal = funcionario["correo_personal"]
@@ -154,6 +139,39 @@ class Command(BaseCommand):
             self.write(self.style.SUCCESS(
                 f"Se añadieron {exitos} subtipos de {registros}"))
 
+            # ACTIVO
+            activos = data["activos"]
+            registros = len(activos)
+
+            exitos = 0
+            tipos_list = list(Tipo.objects.all().values("id"))
+            for activo in activos:
+                placa = activo["placa"]
+                if placa.strip() == "" or placa.strip() == "NA":
+                    serie = activo["serie"]
+                    if serie.strip() == "" or serie.strip() == "NA":
+                        continue
+                    db_activo = Activos_No_Plaqueados()
+                    db_activo.serie = serie
+                else:
+                    db_activo = Activos_Plaqueados()
+                    db_activo.placa = placa
+                db_activo.observacion = activo["detalle"] or ""
+                db_activo.nombre = activo["nombre"]
+                db_activo.marca = activo["marca"]
+                db_activo.modelo = activo["modelo"]
+                db_activo.garantia = activo["garantia"]
+                db_activo.fecha_ingreso = fake.date_between(start_date=try_parse_date("01-01-2018"))
+                db_activo.valor_colones = fake.random_number(digits=10)
+                db_activo.valor_dolares = fake.random_number(digits=10)
+                random_tipo_id = fake.random_element(elements=tipos_list).get("id")
+                db_random_tipo = Tipo.objects.get(id=random_tipo_id)
+                db_activo.tipo = db_random_tipo
+                db_activo.save()
+                exitos += 1
+            self.write(self.style.SUCCESS(
+                f"Se añadieron {exitos} activos de {registros}"))
+
             # COMPRAS
             compras = data["compras"]
             registros = len(compras)
@@ -193,6 +211,7 @@ class Command(BaseCommand):
             self.write(self.style.SUCCESS(
                 f"Se añadieron {exitos} Compras y proveedores de {registros}"))
 
+            # Management
             User.objects.create_superuser(
                 username="admin", email="Admin@gmail.com", password="AdminPassword")
             self.write(self.style.SUCCESS(

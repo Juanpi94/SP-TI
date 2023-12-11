@@ -7,8 +7,22 @@
   flex-direction: column;
   background-color: vars.$white;
   color: vars.$gray-600;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
   @include mixins.shadow(vars.$side-nav-shadow);
+
+  &::-webkit-scrollbar {
+    width: 8px;
+
+    &-track {
+      background: transparent;
+    }
+
+    &-thumb {
+      background-color: vars.$gray-500;
+    }
+  }
 
   a {
     color: inherit !important;

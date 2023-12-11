@@ -3,6 +3,8 @@ import traceback
 from io import BytesIO
 import pandas as pd
 import pandas.errors as pd_errors
+from django.db.models import F
+
 from backend import models
 from backend.import_helper import ImportModule
 from backend.models import Activos_Plaqueados, Ubicaciones, Traslados
@@ -55,6 +57,28 @@ class PlaqueadosApiViewset(AuthMixin, ModelViewSet):
             return PlaqueadosSerializer
         else:
             return PlaqueadosCreateSerializer
+
+    def update(self, request, *args, **kwargs):
+        response = super().update(request=request, *args, **kwargs)
+        if response.status_code == status.HTTP_200_OK:
+            placa = response.data["placa"]
+            new_data = Activos_Plaqueados.objects.filter(placa=placa).values().annotate(tipo=F("tipo__nombre"),
+                                                                                        subtipo=F("subtipo__nombre"),
+                                                                                        ubicacion=F(
+                                                                                            "ubicacion__ubicacion"))[0]
+            response.data = new_data
+        return response
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request=request, *args, **kwargs)
+        if response.status_code == status.HTTP_201_CREATED:
+            placa = response.data["placa"]
+            new_data = Activos_Plaqueados.objects.filter(placa=placa).values().annotate(tipo=F("tipo__nombre"),
+                                                                                        subtipo=F("subtipo__nombre"),
+                                                                                        ubicacion=F(
+                                                                                            "ubicacion__ubicacion"))[0]
+            response.data = new_data
+        return response
 
 
 class NoPlaqueadosApiViewSet(AuthMixin, ModelViewSet):
@@ -328,13 +352,46 @@ class ImportarReportePlaqueados(APIView):
             excel_file = pd.read_excel(file)
             filtered_df = excel_file.applymap(lambda x: x.strip() if isinstance(x, str) else x)
             filtered_df = filtered_df.query('Placa != "S/P" and Placa != ""')
-            activos_data = filtered_df.iloc[:, :16]
-            fecha_registro_data = filtered_df.iloc[:, 33]
-            compras = filtered_df.iloc[:, 22]
+            activos_data = filtered_df.iloc[:, :17]
+            fecha_registro_data = filtered_df.iloc[:, 34]
+            compras = filtered_df.iloc[:, 23]
             activos_data["fecha_registro"] = fecha_registro_data
             activos_data["compras"] = compras
             activos_data = activos_data.values
-            compras_data = excel_file.iloc[:, 21:32].values
+            compras_data = excel_file.iloc[:, 23:33].values
+
+            summary = {}
+            compras_summary = ImportModule.import_compras(compras_data, update)
+            activos_summary = ImportModule.import_activos(activos_data, update)
+            summary["Activos_Plaqueados"] = activos_summary
+            summary["Compras"] = compras_summary
+        except pd_errors.ParserError as e:
+            logger.error("Couldn't parse excel file", exc_info=e)
+            return HttpResponseServerError()
+        except Exception as e:
+            logger.error("Unexpected error when reading excel file", exc_info=e)
+            return HttpResponseServerError()
+        return Response(summary, 200)
+
+
+class ImportarReporteNoPlaqueados(APIView):
+    def post(self, request: Request, format=None):
+        if "file" not in request.FILES:
+            return Response({"message": "Bad Request"}, 400)
+        file = request.FILES["file"]
+        update = "update" in request.data
+
+        try:
+            excel_file = pd.read_excel(file)
+            filtered_df = excel_file.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+            filtered_df = filtered_df.query('Placa == "S/P" or Placa == ""')
+            activos_data = filtered_df.iloc[:, 1:17]
+            fecha_registro_data = filtered_df.iloc[:, 34]
+            compras = filtered_df.iloc[:, 23]
+            activos_data["fecha_registro"] = fecha_registro_data
+            activos_data["compras"] = compras
+            activos_data = activos_data.values
+            compras_data = excel_file.iloc[:, 23:33].values
 
             summary = {}
             compras_summary = ImportModule.import_compras(compras_data, update)

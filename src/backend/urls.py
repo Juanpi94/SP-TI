@@ -50,14 +50,14 @@ urlpatterns = [
     path("unidades", views.Unidades_Table_View.as_view(), name="unidades"),
     path("", include("django.contrib.auth.urls")),
 
-
-
 ]
 
 apiurlpatterns = [
     path('', include(api_router.urls)),
     path("importar/reporte-plaqueados", api_views.ImportarReportePlaqueados.as_view(),
          name="api-importar-reporte-plaqueados"),
+    path("importar/reporte-no-plaqueados", api_views.ImportarReporteNoPlaqueados.as_view(),
+         name="api-importar-reporte-no-plaqueados"),
     path("generar/tramite/traslado/", api_views.GenerarTramiteView.as_view(),
          name="generar-traslado"),
 

@@ -19,7 +19,7 @@ class UbicacionesSerializer(ModelSerializer):
 class PlaqueadosSerializer(ModelSerializer):
     tramites = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tramites.objects.all())
-    ubicacion = UbicacionesSerializer()
+    ubicacion = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Activos_Plaqueados
@@ -29,20 +29,7 @@ class PlaqueadosSerializer(ModelSerializer):
 class PlaqueadosCreateSerializer(ModelSerializer):
     tramites = serializers.PrimaryKeyRelatedField(
         many=True, required=False, queryset=Tramites.objects.all())
-
-    def to_representation(self, instance):
-        return {
-            "placa": instance.placa,
-            "nombre": instance.nombre,
-            "tipo__nombre": instance.tipo.nombre if instance.tipo else None,
-            "subtipo__nombre": instance.subtipo.nombre if instance.subtipo else None,
-            "ubicacion__ubicacion": instance.ubicacion.ubicacion if instance.ubicacion else None,
-            "marca": instance.marca,
-            "serie": instance.serie,
-            "valor": instance.valor,
-            "garantia": instance.garantia,
-            "observacion": instance.observacion
-        }
+    ubicacion = serializers.PrimaryKeyRelatedField(required=True, queryset=Ubicaciones.objects.all())
 
     class Meta:
         model = Activos_Plaqueados
