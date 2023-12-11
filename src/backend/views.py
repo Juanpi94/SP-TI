@@ -301,9 +301,13 @@ class Funcionarios_View(Table_View):
 
 
 class Ubicaciones_View(Table_View):
-    target_view = "ubicaciones-list"
+    target_view = "ubicaciones"
     model = models.Ubicaciones
     title = "Ubicaciones"
+    exclude = ["activos_plaqueados", "plaqueados", "activos_no_plaqueados", "no_anterior"]
+
+    def get_values(self) -> QuerySet:
+        return super().get_queryset().values().annotate(custodio=F("custodio__nombre_completo"))
 
 
 class Generar_Tramite_View(WritePermMixin, TemplateView):
@@ -508,3 +512,4 @@ class Unidades_Table_View(Table_View):
     target_view = "unidades"
     title = "Unidades Universitarias"
     model = models.Unidad
+    id_field = "codigo"
