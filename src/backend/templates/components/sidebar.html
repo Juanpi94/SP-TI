@@ -21,11 +21,10 @@
                 {% include toggler with title="Tramites" %}
                 <ul class="custom-dropdown-menu">
                     {% include dropdownItem with text="Generar Traslado" href="generar_traslados" %}
-                    {% include dropdownItem with text="Generar Deshecho" href="deshecho" %}
-                    {% include dropdownItem with text="Generar Envio a Taller" href="generar_taller" %}
+                    {% include dropdownItem with text="Generar Desecho" href="generar_desecho" %}
+                    {% include dropdownItem with text="Generar Envío a Taller" href="generar_taller" %}
                     {% include dropdownItem with text="Ver Trámites" href="tramites" %}
                     {% include dropdownItem with text="Ver Traslados" href="traslados" %}
-                   
                 </ul>
             </div>
 
@@ -68,9 +67,25 @@
                 </div>
             {% endif %}
         </div>
+
+        <!-- #-------------# Area de Pruebas #-------------# -->
+        <div class="sidebar-group">
+            <p class="sidebar-group-title ps-4">Pruebas</p>
+            <div class="sidebar-section ps-4">
+                {% include toggler with title="Pruebas API" %}
+                <ul class="custom-dropdown-menu">
+
+                    {% include dropdownItem with text="PruebasAPI" href="pruebas" %}
+                    {% include dropdownItem with text="RelPruebasAPI" href="relpruebas" %}
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- #-----------# Fin Area de Pruebas #-----------# -->
+
         <span class="sidebar-group-divider"></span>
         <div class="sidebar-footer ps-4">
-
+            
         </div>
 
     </aside>

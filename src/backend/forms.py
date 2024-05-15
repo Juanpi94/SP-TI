@@ -1,113 +1,56 @@
-from django.forms import ModelForm, DateField, Select, HiddenInput, SelectDateWidget, TextInput, Textarea
-from django import forms
-
-from backend.models import Compra, Deshecho, Funcionarios, Proveedor, \
-    Tramites, Traslados, Ubicaciones, Tipo, Subtipo, Red, Unidad, Activos_Plaqueados, Activos_No_Plaqueados
+from django.forms import ModelChoiceField, CharField, Form, ModelForm, DateField, Select, HiddenInput, SelectDateWidget, TextInput, Textarea
+from backend.models import *
 from backend.widgets import DatePickerInput
 from django.contrib.auth.models import User
 from phonenumber_field.formfields import PhoneNumberField
 
+attrs_col = {"class": "col"}
 
 class TramitesForm(ModelForm):
-    remitente = forms.ModelChoiceField(
-        queryset=Funcionarios.objects.all(), to_field_name="nombre_completo", required=False)
-    recipiente = forms.ModelChoiceField(
-        queryset=Funcionarios.objects.all(), to_field_name="nombre_completo", required=False)
-    solicitante = forms.ModelChoiceField(
-        queryset=User.objects.all(), to_field_name="username")
-    detalles = forms.CharField(widget=Textarea(
-        attrs={"class": "detalles-textarea"}))
-
+    remitente = ModelChoiceField(queryset=Funcionarios.objects.all(), to_field_name="nombre_completo", required=False)
+    recipiente = ModelChoiceField(queryset=Funcionarios.objects.all(), to_field_name="nombre_completo", required=False)
+    solicitante = ModelChoiceField(queryset=User.objects.all(), to_field_name="username")
+    detalles = CharField(widget=Textarea(attrs={"class": "detalles-textarea"}))
     class Meta:
         model = Tramites
         exclude = ["id"]
-
-
-attrs_col = {"class": "col"}
-
-
-class SerieChoiceField(forms.ModelChoiceField):
+        
+class SerieChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
+        print(obj.serie)
         return obj.serie
-
-
-class TramitesExportForm(forms.Form):
-    tramite = forms.ModelChoiceField(queryset=Tramites.objects.filter(tipo=Tramites.TiposTramites.TRASLADO),
-                                     empty_label="--seleccione tramite a cargar", label=None,
-                                     widget=Select(attrs={'class': 'col-12 tramite-select'}))
-    consecutivo = forms.CharField(
-        label="Consecutivo:", max_length=100, widget=TextInput(attrs={"class": "form-input"}))
-    fecha = forms.DateField(widget=DatePickerInput(
-        attrs={"class": "form-input"}))
-    destino = forms.ModelChoiceField(queryset=Ubicaciones.objects.all(
-    ), empty_label="--seleccionar ubicación", label=None, widget=Select(attrs={'class': 'col destino-select'}))
-    recipiente = forms.ModelChoiceField(queryset=Funcionarios.objects.all(
-    ), empty_label="--Recipiente--", label="para:", widget=Select(attrs=attrs_col), to_field_name="nombre_completo")
-    remitente = forms.ModelChoiceField(queryset=Funcionarios.objects.all(
-    ), empty_label="--Remitente--", label="de:", widget=Select(attrs=attrs_col), to_field_name="nombre_completo")
-    motivo = forms.CharField(widget=Textarea(
-        attrs={"class": "textarea p-2"}), label="Motivo o Observaciones")
-    placa = forms.ModelChoiceField(queryset=Activos_Plaqueados.objects.all(
-    ), empty_label="--placa", label="Placa:", to_field_name="placa", widget=Select(attrs=attrs_col))
-    serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(
-    ), empty_label="--serie", label="Serie:", to_field_name="serie", widget=Select(attrs=attrs_col))
-
-
-class DeshechoExportForm(forms.Form):
-    deshechos = forms.ModelChoiceField(queryset=Tramites.objects.filter(tipo=Tramites.TiposTramites.DESHECHO),
-                                       empty_label="--seleccione tramite a cargar", label=None,
-                                       widget=Select(attrs={'class': 'col-12 tramite-select'}))
-    placa = forms.ModelChoiceField(queryset=Activos_Plaqueados.objects.all(
-    ), empty_label="--placa", label="Placa:", to_field_name="id", widget=Select(attrs=attrs_col))
-    serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(),
-                             empty_label="--serie", label="Serie:", to_field_name="id", widget=Select(attrs=attrs_col))
-
-
-class TallerExportForm(forms.Form):
-    talleres = forms.ModelChoiceField(queryset=Tramites.objects.filter(tipo=Tramites.TiposTramites.TALLER),
-                                      empty_label="--seleccione tramite a cargar", label=None,
-                                      widget=Select(attrs={'class': 'col-12 tramite-select'}))
-
-    boleta = forms.CharField(
-        label="Número de boleta:", max_length=100, widget=TextInput(attrs={"class": 'col-2 taller-input'}))
-    fecha = forms.DateField(widget=DatePickerInput(
-        attrs={"class": "col-2 taller-input"}))
-    motivo = forms.CharField(widget=Textarea(
-        attrs={"class": "textarea mt-4"}), label="Motivo o Observaciones")
-    placa = forms.ModelChoiceField(queryset=Activos_Plaqueados.objects.all(
-    ), empty_label="--placa", label="Placa:", to_field_name="id", widget=Select(attrs=attrs_col))
-    serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(),
-                             empty_label="--serie", label="Serie:", to_field_name="id", widget=Select(attrs=attrs_col))
-
-
-class FuncionariosForm(forms.ModelForm):
+    
+class FuncionariosForm(ModelForm):
     class Meta:
         model = Funcionarios
         exclude = ["id"]
 
 
-class UbicacionesForm(forms.ModelForm):
-    custodio = forms.ModelChoiceField(
-        queryset=Funcionarios.objects.all(), to_field_name="nombre_completo")
+class UnidadForm(ModelForm):
+    class Meta:
+        model = Unidad
+        exclude = ["id"]
 
+class UbicacionesForm(ModelForm):
+    
     class Meta:
         model = Ubicaciones
         exclude = ["id"]
 
 
-class TipoForm(forms.ModelForm):
+class TipoForm(ModelForm):
     class Meta:
         model = Tipo
         exclude = ["id"]
 
 
-class SubtipoForm(forms.ModelForm):
+class SubtipoForm(ModelForm):
     class Meta:
         model = Subtipo
         exclude = ["id"]
 
 
-class CompraForm(forms.ModelForm):
+class CompraForm(ModelForm):
     class Meta:
         model = Compra
         exclude = ["id"]
@@ -119,3 +62,51 @@ class UserForm(ModelForm):
     class Meta:
         model = User
         exclude = ["id", "date_joined"]
+
+## ---- De HTML a PDF ---- ##
+
+## Encargado de generar el formulario para Generar traslado
+
+class TramitesExportForm(Form):
+    tramite = ModelChoiceField(queryset=Tramites.objects.all(), empty_label="--seleccione tramite a cargar", label=None, widget=Select(attrs={'class': 'col-12 tramite-select'}))
+    consecutivo = CharField(label="Consecutivo:", max_length=100, widget=TextInput(attrs={"class": "form-input"}))
+    fecha = DateField(widget=DatePickerInput(attrs={"class": "form-input"}))
+    destino = ModelChoiceField(queryset=Ubicaciones.objects.all(), empty_label="--seleccionar ubicación", label=None, widget=Select(attrs={'class': 'col destino-select'}))
+    recipiente = ModelChoiceField(queryset=Funcionarios.objects.all(), empty_label="--Recipiente--", label="para:", widget=Select(attrs=attrs_col), to_field_name="nombre_completo")
+    remitente = ModelChoiceField(queryset=Funcionarios.objects.all(), empty_label="--Remitente--", label="de:", widget=Select(attrs=attrs_col), to_field_name="nombre_completo")
+    motivo = CharField(widget=Textarea(attrs={"class": "textarea p-2"}), label="Motivo o Observaciones")
+    placa = ModelChoiceField(queryset=Activos_Plaqueados.objects.all(), empty_label="--placa", label="Placa:", to_field_name="placa", widget=Select(attrs=attrs_col))
+    serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(), empty_label="--serie", label="Serie:", to_field_name="serie", widget=Select(attrs=attrs_col))
+
+## Encargado de generar el formulario para Generar desechos
+class DeshechoExportForm(Form):
+    deshechos = ModelChoiceField(queryset=Tramites.objects.all(), empty_label="--seleccione tramite a cargar", label=None, widget=Select(attrs={'class': 'col-12 tramite-select'}))
+    placa = ModelChoiceField(queryset=Activos_Plaqueados.objects.all(), empty_label="--placa", label="Placa:", to_field_name="placa", widget=Select(attrs=attrs_col))
+    serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(),empty_label="--serie", label="Serie:", to_field_name="id", widget=Select(attrs=attrs_col))
+
+## Encargado de generar el formulario para Generar envio a taller
+class TallerExportForm(Form):
+    talleres = ModelChoiceField(queryset=Tramites.objects.all(), empty_label="--seleccione tramite a cargar", label=None, widget=Select(attrs={'class': 'col-12 tramite-select'}))
+    boleta = CharField(label="Número de boleta:", max_length=100, widget=TextInput(attrs={"class": 'col-2 taller-input'}))
+    fecha = DateField(widget=DatePickerInput(attrs={"class": "col-2 taller-input"}))
+    motivo = CharField(widget=Textarea(attrs={"class": "textarea mt-4"}), label="Motivo o Observaciones")
+    placa = ModelChoiceField(queryset=Activos_Plaqueados.objects.all(), empty_label="--placa", label="Placa:", to_field_name="placa", widget=Select(attrs=attrs_col))
+    serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(), empty_label="--serie", label="Serie:", to_field_name="id", widget=Select(attrs=attrs_col))
+
+
+## ---- Fin De HTML a PDF ---- ##
+
+#-------------# Area de Pruebas #-------------#
+
+class PruebasAPIForm(ModelForm):
+
+    class Meta:
+        model = PruebasAPI
+        exclude = ["id"]
+        
+class RelPruebasAPIForm(ModelForm):
+    class Meta:
+        model = RelPruebasAPI
+        exclude = ["id"]
+
+#-----------# Fin Area de Pruebas #-----------#

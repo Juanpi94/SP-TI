@@ -5,28 +5,27 @@ import pandas as pd
 import pandas.errors as pd_errors
 from django.db.models import F
 
-from backend import models
+from django.http import Http404
+
+from backend import models as mdls
 from backend.import_helper import ImportModule
-from backend.models import Activos_Plaqueados, Ubicaciones, Traslados
-from backend.serializers import (CompraSerializer, DeshechoSerializer,
-                                 FuncionariosSerializer,
-                                 NoPlaqueadosSerializer,
-                                 PlaqueadosCreateSerializer,
-                                 PlaqueadosSerializer, ProveedorSerializer,
-                                 RedSerializer, SubtipoSerializer,
-                                 TallerSerializer, TipoSerializer,
-                                 TramitesCreateSerializer, TramitesSerializer,
-                                 TramitesUpdateSerializer, TrasladosSerializer,
-                                 UbicacionesSerializer, UnidadSerializer,
-                                 UserSerializer)
+from .models import *
+from backend.serializers import (CompraSerializer, DeshechoSerializer, FuncionariosSerializer, 
+                                 NoPlaqueadosSerializer, PlaqueadosSerializer, 
+                                 ProveedorSerializer, RedSerializer, SubtipoSerializer, TallerSerializer, 
+                                 TipoSerializer, TramitesSerializer, TrasladosSerializer, UbicacionesSerializer, 
+                                 UnidadSerializer, UserSerializer, PruebasAPISerializer, RelPruebasAPISerializer)
 from django.http import FileResponse, HttpResponseServerError
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
+from django.middleware.csrf import get_token
+
 
 logger = logging.getLogger("atic.errors")
 
@@ -41,59 +40,114 @@ class CustomModelViewset(ModelViewSet):
         else:
             return self.serializer_class
 
-
 class AuthMixin:
     permission_classes = [IsAuthenticated]
 
+#-------------# (APIView) #-------------#
 
-class PlaqueadosApiViewset(AuthMixin, ModelViewSet):
-    queryset = models.Activos_Plaqueados.objects.all()
+class ExportarHojaDeCalculo(APIView):
+    def post(self, request, format=None):
+        json_data = request.data
 
-    filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ("serie", "placa")
+        parsed_json = pd.DataFrame(json_data)
+        b = BytesIO()
+        writer = pd.ExcelWriter(b, engine="xlsxwriter", mode="xlswriter")
+        pd.io.formats.excel.header_style = None
+        parsed_json.to_excel(writer, sheet_name="Reporte")
+        worksheet = writer.sheets["Reporte"]
+        workbook = writer.book
+        worksheet.autofit()
+        header_fmt = workbook.add_format({"bold": True, "fg_color": "#FCD5B4"})
 
-    def get_serializer_class(self):
-        if self.action == "retrieve":
-            return PlaqueadosSerializer
-        else:
-            return PlaqueadosCreateSerializer
-
-    def update(self, request, *args, **kwargs):
-        response = super().update(request=request, *args, **kwargs)
-        if response.status_code == status.HTTP_200_OK:
-            placa = response.data["placa"]
-            new_data = Activos_Plaqueados.objects.filter(placa=placa).values().annotate(tipo=F("tipo__nombre"),
-                                                                                        subtipo=F("subtipo__nombre"),
-                                                                                        ubicacion=F(
-                                                                                            "ubicacion__ubicacion"))[0]
-            response.data = new_data
+        for col_num, value in enumerate(parsed_json.columns.values):
+            worksheet.write(
+                0,
+                col_num + 1,
+                value.replace(" ", "").replace("_", " ").strip(),
+                header_fmt,
+            )
+        writer.save()
+        b.seek(0)
+        response = FileResponse(b, filename="export.xlsx", as_attachment=True)
         return response
 
-    def create(self, request, *args, **kwargs):
-        response = super().create(request=request, *args, **kwargs)
-        if response.status_code == status.HTTP_201_CREATED:
-            placa = response.data["placa"]
-            new_data = Activos_Plaqueados.objects.filter(placa=placa).values().annotate(tipo=F("tipo__nombre"),
-                                                                                        subtipo=F("subtipo__nombre"),
-                                                                                        ubicacion=F(
-                                                                                            "ubicacion__ubicacion"))[0]
-            response.data = new_data
-        return response
+class ChangePasswordView(APIView):
+    def post(self, request, format=None):
+        json_data = request.data
 
+        password = json_data["password"]
+        request.user.set_password(password)
+        request.user.save()
+        return Response(None, status.HTTP_202_ACCEPTED)
 
-class NoPlaqueadosApiViewSet(AuthMixin, ModelViewSet):
-    queryset = models.Activos_No_Plaqueados.objects.all()
-    serializer_class = NoPlaqueadosSerializer
+class ImportarReportePlaqueados(APIView):
+    def post(self, request: Request, format=None):
+        if "file" not in request.FILES:
+            return Response({"message": "Bad Request"}, 400)
+        file = request.FILES["file"]
+        update = "update" in request.data
 
-    filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ("serie",)
+        try:
+            excel_file = pd.read_excel(file)
+            filtered_df = excel_file.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+            filtered_df = filtered_df.query('Placa != "S/P" and Placa != ""')
+            activos_data = filtered_df.iloc[:, :17]
+            fecha_registro_data = filtered_df.iloc[:, 34]
+            compras = filtered_df.iloc[:, 23]
+            activos_data["fecha_registro"] = fecha_registro_data
+            activos_data["compras"] = compras
+            activos_data = activos_data.values
+            compras_data = excel_file.iloc[:, 23:33].values
 
+            summary = {}
+            compras_summary = ImportModule.import_compras(compras_data, update)
+            activos_summary = ImportModule.import_activos(activos_data, update)
+            summary["Activos_Plaqueados"] = activos_summary
+            summary["Compras"] = compras_summary
+        except pd_errors.ParserError as e:
+            logger.error("Couldn't parse excel file", exc_info=e)
+            return HttpResponseServerError()
+        except Exception as e:
+            logger.error("Unexpected error when reading excel file", exc_info=e)
+            return HttpResponseServerError()
+        return Response(summary, 200)
+
+class ImportarReporteNoPlaqueados(APIView):
+    def post(self, request: Request, format=None):
+        if "file" not in request.FILES:
+            return Response({"message": "Bad Request"}, 400)
+        file = request.FILES["file"]
+        update = "update" in request.data
+
+        try:
+            excel_file = pd.read_excel(file)
+            filtered_df = excel_file.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+            filtered_df = filtered_df.query('Placa == "S/P" or Placa == ""')
+            activos_data = filtered_df.iloc[:, 1:17]
+            fecha_registro_data = filtered_df.iloc[:, 34]
+            compras = filtered_df.iloc[:, 23]
+            activos_data["fecha_registro"] = fecha_registro_data
+            activos_data["compras"] = compras
+            activos_data = activos_data.values
+            compras_data = excel_file.iloc[:, 23:33].values
+
+            summary = {}
+            compras_summary = ImportModule.import_compras(compras_data, update)
+            activos_summary = ImportModule.import_activos(activos_data, update)
+            summary["Activos_Plaqueados"] = activos_summary
+            summary["Compras"] = compras_summary
+        except pd_errors.ParserError as e:
+            logger.error("Couldn't parse excel file", exc_info=e)
+            return HttpResponseServerError()
+        except Exception as e:
+            logger.error("Unexpected error when reading excel file", exc_info=e)
+            return HttpResponseServerError()
+        return Response(summary, 200)
 
 class GenerarTramiteView(APIView):
 
     def post(self, request):
         try:
-
             activos_plaqueados = request.data.pop('activos_plaqueados')
             traslados = request.data.pop('traslados')
 
@@ -134,274 +188,156 @@ class GenerarTramiteView(APIView):
             logger.error("Couldn't generate tramite", exc_info=e)
             return HttpResponseServerError()
 
+#-------------# (APIView) #-------------#
 
+#-------------# (AuthMixin, ModelViewSet) #-------------#
+
+class UserList(AuthMixin, ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class PlaqueadosApiViewset(AuthMixin, ModelViewSet):
+    queryset = Activos_Plaqueados.objects.all()
+    serializer_class = PlaqueadosSerializer
+
+class NoPlaqueadosApiViewSet(AuthMixin, ModelViewSet):
+    queryset = mdls.Activos_No_Plaqueados.objects.all()
+    serializer_class = NoPlaqueadosSerializer
+
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ("serie",)
+
+#----- Tramites acciones -----#
 class TramitesApiViewset(AuthMixin, ModelViewSet):
-    queryset = models.Tramites.objects.all()
+    queryset = mdls.Tramites.objects.all()
     serializer_class = TramitesSerializer
+    
+class TramiteAPIListCreateView(ListCreateAPIView):
+    queryset = PruebasAPI.objects.all()
+    serializer_class = PruebasAPISerializer
+    
+class TramiteAPIRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    queryset = Tramites.objects.all()
+    serializer_class = TramitesSerializer
+#---- Fin Tramites acciones ----#
 
-    def add_activos_to_tramite(self, data, tramite):
-        pass
-
-    def get_serializer_class(self):
-        if self.request.method == "PUT":
-            return TramitesUpdateSerializer
-        if self.request.method == "POST":
-            return TramitesCreateSerializer
-        return super().get_serializer_class()
-
-    def perform_update(self, serializer: TramitesSerializer):
-        if type(serializer.validated_data) is not dict:
-            return
-        anterior = models.Tramites.objects.filter(
-            referencia=serializer.validated_data["referencia"]
-        ).first()
-
-        if anterior is None:
-            serializer.validated_data["estado"] = models.Tramites.TiposEstado.PENDIENTE
-            return serializer.save(solicitante=self.request.user)
-
-        estado_anterior = anterior.estado
-
-        tramite: models.Tramites = serializer.save(solicitante=self.request.user)
-
-        tramite.activos_plaqueados_set.clear()
-        tramite.activos_no_plaqueados_set.clear()
-        self.add_activos_to_tramite(self.request.data, tramite)
-        if (
-                tramite.estado == tramite.TiposEstado.FINALIZADO
-                and estado_anterior == tramite.TiposEstado.PENDIENTE
-        ):
-            if tramite.tipo == tramite.TiposTramites.TRASLADO:
-                for activo_plaqueado in tramite.activos_plaqueados_set.all():
-                    activo_plaqueado.ubicacion_anterior = activo_plaqueado.ubicacion
-                    activo_plaqueado.ubicacion = (
-                        models.Traslados.objects.filter(
-                            detalle__contains=activo_plaqueado.placa
-                        )
-                        .first()
-                        .destino
-                    )
-
-                    activo_plaqueado.save()
-                for activo_no_plaqueado in tramite.activos_no_plaqueados_set.all():
-                    activo_no_plaqueado.ubicacion_anterior = (
-                        activo_no_plaqueado.ubicacion
-                    )
-                    activo_no_plaqueado.ubicacion = (
-                        models.Traslados.objects.filter(
-                            detalle__contains=activo_no_plaqueado.serie
-                        )
-                        .first()
-                        .destino
-                    )
-                    activo_no_plaqueado.save()
-
-            elif tramite.tipo == tramite.TiposTramites.DESHECHO:
-                for activo_plaqueado in tramite.activos_plaqueados_set.all():
-                    activo_plaqueado.estado = models.Activo.Estados.DESHECHO
-                    activo_plaqueado.save()
-                for activo_no_plaqueado in tramite.activos_no_plaqueados_set.all():
-                    activo_no_plaqueado.estado = models.Activo.Estados.DESHECHO
-                    activo_no_plaqueado.save()
-
-        return tramite
-
-    def create(self, request: Request):
-        data = request.data
-        taller = None
-        if data.get("taller"):
-            taller = data.pop("taller")
-
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        tramite = self.perform_create(serializer)
-
-        if tramite.tipo == models.Tramites.TiposTramites.TALLER and taller:
-            taller_db = models.Taller()
-            taller_db.beneficiario = taller.get("beneficiario")
-            taller_db.destinatario = taller.get("destinatario")
-            taller_db.autor = taller.get("autor")
-            taller_db.tramite = tramite
-            taller_db.save()
-
-        if tramite.tipo == models.Tramites.TiposTramites.DESHECHO:
-            deshecho_db = models.Deshecho()
-            deshecho_db.tramite = tramite
-            deshecho_db.save()
-
-        self.add_activos_to_tramite(data, tramite)
-        headers = self.get_success_headers(serializer.data)
-
-        return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
-        )
-
-    def perform_create(self, serializer):
-        return serializer.save()
 
 
 class DeshechoApiViewset(AuthMixin, ModelViewSet):
-    queryset = models.Deshecho.objects.all()
+    queryset = mdls.Deshecho.objects.all()
     serializer_class = DeshechoSerializer
 
-
 class TrasladosApiViewset(AuthMixin, ModelViewSet):
-    queryset = models.Traslados.objects.all()
+    queryset = mdls.Traslados.objects.all()
     serializer_class = TrasladosSerializer
 
     filter_backends = (DjangoFilterBackend,)
 
-
 class TallerApiViewset(AuthMixin, ModelViewSet):
-    queryset = models.Taller.objects.all()
+    queryset = mdls.Taller.objects.all()
     serializer_class = TallerSerializer
 
-    filter_backends = DjangoFilterBackend
-
+    # filter_backends = DjangoFilterBackend
 
 class FuncionariosApiViewset(AuthMixin, ModelViewSet):
-    queryset = models.Funcionarios.objects.all()
+    queryset = mdls.Funcionarios.objects.all()
     serializer_class = FuncionariosSerializer
 
-
 class TipoApiViewset(AuthMixin, ModelViewSet):
-    queryset = models.Tipo.objects.all()
+    queryset = mdls.Tipo.objects.all()
     serializer_class = TipoSerializer
 
-
 class SubtipoApiViewSet(AuthMixin, ModelViewSet):
-    queryset = models.Subtipo.objects.all()
+    queryset = mdls.Subtipo.objects.all()
     serializer_class = SubtipoSerializer
 
-
 class UbicacionesApiViewset(AuthMixin, ModelViewSet):
-    queryset = models.Ubicaciones.objects.all()
+    queryset = mdls.Ubicaciones.objects.all()
     serializer_class = UbicacionesSerializer
 
-
 class CompraApiViewset(AuthMixin, ModelViewSet):
-    queryset = models.Compra.objects.all()
+    queryset = mdls.Compra.objects.all()
     serializer_class = CompraSerializer
 
-
 class UserApiViewset(AuthMixin, ModelViewSet):
-    queryset = models.User.objects.all()
+    queryset = mdls.User.objects.all()
     serializer_class = UserSerializer
 
-
 class RedApiViewset(AuthMixin, ModelViewSet):
-    queryset = models.Red.objects.all()
+    queryset = mdls.Red.objects.all()
     serializer_class = RedSerializer
 
-
 class ProveedorApiViewset(AuthMixin, ModelViewSet):
-    queryset = models.Proveedor.objects.all()
+    queryset = mdls.Proveedor.objects.all()
     serializer_class = ProveedorSerializer
 
-
 class UnidadApiViewset(AuthMixin, ModelViewSet):
-    queryset = models.Unidad.objects.all()
+    queryset = mdls.Unidad.objects.all()
     serializer_class = UnidadSerializer
 
+#-------------# (AuthMixin, ModelViewSet) #-------------#
 
-class ExportarHojaDeCalculo(APIView):
-    def post(self, request, format=None):
-        json_data = request.data
+#-------------# Area de Pruebas #-------------#
 
-        parsed_json = pd.DataFrame(json_data)
-        b = BytesIO()
-        writer = pd.ExcelWriter(b, engine="xlsxwriter", mode="xlswriter")
-        pd.io.formats.excel.header_style = None
-        parsed_json.to_excel(writer, sheet_name="Reporte")
-        worksheet = writer.sheets["Reporte"]
-        workbook = writer.book
-        worksheet.autofit()
-        header_fmt = workbook.add_format({"bold": True, "fg_color": "#FCD5B4"})
+class PruebasAPIListCreateView(ListCreateAPIView):
+    queryset = PruebasAPI.objects.all()
+    serializer_class = PruebasAPISerializer
+    
+class PruebasAPIRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    queryset = PruebasAPI.objects.all()
+    serializer_class = PruebasAPISerializer
+    
+class PruebasAPIApiViewset(AuthMixin, ModelViewSet):
+    queryset = PruebasAPI.objects.all()
+    serializer_class = PruebasAPISerializer
+ 
+#-----------------------#
+    
+class RelPruebasAPIListCreateView(APIView):
+    def get(self, request):
+        queryset = RelPruebasAPI.objects.all()
+        serializer = RelPruebasAPISerializer(queryset, many=True)
+        return Response(serializer.data)
 
-        for col_num, value in enumerate(parsed_json.columns.values):
-            worksheet.write(
-                0,
-                col_num + 1,
-                value.replace(" ", "").replace("_", " ").strip(),
-                header_fmt,
-            )
-        writer.save()
-        b.seek(0)
-        response = FileResponse(b, filename="export.xlsx", as_attachment=True)
-        return response
+    def post(self, request):
+        serializer = RelPruebasAPISerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
 
-
-class ChangePasswordView(APIView):
-    def post(self, request, format=None):
-        json_data = request.data
-
-        password = json_data["password"]
-        request.user.set_password(password)
-        request.user.save()
-        return Response(None, status.HTTP_202_ACCEPTED)
-
-
-class ImportarReportePlaqueados(APIView):
-    def post(self, request: Request, format=None):
-        if "file" not in request.FILES:
-            return Response({"message": "Bad Request"}, 400)
-        file = request.FILES["file"]
-        update = "update" in request.data
-
+class RelPruebasAPIRetrieveUpdateDestroyView(APIView):
+    def put(self, request, *args, **kwargs):
+        # Obtener el token CSRF desde la cookie
+        request.META['CSRF_COOKIE'] = get_token(request)
+        return super().put(request, *args, **kwargs)
+    
+    def get_object(self, pk):
         try:
-            excel_file = pd.read_excel(file)
-            filtered_df = excel_file.applymap(lambda x: x.strip() if isinstance(x, str) else x)
-            filtered_df = filtered_df.query('Placa != "S/P" and Placa != ""')
-            activos_data = filtered_df.iloc[:, :17]
-            fecha_registro_data = filtered_df.iloc[:, 34]
-            compras = filtered_df.iloc[:, 23]
-            activos_data["fecha_registro"] = fecha_registro_data
-            activos_data["compras"] = compras
-            activos_data = activos_data.values
-            compras_data = excel_file.iloc[:, 23:33].values
+            return RelPruebasAPI.objects.get(pk=pk)
+        except RelPruebasAPI.DoesNotExist:
+            raise Http404
 
-            summary = {}
-            compras_summary = ImportModule.import_compras(compras_data, update)
-            activos_summary = ImportModule.import_activos(activos_data, update)
-            summary["Activos_Plaqueados"] = activos_summary
-            summary["Compras"] = compras_summary
-        except pd_errors.ParserError as e:
-            logger.error("Couldn't parse excel file", exc_info=e)
-            return HttpResponseServerError()
-        except Exception as e:
-            logger.error("Unexpected error when reading excel file", exc_info=e)
-            return HttpResponseServerError()
-        return Response(summary, 200)
+    def get(self, request, pk):
+        instance = self.get_object(pk)
+        serializer = RelPruebasAPISerializer(instance)
+        return Response(serializer.data)
 
+    def put(self, request, pk):
+        instance = self.get_object(pk)
+        serializer = RelPruebasAPISerializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
 
-class ImportarReporteNoPlaqueados(APIView):
-    def post(self, request: Request, format=None):
-        if "file" not in request.FILES:
-            return Response({"message": "Bad Request"}, 400)
-        file = request.FILES["file"]
-        update = "update" in request.data
+    def delete(self, request, pk):
+        instance = self.get_object(pk)
+        instance.delete()
+        return Response(status=204)
 
-        try:
-            excel_file = pd.read_excel(file)
-            filtered_df = excel_file.applymap(lambda x: x.strip() if isinstance(x, str) else x)
-            filtered_df = filtered_df.query('Placa == "S/P" or Placa == ""')
-            activos_data = filtered_df.iloc[:, 1:17]
-            fecha_registro_data = filtered_df.iloc[:, 34]
-            compras = filtered_df.iloc[:, 23]
-            activos_data["fecha_registro"] = fecha_registro_data
-            activos_data["compras"] = compras
-            activos_data = activos_data.values
-            compras_data = excel_file.iloc[:, 23:33].values
+class RelPruebasAPIApiViewset(AuthMixin, ModelViewSet):
+    queryset = mdls.RelPruebasAPI.objects.all()
+    serializer_class = RelPruebasAPISerializer
 
-            summary = {}
-            compras_summary = ImportModule.import_compras(compras_data, update)
-            activos_summary = ImportModule.import_activos(activos_data, update)
-            summary["Activos_Plaqueados"] = activos_summary
-            summary["Compras"] = compras_summary
-        except pd_errors.ParserError as e:
-            logger.error("Couldn't parse excel file", exc_info=e)
-            return HttpResponseServerError()
-        except Exception as e:
-            logger.error("Unexpected error when reading excel file", exc_info=e)
-            return HttpResponseServerError()
-        return Response(summary, 200)
+#-----------# Fin Area de Pruebas #-----------#

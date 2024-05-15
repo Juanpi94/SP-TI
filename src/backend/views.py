@@ -1,34 +1,46 @@
+from django import forms
+import django.forms
+from django.forms import DateInput
+
+from .forms import FuncionariosForm, DeshechoExportForm, TallerExportForm, TramitesExportForm
+
+from .models import Funcionarios
+from backend import models
+
+from django.shortcuts import render, redirect
 from datetime import datetime
 from typing import List
 
-import django.forms
-from backend import models
+from django.db import models as mdls
+from django.db.models import F, QuerySet
+
 from backend.custom_types import ColumnDefs
 from backend.exceptions import ArgMissingException
-from backend.forms import DeshechoExportForm, TallerExportForm, TramitesExportForm
 from backend.serializers import PlaqueadosReportSerializer
-from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.db.models import F, QuerySet
-from django.forms import DateInput
 from django.shortcuts import render
 from django.views.generic import RedirectView, TemplateView
 
 
+#--Verificacion de lectura de usuario
 class ReadPermMixin(LoginRequiredMixin, PermissionRequiredMixin):
     login_url = "/login"
     permission_required = "backend.lectura"
 
-
+#--Verificacion de escritura de usuario
 class WritePermMixin(LoginRequiredMixin, PermissionRequiredMixin):
     login_url = "/login"
     permission_required = "backend.escritura"
 
+#--Redireccionamiento al perfil del usuario
+class Perfil_View(LoginRequiredMixin, TemplateView):
+    template_name = "auth/perfil.html"
 
+#--Redireccionamiento a la pagina principal
 class index(RedirectView):
     pattern_name = "plaqueados"
 
-
+#--Funcion encargada de cargar los datos a la tabla
 class Table_View(ReadPermMixin, TemplateView):
     """
     Clase utilizada para reciclar logica de tablas
@@ -115,16 +127,18 @@ class Table_View(ReadPermMixin, TemplateView):
         :return: Una lista de diccionarios con definiciones de columnas
         """
         defs = [{"field": "id", "visible": False}]
+        ## Encargado de traer los campos en la base e imprimilos en la tabla
         fields: List[any] = self.model._meta.get_fields()
+        # print(fields)
 
-        for field in filter(lambda _field: _field.name != "id", fields):
+        ## Esta es el metodo que se encarga de filtrar ypasar la informacion que se muestra en la tabla
+        for field in filter(lambda _field: _field.name != "id" , fields):
             title = field.__dict__.get("verbose_name", field.name)
             defs.append(
                 {
                     "field": field.name,
                     "title": title.title(),
-                }
-            )
+                })
 
         if len(self.exclude) > 0:
             defs = self._parse_column_defs_with_exclusions(defs)
@@ -171,9 +185,7 @@ class Table_View(ReadPermMixin, TemplateView):
         """
         fields = self.get_form_fields()
         meta = type("Meta", (), self.get_form_metafields())
-        form = type(
-            "DynamicModelForm", (django.forms.ModelForm,), {"Meta": meta, **fields}
-        )
+        form = type("DynamicModelForm", (django.forms.ModelForm,), {"Meta": meta, **fields})
 
         return form()
 
@@ -187,8 +199,8 @@ class Table_View(ReadPermMixin, TemplateView):
 
         def init(self, *args, **kwargs):
             super(django.forms.ModelForm, self).__init__(*args, **kwargs)
-            # for field_name, field in self.fields.items():
-            #     field.required = False
+            for field_name, field in self.fields.items():
+                field.required = False
 
         meta = type("Meta", (), self.get_form_metafields())
         form = type(
@@ -224,7 +236,11 @@ class Table_View(ReadPermMixin, TemplateView):
         print(fields)
         return self.get_queryset().values(*fields)
 
+#----------------------------------------------------------------------------------------
 
+##---- Plataforma/Activos ----##
+
+##--Activos Plaqueados
 class Activos_Plaqueados_View(Table_View):
     target_view = "plaqueados"
     model = models.Activos_Plaqueados
@@ -257,18 +273,12 @@ class Activos_Plaqueados_View(Table_View):
         return metafields
 
     def get_values(self) -> QuerySet:
-        return super().get_values().annotate(tipo=F("tipo__nombre"), subtipo=F("subtipo__nombre"),
-                                             ubicacion=F("ubicacion__ubicacion"))
+        return super().get_values().annotate(tipo=F('tipo__nombre'), subtipo=F('subtipo__nombre'), 
+                                             ubicacion=F('ubicacion__ubicacion'), compra=F('compra__numero_orden_compra'),
+                                             red=F('red__MAC'), ubicacion_anterior=F('ubicacion_anterior__ubicacion'),
+                                             estado=F('estado__descripcion'))
 
-
-class Tramites_View(Table_View):
-    target_view = "tramites"
-    model = models.Tramites
-    add = False
-    title = "Tramites"
-    exclude = ["activos_plaqueados", "activos_no_plaqueados", "traslados", "deshecho", "taller"]
-
-
+##--Activos No Plaqueados
 class Activos_No_Plaqueados_View(Table_View):
     target_view = "no_plaqueados"
     model = models.Activos_No_Plaqueados
@@ -291,25 +301,50 @@ class Activos_No_Plaqueados_View(Table_View):
         }
 
     def get_values(self) -> QuerySet:
-        return super().get_values().annotate(id=F("serie"))
+        return super().get_values().annotate(id=F("serie"), tipo=F('tipo__nombre'), subtipo=F('subtipo__nombre'),
+                                              compra=F('compra__numero_orden_compra'), red=F('red__MAC'), 
+                                              ubicacion=F('ubicacion__ubicacion'), ubicacion_anterior=F('ubicacion_anterior__ubicacion'),
+                                              tramites=F('tramites__referencia'))
 
+##--Tipos
+class Tipo_View(Table_View):
+    target_view = "tipo"
+    model = models.Tipo
+    title = "Tipos de activos"
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
 
-class Funcionarios_View(Table_View):
-    target_view = "funcionarios"
-    model = models.Funcionarios
-    title = "Funcionarios"
+##--Subtipos
+class Subtipo_View(Table_View):
+    target_view = "subtipos"
+    model = models.Subtipo
+    title = "Subtipos de activos"
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
 
+##--Compra
+class Compra_View(Table_View):
+    target_view = "compra"
+    model = models.Compra
+    title = "Compras"
 
-class Ubicaciones_View(Table_View):
-    target_view = "ubicaciones"
-    model = models.Ubicaciones
-    title = "Ubicaciones"
-    exclude = ["activos_plaqueados", "plaqueados", "activos_no_plaqueados", "no_anterior"]
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
 
     def get_values(self) -> QuerySet:
-        return super().get_queryset().values().annotate(custodio=F("custodio__nombre_completo"))
+        return super().get_values().annotate(id=F("numero_orden_compra"), proveedor=F('proveedor__nombre'))
+ 
+##--Red   
+class Red_Table_View(Table_View):
+    target_view = "red"
+    model = models.Red
+    title = "Red Plaqueados"
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]    
 
+##---- Fin Plataforma/Activos ----##
 
+#----------------------------------------------------------------------------------------
+
+##---- Plataforma/Tramites ----##
+
+#--Generar traslados
 class Generar_Tramite_View(WritePermMixin, TemplateView):
     template_name = "generar/traslados.html"
 
@@ -322,68 +357,7 @@ class Generar_Tramite_View(WritePermMixin, TemplateView):
 
         return context
 
-
-class ImportTemplateView(TemplateView):
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        queryparams = self.request.GET
-        message = queryparams.get("message")
-        error = queryparams.get("error")
-
-        if error:
-            error = True if error == "True" else False
-
-        context["message"] = message
-        context["error"] = error
-        return context
-
-
-class Importar_Reporte_Plaqueados(WritePermMixin, ImportTemplateView):
-    template_name = "importar/reportePlaqueados.html"
-
-
-class Importar_Reporte_No_Plaqueados(WritePermMixin, ImportTemplateView):
-    template_name = "importar/reporteNoPlaqueados.html"
-
-
-class Perfil_View(LoginRequiredMixin, TemplateView):
-    template_name = "auth/perfil.html"
-
-
-class Tipo_View(Table_View):
-    target_view = "tipo"
-    model = models.Tipo
-    title = "Tipos de activos"
-    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
-
-
-class Subtipo_View(Table_View):
-    target_view = "subtipo"
-    model = models.Subtipo
-    title = "Subtipos de activos"
-    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
-
-
-class Compra_View(Table_View):
-    target_view = "compra"
-    model = models.Compra
-    title = "Compras"
-
-    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
-
-    def get_values(self) -> QuerySet:
-        qs = super().get_values().annotate(id=F("numero_orden_compra"))
-        return qs
-
-
-class Users_View(Table_View):
-    target_view = "user"
-    exclude = ["password", "logentry", "tramites", "is_superuser", "is_staff", "groups", "user_permissions"]
-    exclude_data = True
-    model = models.User
-    title = "Usuarios"
-
-
+#--Generar deshecho
 class Deshecho_View(WritePermMixin, TemplateView):
     template_name = "generar/deshecho.html"
 
@@ -392,7 +366,7 @@ class Deshecho_View(WritePermMixin, TemplateView):
         context["form"] = DeshechoExportForm()
         return context
 
-
+#--Generar traslado a taller
 class Taller_View(WritePermMixin, TemplateView):
     template_name = "generar/taller.html"
 
@@ -401,18 +375,47 @@ class Taller_View(WritePermMixin, TemplateView):
         context["form"] = TallerExportForm()
         return context
 
+#--Ver tramites
+class Tramites_View(Table_View):
+    target_view = "tramites"
+    model = models.Tramites
+    add = False
+    title = "Tramites"
+    exclude = ["activos_plaqueados", "activos_no_plaqueados",
+               "traslados", "deshecho", "taller"]
+    
+    def get_values(self) -> QuerySet:
+        return super().get_values().annotate(solicitante=F('solicitante__username'), remitente=F('remitente__nombre_completo'),
+                                             recipiente=F('recipiente__nombre_completo'), tipo=F('tipo__nombre'),
+                                             estado=F('estado__nombre'))
 
+#--Ver traslados
+class Traslados_Table_View(Table_View):
+    target_view = "traslados"
+    model = models.Traslados
+    title = "Traslados"
+    
+    def get_values(self) -> QuerySet:
+        return super().get_values().annotate(destino=F('destino__ubicacion'), tramite=F('tramite__referencia'))
+
+##---- Fin Plataforma/Tramites ----##
+
+#----------------------------------------------------------------------------------------
+
+##---- Plataforma/Reportes ----##
+
+#--Reporte general Plaqueados
 class Reporte_Plaqueados(ReadPermMixin, TemplateView):
     template_name = "reportes/reporte.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         data = models.Activos_Plaqueados.objects.prefetch_related().all()
-        context["data"] = PlaqueadosReportSerializer(data, many=True).data
+        context["data"] = list(data.values())
         context["title"] = "Reporte de activos plaqueados"
         return context
 
-
+#--Reporte general No Plaqueados
 class Reporte_No_Plaqueados(ReadPermMixin, TemplateView):
     template_name = "reportes/reporte.html"
 
@@ -423,16 +426,31 @@ class Reporte_No_Plaqueados(ReadPermMixin, TemplateView):
         context["title"] = "Reporte de activos no plaqueados"
         return context
 
-
-class Reporte_No_Plaqueados_2_old(Reporte_No_Plaqueados):
+#--Reporte Plaqueados 2 años o mas de antigüedad
+class Reporte_Plaqueados_2_old(Reporte_Plaqueados):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         two_years_ago = datetime.now()
         if two_years_ago.day == 29 and two_years_ago.month == 2:
             two_years_ago = two_years_ago.replace(day=28)
         two_years_ago = two_years_ago.replace(year=two_years_ago.year - 2)
-        print(two_years_ago)
+
+        data = models.Activos_No_Plaqueados.objects.all().filter(
+            fecha_ingreso__lte=two_years_ago
+        )
+        context["data"] = list(data.values())
+        context["title"] = "Reporte de activos plaqueados con 2 años de antigüedad"
+        return context
+
+#--Reporte No Plaqueados 2 años o mas de antigüedad
+class Reporte_No_Plaqueados_2_old(Reporte_No_Plaqueados):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        two_years_ago = datetime.now()
+        if two_years_ago.day == 29 and two_years_ago.month == 2:
+            two_years_ago = two_years_ago.replace(day=28)
+        two_years_ago = two_years_ago.replace(year=two_years_ago.year - 2)
+        
         data = models.Activos_No_Plaqueados.objects.all().filter(
             fecha_ingreso__lte=two_years_ago
         )
@@ -441,7 +459,24 @@ class Reporte_No_Plaqueados_2_old(Reporte_No_Plaqueados):
 
         return context
 
+#--Reporte Plaqueados 4 años o mas de antigüedad
+class Reporte_Plaqueados_4_old(Reporte_Plaqueados):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
+        four_years_ago = datetime.now()
+        if four_years_ago.day == 29 and four_years_ago.month == 2:
+            four_years_ago = four_years_ago.replace(day=28)
+        four_years_ago = four_years_ago.replace(year=four_years_ago.year - 4)
+
+        data = models.Activos_Plaqueados.objects.prefetch_related().filter(
+            fecha_ingreso__lte=four_years_ago
+        )
+        context["data"] = list(data.values())
+        context["title"] = "Reporte de activos plaqueados con 4 años de antigüedad"
+        return context
+
+#--Reporte No Plaqueados 4 años o mas de antigüedad
 class Reporte_No_Plaqueados_4_old(Reporte_No_Plaqueados):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -458,58 +493,111 @@ class Reporte_No_Plaqueados_4_old(Reporte_No_Plaqueados):
         context["title"] = "Reporte de activos no plaqueados con 4 años de antigüedad"
         return context
 
+##---- Fin Plataforma/Reportes ----##
 
-class Reporte_Plaqueados_2_old(Reporte_Plaqueados):
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        two_years_ago = datetime.now()
-        if two_years_ago.day == 29 and two_years_ago.month == 2:
-            two_years_ago = two_years_ago.replace(day=28)
-        two_years_ago = two_years_ago.replace(year=two_years_ago.year - 2)
+#----------------------------------------------------------------------------------------
 
-        data = models.Activos_Plaqueados.objects.filter(fecha_ingreso__year__lte=str(two_years_ago.year))
-        context["data"] = list(data.values())
-        context["title"] = "Reporte de activos plaqueados con 2 años de antigüedad"
-        return context
+##---- Administracion/Gestión ----##
 
+#--Funcionarios
+class Funcionarios_View(Table_View):
+    target_view = "funcionarios"
+    model = models.Funcionarios
+    title = "Funcionarios"
+    
+    exclude = ['ubicaciones', 'unidad']
+    
+#--Ubicaciones
+class Ubicaciones_View(Table_View):
+    target_view = "ubicaciones"
+    model = models.Ubicaciones
+    title = "Ubicaciones"
+    exclude = ["activos_plaqueados", "plaqueados", "activos_no_plaqueados", "no_anterior"]
 
-class Reporte_Plaqueados_4_old(Reporte_Plaqueados):
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        four_years_ago = datetime.now()
-        if four_years_ago.day == 29 and four_years_ago.month == 2:
-            four_years_ago = four_years_ago.replace(day=28)
-        four_years_ago = four_years_ago.replace(year=four_years_ago.year - 4)
-
-        data = models.Activos_Plaqueados.objects.prefetch_related().filter(
-            fecha_ingreso__lte=four_years_ago
-        )
-        context["data"] = list(data.values())
-        context["title"] = "Reporte de activos plaqueados con 4 años de antigüedad"
-        return context
-
-
-class Red_Table_View(Table_View):
-    target_view = "red"
-    model = models.Red
-    title = "Red Plaqueados"
-    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
-
-
-class Traslados_Table_View(Table_View):
-    target_view = "traslados"
-    model = models.Traslados
-    title = "Traslados"
-
-
-class Proveedores_Table_View(Table_View):
-    target_view = "proveedor"
-    title = "Proveedores"
-    model = models.Proveedor
-
-
+    def get_values(self) -> QuerySet:
+        return super().get_queryset().values().annotate(custodio=F("custodio__nombre_completo"), unidad=F("unidad__nombre"), instalacion=F('instalacion__ubicacion'))
+    
+#--Unidades
 class Unidades_Table_View(Table_View):
     target_view = "unidades"
     title = "Unidades Universitarias"
     model = models.Unidad
     id_field = "codigo"
+    
+    exclude = 'ubicaciones'
+    
+    def get_values(self) -> QuerySet:
+        return super().get_queryset().values().annotate(coordinador=F("coordinador__nombre_completo"))
+    
+#--Usuarios
+class Users_View(Table_View):
+    target_view = "user"
+    exclude = ["password", "logentry", "tramites",
+               "is_superuser", "is_staff", "groups", "user_permissions"]
+    exclude_data = True
+    model = models.User
+    title = "Usuarios"        
+
+#--Proveedores
+class Proveedores_Table_View(Table_View):
+    target_view = "proveedor"
+    title = "Proveedores"
+    model = models.Proveedor
+    
+    exclude = 'compra'
+
+##---- Fin de Administracion/Gestión ----##
+
+#----------------------------------------------------------------------------------------
+
+##---- Administracion/Importar ----##
+
+#--Funcion encargado de enviar la informacion a un archivos
+class ImportTemplateView(TemplateView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        queryparams = self.request.GET
+        message = queryparams.get("message")
+        error = queryparams.get("error")
+
+        if error:
+            error = True if error == "True" else False
+
+        context["message"] = message
+        context["error"] = error
+        return context
+
+#--Encargado de importar datos de reportes plaqueados desde un excel
+class Importar_Reporte_Plaqueados(WritePermMixin, ImportTemplateView):
+    template_name = "importar/reportePlaqueados.html"
+
+#--Encargado de importar datos de reportes no plaqueados desde un excel
+class Importar_Reporte_No_Plaqueados(WritePermMixin, ImportTemplateView):
+    template_name = "importar/reporteNoPlaqueados.html"
+
+##---- Fin de Administracion/Importar ----##
+
+#----------------------------------------------------------------------------------------
+
+#-------------# Area de Pruebas #-------------#   
+ 
+class PruebasAPI_View(Table_View):
+    target_view = "pruebasapi"
+    model = models.PruebasAPI
+    title = "Pruebas"
+    
+class RelPruebasAPI_View(Table_View):
+    target_view = "relpruebasapi"
+    model = models.RelPruebasAPI
+    title = "RelPruebas"
+ 
+ 
+class EditForms(WritePermMixin, TemplateView):
+    template_name = "dinamic/edit.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = FuncionariosForm()
+        return context
+
+#-----------# Fin Area de Pruebas #-----------#

@@ -1,71 +1,50 @@
 import Choices from "choices.js";
-import {TabulatorFull as Tabulator} from "tabulator-tables";
+import { TabulatorFull as Tabulator } from "tabulator-tables";
 import "bootstrap";
-import axios from "axios";
+import axios from 'axios';
 import Swal from "sweetalert2";
 import tab from "bootstrap/js/src/tab";
+import { addPlaqueados, addNoPlaqueados } from '../recursos/placaSerie_add.js'
 
-const tramiteSelect = new Choices("#id_tramite", {});
-const selectMapPlaqueados = new Map();
-const selectMapNoPlaqueados = new Map();
+const { spaceAction } = require('../recursos/actionSpaces.js')
+const { getCSRFToken } = require('../recursos/getToken.js')
+
+const plaqueadosMap = new Map();
+const noPlaqueadosMap = new Map();
+
+const tramiteSelect = new Choices("#id_tramite", {
+  allowHTML: true
+});
+
 const toSelect = new Choices("#id_recipiente", {
-  classNames: {containerOuter: "choices col-4 me-3"},
-  itemSelectText: "select"
+  classNames: { containerOuter: "choices col-4 me-3" },
+  itemSelectText: "select",
+  allowHTML: true
 });
 const fromSelect = new Choices("#id_remitente", {
-  classNames: {containerOuter: "choices col-4"},
-  itemSelectText: "select"
+  classNames: { containerOuter: "choices col-4" },
+  itemSelectText: "select",
+  allowHTML: true
 });
 
+const selectPlaca = new Choices("#id_placa", {
+  classNames: { containerOuter: "choices form-select" },
+  allowHTML: true
+});
 
-const placaSelect = new Choices("#id_placa", {
-  classNames: {containerOuter: "choices form-select"}
-})
-const serieSelect = new Choices("#id_serie", {
-  classNames: {containerOuter: "choices form-select"}
-})
+const selectSerie = new Choices("#id_serie", {
+  classNames: { containerOuter: "choices form-select" },
+  allowHTML: true
+});
+
 let ubicaciones = document.getElementById("ubicaciones").textContent;
 
 const consecutivoTextfield = document.getElementById("id_consecutivo")
 const fechaField = document.getElementById("id_fecha")
 const detallesField = document.getElementById("id_motivo")
-document.addEventListener("DOMContentLoaded", function () {
 
-  // Obténer los botones de "Añadir espacio"
-  var addSpaceButtons = document.querySelectorAll('[data-action=add]');
-
-  // for para recorrer todos los botones
-  addSpaceButtons.forEach(button => {
-    button.addEventListener("click", function () {
-
-      //obtener el elemento target del dataset
-      const target = button.dataset.target;
-      // Obtén el elemento al que deseas cambiar el margen
-      var targetElement = document.querySelector(`[data-spacing="${target}"]`);
-
-      // Obtén el margen actual y conviértelo a número
-      var currentMargin = parseInt(window.getComputedStyle(targetElement).marginTop);
-
-      // Aumenta el margen
-      targetElement.style.marginTop = (currentMargin + 10) + 'px';
-
-    })
-  })
-  var reduceSpaceButtons = document.querySelectorAll('[data-action=substract]');
-  reduceSpaceButtons.forEach(button => {
-
-    button.addEventListener("click", function () {
-      const target = button.dataset.target;
-      var targetElement = document.querySelector(`[data-spacing="${target}"]`)
-      var currentMargin = parseInt(window.getComputedStyle(targetElement).marginTop);
-
-      if (currentMargin >= 10) {
-        targetElement.style.marginTop = (currentMargin - 10) + 'px';
-      }
-    })
-  })
-
-});
+// Agrega o reduce el espacio en el (data-spacing="#") en el archivo html
+document.addEventListener("DOMContentLoaded", spaceAction());
 
 document.addEventListener("DOMContentLoaded", function () {
   let table = new Tabulator("#activos-table", {
@@ -74,9 +53,9 @@ document.addEventListener("DOMContentLoaded", function () {
     height: "100%",
     rowHeight: 42,
     columns: [
-      {title: "Placa", field: "placa", sorter: "string"},
-      {title: "Serie", field: "serie", sorter: "string"},
-      {title: "Ubicación Actual", field: "ubicacion_actual", sorter: "string"},
+      { title: "Placa", field: "placa", sorter: "string" },
+      { title: "Serie", field: "serie", sorter: "string" },
+      { title: "Ubicación Actual", field: "ubicacion_actual", sorter: "string" },
       {
         title: "Ubicación Destino", width: 300, field: "placa", sorter: "string", formatter: function (row) {
 
@@ -105,88 +84,23 @@ document.addEventListener("DOMContentLoaded", function () {
     ]
   });
 
-  let addButtonPlaqueados = document.getElementById("boton_agregar");
-  let addButtonNoPlaqueados = document.getElementById("boton_agregar2");
-  let addButtonTraslados = document.getElementById("add-traslado");
-
   table.on("renderComplete", () => {
-    for (let [_, choice] of selectMapPlaqueados.entries()) {
+    for (let [_, choice] of plaqueadosMap.entries()) {
       choice._addEventListeners()
     }
-  })
-  addButtonPlaqueados.addEventListener("click", function () {
-    // Obtener el valor seleccionado del select
-    let selectedPlaca = placaSelect.getValue(true);
-    // Validar que el campo no esté vacío
-    if (!selectedPlaca.trim()) {
-      Swal.fire({icon: "error", text: "No se pueden agregar una placa vacia a la tabla"})
-      return;
+
+    for (let [_, choice] of noPlaqueadosMap.entries()) {
+      choice._addEventListeners()
     }
+  });
 
-    if (placaNoExisteEnTabla(selectedPlaca)) {
-      axios.get("http://127.0.0.1:8000/api/plaqueados/" + selectedPlaca)
-        .then(response => {
-          /**
-           * @type {Plaqueado}
-           */
-          let data = response.data;
-          let tableData = {
-            placa: data.placa,
-            serie: data.serie,
-            ubicacion_actual: data.ubicacion?.ubicacion || "",
-          }
+  //Se encarga de traer el elemento plaqueado y agregarlo en el espacio asignado
+  document.getElementById("add_plaqueados").addEventListener("click", () => addPlaqueados(selectPlaca, table, plaqueadosMap));
 
-          table.addData(tableData).then(() => {
-            const select = new Choices(document.querySelector(`#select-${data.placa}`));
-            selectMapPlaqueados.set(data.placa, select);
-          })
-        })
-        .catch(error => console.error("Error al obtener datos de la API:", error));
-    } else {
-      Swal.fire({icon: "error", text: "La placa ya existe en la tabla"})
-      return;
-    }
-  })
+  //Se encarga de traer el elemento no plaqueado y agregarlo en el espacio asignado
+  document.getElementById("add_noPlaqueados").addEventListener("click", () => addNoPlaqueados(selectSerie, table, noPlaqueadosMap));
 
-  addButtonNoPlaqueados.addEventListener("click", function () {
-    let selectedSerie = serieSelect.value;
-
-    if (!selectedSerie.trim()) {
-      Swal.fire({icon: "error", text: "No se puede agregar una serie vacia a la tabla"})
-      return;
-    }
-
-    if (serieNoExisteEnTabla(selectedSerie)) {
-
-      axios.get("http://127.0.0.1:8000/api/no_plaqueados/" + selectedSerie)
-        .then(response => {
-          let data = response.data;
-          let tableData = {
-            serie: data.serie,
-            ubicacion_actual: data.ubicacion_anterior,
-          }
-          // Agregar los datos filtrados a la tabla
-          table.addData(tableData).then(() => {
-            const select = new Choices("#select-" + data.serie);
-            selectMapNoPlaqueados.set(data.serie, select)
-          });
-        })
-        .catch(error => console.error("Error al obtener datos de la API:", error));
-    } else {
-      Swal.error({text: "El activo ya se encuentra en la tabla", icon: "error"})
-      return;
-    }
-  })
-
-  function getCSRFToken() {
-    const cookieValue = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('csrftoken='))
-      .split('=')[1];
-
-    return cookieValue;
-  }
-
+  let addButtonTraslados = document.getElementById("add-traslado");
   addButtonTraslados.addEventListener("click", function () {
     let detalles = detallesField.value
     let recipiente = toSelect.value
@@ -201,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
       "no_plaqueados": {}
     };
 
-    for (let [placa, destino] of selectMapPlaqueados.entries()) {
+    for (let [placa, destino] of plaqueadosMap.entries()) {
       traslados["plaqueados"][placa] = destino.getValue(true)
     }
 
@@ -214,14 +128,13 @@ document.addEventListener("DOMContentLoaded", function () {
       tipo,
       detalles,
       estado: estado,
-      activos_plaqueados: Array.from(selectMapPlaqueados.keys()),
+      activos_plaqueados: Array.from(plaqueadosMap.keys()),
       traslados
 
     }
-    const csrfToken = getCSRFToken();
     axios.post('http://127.0.0.1:8000/api/generar/tramite/traslado/', tramiteData, {
       headers: {
-        'X-CSRFToken': csrfToken,
+        'X-CSRFToken': getCSRFToken(),
         'Content-Type': 'application/json'
       }
     })
@@ -248,17 +161,4 @@ document.addEventListener("DOMContentLoaded", function () {
       })
 
   })
-
-  function placaNoExisteEnTabla(placa) {
-    let rows = table.getData();
-    return rows.every(row => row.placa !== placa);
-  }
-
-  function serieNoExisteEnTabla(serie) {
-    let rows = table.getData();
-    return rows.every(row => row.serie !== serie);
-  }
-
 });
-
-

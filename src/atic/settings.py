@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'django_filters',
     'constance',
     "constance.backends.database",
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -209,6 +211,10 @@ CONSTANCE_CONFIG = OrderedDict({
     "NOMBRE_ATIC": ("Julio Rayo", "Nombre de encargad@ atic"),
     "CARGO_ATIC": ("Encargado ATIC", "Cargo de encargad@ atic"),
 })
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3030',
+]
 
 # Phone Number
 

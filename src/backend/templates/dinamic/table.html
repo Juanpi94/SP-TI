@@ -10,33 +10,40 @@
         {% csrf_token %}
         <h1 class="ms-4 mb-1 fs-2">{{ title }}</h1>
         <div id="table-container" class="container m-0 pt-1 ps-4">
+
+            <!-- Contoladores de la tabla -->
             <div id="table-controls" class="row">
-                <div class="btn-toolbar col-9 justify-content-between" role="toolbar">
-                    <div class="btn-group" data-atic-group="manipulate">
+                <!-- Area de botones -->
+                <div class="btn-toolbar w-100 justify-content-between" role="toolbar">
+                    <div class="btn-group" role="group" data-atic-group="manipulate">
+
                         <button data-atic-action="add" data-bs-toggle="modal" data-bs-target="#form-modal"
-                                class="col-1 btn btn-add">Añadir
+                                class=" btn btn-add">Añadir
                         </button>
-                        <button data-atic-action="delete-selected" class="col-1 btn btn-delete-all" disabled>Eliminar
+                        <button data-atic-action="delete-selected" class=" btn btn-delete-all" disabled>Eliminar
                             seleccionados
                         </button>
                     </div>
 
                     <div class="btn-group" data-atic-group="export">
-                        <button class="col-1 btn btn-print" data-atic-action="print">Imprimir</button>
-                        <button class="col-1 btn btn-export-visibles" data-atic-action="export-visible">Exportar
+                        <button class=" btn btn-print" data-atic-action="print">Imprimir</button>
+                        <button class=" btn btn-export-visibles" data-atic-action="export-visible">Exportar
                             visibles
                         </button>
-                        <button class="col-1 btn btn-export-all" data-atic-action="export-all">Exportar
+                        <button class=" btn btn-export-all" data-atic-action="export-all">Exportar
                             Todos
                         </button>
                     </div>
+
                     <div class="btn-group" data-atic-group="deselect">
-                        <button class="col-1 btn btn-deselect" data-atic-action="deselect" disabled>Deseleccionar
+                        <button class=" btn btn-deselect" data-atic-action="deselect" disabled>Deseleccionar
                         </button>
                     </div>
 
-
                 </div>
+                <!-- Fin area de botones -->
+
+                <!-- Area de busqueda -->
                 <div class="row my-2 d-flex align-items-end gap-3">
                     <div class="col-3">
                         <label for="select-field-input">Campo</label>
@@ -47,34 +54,35 @@
                         <input type="text" class="form-control mb-0" id="search-input">
                     </div>
                 </div>
-
+                <!-- Fin Area de busqueda -->
             </div>
             <div id="tabulator-table" class="row">
-
             </div>
+            <!-- Fin de Contoladores de la tabla -->
+
         </div>
-        {% include "components/formModal.html" with form=form modal_id="form-modal" form_id="add-form" modal_label="Añadir activo" %}
-        {% include "components/formModal.html" with form=edit_form modal_id="edit-form-modal" form_id="edit-form" modal_label="Editar activo" %}
+
+        <!-- Modals para agregar informacion -->
+        {% include "components/formModal.html" with form=form modal_id="form-modal" form_id="add-form" modal_label="Añadir" %}
+        {% include "components/formModal.html" with form=edit_form modal_id="edit-form-modal" form_id="edit-form" modal_label="Editar" %}
         {% include "components/detailsModal.html" %}
+        <!-- Modals para agregar informacion -->
+
     {% endblock content %}
 {% endif %}
 {% block script %}
     {{ data|json_script:"data" }}
+
     <script type="application/javascript">
         //Estas variables son utilizadas por el archivo javascript, django las renderiza por medio del lenguaje de plantillas
         const target_view = "{{target_view}}" //Esta es la dirección del api que utiliza esta vista
-
-        const add =
-        {{request.user|can_write|_and:add|strip_quotes}}
-
-        const edit =
-        {{request.user|can_write|_and:edit|strip_quotes}}
+        const add = {{request.user|can_write|_and:add|strip_quotes}}
+        const edit = {{request.user|can_write|_and:edit|strip_quotes}}
     </script>
+
     {% comment %} Este es el archivo javascript que interactua con la tabla{% endcomment %}
     <script src="{% static 'js/table.bundle.js' %}" defer></script>
     {% if custom_script %}
         <script src="{% static custom_script %}" defer></script>
     {% endif %}
-
-
 {% endblock script %}

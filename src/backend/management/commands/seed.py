@@ -3,8 +3,7 @@ from django.core.management.color import Style
 from faker import Faker
 
 import backend.utils.dateutils
-from backend.models import Proveedor, Ubicaciones, Funcionarios, User, Tipo, Subtipo, Compra, \
-    Activos_Plaqueados, Activos_No_Plaqueados
+from backend.models import *
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from django.core.management import call_command
@@ -15,8 +14,8 @@ import os
 from atic.settings import BASE_DIR
 from backend.utils.dateutils import try_parse_date
 
-
 class Command(BaseCommand):
+    
     help = "Ingresa registros a la base de datos"
     silent = False
 
@@ -26,10 +25,8 @@ class Command(BaseCommand):
         self.stdout.write(styled_msg)
 
     def add_arguments(self, parser):
-        parser.add_argument("--no-flush", action="store_true",
-                            help="Realizar seed sin eliminar información en la base de datos")
-        parser.add_argument("--flush", action="store_true",
-                            help="Elimina la información de la base de datos, sin necesitar confirmacion")
+        parser.add_argument("--no-flush", action="store_true", help="Realizar seed sin eliminar información en la base de datos")
+        parser.add_argument("--flush", action="store_true", help="Elimina la información de la base de datos, sin necesitar confirmacion")
         parser.add_argument("--silent", action="store_true", help="Silencia los mensajes por consola")
 
     def handle(self, *args, **options):
@@ -49,6 +46,9 @@ class Command(BaseCommand):
 
         with open(json_file_path, encoding="UTF-8") as file:
             data = json.load(file)
+            
+            #--------------------------------------------------------------------------------
+            
             # FUNCIONARIOS
             funcionarios = data["funcionarios"]
             registros = len(funcionarios)
@@ -75,6 +75,57 @@ class Command(BaseCommand):
                 exitos += 1
             self.write(self.style.SUCCESS(
                 f"Se añadieron {exitos} funcionarios de {registros}"))
+            
+            #--------------------------------------------------------------------------------
+            
+            # INSTALACIONES
+            instalaciones = data["instalaciones"]
+            registros = len(instalaciones)
+            exitos = 0
+
+            for instalacion in instalaciones:
+                instalacion_db = Instalaciones()
+                instalacion_db.ubicacion = instalacion['ubicacion']
+                instalacion_db.save()
+                exitos += 1
+
+            self.write(self.style.SUCCESS(
+                f"Se añadieron {exitos} instalaciones de {registros}"))
+            
+            #--------------------------------------------------------------------------------
+            
+            # TIPOS_TRAMITES
+            tipostramites = data["tipostramites"]
+            registros = len(tipostramites)
+            exitos = 0
+
+            for tipostramite in tipostramites:
+                tipotramite_db = TiposTramites()
+                tipotramite_db.nombre = tipostramite['nombre']
+                tipotramite_db.save()
+                exitos += 1
+
+            self.write(self.style.SUCCESS(
+                f"Se añadieron {exitos} tipostramites de {registros}"))
+            
+            #--------------------------------------------------------------------------------
+            
+            # TIPOS_ESTADOS
+            tiposestados = data["tiposestados"]
+            registros = len(tiposestados)
+            exitos = 0
+
+            for tipoestado in tiposestados:
+                tipoestado_db = TiposEstados()
+                tipoestado_db.nombre = tipoestado['nombre']
+                tipoestado_db.save()
+                exitos += 1
+
+            self.write(self.style.SUCCESS(
+                f"Se añadieron {exitos} tiposestados de {registros}"))
+            
+            #--------------------------------------------------------------------------------
+            
             # UBICACIONES
             ubicaciones = data["ubicaciones"]
             registros = len(ubicaciones)
@@ -88,12 +139,16 @@ class Command(BaseCommand):
                 mock_custodio = Funcionarios.objects.get(id=1)
                 db_ubicacion = Ubicaciones()
                 db_ubicacion.ubicacion = ubicacion["ubicacion"]
+                db_ubicacion.instalacion_id = ubicacion["instalacion"]
                 db_ubicacion.custodio = mock_custodio
                 db_ubicacion.save()
                 ubicaciones_repeated.append(db_ubicacion.ubicacion)
                 exitos += 1
             self.write(self.style.SUCCESS(
                 f"Se añadieron {exitos} ubicaciones de {registros}"))
+            
+            #--------------------------------------------------------------------------------
+            
             # USUARIOS
             usuarios = data["usuarios"]
             registros = len(usuarios)
@@ -110,6 +165,9 @@ class Command(BaseCommand):
                 exitos += 1
             self.write(self.style.SUCCESS(
                 f"Se añadieron {exitos} usuarios de {registros}"))
+            
+            #--------------------------------------------------------------------------------
+            
             # TIPOS
             tipos = data["tipos"]
             registros = len(tipos)
@@ -124,6 +182,9 @@ class Command(BaseCommand):
 
             self.write(self.style.SUCCESS(
                 f"Se añadieron {exitos} tipos de {registros}"))
+            
+            #--------------------------------------------------------------------------------
+            
             # SUBTIPOS
             subtipos = data["subtipos"]
             registros = len(subtipos)
@@ -139,6 +200,24 @@ class Command(BaseCommand):
             self.write(self.style.SUCCESS(
                 f"Se añadieron {exitos} subtipos de {registros}"))
 
+            #--------------------------------------------------------------------------------
+
+            # ESTADOS
+            estados = data["estados"]
+            registros = len(estados)
+            exitos = 0
+
+            for estado in estados:
+                estado_db = Estados()
+                estado_db.descripcion = estado['descripcion']
+                estado_db.save()
+                exitos += 1
+
+            self.write(self.style.SUCCESS(
+                f"Se añadieron {exitos} estados de {registros}"))
+        
+            #--------------------------------------------------------------------------------
+            
             # ACTIVO
             activos = data["activos"]
             registros = len(activos)
@@ -172,6 +251,8 @@ class Command(BaseCommand):
             self.write(self.style.SUCCESS(
                 f"Se añadieron {exitos} activos de {registros}"))
 
+            #--------------------------------------------------------------------------------
+
             # COMPRAS
             compras = data["compras"]
             registros = len(compras)
@@ -198,8 +279,7 @@ class Command(BaseCommand):
                     compra_db.proveedor = proveedor_db
                     compra_db.save()
 
-                    random_activo = Activos_Plaqueados.objects.exclude(
-                        compra__isnull=False)[0]
+                    random_activo = Activos_Plaqueados.objects.exclude(compra__isnull=False)[0]
                     random_activo.compra = compra_db
                     random_activo.save()
 
@@ -211,6 +291,8 @@ class Command(BaseCommand):
             self.write(self.style.SUCCESS(
                 f"Se añadieron {exitos} Compras y proveedores de {registros}"))
 
+            #--------------------------------------------------------------------------------
+
             # Management
             User.objects.create_superuser(
                 username="admin", email="Admin@gmail.com", password="AdminPassword")
@@ -218,10 +300,8 @@ class Command(BaseCommand):
                 "Se creó super usuario admin"))
             content_type = ContentType(app_label="backend", model="global")
             content_type.save()
-            lectura = Permission.objects.create(
-                codename="lectura", name="Puede leer los contenidos de la pagina", content_type=content_type)
-            escritura = Permission.objects.create(
-                codename="escritura", name="Puede escribir contenidos en la pagina", content_type=content_type)
+            lectura = Permission.objects.create(codename="lectura", name="Puede leer los contenidos de la pagina", content_type=content_type)
+            escritura = Permission.objects.create(codename="escritura", name="Puede escribir contenidos en la pagina", content_type=content_type)
             lector_group = Group.objects.create(name="Lector")
             lector_group.permissions.add(lectura)
 

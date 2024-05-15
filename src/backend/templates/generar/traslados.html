@@ -11,7 +11,7 @@
             {{ form.tramite }}
             <div class="mt-3 d-grid gap-2 d-md-flex justify-content-md-center">
                 <button class="btn btn-secondary" data-action="load">Cargar traslado</button>
-                <button class="btn btn-primary " data-action="pdf">Guardar pdf</button>
+                <button class="btn btn-primary " id="printPDF" data-action="pdf">Guardar pdf</button>
 
             </div>
 
@@ -20,7 +20,7 @@
     {% include "components/pdfHeader.html" %}
 
     <input type="hidden" id="tramite_id" value="-1">
-    <div class="pdf-container container mt-3">
+    <div id="pdf_area" class="pdf-container container mt-3">
         <div class="row body-row gap-4 justify-content-center">
             <div class="row justify-content-center gap-4">
                 <h3 class="text-uppercase text-center">Traslado de Activos</h3>
@@ -79,7 +79,7 @@
                     </label
                     >
                     {{ form.placa }}
-                    <button id="boton_agregar" data-action="add_placa" class="btn btn-primary adder-button z-0">
+                    <button id="add_plaqueados" data-action="add_placa" class="btn btn-primary adder-button z-0">
                         <i class="bi bi-plus fs-4"></i>
                     </button>
                 </div>
@@ -89,7 +89,7 @@
                     </label
                     >
                     {{ form.serie }}
-                    <button id="boton_agregar2" data-action="add_serie" class="btn btn-primary m-0 adder-button z-0">
+                    <button id="add_noPlaqueados" data-action="add_serie" class="btn btn-primary m-0 adder-button z-0">
                         <i class="bi bi-plus fs-4"></i>
                     </button>
                 </div>
@@ -156,11 +156,11 @@
                 <div class="d-grid gap-2 d-md-flex justify-content-md-center">
 
                     <button data-action="add"
-                            data-target="3"
+                            data-target="2"
                             class=" btn btn-primary">Añadir espacio
                     </button>
                     <button data-action="substract"
-                            data-target="3"
+                            data-target="2"
                             class=" btn btn-secondary">Reducir espacio
                     </button>
                 </div>
@@ -187,7 +187,7 @@
         const destinoSelect = `{{form.destino}}`;
     </script>
     <script src="{% static 'js/traslado.bundle.js' %}"></script>
-
+    
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
