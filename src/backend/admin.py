@@ -99,14 +99,6 @@ admin.site.register(TiposEstados, TiposEstadosAdmin)
 
 #-------------# Area de Pruebas #-------------#
 
-class PruebasAPIAdmin(admin.ModelAdmin):
-    pass
 
-class RelPruebasAPIAdmin(admin.ModelAdmin):
-    pass
-
-admin.site.register(PruebasAPI, PruebasAPIAdmin)
-
-admin.site.register(RelPruebasAPI, RelPruebasAPIAdmin)
 
 #-----------# Fin Area de Pruebas #-----------#

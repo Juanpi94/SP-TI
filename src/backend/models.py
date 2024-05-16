@@ -244,28 +244,7 @@ class Unidad(models.Model):
         
 #-------------# Area de Pruebas #-------------#
 
-class PruebasAPI(models.Model):
-    dato1 = models.CharField(max_length=120)
-    dato2 = models.CharField(max_length=120)
-    dato3 = models.CharField(max_length=120, blank=True, null=True)
-    
-    def __str__(self):
-        return self.dato1
 
-    class Meta:
-        verbose_name_plural = "PruebasAPIs"
-        
-class RelPruebasAPI(models.Model):
-    dato1 = models.CharField(max_length=120)
-    dato2 = models.CharField(max_length=120)
-    dato3 = models.CharField(max_length=120, blank=True, null=True)
-    dato4 = models.ForeignKey(to="PruebasAPI", on_delete=models.SET_NULL, null=True)
-    
-    def __str__(self):
-        return self.dato1
-
-    class Meta:
-        verbose_name_plural = "RelPruebasAPI"
 
 #-----------# Fin Area de Pruebas #-----------#
         

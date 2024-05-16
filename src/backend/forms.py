@@ -98,15 +98,6 @@ class TallerExportForm(Form):
 
 #-------------# Area de Pruebas #-------------#
 
-class PruebasAPIForm(ModelForm):
 
-    class Meta:
-        model = PruebasAPI
-        exclude = ["id"]
-        
-class RelPruebasAPIForm(ModelForm):
-    class Meta:
-        model = RelPruebasAPI
-        exclude = ["id"]
 
 #-----------# Fin Area de Pruebas #-----------#
