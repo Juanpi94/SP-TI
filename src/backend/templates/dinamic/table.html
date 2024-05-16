@@ -75,9 +75,9 @@
 
     <script type="application/javascript">
         //Estas variables son utilizadas por el archivo javascript, django las renderiza por medio del lenguaje de plantillas
-        const target_view = "{{target_view}}" //Esta es la dirección del api que utiliza esta vista
-        const add = {{request.user|can_write|_and:add|strip_quotes}}
-        const edit = {{request.user|can_write|_and:edit|strip_quotes}}
+        const target_view = "{{ target_view }}" //Esta es la dirección del api que utiliza esta vista
+        const add = {{ request.user|can_write|_and:add|strip_quotes }}
+        const edit = {{ request.user|can_write|_and:edit|strip_quotes }}
     </script>
 
     {% comment %} Este es el archivo javascript que interactua con la tabla{% endcomment %}

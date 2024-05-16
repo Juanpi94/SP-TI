@@ -2,58 +2,7 @@ from .models import *
 from django.contrib.auth.models import Group, User
 from rest_framework import serializers
 
-class RelatedFields(serializers.RelatedField):
-    def to_representation(self, value):
-        return value.name
-
-class PlaqueadosSerializer(serializers.ModelSerializer):
-    compra = serializers.SlugRelatedField(slug_field="numero_orden_compra", queryset=Compra.objects.all())
-    red = serializers.SlugRelatedField(slug_field="is", queryset=Red.objects.all())
-    subtipo = serializers.SlugRelatedField(slug_field="id", queryset=Subtipo.objects.all())
-    tipo = serializers.SlugRelatedField(slug_field="id", queryset=Tipo.objects.all())
-    ubicacion = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
-    ubicacion_anterior = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
-    estado = serializers.SlugRelatedField(slug_field="id", queryset=Estados.objects.all())
-
-    class Meta:
-        model = Activos_Plaqueados
-        fields = "__all__"
-
-class NoPlaqueadosSerializer(serializers.ModelSerializer):
-    compra = serializers.SlugRelatedField(slug_field="numero_factura", queryset=Compra.objects.all())
-    estado = serializers.SlugRelatedField(slug_field="id", queryset=Estados.objects.all())
-    red = serializers.SlugRelatedField(slug_field="MAC", queryset=Red.objects.all())
-    subtipo = serializers.SlugRelatedField(slug_field="nombre", queryset=Subtipo.objects.all())
-    tipo = serializers.SlugRelatedField(slug_field="nombre", queryset=Tipo.objects.all())
-    ubicacion = serializers.SlugRelatedField(slug_field="ubicacion", queryset=Ubicaciones.objects.all())
-    ubicacion_anterior = serializers.SlugRelatedField(slug_field="ubicacion", queryset=Ubicaciones.objects.all())
-
-    class Meta:
-        model = Activos_No_Plaqueados
-        fields = "__all__"
-
-
-
-class CompraSerializer(serializers.ModelSerializer):
-    proveedor = serializers.SlugRelatedField(slug_field="id", queryset=Proveedor.objects.all())
     
-    # def to_representation(self, instance):
-    #     representation = super().to_representation(instance)
-
-    #     return {
-    #         "id": instance.numero_orden_compra,
-    #         **representation
-    #     }
-
-    class Meta:
-        model = Compra
-        fields = "__all__"
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = '__all__'
-
 # REPORTES
 class UbicacionReportSerializer(serializers.ModelSerializer):
     class Meta:
@@ -70,31 +19,9 @@ class RedReportSerializer(serializers.ModelSerializer):
         model = Red
         fields = "__all__"
 
-class PlaqueadosReportSerializer(serializers.ModelSerializer):
-    tramites = TramitesReportSerializer(many=True, read_only=True)
-    ubicacion = UbicacionReportSerializer(read_only=True)
-    ubicacion_anterior = UbicacionReportSerializer(read_only=True)
-    tipo = serializers.StringRelatedField(read_only=True)
-    subtipo = serializers.StringRelatedField(read_only=True)
-    compra = CompraSerializer(read_only=True)
-    red = RedReportSerializer(read_only=True)
-
-    class Meta:
-        model = Activos_Plaqueados
-        fields = "__all__"
-
-
 #-------------# Area de Pruebas #-------------#
 
-class PruebasAPISerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PruebasAPI
-        fields = '__all__'
-        
-class RelPruebasAPISerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RelPruebasAPI
-        fields = '__all__'
+
 
 #-----------# Fin Area de Pruebas #-----------#
 
@@ -137,7 +64,6 @@ class TramitesSerializer(serializers.ModelSerializer):
     remitente = serializers.SlugRelatedField(slug_field="id", queryset=Funcionarios.objects.all())
     tipo = serializers.SlugRelatedField(slug_field="id", queryset=TiposTramites.objects.all())
     estado = serializers.SlugRelatedField(slug_field="id", queryset=TiposEstados.objects.all())
-    fecha = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d", "iso-8601"])
 
     class Meta:
         model = Tramites
@@ -145,8 +71,6 @@ class TramitesSerializer(serializers.ModelSerializer):
 
 class UnidadSerializer(serializers.ModelSerializer):
     coordinador = serializers.SlugRelatedField(slug_field="id", queryset=Funcionarios.objects.all())
-    
-    field_to_edit = serializers.CharField()
     
     class Meta:
         model = Unidad
@@ -186,5 +110,69 @@ class DeshechoSerializer(serializers.ModelSerializer):
         model = Deshecho
         fields = "__all__"
 
+class CompraSerializer(serializers.ModelSerializer):
+    proveedor = serializers.SlugRelatedField(slug_field="id", queryset=Proveedor.objects.all())
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        return {
+            "id": instance.numero_orden_compra,
+            **representation
+        }
+
+    class Meta:
+        model = Compra
+        fields = "__all__"
+  
+class PlaqueadosSerializer(serializers.ModelSerializer):
+    tipo = serializers.SlugRelatedField(slug_field="id", queryset=Tipo.objects.all())
+    subtipo = serializers.SlugRelatedField(slug_field="id", queryset=Subtipo.objects.all())
+    compra = serializers.SlugRelatedField(slug_field="numero_orden_compra", queryset=Compra.objects.all())
+    red = serializers.SlugRelatedField(slug_field="id", queryset=Red.objects.all())
+    ubicacion = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
+    estado = serializers.SlugRelatedField(slug_field="id", queryset=Estados.objects.all())
+    ubicacion_anterior = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
+    tramites = serializers.SlugRelatedField(slug_field="id", queryset=Tramites.objects.all(), many=True)
+    
+    class Meta:
+        model = Activos_Plaqueados
+        fields = "__all__"
+ 
+class NoPlaqueadosSerializer(serializers.ModelSerializer):
+    tipo = serializers.SlugRelatedField(slug_field="id", queryset=Tipo.objects.all())
+    subtipo = serializers.SlugRelatedField(slug_field="id", queryset=Subtipo.objects.all())
+    compra = serializers.SlugRelatedField(slug_field="numero_orden_compra", queryset=Compra.objects.all())
+    red = serializers.SlugRelatedField(slug_field="id", queryset=Red.objects.all())
+    ubicacion = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
+    estado = serializers.SlugRelatedField(slug_field="id", queryset=Estados.objects.all())
+    ubicacion_anterior = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
+    tramites = serializers.SlugRelatedField(slug_field="id", queryset=Tramites.objects.all(), many=True)
+
+    class Meta:
+        model = Activos_No_Plaqueados
+        fields = "__all__"
+ 
+class UserSerializer(serializers.ModelSerializer):
+    groups = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'is_staff', 'groups']
+        
 
 #-----------# serializers funcionando #-----------#
+
+class PlaqueadosReportSerializer(serializers.ModelSerializer):
+    tramites = TramitesReportSerializer(many=True, read_only=True)
+    ubicacion = UbicacionReportSerializer(read_only=True)
+    ubicacion_anterior = UbicacionReportSerializer(read_only=True)
+    tipo = serializers.StringRelatedField(read_only=True)
+    subtipo = serializers.StringRelatedField(read_only=True)
+    compra = CompraSerializer(read_only=True)
+    red = RedReportSerializer(read_only=True)
+
+    class Meta:
+        model = Activos_Plaqueados
+        fields = "__all__"       
+

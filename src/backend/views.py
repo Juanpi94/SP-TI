@@ -345,7 +345,7 @@ class Red_Table_View(Table_View):
 ##---- Plataforma/Tramites ----##
 
 #--Generar traslados
-class Generar_Tramite_View(WritePermMixin, TemplateView):
+class Generar_Traslado_View(WritePermMixin, TemplateView):
     template_name = "generar/traslados.html"
 
     def get_context_data(self, **kwargs):
@@ -581,23 +581,6 @@ class Importar_Reporte_No_Plaqueados(WritePermMixin, ImportTemplateView):
 
 #-------------# Area de Pruebas #-------------#   
  
-class PruebasAPI_View(Table_View):
-    target_view = "pruebasapi"
-    model = models.PruebasAPI
-    title = "Pruebas"
-    
-class RelPruebasAPI_View(Table_View):
-    target_view = "relpruebasapi"
-    model = models.RelPruebasAPI
-    title = "RelPruebas"
- 
- 
-class EditForms(WritePermMixin, TemplateView):
-    template_name = "dinamic/edit.html"
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["form"] = FuncionariosForm()
-        return context
+
 
 #-----------# Fin Area de Pruebas #-----------#

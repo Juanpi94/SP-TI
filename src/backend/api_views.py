@@ -1,20 +1,13 @@
 import logging
-import traceback
 from io import BytesIO
 import pandas as pd
 import pandas.errors as pd_errors
 from django.db.models import F
 
-from django.http import Http404
-
 from backend import models as mdls
 from backend.import_helper import ImportModule
 from .models import *
-from backend.serializers import (CompraSerializer, DeshechoSerializer, FuncionariosSerializer, 
-                                 NoPlaqueadosSerializer, PlaqueadosSerializer, 
-                                 ProveedorSerializer, RedSerializer, SubtipoSerializer, TallerSerializer, 
-                                 TipoSerializer, TramitesSerializer, TrasladosSerializer, UbicacionesSerializer, 
-                                 UnidadSerializer, UserSerializer, PruebasAPISerializer, RelPruebasAPISerializer)
+from backend.serializers import *
 from django.http import FileResponse, HttpResponseServerError
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
@@ -24,8 +17,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from django.middleware.csrf import get_token
-
 
 logger = logging.getLogger("atic.errors")
 
@@ -151,7 +142,7 @@ class GenerarTramiteView(APIView):
             activos_plaqueados = request.data.pop('activos_plaqueados')
             traslados = request.data.pop('traslados')
 
-            tramite_serializer = TramitesCreateSerializer(
+            tramite_serializer = TramitesSerializer(
                 data=request.data, context={"request": request})
             try:
                 tramite_serializer.is_valid(raise_exception=True)
@@ -211,10 +202,6 @@ class NoPlaqueadosApiViewSet(AuthMixin, ModelViewSet):
 class TramitesApiViewset(AuthMixin, ModelViewSet):
     queryset = mdls.Tramites.objects.all()
     serializer_class = TramitesSerializer
-    
-class TramiteAPIListCreateView(ListCreateAPIView):
-    queryset = PruebasAPI.objects.all()
-    serializer_class = PruebasAPISerializer
     
 class TramiteAPIRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     queryset = Tramites.objects.all()
@@ -279,65 +266,6 @@ class UnidadApiViewset(AuthMixin, ModelViewSet):
 
 #-------------# Area de Pruebas #-------------#
 
-class PruebasAPIListCreateView(ListCreateAPIView):
-    queryset = PruebasAPI.objects.all()
-    serializer_class = PruebasAPISerializer
-    
-class PruebasAPIRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
-    queryset = PruebasAPI.objects.all()
-    serializer_class = PruebasAPISerializer
-    
-class PruebasAPIApiViewset(AuthMixin, ModelViewSet):
-    queryset = PruebasAPI.objects.all()
-    serializer_class = PruebasAPISerializer
- 
-#-----------------------#
-    
-class RelPruebasAPIListCreateView(APIView):
-    def get(self, request):
-        queryset = RelPruebasAPI.objects.all()
-        serializer = RelPruebasAPISerializer(queryset, many=True)
-        return Response(serializer.data)
 
-    def post(self, request):
-        serializer = RelPruebasAPISerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
-
-class RelPruebasAPIRetrieveUpdateDestroyView(APIView):
-    def put(self, request, *args, **kwargs):
-        # Obtener el token CSRF desde la cookie
-        request.META['CSRF_COOKIE'] = get_token(request)
-        return super().put(request, *args, **kwargs)
-    
-    def get_object(self, pk):
-        try:
-            return RelPruebasAPI.objects.get(pk=pk)
-        except RelPruebasAPI.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk):
-        instance = self.get_object(pk)
-        serializer = RelPruebasAPISerializer(instance)
-        return Response(serializer.data)
-
-    def put(self, request, pk):
-        instance = self.get_object(pk)
-        serializer = RelPruebasAPISerializer(instance, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=400)
-
-    def delete(self, request, pk):
-        instance = self.get_object(pk)
-        instance.delete()
-        return Response(status=204)
-
-class RelPruebasAPIApiViewset(AuthMixin, ModelViewSet):
-    queryset = mdls.RelPruebasAPI.objects.all()
-    serializer_class = RelPruebasAPISerializer
 
 #-----------# Fin Area de Pruebas #-----------#

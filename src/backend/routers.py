@@ -23,7 +23,6 @@ api_router.register(r"funcionarios", FuncionariosApiViewset, basename="funcionar
 
 #-------------# Area de Pruebas #-------------#
 
-api_router.register(r"pruebasapi", PruebasAPIApiViewset, basename="pruebasapi")
-api_router.register(r"relpruebasapi", PruebasAPIApiViewset, basename="relpruebasapi")
+
 
 #-----------# Fin Area de Pruebas #-----------#

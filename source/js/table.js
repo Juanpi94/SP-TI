@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import _config from "./_config";
 import _xlsx from "./_xlsx";
 import { Modal } from "bootstrap";
+import { formatearFecha } from "./recursos/dateFormat";
 
 
 /**
@@ -334,7 +335,12 @@ async function onCreateRecord(event) {
         if (value.trim() === "") {
             value = null;
         }
+
+        if (key == "fecha") {
+            value = formatearFecha(value);
+        }
         dataObject[key] = value;
+
     });
     for (let choicesItem of addChoices) {
         const name = choicesItem.passedElement.element.name;
@@ -344,6 +350,7 @@ async function onCreateRecord(event) {
         }
     }
 
+    console.table(dataObject)
     api.post("", dataObject).then(onCreateSuccess).catch(onCreateError);
 }
 
@@ -409,8 +416,6 @@ async function onEditSingle(event) {
         const id = event.target.dataset.aticId;
         const formData = new FormData(editForm);
         const dataObject = {};
-        console.log(formData.keys())
-        console.log(editChoices)
 
         for (const [key, value] of formData.entries()) {
         

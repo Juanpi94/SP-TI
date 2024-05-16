@@ -25,7 +25,7 @@ urlpatterns = [
     path("traslados/", views.Traslados_Table_View.as_view(), name="traslados"),
     path("generar/taller/", views.Taller_View.as_view(), name="generar_taller"),
     path("generar/desecho/", views.Deshecho_View.as_view(), name="generar_deshecho"),
-    path("generar/traslados/", views.Generar_Tramite_View.as_view(), name="generar_traslados"),
+    path("generar/traslados/", views.Generar_Traslado_View.as_view(), name="generar_traslados"),
     
     ## Reportes
     path("reportes/plaqueados/", views.Reporte_Plaqueados.as_view(), name="reporte_plaqueados"),
@@ -49,10 +49,7 @@ urlpatterns = [
     
     #-------------# Area de Pruebas #-------------#   
     
-    path('pruebas/', views.PruebasAPI_View.as_view(), name="pruebasapi"),
-    path('relpruebas/', views.RelPruebasAPI_View.as_view(), name="relpruebasapi"),
-    
-    path("editar/<int:id>/", views.EditForms.as_view(), name="editar"),
+  
     
     #-----------# Fin Area de Pruebas #-----------#
 
@@ -67,13 +64,8 @@ apiurlpatterns = [
     path("auth/change_password/", api_views.ChangePasswordView.as_view()),
     
     
-    path("tramites/", api_views.TramiteAPIListCreateView.as_view(), name="api-tramites"),
-    path("tramites/<int:id>/", api_views.TramiteAPIRetrieveUpdateDestroyView.as_view(), name="tramites"),
-        
 #-------------# Area de Pruebas #-------------#   
  
-    path('pruebasapi/', api_views.PruebasAPIListCreateView.as_view(), name='pruebasapi'),
-    path('pruebasapi/<int:id>/', api_views.PruebasAPIRetrieveUpdateDestroyView.as_view(), name='pruebasapi/'),
 
 #-----------# Fin Area de Pruebas #-----------#
 
