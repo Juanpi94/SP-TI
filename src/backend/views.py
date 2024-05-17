@@ -581,6 +581,12 @@ class Importar_Reporte_No_Plaqueados(WritePermMixin, ImportTemplateView):
 
 #-------------# Area de Pruebas #-------------#   
  
-
+class FuncionariosUpdateAPIView(WritePermMixin, TemplateView):
+    template_name = "components/editData.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = FuncionariosForm()
+        return context
 
 #-----------# Fin Area de Pruebas #-----------#

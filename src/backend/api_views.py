@@ -10,7 +10,7 @@ from .models import *
 from backend.serializers import *
 from django.http import FileResponse, HttpResponseServerError
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -266,6 +266,8 @@ class UnidadApiViewset(AuthMixin, ModelViewSet):
 
 #-------------# Area de Pruebas #-------------#
 
-
+class FuncionariosUpdateAPIView(generics.UpdateAPIView):
+    queryset = Funcionarios.objects.all()
+    serializer_class = FuncionariosSerializer
 
 #-----------# Fin Area de Pruebas #-----------#

@@ -49,7 +49,7 @@ urlpatterns = [
     
     #-------------# Area de Pruebas #-------------#   
     
-  
+    path('funcionarios/update/<int:pk>/', views.FuncionariosUpdateAPIView.as_view(), name='update_funcionarios'),
     
     #-----------# Fin Area de Pruebas #-----------#
 

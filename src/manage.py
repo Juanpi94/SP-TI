@@ -9,7 +9,11 @@ import dotenv
 
 def main():
     """Run administrative tasks."""
-    dotenv.read_dotenv()
+    
+    if hasattr(dotenv, 'read_dotenv'):
+        dotenv.read_dotenv()
+    else:
+        dotenv.load_dotenv()
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "atic.settings")
     try:

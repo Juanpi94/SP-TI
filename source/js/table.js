@@ -213,9 +213,9 @@ function getControlColumn(cell) {
     }
     return `
     <div class="btn-group">
-        <button class="btn btn-primary clr-white" data-bs-toggle="modal" data-bs-target="#edit-form-modal"  data-atic-action="edit" data-atic-id="${id}">
+        <a class="btn btn-primary clr-white" data-atic-action="edit" data-atic-id="${id}" href="/funcionarios/update/${id}/">
             <i class="bi bi-pencil-fill user-select-none"></i>
-        </button>
+        </a>
         <button class="btn btn-danger clr-white" data-atic-action="delete" data-atic-id="${id}">
             <i class="bi bi-trash-fill user-select-none"></i>
          </button>
@@ -336,7 +336,8 @@ async function onCreateRecord(event) {
             value = null;
         }
 
-        if (key == "fecha") {
+        if (contieneFecha(key) || key == "garantia") {
+            // Esto se ejecuta solo si la fecha no es con el formato YYYY-MM-DD
             value = formatearFecha(value);
         }
         dataObject[key] = value;
@@ -410,7 +411,7 @@ function onHideEditModal() {
 /**
  * @param {MouseEvent} event
  */
-async function onEditSingle(event) {
+function onEditSingle(event) {
     event.preventDefault();
     if ("aticId" in event.target.dataset) {
         const id = event.target.dataset.aticId;
@@ -418,23 +419,26 @@ async function onEditSingle(event) {
         const dataObject = {};
 
         for (const [key, value] of formData.entries()) {
-        
-            dataObject[key] = value
-        };
+            dataObject[key] = value;
+        }
 
+        // Incluir datos de editChoices si es necesario
         editChoices.forEach(choice => {
             const name = choice.passedElement.element.name;
             dataObject[name] = choice.getValue(true);
         });
 
-        console.table(dataObject)
+        console.table(dataObject);
 
-        api.put(`${id}/`, dataObject).then(onEditSuccess).catch(onEditError);
+        // Enviar los datos al servidor
+        api.put(`${id}/`, dataObject)
+            .then(onEditSuccess)
+            .catch(onEditError);
     } else {
         Swal.fire({
             icon: "error",
             text: "Ocurrió un error inesperado, no se puede actualizar este activo"
-        })
+        });
     }
 }
 
