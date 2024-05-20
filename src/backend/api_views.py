@@ -258,9 +258,9 @@ class ProveedorApiViewset(AuthMixin, ModelViewSet):
     queryset = mdls.Proveedor.objects.all()
     serializer_class = ProveedorSerializer
 
-class UnidadApiViewset(AuthMixin, ModelViewSet):
-    queryset = mdls.Unidad.objects.all()
-    serializer_class = UnidadSerializer
+class UnidadesApiViewset(AuthMixin, ModelViewSet):
+    queryset = mdls.Unidades.objects.all()
+    serializer_class = UnidadesSerializer
 
 #-------------# (AuthMixin, ModelViewSet) #-------------#
 

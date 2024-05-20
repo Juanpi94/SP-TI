@@ -19,8 +19,11 @@ function formatearFecha(dateString) {
     } else {
         return dateString;
     }
-
-
 }
 
-module.exports = { formatearFecha };
+function contieneFecha(str) {
+    const regex = /\bfecha\b/;
+    return regex.test(str);
+}
+
+module.exports = { formatearFecha, contieneFecha };

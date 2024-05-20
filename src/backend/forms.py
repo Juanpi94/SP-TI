@@ -28,8 +28,8 @@ class FuncionariosForm(ModelForm):
 
 class UnidadForm(ModelForm):
     class Meta:
-        model = Unidad
-        exclude = ["id"]
+        model = Unidades
+        exclude = ["codigo"]
 
 class UbicacionesForm(ModelForm):
     
@@ -62,6 +62,7 @@ class UserForm(ModelForm):
     class Meta:
         model = User
         exclude = ["id", "date_joined"]
+        
 
 ## ---- De HTML a PDF ---- ##
 

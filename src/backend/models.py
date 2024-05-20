@@ -107,7 +107,7 @@ class Ubicaciones(models.Model):
     ubicacion = models.CharField(max_length=120, unique=True)
     instalacion = models.ForeignKey(Instalaciones, on_delete=models.DO_NOTHING)
     custodio = models.ForeignKey(Funcionarios, on_delete=models.DO_NOTHING)
-    unidad = models.ForeignKey(to="Unidad", on_delete=models.SET_NULL, null=True)
+    unidades = models.ForeignKey(to="Unidades", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.ubicacion
@@ -231,7 +231,7 @@ class Proveedor(models.Model):
     class Meta:
         verbose_name_plural = "Proveedores"
 
-class Unidad(models.Model):
+class Unidades(models.Model):
     codigo = models.CharField(max_length=5, primary_key=True)
     nombre = models.CharField(max_length=120, null=True)
     coordinador = models.ForeignKey(to=Funcionarios, on_delete=models.SET_NULL, null=True)

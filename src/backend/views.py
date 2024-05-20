@@ -1,25 +1,20 @@
-from django import forms
-import django.forms
-from django.forms import DateInput
-
-from .forms import FuncionariosForm, DeshechoExportForm, TallerExportForm, TramitesExportForm
-
-from .models import Funcionarios
-from backend import models
-
-from django.shortcuts import render, redirect
-from datetime import datetime
+import django
+from .forms import *
 from typing import List
-
-from django.db import models as mdls
+from django import forms
+from backend import models
+from django.apps import apps
+from django.views import View
+from datetime import datetime
+from django.urls import resolve
 from django.db.models import F, QuerySet
-
 from backend.custom_types import ColumnDefs
+from django.shortcuts import render, redirect
 from backend.exceptions import ArgMissingException
-from backend.serializers import PlaqueadosReportSerializer
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.shortcuts import render
+from django.forms import DateInput, modelform_factory
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import RedirectView, TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
 #--Verificacion de lectura de usuario
@@ -38,7 +33,7 @@ class Perfil_View(LoginRequiredMixin, TemplateView):
 
 #--Redireccionamiento a la pagina principal
 class index(RedirectView):
-    pattern_name = "plaqueados"
+    pattern_name = "activos_plaqueados"
 
 #--Funcion encargada de cargar los datos a la tabla
 class Table_View(ReadPermMixin, TemplateView):
@@ -242,7 +237,7 @@ class Table_View(ReadPermMixin, TemplateView):
 
 ##--Activos Plaqueados
 class Activos_Plaqueados_View(Table_View):
-    target_view = "plaqueados"
+    target_view = "activos_plaqueados"
     model = models.Activos_Plaqueados
     title = "Activos plaqueados"
     id_field = "placa"
@@ -280,7 +275,7 @@ class Activos_Plaqueados_View(Table_View):
 
 ##--Activos No Plaqueados
 class Activos_No_Plaqueados_View(Table_View):
-    target_view = "no_plaqueados"
+    target_view = "activos_no_plaqueados"
     model = models.Activos_No_Plaqueados
     title = "Activos no plaqueados"
     id_field = "serie"
@@ -315,7 +310,7 @@ class Tipo_View(Table_View):
 
 ##--Subtipos
 class Subtipo_View(Table_View):
-    target_view = "subtipos"
+    target_view = "subtipo"
     model = models.Subtipo
     title = "Subtipos de activos"
     exclude = ["activos_plaqueados", "activos_no_plaqueados"]
@@ -505,7 +500,7 @@ class Funcionarios_View(Table_View):
     model = models.Funcionarios
     title = "Funcionarios"
     
-    exclude = ['ubicaciones', 'unidad']
+    exclude = ['ubicaciones', 'unidades']
     
 #--Ubicaciones
 class Ubicaciones_View(Table_View):
@@ -515,13 +510,13 @@ class Ubicaciones_View(Table_View):
     exclude = ["activos_plaqueados", "plaqueados", "activos_no_plaqueados", "no_anterior"]
 
     def get_values(self) -> QuerySet:
-        return super().get_queryset().values().annotate(custodio=F("custodio__nombre_completo"), unidad=F("unidad__nombre"), instalacion=F('instalacion__ubicacion'))
+        return super().get_queryset().values().annotate(custodio=F("custodio__nombre_completo"), unidades=F("unidades__nombre"), instalacion=F('instalacion__ubicacion'))
     
 #--Unidades
 class Unidades_Table_View(Table_View):
     target_view = "unidades"
     title = "Unidades Universitarias"
-    model = models.Unidad
+    model = models.Unidades
     id_field = "codigo"
     
     exclude = 'ubicaciones'
@@ -530,7 +525,7 @@ class Unidades_Table_View(Table_View):
         return super().get_queryset().values().annotate(coordinador=F("coordinador__nombre_completo"))
     
 #--Usuarios
-class Users_View(Table_View):
+class User_View(Table_View):
     target_view = "user"
     exclude = ["password", "logentry", "tramites",
                "is_superuser", "is_staff", "groups", "user_permissions"]
@@ -579,14 +574,41 @@ class Importar_Reporte_No_Plaqueados(WritePermMixin, ImportTemplateView):
 
 #----------------------------------------------------------------------------------------
 
-#-------------# Area de Pruebas #-------------#   
- 
-class FuncionariosUpdateAPIView(WritePermMixin, TemplateView):
-    template_name = "components/editData.html"
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["form"] = FuncionariosForm()
-        return context
+#-------------# Area de Pruebas #-------------#  
+from django.contrib import messages
+        
+class EditGenericView(View):
+    def get_model_name(self, request):
+        # Get the current URL
+        current_url = resolve(request.path_info).url_name
+        # Assume that the URL name is the same as the model name
+        model_name = current_url.split('/')[1] # adjust this as necessary based on your URL structure
+        return model_name.lower()   
+
+    def get(self, request, model_name, primary_key):
+        if model_name == 'user':
+            Model = apps.get_model('auth', model_name)
+        else:
+            Model = apps.get_model('backend', model_name)
+        primary_key_field = Model._meta.pk.name
+        model_instance = get_object_or_404(Model, **{primary_key_field: primary_key})
+        FormClass = modelform_factory(Model, fields='__all__')
+        form = FormClass(instance=model_instance)
+        return render(request, 'components/editData.html', {'form': form})
+
+    def post(self, request, model_name, primary_key):
+        if model_name == 'user':
+            Model = apps.get_model('auth', model_name)
+        else:
+            Model = apps.get_model('backend', model_name)
+        primary_key_field = Model._meta.pk.name
+        model_instance = get_object_or_404(Model, **{primary_key_field: primary_key})
+        FormClass = modelform_factory(Model, fields='__all__')
+        form = FormClass(request.POST, instance=model_instance)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"{model_name} editado con éxito")
+            return redirect(f'/{model_name}/')
+        return render(request, 'components/editData.html', {'form': form})
 
 #-----------# Fin Area de Pruebas #-----------#

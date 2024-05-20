@@ -48,6 +48,8 @@ keyring==24.3.1
 Markdown==3.3.6
 more-itertools==10.2.0
 msgpack==1.0.8
+mysql==0.0.3
+mysql-connector-python==8.4.0
 mysqlclient==2.2.0
 numpy==1.22.4
 odfpy==1.4.1
@@ -97,4 +99,3 @@ virtualenv==20.26.2
 wsproto==1.2.0
 XlsxWriter==3.0.6
 zipp==3.8.0
-Faker==25.2.0

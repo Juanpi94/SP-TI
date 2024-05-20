@@ -4,6 +4,7 @@ from backend import views
 from backend import api_views
 from backend.routers import api_router
 
+
 def protected(view): return login_required(view, "/login")
 
 urlpatterns = [
@@ -17,8 +18,8 @@ urlpatterns = [
     path("red/", views.Red_Table_View.as_view(), name="red"),
     path("compra/", views.Compra_View.as_view(), name="compra"),
     path("subtipo/", views.Subtipo_View.as_view(), name="subtipo"),
-    path("plaqueados/", views.Activos_Plaqueados_View.as_view(), name="plaqueados"),
-    path("no-plaqueados/", views.Activos_No_Plaqueados_View.as_view(), name="no_plaqueados"),
+    path("activos_plaqueados/", views.Activos_Plaqueados_View.as_view(), name="activos_plaqueados"),
+    path("activos_no_plaqueados/", views.Activos_No_Plaqueados_View.as_view(), name="activos_no_plaqueados"),
     
     ## Tramites
     path("tramites/", views.Tramites_View.as_view(), name="tramites"),
@@ -37,11 +38,11 @@ urlpatterns = [
     
     # ADMINISTRACION
     ## Gestion
-    path("users/", views.Users_View.as_view(), name="users"),
+    path("user/", views.User_View.as_view(), name="user"),
     path("unidades/", views.Unidades_Table_View.as_view(), name="unidades"),
     path("ubicaciones/", views.Ubicaciones_View.as_view(), name="ubicaciones"),
     path("funcionarios/", views.Funcionarios_View.as_view(), name="funcionarios"),
-    path("proveedores/", views.Proveedores_Table_View.as_view(), name="proveedores"),
+    path("proveedor/", views.Proveedores_Table_View.as_view(), name="proveedor"),
     
     # Importar
     path("importar/reporte-plaqueados/", views.Importar_Reporte_Plaqueados.as_view(), name="importar_reporte_plaqueados"),
@@ -49,7 +50,8 @@ urlpatterns = [
     
     #-------------# Area de Pruebas #-------------#   
     
-    path('funcionarios/update/<int:pk>/', views.FuncionariosUpdateAPIView.as_view(), name='update_funcionarios'),
+    # path('editData/<int:codigo>/', views.EditUnidadView.as_view(), name='editData'),
+    path('<str:model_name>/<int:primary_key>/edit/', views.EditGenericView.as_view(), name='editData'),
     
     #-----------# Fin Area de Pruebas #-----------#
 
@@ -65,7 +67,8 @@ apiurlpatterns = [
     
     
 #-------------# Area de Pruebas #-------------#   
- 
+
+
 
 #-----------# Fin Area de Pruebas #-----------#
 

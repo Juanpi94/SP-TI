@@ -2,12 +2,12 @@
 
 {% block content %}
 <section class="row p-3">
-    <form id="{{ form_id }}" class="d-flex flex-column gap-2 mb-5">
+    <!-- formulario.html -->
+    <form method="POST"  class="d-flex flex-column gap-2 mb-5">
         {% csrf_token %}
         <input type="hidden" name="user" value="{{ request.user.id }}"/>
         {% for field in form %}
             {{ field.errors }}
-
             {% if field.field.widget.input_type != "hidden" %}
                 <label for="{{ field.id_for_label }}">
                     {{ field.label }}
@@ -21,9 +21,10 @@
                 {{ field }}
             {% endif %}
         {% endfor %}
+        <button type="submit" class="btn btn-primary">
+            Actualizar
+        </button>
     </form>
-    <button id="{{ form_id }}-btn" type="submit" class="btn btn-primary" data-bs-dismiss="modal" data-atic-action="submit">
-        Actualizar
-    </button>
 </section>
+
 {% endblock %}

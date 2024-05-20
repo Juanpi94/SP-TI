@@ -16,7 +16,7 @@ api_router.register(r"tramites", TramitesApiViewset, basename="tramites")
 api_router.register(r"traslados", TrasladosApiViewset, basename="traslados")
 
 api_router.register(r"user", UserApiViewset, "user")
-api_router.register(r"unidades", UnidadApiViewset, "unidades")
+api_router.register(r"unidades", UnidadesApiViewset, "unidades")
 api_router.register(r"proveedor", ProveedorApiViewset, "proveedor")
 api_router.register(r"ubicaciones", UbicacionesApiViewset, "ubicaciones")
 api_router.register(r"funcionarios", FuncionariosApiViewset, basename="funcionarios")

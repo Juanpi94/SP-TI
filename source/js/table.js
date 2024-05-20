@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import _config from "./_config";
 import _xlsx from "./_xlsx";
 import { Modal } from "bootstrap";
-import { formatearFecha } from "./recursos/dateFormat";
+import { formatearFecha, contieneFecha } from "./recursos/dateFormat";
 
 
 /**
@@ -85,8 +85,15 @@ const addChoices = []
 const editChoices = []
 let fieldChoice = null;
 
-addForm.querySelectorAll("select").forEach(element => addChoices.push(new Choices(element, _config.choicesJS, {allowHTML: true})));
-editForm.querySelectorAll("select").forEach(element => editChoices.push(new Choices(element, _config.choicesJS, {allowHTML: true})));
+addForm.querySelectorAll("select").forEach(element => {
+    let choicesConfig = Object.assign({}, _config.choicesJS, { allowHTML: true });
+    addChoices.push(new Choices(element, choicesConfig));
+});
+
+editForm.querySelectorAll("select").forEach(element => {
+    let choicesConfig = Object.assign({}, _config.choicesJS, { allowHTML: true });
+    editChoices.push(new Choices(element, choicesConfig));
+});
 
 
 table.on("dataLoaded", init_listeners)
@@ -213,9 +220,12 @@ function getControlColumn(cell) {
     }
     return `
     <div class="btn-group">
-        <a class="btn btn-primary clr-white" data-atic-action="edit" data-atic-id="${id}" href="/funcionarios/update/${id}/">
-            <i class="bi bi-pencil-fill user-select-none"></i>
+        <a class="btn btn-primary clr-white" data-atic-action="edit" data-atic-id="${id}" href="/${target_view}/${id}/edit/">
+           <i class="bi bi-pencil-fill user-select-none"></i>
         </a>
+        <!-- <button class="btn btn-primary clr-white" data-bs-toggle="modal" data-bs-target="#edit-form-modal"  data-atic-action="edit" data-atic-id="${id}">
+            <i class="bi bi-pencil-fill user-select-none"></i>
+        </button> -->
         <button class="btn btn-danger clr-white" data-atic-action="delete" data-atic-id="${id}">
             <i class="bi bi-trash-fill user-select-none"></i>
          </button>
@@ -321,6 +331,7 @@ function onDeselectAll() {
     table.deselectRow();
 }
 
+
 /**
  *
  * @param {SubmitEvent} event
@@ -332,6 +343,7 @@ async function onCreateRecord(event) {
     const dataObject = {};
 
     formData.forEach((value, key) => {
+        console.log(`Key: ${key}, Value: ${value}`);
         if (value.trim() === "") {
             value = null;
         }
@@ -352,6 +364,7 @@ async function onCreateRecord(event) {
     }
 
     console.table(dataObject)
+    console.log(dataObject)
     api.post("", dataObject).then(onCreateSuccess).catch(onCreateError);
 }
 
@@ -364,6 +377,7 @@ async function onShowEditModal(event) {
 
     if ("aticId" in event.relatedTarget.dataset) {
         const id = event.relatedTarget.dataset.aticId;
+        console.log(event.relatedTarget.dataset.aticId)
         const response = await api.get(`${id}`);
         if (response.status >= 200 && response.status < 205) {
             const { data } = response;

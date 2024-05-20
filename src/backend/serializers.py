@@ -69,16 +69,16 @@ class TramitesSerializer(serializers.ModelSerializer):
         model = Tramites
         fields = "__all__"
 
-class UnidadSerializer(serializers.ModelSerializer):
+class UnidadesSerializer(serializers.ModelSerializer):
     coordinador = serializers.SlugRelatedField(slug_field="id", queryset=Funcionarios.objects.all())
     
     class Meta:
-        model = Unidad
+        model = Unidades
         fields = '__all__'
 
 class UbicacionesSerializer(serializers.ModelSerializer):
     custodio = serializers.SlugRelatedField(slug_field="id", queryset=Funcionarios.objects.all())
-    unidad = serializers.SlugRelatedField(slug_field="codigo", queryset=Unidad.objects.all())
+    unidades = serializers.SlugRelatedField(slug_field="codigo", queryset=Unidades.objects.all())
     instalacion = serializers.SlugRelatedField(slug_field="id", queryset=Instalaciones.objects.all())
     
     class Meta:
@@ -154,7 +154,11 @@ class NoPlaqueadosSerializer(serializers.ModelSerializer):
         fields = "__all__"
  
 class UserSerializer(serializers.ModelSerializer):
-    groups = serializers.StringRelatedField(many=True)
+    groups = serializers.SlugRelatedField(
+        many=True,
+        slug_field='id',
+        queryset=Group.objects.all()
+    )
 
     class Meta:
         model = User
