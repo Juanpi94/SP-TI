@@ -7,6 +7,7 @@ import _config from "./_config";
 import _xlsx from "./_xlsx";
 import { Modal } from "bootstrap";
 import { formatearFecha, contieneFecha } from "./recursos/dateFormat";
+// import bcrypt from "bcryptjs";
 
 
 /**
@@ -70,15 +71,36 @@ const id_field = tabulatorCustomConfig["id_field"]
 if (id_field == "null") {
     throw new Error("LAS VISTAS DE TABLA REQUIEREN DE UN VALOR PARA EL ID")
 }
+
+const statusColorMap = {
+    "Aceptado": 'bg-warning',
+    "En Proceso": 'bg-primary',
+    "Finalizado": 'bg-success',
+    "Pendiente": 'bg-danger'
+};
+
 //Se inicializa la tabla
 const table = new Tabulator("#tabulator-table", {
     data: jsonData["data"],
     autoColumns: autoColumns,
     index: id_field,
     columns: columnDefs,
+    rowFormatter: function(row) {
+        // Obtén los datos de la fila
+        const data = row.getData();
+        
+        // Obtén la clase de color correspondiente al estado
+        const colorClass = statusColorMap[data.estado];
+        if (colorClass) {
+            const rowElement = row.getElement();
+            rowElement.classList.add(colorClass);
+            rowElement.classList.add('bg-opacity-25');
+        }
+    },
     ..._config.table
 });
 
+// console.table(jsonData["data"][0].estado)
 
 //Se inicializan los select con ChoicesJS y luego se colocan en arreglos correspondientes
 const addChoices = []
@@ -108,12 +130,14 @@ function init_listeners() {
 
     searchInput.addEventListener("keyup", onSearch);
 
+    //Se obtienen las columnas visibles para el select de busqueda
     let choices = table.getColumns("visible").map((col) => {
         const def = col.getDefinition();
-
+        
         if (typeof def.title === "undefined" || def.title === "Controls" || def.title === "id") {
             return null;
         }
+
         return { value: def.field, label: def.title }
     }).filter(choice => choice !== null)
 
@@ -178,6 +202,7 @@ function addControlListeners() {
 
     table.on("cellClick", (e, cell) => {
         const classList = cell.getElement().classList;
+        console.log(classList)
         if (classList.contains("controls-cell") || classList.contains("selection-cell")) return;
         const value = cell.getValue();
         if (!value) return;
@@ -340,30 +365,26 @@ async function onCreateRecord(event) {
     event.preventDefault();
 
     const formData = new FormData(event.target);
+    const saltRounds = 10;
     const dataObject = {};
 
     formData.forEach((value, key) => {
-        console.log(`Key: ${key}, Value: ${value}`);
-        if (value.trim() === "") {
-            value = null;
-        }
-
-        if (contieneFecha(key) || key == "garantia") {
-            // Esto se ejecuta solo si la fecha no es con el formato YYYY-MM-DD
-            value = formatearFecha(value);
-        }
+        // Si el valor es una cadena vacía, se convierte en null
+        value = value.trim() === "" ? null : value.trim();
+        // Si el valor es una fecha o date, se formatea en YYYY-MM-DD
+        if (contieneFecha(key) || key == "garantia") value = formatearFecha(value);
+        // Si el valor es una contraseña, se encripta
+        // if (key == 'password' || key == 'contraseña') value = bcrypt.hashSync(value, saltRounds);
         dataObject[key] = value;
-
     });
+
     for (let choicesItem of addChoices) {
         const name = choicesItem.passedElement.element.name;
 
-        if (name in dataObject) {
-            dataObject[name] = choicesItem.getValue(true);
-        }
+        if (name in dataObject) dataObject[name] = choicesItem.getValue(true);
     }
 
-    console.table(dataObject)
+    // console.table(dataObject)
     console.log(dataObject)
     api.post("", dataObject).then(onCreateSuccess).catch(onCreateError);
 }

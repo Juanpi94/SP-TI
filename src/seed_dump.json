@@ -8945,7 +8945,7 @@
 			"descripcion": "Optimo"
 		},
 		{
-			"descripcion": "Deshecho"
+			"descripcion": "Desecho"
 		},
 		{
 			"descripcion": "En uso"
@@ -8966,7 +8966,7 @@
 			"descripcion": "Obsoleto en repuesto"
 		},
 		{
-			"descripcion": "Proceso de deshecho"
+			"descripcion": "Proceso de desecho"
 		},
 		{
 			"descripcion": "Uso academico"
@@ -8985,7 +8985,7 @@
 			"nombre" : "Traslado"
 		},
 		{
-			"nombre" : "Deshecho"
+			"nombre" : "Desecho"
 		},
 		{
 			"nombre" : "Taller"

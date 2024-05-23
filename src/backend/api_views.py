@@ -10,7 +10,7 @@ from .models import *
 from backend.serializers import *
 from django.http import FileResponse, HttpResponseServerError
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status, generics
+from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -209,16 +209,9 @@ class TramiteAPIRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 #---- Fin Tramites acciones ----#
 
 
-
-class DeshechoApiViewset(AuthMixin, ModelViewSet):
-    queryset = mdls.Deshecho.objects.all()
-    serializer_class = DeshechoSerializer
-
-class TrasladosApiViewset(AuthMixin, ModelViewSet):
-    queryset = mdls.Traslados.objects.all()
-    serializer_class = TrasladosSerializer
-
-    filter_backends = (DjangoFilterBackend,)
+class DesechoApiViewset(AuthMixin, ModelViewSet):
+    queryset = mdls.Desecho.objects.all()
+    serializer_class = DesechoSerializer
 
 class TallerApiViewset(AuthMixin, ModelViewSet):
     queryset = mdls.Taller.objects.all()
@@ -266,8 +259,6 @@ class UnidadesApiViewset(AuthMixin, ModelViewSet):
 
 #-------------# Area de Pruebas #-------------#
 
-class FuncionariosUpdateAPIView(generics.UpdateAPIView):
-    queryset = Funcionarios.objects.all()
-    serializer_class = FuncionariosSerializer
+
 
 #-----------# Fin Area de Pruebas #-----------#

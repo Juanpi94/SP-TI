@@ -38,6 +38,7 @@ class Estados(models.Model):
     class Meta:
         verbose_name_plural = "Estados"
 
+## Acomodar orden segun el documento inventario de activos 
 class AbstractActivo(models.Model):
     observacion = models.CharField(max_length=500, blank=True, null=True, verbose_name="Observación")
     nombre = models.CharField(max_length=120, verbose_name="Nombre", blank=False, null=False)
@@ -59,6 +60,7 @@ class AbstractActivo(models.Model):
     class Meta:
         abstract = True
 
+## Modificar esto para activo plaqueado con placa
 class Activos_Plaqueados(AbstractActivo):
     placa = models.CharField(max_length=20, primary_key=True)
     serie = models.CharField(max_length=200, null=True, blank=False, verbose_name="Serie", unique=True)
@@ -70,9 +72,10 @@ class Activos_Plaqueados(AbstractActivo):
     class Meta:
         verbose_name_plural = "Activos Plaqueados"
 
+## Modificar esto para activo no plaqueado limpio
 class Activos_No_Plaqueados(AbstractActivo):
     serie = models.CharField(max_length=200, primary_key=True)
-    ubicacion_anterior = models.ForeignKey(to="Ubicaciones", on_delete=models.DO_NOTHING, blank=True, null=True, related_name="no_anterior")
+    ubicacion_anterior = models.ForeignKey(to="Ubicaciones", on_delete=models.DO_NOTHING, blank=True, null=True, related_name="no_plaqueados")
 
     class Meta:
         verbose_name_plural = "Activos No Plaqueados"
@@ -153,7 +156,7 @@ class Tramites(models.Model):
     recipiente = models.ForeignKey("Funcionarios", on_delete=models.DO_NOTHING, related_name="+", null=True)
     tipo = models.ForeignKey(TiposTramites, on_delete=models.DO_NOTHING)
     estado = models.ForeignKey(TiposEstados, on_delete=models.DO_NOTHING)
-    detalles = models.CharField(max_length=900)
+    detalles = models.ManyToManyField(to=Activos_Plaqueados, related_name='tramites_rel')
     fecha = models.DateField(default=now)
 
     def __str__(self) -> str:
@@ -162,25 +165,14 @@ class Tramites(models.Model):
     class Meta:
         verbose_name_plural = "Tramites"
 
-class Traslados(models.Model):
-    destino = models.ForeignKey(to=Ubicaciones, on_delete=models.DO_NOTHING, related_name="+")
-    tramite = models.ForeignKey(to=Tramites, on_delete=models.CASCADE, related_name="traslados")
-    detalle = models.CharField(max_length=120, default="")
-
-    def __str__(self) -> str:
-        return self.detalle
-    
-    class Meta:
-        verbose_name_plural = "Traslados"
-
-class Deshecho(models.Model):
+class Desecho(models.Model):
     tramite = models.ForeignKey(to=Tramites, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.tramite.referencia
 
     class Meta:
-        verbose_name_plural = "Deshechos"
+        verbose_name_plural = "Desechos"
 
 class Taller(models.Model):
     tramite = models.OneToOneField(to=Tramites, on_delete=models.CASCADE, related_name="taller")

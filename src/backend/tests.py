@@ -12,7 +12,7 @@ from selenium.webdriver.edge.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import TimeoutException
 
-from backend.models import Activos
+from backend.models import Activos_Plaqueados as Activos
 
 
 class StaticSeleniumLiveServerTestCase(StaticLiveServerTestCase):

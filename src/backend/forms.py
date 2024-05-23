@@ -10,14 +10,13 @@ class TramitesForm(ModelForm):
     remitente = ModelChoiceField(queryset=Funcionarios.objects.all(), to_field_name="nombre_completo", required=False)
     recipiente = ModelChoiceField(queryset=Funcionarios.objects.all(), to_field_name="nombre_completo", required=False)
     solicitante = ModelChoiceField(queryset=User.objects.all(), to_field_name="username")
-    detalles = CharField(widget=Textarea(attrs={"class": "detalles-textarea"}))
+    detalles = ModelChoiceField(queryset=Activos_Plaqueados.objects.all(), to_field_name="Placas")
     class Meta:
         model = Tramites
         exclude = ["id"]
         
 class SerieChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        print(obj.serie)
         return obj.serie
     
 class FuncionariosForm(ModelForm):
@@ -61,13 +60,12 @@ class UserForm(ModelForm):
 
     class Meta:
         model = User
-        exclude = ["id", "date_joined"]
+        exclude = ["id", "date_joined", "last_login"]
         
 
 ## ---- De HTML a PDF ---- ##
 
 ## Encargado de generar el formulario para Generar traslado
-
 class TramitesExportForm(Form):
     tramite = ModelChoiceField(queryset=Tramites.objects.all(), empty_label="--seleccione tramite a cargar", label=None, widget=Select(attrs={'class': 'col-12 tramite-select'}))
     consecutivo = CharField(label="Consecutivo:", max_length=100, widget=TextInput(attrs={"class": "form-input"}))
@@ -80,8 +78,8 @@ class TramitesExportForm(Form):
     serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(), empty_label="--serie", label="Serie:", to_field_name="serie", widget=Select(attrs=attrs_col))
 
 ## Encargado de generar el formulario para Generar desechos
-class DeshechoExportForm(Form):
-    deshechos = ModelChoiceField(queryset=Tramites.objects.all(), empty_label="--seleccione tramite a cargar", label=None, widget=Select(attrs={'class': 'col-12 tramite-select'}))
+class DesechoExportForm(Form):
+    desechos = ModelChoiceField(queryset=Tramites.objects.all(), empty_label="--seleccione tramite a cargar", label=None, widget=Select(attrs={'class': 'col-12 tramite-select'}))
     placa = ModelChoiceField(queryset=Activos_Plaqueados.objects.all(), empty_label="--placa", label="Placa:", to_field_name="placa", widget=Select(attrs=attrs_col))
     serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(),empty_label="--serie", label="Serie:", to_field_name="id", widget=Select(attrs=attrs_col))
 

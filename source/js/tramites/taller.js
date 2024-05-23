@@ -2,7 +2,7 @@ import Choices from "choices.js";
 
 const { spaceAction } = require('../recursos/actionSpaces.js')
 
-const deshechosSelect = new Choices('select[name="talleres"]', {
+const desechosSelect = new Choices('select[name="talleres"]', {
   classNames: { containerOuter: "choices col-12 me-3" },
   itemSelectText: 'select',
   allowHTML: true,

@@ -48,7 +48,7 @@ class TallerAdmin(admin.ModelAdmin):
     pass
 
 
-class DeshechoAdmin(admin.ModelAdmin):
+class DesechoAdmin(admin.ModelAdmin):
     pass
 
 
@@ -78,7 +78,6 @@ class TiposEstadosAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(Traslados, TrasladosAdmin)
 admin.site.register(Ubicaciones, UbicacionesAdmin)
 admin.site.register(Funcionarios, FuncionariosAdmin)
 admin.site.register(Tipo, TiposAdmin)
@@ -87,7 +86,7 @@ admin.site.register(Proveedor, ProveedoresAdmin)
 admin.site.register(Red, RedAdmin)
 admin.site.register(Compra, CompraAdmin)
 admin.site.register(Taller, TallerAdmin)
-admin.site.register(Deshecho, DeshechoAdmin)
+admin.site.register(Desecho, DesechoAdmin)
 admin.site.register(Tramites, TramitesAdmin)
 admin.site.register(Permissions, PermissionAdmin)
 admin.site.register(Activos_Plaqueados, ActivosPlaqueadosAdmin)

@@ -8,7 +8,22 @@
 {% if request.user|can_read %}
     {% block content %}
         {% csrf_token %}
-        <h1 class="ms-4 mb-1 fs-2">{{ title }}</h1>
+        <div class="d-flex justify-content-between">
+            <h1 class="ms-4 mb-1 fs-2">{{ title }}</h1>
+            {% if title == 'Tramites' %}
+                <div class="d-flex justify-content-end align-items-center me-3">
+                    <i class="fa-solid fa-square text-success fs-3 me-2 ms-3"></i>
+                    Finalizado
+                    <i class="fa-solid fa-square text-warning fs-3 me-2 ms-3"></i>
+                    Aceptado
+                    <i class="fa-solid fa-square text-primary fs-3 me-2 ms-3"></i>
+                    En Proceso
+                    <i class="fa-solid fa-square text-danger fs-3 me-2 ms-3"></i>
+                    Pendiente
+                </div>
+            {% endif %}
+        </div>
+
         <div id="table-container" class="container m-0 pt-1 ps-4">
 
             <!-- Contoladores de la tabla -->
@@ -80,8 +95,11 @@
         const edit = {{ request.user|can_write|_and:edit|strip_quotes }}
     </script>
 
+    <script src="https://kit.fontawesome.com/48ce04dd4f.js" crossorigin="anonymous"></script>
+
     {% comment %} Este es el archivo javascript que interactua con la tabla{% endcomment %}
     <script src="{% static 'js/table.bundle.js' %}" defer></script>
+
     {% if custom_script %}
         <script src="{% static custom_script %}" defer></script>
     {% endif %}

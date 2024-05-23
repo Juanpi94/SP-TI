@@ -2,7 +2,7 @@ import Choices from "choices.js";
 
 
 
-const deshechosSelect = new Choices('select[name="deshechos"]', {
+const desechosSelect = new Choices('select[name="desechos"]', {
     classNames: { containerOuter: "choices col-12 me-3" },
     itemSelectText: 'select',
 

@@ -95,19 +95,12 @@ class FuncionariosSerializer(serializers.ModelSerializer):
         model = Funcionarios
         fields = "__all__"
 
-class TrasladosSerializer(serializers.ModelSerializer):
-    destino = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
-    tramite = serializers.SlugRelatedField(slug_field="id", queryset=Tramites.objects.all())
-    
-    class Meta:
-        model = Traslados
-        fields = '__all__'
 
-class DeshechoSerializer(serializers.ModelSerializer):
+class DesechoSerializer(serializers.ModelSerializer):
     tramite = serializers.SlugRelatedField(slug_field="id", queryset=Tramites.objects.all())
 
     class Meta:
-        model = Deshecho
+        model = Desecho
         fields = "__all__"
 
 class CompraSerializer(serializers.ModelSerializer):
@@ -162,7 +155,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'is_staff', 'groups']
+        fields = ['id', 'username', 'email', 'groups', 'password', 'first_name', 'last_name', 'is_superuser',
+                  'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions']
         
 
 #-----------# serializers funcionando #-----------#

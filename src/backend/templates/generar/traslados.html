@@ -183,7 +183,7 @@
         const tramitesView = "{% url 'tramites-list'%}";
         const plaqueadosView = `{% url 'plaqueados-list' %}`;
         const noPlaqueadosView = `{% url 'no_plaqueados-list' %}`
-        const trasladosView = `{% url 'traslados-list'%}`;
+        {% comment %} const trasladosView = `{% url 'traslados-list'%}`; {% endcomment %}
         const destinoSelect = `{{form.destino}}`;
     </script>
     <script src="{% static 'js/traslado.bundle.js' %}"></script>

@@ -26,11 +26,9 @@ class Command(BaseCommand):
             # La base de datos existe, borramos y creamos de nuevo
             cursor.execute("DROP DATABASE {}".format(database))
             cursor.execute("CREATE DATABASE {}".format(database))
-            print("borro - creo")
         else:
             # La base de datos no existe, creamos una nueva
             cursor.execute("CREATE DATABASE {}".format(database))
-            print("creo")
 
         # Cerrar la conexión
         cnx.close()

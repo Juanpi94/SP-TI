@@ -228,7 +228,6 @@ class Table_View(ReadPermMixin, TemplateView):
             return self.get_queryset().values()
         fields = [f.name for f in self.model._meta.get_fields()]
         fields = list(filter(lambda x: x not in self.exclude, fields))
-        print(fields)
         return self.get_queryset().values(*fields)
 
 #----------------------------------------------------------------------------------------
@@ -283,20 +282,13 @@ class Activos_No_Plaqueados_View(Table_View):
 
     def get_form_fields(self) -> dict:
         return {
-            "ubicacion": forms.ModelChoiceField(
-                queryset=models.Ubicaciones.objects.all(),
-                required=False,
-                to_field_name="ubicacion",
-            ),
-            "ubicacion_anterior": forms.ModelChoiceField(
-                queryset=models.Ubicaciones.objects.all(),
-                required=False,
-            ),
+            "ubicacion": forms.ModelChoiceField(queryset=models.Ubicaciones.objects.all(), required=False),
+            "ubicacion_anterior": forms.ModelChoiceField(queryset=models.Ubicaciones.objects.all(), required=False),
             "field_order": ["serie"],
         }
 
     def get_values(self) -> QuerySet:
-        return super().get_values().annotate(id=F("serie"), tipo=F('tipo__nombre'), subtipo=F('subtipo__nombre'),
+        return super().get_values().annotate(serie=F("serie"), tipo=F('tipo__nombre'), subtipo=F('subtipo__nombre'),
                                               compra=F('compra__numero_orden_compra'), red=F('red__MAC'), 
                                               ubicacion=F('ubicacion__ubicacion'), ubicacion_anterior=F('ubicacion_anterior__ubicacion'),
                                               tramites=F('tramites__referencia'))
@@ -352,13 +344,13 @@ class Generar_Traslado_View(WritePermMixin, TemplateView):
 
         return context
 
-#--Generar deshecho
-class Deshecho_View(WritePermMixin, TemplateView):
-    template_name = "generar/deshecho.html"
+#--Generar desecho
+class Desecho_View(WritePermMixin, TemplateView):
+    template_name = "generar/desecho.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["form"] = DeshechoExportForm()
+        context["form"] = DesechoExportForm()
         return context
 
 #--Generar traslado a taller
@@ -377,7 +369,7 @@ class Tramites_View(Table_View):
     add = False
     title = "Tramites"
     exclude = ["activos_plaqueados", "activos_no_plaqueados",
-               "traslados", "deshecho", "taller"]
+               "traslados", "desecho", "taller"]
     
     def get_values(self) -> QuerySet:
         return super().get_values().annotate(solicitante=F('solicitante__username'), remitente=F('remitente__nombre_completo'),
@@ -387,7 +379,6 @@ class Tramites_View(Table_View):
 #--Ver traslados
 class Traslados_Table_View(Table_View):
     target_view = "traslados"
-    model = models.Traslados
     title = "Traslados"
     
     def get_values(self) -> QuerySet:

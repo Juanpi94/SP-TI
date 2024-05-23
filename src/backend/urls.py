@@ -25,7 +25,7 @@ urlpatterns = [
     path("tramites/", views.Tramites_View.as_view(), name="tramites"),
     path("traslados/", views.Traslados_Table_View.as_view(), name="traslados"),
     path("generar/taller/", views.Taller_View.as_view(), name="generar_taller"),
-    path("generar/desecho/", views.Deshecho_View.as_view(), name="generar_deshecho"),
+    path("generar/desecho/", views.Desecho_View.as_view(), name="generar_desecho"),
     path("generar/traslados/", views.Generar_Traslado_View.as_view(), name="generar_traslados"),
     
     ## Reportes
