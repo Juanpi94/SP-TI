@@ -1,4 +1,4 @@
-from django.forms import ModelChoiceField, CharField, Form, ModelForm, DateField, Select, HiddenInput, SelectDateWidget, TextInput, Textarea
+from django.forms import ModelChoiceField, CharField, Form, ChoiceField, ModelForm, DateField, Select, HiddenInput, SelectDateWidget, TextInput, Textarea
 from backend.models import *
 from backend.widgets import DatePickerInput
 from django.contrib.auth.models import User
@@ -66,15 +66,25 @@ class SerieChoiceField(ModelChoiceField):
 
 ## ---- De HTML a PDF ---- ##
 
+class UserModelChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return f"{obj.username} ({obj.id})"
+
 ## Encargado de generar el formulario para Generar traslado
 class TramitesExportForm(Form):
     tramite = ModelChoiceField(queryset=Tramites.objects.all(), empty_label="--seleccione tramite a cargar", label=None, widget=Select(attrs={'class': 'col-12 tramite-select'}))
     consecutivo = CharField(label="Consecutivo:", max_length=100, widget=TextInput(attrs={"class": "form-input"}))
     fecha = DateField(widget=DatePickerInput(attrs={"class": "form-input"}))
-    solicitante = ModelChoiceField(queryset=User.objects.all(), empty_label="--Solicitante--", label="Solicitante:", widget=Select(attrs=attrs_col), to_field_value="id", to_field_name="username")
+    solicitante = ModelChoiceField(queryset=User.objects.all(), empty_label="--Solicitante--", label="Solicitante:", widget=Select(attrs=attrs_col), to_field_name="username")
     destino = ModelChoiceField(queryset=Ubicaciones.objects.all(), empty_label="--seleccionar ubicación", label=None, widget=Select(attrs={'class': 'col destino-select'}))
-    recipiente = ModelChoiceField(queryset=Funcionarios.objects.all(), empty_label="--Recipiente--", label="para:", widget=Select(attrs=attrs_col), to_field_name="nombre_completo")
-    remitente = ModelChoiceField(queryset=Funcionarios.objects.all(), empty_label="--Remitente--", label="de:", widget=Select(attrs=attrs_col), to_field_name="nombre_completo")
+    
+    funcionarios = Funcionarios.objects.all()
+    opciones = [(f.id, f.nombre_completo) for f in funcionarios]
+    opciones.insert(0, ('', '--Seleccione--'))  # Add empty option at the beginning
+    
+    recipiente = ChoiceField(choices=opciones, label="Para:", widget=Select(attrs=attrs_col))
+    remitente = ChoiceField(choices=opciones, label="De:", widget=Select(attrs=attrs_col))
+    
     motivo = CharField(widget=Textarea(attrs={"class": "textarea p-2"}), label="Motivo o Observaciones")
     placa = ModelChoiceField(queryset=Activos_Plaqueados.objects.all(), empty_label="--placa", label="Placa:", to_field_name="placa", widget=Select(attrs=attrs_col))
     serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(), empty_label="--serie", label="Serie:", to_field_name="serie", widget=Select(attrs=attrs_col))

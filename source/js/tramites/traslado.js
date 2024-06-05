@@ -10,6 +10,7 @@ const { spaceAction } = require('../recursos/actionSpaces.js')
 
 const plaqueadosMap = new Map();
 const noPlaqueadosMap = new Map();
+var table = null;
 
 const tramiteSelect = new Choices("#id_tramite", {
     allowHTML: true
@@ -111,32 +112,42 @@ loadInfo.addEventListener("click", () => {
         detallesField.value = data.detalles;
 
         //DE:
-        toSelect.setChoiceByValue(data.recipiente);
-        console.log(toSelect.getValue(true));
-        //PARA:
-        fromSelect.setChoiceByValue(data.remitente);
-        console.log(fromSelect.getValue(true));
+        toSelect.setChoiceByValue(data.recipiente.toString());
 
-        console.log(data.detalles_placa);
-        console.log(data.detalles_serie);
+        //PARA:
+        fromSelect.setChoiceByValue(data.remitente.toString());
+
         plaqueadosMap.clear();
         noPlaqueadosMap.clear();
+
         for (let placa of data.detalles_placa) {
-            plaqueadosMap.set(placa.placa, placa.ubicacion_actual);
+            if (placa.ubicacion_actual && typeof placa.ubicacion_actual._addEventListeners === 'function') {
+                plaqueadosMap.set(placa.placa, placa.ubicacion_actual);
+            }
         }
         for (let serie of data.detalles_serie) {
-            noPlaqueadosMap.set(serie.serie, serie.ubicacion_actual);
+            if (serie.ubicacion_actual && typeof serie.ubicacion_actual._addEventListeners === 'function') {
+                noPlaqueadosMap.set(serie.serie, serie.ubicacion_actual);
+            }
         }
 
-        table.on("renderComplete", () => {
-            for (let [_, choice] of plaqueadosMap.entries()) {
-                choice._addEventListeners()
-            }
+        for (let [_, choice] of plaqueadosMap.entries()) {
+            choice._addEventListeners()
+        }
 
-            for (let [_, choice] of noPlaqueadosMap.entries()) {
-                choice._addEventListeners()
-            }
-        });
+        for (let [_, choice] of noPlaqueadosMap.entries()) {
+            choice._addEventListeners()
+        }
+
+        console.log(plaqueadosMap);
+        console.log(noPlaqueadosMap);
+
+        //Se encarga de traer el elemento plaqueado y agregarlo en el espacio asignado
+        addPlaqueados(selectPlaca, table, plaqueadosMap);
+
+        //Se encarga de traer el elemento no plaqueado y agregarlo en el espacio asignado
+        addNoPlaqueados(selectSerie, table, noPlaqueadosMap);
+
     }
     ).catch((error) => {
         Swal.fire({
@@ -150,7 +161,7 @@ loadInfo.addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-    let table = new Tabulator("#activos-table", {
+    table = new Tabulator("#activos-table", {
         placeholder: "No Data Available",
         layout: "fitColumns",
         height: "100%",
@@ -206,8 +217,8 @@ document.addEventListener("DOMContentLoaded", function () {
     let addButtonTraslados = document.getElementById("add-traslado");
     addButtonTraslados.addEventListener("click", () => {
         let detalles = detallesField.value
-        let recipiente = 1 //Cambiar por el id
-        let remitente = 1 //Cambiar por el id
+        let recipiente = parseInt(fromSelect.getValue().value);
+        let remitente = parseInt(toSelect.getValue().value);
         let solicitante = 1 //Cambiar por el usuario logueado
         let fecha = fechaField.value
         let consecutivo = consecutivoTextfield.value
