@@ -97,7 +97,7 @@ class FuncionariosSerializer(serializers.ModelSerializer):
 
 
 class DesechoSerializer(serializers.ModelSerializer):
-    tramite = serializers.SlugRelatedField(slug_field="id", queryset=Tramites.objects.all())
+    tramite = serializers.SlugRelatedField(slug_field="serie", queryset=Tramites.objects.all())
 
     class Meta:
         model = Desecho
@@ -126,7 +126,6 @@ class PlaqueadosSerializer(serializers.ModelSerializer):
     ubicacion = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
     estado = serializers.SlugRelatedField(slug_field="id", queryset=Estados.objects.all())
     ubicacion_anterior = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
-    tramites = serializers.SlugRelatedField(slug_field="id", queryset=Tramites.objects.all(), many=True)
     
     class Meta:
         model = Activos_Plaqueados
@@ -140,7 +139,6 @@ class NoPlaqueadosSerializer(serializers.ModelSerializer):
     ubicacion = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
     estado = serializers.SlugRelatedField(slug_field="id", queryset=Estados.objects.all())
     ubicacion_anterior = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
-    tramites = serializers.SlugRelatedField(slug_field="id", queryset=Tramites.objects.all(), many=True)
 
     class Meta:
         model = Activos_No_Plaqueados

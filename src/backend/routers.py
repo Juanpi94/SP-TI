@@ -6,7 +6,7 @@ api_router = DefaultRouter()
 api_router.register(r"red", RedApiViewset, "red")
 api_router.register(r"tipo", TipoApiViewset, "tipo")
 api_router.register(r"compra", CompraApiViewset, "compra")
-api_router.register(r"subtipos", SubtipoApiViewSet, "subtipo")
+api_router.register(r"subtipos", SubtipoApiViewSet, "subtipos")
 api_router.register(r"activos_plaqueados", PlaqueadosApiViewset, basename="plaqueados")
 api_router.register(r"activos_no_plaqueados", NoPlaqueadosApiViewSet, basename="no_plaqueados")
 

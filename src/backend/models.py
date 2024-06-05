@@ -49,18 +49,18 @@ class AbstractActivo(models.Model):
     garantia = models.DateField(null=True, verbose_name="Garantia")
     fecha_ingreso = models.DateField(null=True, verbose_name="Fecha de Ingreso")
     fecha_registro = models.DateField(auto_now_add=True, verbose_name="Fecha de Registro")
-    tramites = models.ManyToManyField(to="Tramites", blank=True, verbose_name="Tramites")
+    ##Agregar el campo de categoria ForeignKey(to=categoria, not null, blank=False)
     tipo = models.ForeignKey(Tipo, on_delete=models.SET_NULL, null=True, verbose_name="Tipo")
     subtipo = models.ForeignKey(Subtipo, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Subtipo")
     compra = models.ForeignKey("Compra", on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Compra")
     red = models.ForeignKey(to="Red", on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Red")
-    ubicacion = models.ForeignKey(to="Ubicaciones", on_delete=models.DO_NOTHING, null=True, verbose_name="Ubicación")
+    ubicacion = models.ForeignKey(to="Ubicaciones", on_delete=models.DO_NOTHING, blank=True, null=True, verbose_name="Ubicación")
     estado = models.ForeignKey(Estados, on_delete=models.DO_NOTHING, verbose_name="Estados", default='1')
+    ##agregar el campo de partida ForeignKey(partida, not null, blank=False)
 
     class Meta:
         abstract = True
 
-## Modificar esto para activo plaqueado con placa
 class Activos_Plaqueados(AbstractActivo):
     placa = models.CharField(max_length=20, primary_key=True)
     serie = models.CharField(max_length=200, null=True, blank=False, verbose_name="Serie", unique=True)
@@ -72,7 +72,6 @@ class Activos_Plaqueados(AbstractActivo):
     class Meta:
         verbose_name_plural = "Activos Plaqueados"
 
-## Modificar esto para activo no plaqueado limpio
 class Activos_No_Plaqueados(AbstractActivo):
     serie = models.CharField(max_length=200, primary_key=True)
     ubicacion_anterior = models.ForeignKey(to="Ubicaciones", on_delete=models.DO_NOTHING, blank=True, null=True, related_name="no_plaqueados")
@@ -151,12 +150,15 @@ class TiposEstados(models.Model):
 
 class Tramites(models.Model):
     referencia = models.CharField(max_length=120, unique=True)
-    solicitante = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    solicitante = models.ForeignKey(User, on_delete=models.DO_NOTHING) ## cambiarlo por Elaborado por
     remitente = models.ForeignKey("Funcionarios", on_delete=models.DO_NOTHING, related_name="+", null=True)
-    recipiente = models.ForeignKey("Funcionarios", on_delete=models.DO_NOTHING, related_name="+", null=True)
+    recipiente = models.ForeignKey("Funcionarios", on_delete=models.DO_NOTHING, related_name="+", null=True) ## cambiarlo por Destinatario
     tipo = models.ForeignKey(TiposTramites, on_delete=models.DO_NOTHING)
     estado = models.ForeignKey(TiposEstados, on_delete=models.DO_NOTHING)
-    detalles = models.ManyToManyField(to=Activos_Plaqueados, related_name='tramites_rel')
+    detalles = models.CharField(max_length=200) ## Detalles concatena todos los activos relacionados plaqueados y no
+    # obervaciones = models.CharField(max_length=500) ## Observaciones del tramite
+    detalles_placa = models.ManyToManyField(to=Activos_Plaqueados, related_name='detalles_placa', null=True, blank=True)
+    detalles_serie = models.ManyToManyField(to=Activos_No_Plaqueados, related_name='detalles_serie', null=True, blank=True)
     fecha = models.DateField(default=now)
 
     def __str__(self) -> str:

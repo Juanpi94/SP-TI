@@ -160,7 +160,7 @@ class GenerarTramiteView(APIView):
                     return Response("Didn't found destiny for plaqueado " + plaqueado.placa,
                                     status=status.HTTP_400_BAD_REQUEST)
 
-                traslado_db = Traslados()
+                traslado_db = traslados()
                 ubicacion = Ubicaciones.objects.get(id=ubicacion_id)
 
                 traslado_db.destino = ubicacion

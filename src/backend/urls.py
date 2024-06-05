@@ -17,7 +17,7 @@ urlpatterns = [
     path("tipo/", views.Tipo_View.as_view(), name="tipo"),
     path("red/", views.Red_Table_View.as_view(), name="red"),
     path("compra/", views.Compra_View.as_view(), name="compra"),
-    path("subtipo/", views.Subtipo_View.as_view(), name="subtipo"),
+    path("subtipos/", views.Subtipo_View.as_view(), name="subtipos"),
     path("activos_plaqueados/", views.Activos_Plaqueados_View.as_view(), name="activos_plaqueados"),
     path("activos_no_plaqueados/", views.Activos_No_Plaqueados_View.as_view(), name="activos_no_plaqueados"),
     

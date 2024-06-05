@@ -202,7 +202,7 @@ function addControlListeners() {
 
     table.on("cellClick", (e, cell) => {
         const classList = cell.getElement().classList;
-        console.log(classList)
+        // console.log(classList)
         if (classList.contains("controls-cell") || classList.contains("selection-cell")) return;
         const value = cell.getValue();
         if (!value) return;
@@ -385,7 +385,7 @@ async function onCreateRecord(event) {
     }
 
     // console.table(dataObject)
-    console.log(dataObject)
+    // console.log(dataObject)
     api.post("", dataObject).then(onCreateSuccess).catch(onCreateError);
 }
 
@@ -398,7 +398,7 @@ async function onShowEditModal(event) {
 
     if ("aticId" in event.relatedTarget.dataset) {
         const id = event.relatedTarget.dataset.aticId;
-        console.log(event.relatedTarget.dataset.aticId)
+        // console.log(event.relatedTarget.dataset.aticId)
         const response = await api.get(`${id}`);
         if (response.status >= 200 && response.status < 205) {
             const { data } = response;
@@ -596,10 +596,12 @@ function onCreateSuccess(response) {
     Swal.fire({
         icon: "success",
         title: "Registro creado con éxito",
-    })
-    table.addData([response.data], true);
-    resetForm(addForm)
-    addChoices.forEach(choice => choice.setChoiceByValue(""));
+    }).then(() => {
+        table.addData([response.data], true);
+        resetForm(addForm)
+        addChoices.forEach(choice => choice.setChoiceByValue(""));
+        location.reload();
+    });
 }
 
 /**

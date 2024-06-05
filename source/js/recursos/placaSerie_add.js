@@ -4,33 +4,43 @@ import axios from "axios";
 
 const { placaNoExisteEnTabla, serieNoExisteEnTabla } = require('./placaSerieOnTable.js');
 
-function addPlaqueados(placa ,table, plaqueadoMap) {
+function addPlaqueados(placa, table, plaqueadoMap) {
     // Obtener el valor seleccionado del select
     let selectedPlaca = placa.getValue(true);
 
     // Validar que el campo no esté vacío
-    if (!selectedPlaca.trim()) {
+    if (!selectedPlaca || !selectedPlaca.trim()) {
         Swal.fire({ icon: "error", text: "No se pueden agregar una placa vacia a la tabla" })
         return;
     }
 
     if (placaNoExisteEnTabla(selectedPlaca, table)) {
-        axios.get("http://127.0.0.1:8000/api/plaqueados/" + selectedPlaca)
-            .then(response => {
-                /**
-                 * @type {Plaqueado}
-                 */
-                let data = response.data;
+        axios.get("http://127.0.0.1:8000/api/activos_plaqueados/" + selectedPlaca)
+            .then(response1 => {
+                let data1 = response1.data;
+
                 let tableData = {
-                    placa: data.placa,
-                    serie: data.serie,
-                    ubicacion_actual: data.ubicacion?.ubicacion || "",
+                    placa: data1.placa,
+                    serie: data1.serie
                 }
 
+                // Hacer la segunda solicitud GET aquí
+                return axios.get("http://127.0.0.1:8000/api/ubicaciones/" + data1.ubicacion_anterior)
+                    .then(response2 => {
+                        // Manejar la respuesta de la segunda solicitud aquí
+                        let data2 = response2.data;
+                        // Agregar los datos de la segunda respuesta a tableData
+                        tableData.ubicacion_actual = data2.ubicacion;
+
+                        return tableData;
+                    });
+            })
+            .then(tableData => {
+                // Agregar los datos filtrados a la tabla
                 table.addData(tableData).then(() => {
-                    const select = new Choices(document.querySelector(`#select-${data.placa}`), { allowHTML: true });
-                    plaqueadoMap.set(data.placa, select);
-                })
+                    const select = new Choices("#select-" + tableData.placa, { allowHTML: true });
+                    plaqueadoMap.set(tableData.placa, select);
+                });
             })
             .catch(error => console.error("Error al obtener datos de la API:", error));
     } else {
@@ -40,26 +50,39 @@ function addPlaqueados(placa ,table, plaqueadoMap) {
 }
 
 function addNoPlaqueados(serie, table, noPlaqueadoMap) {
-    let selectedSerie = serie.value;
+    let selectedSeries = serie.getValue(true);
 
-    if (!selectedSerie.trim()) {
+    if (!selectedSeries || !selectedSeries.trim()) {
         Swal.fire({ icon: "error", text: "No se puede agregar una serie vacia a la tabla" })
         return;
     }
 
-    if (serieNoExisteEnTabla(selectedSerie, table)) {
+    if (serieNoExisteEnTabla(selectedSeries, table)) {
 
-        axios.get("http://127.0.0.1:8000/api/no_plaqueados/" + selectedSerie)
-            .then(response => {
-                let data = response.data;
+        axios.get("http://127.0.0.1:8000/api/activos_no_plaqueados/" + selectedSeries)
+            .then(response1 => {
+                let data1 = response1.data;
+
                 let tableData = {
-                    serie: data.serie,
-                    ubicacion_actual: data.ubicacion_anterior,
+                    serie: data1.serie
                 }
+
+                // Hacer la segunda solicitud GET aquí
+                return axios.get("http://127.0.0.1:8000/api/ubicaciones/" + data1.ubicacion_anterior)
+                    .then(response2 => {
+                        // Manejar la respuesta de la segunda solicitud aquí
+                        let data2 = response2.data;
+                        // Agregar los datos de la segunda respuesta a tableData
+                        tableData.ubicacion_actual = data2.ubicacion;
+
+                        return tableData;
+                    });
+            })
+            .then(tableData => {
                 // Agregar los datos filtrados a la tabla
                 table.addData(tableData).then(() => {
-                    const select = new Choices("#select-" + data.serie, { allowHTML: true });
-                    noPlaqueadoMap.set(data.serie, select)
+                    const select = new Choices("#select-" + tableData.serie, { allowHTML: true });
+                    noPlaqueadoMap.set(tableData.serie, select)
                 });
             })
             .catch(error => console.error("Error al obtener datos de la API:", error));

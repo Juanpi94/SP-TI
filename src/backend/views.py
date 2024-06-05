@@ -195,7 +195,11 @@ class Table_View(ReadPermMixin, TemplateView):
         def init(self, *args, **kwargs):
             super(django.forms.ModelForm, self).__init__(*args, **kwargs)
             for field_name, field in self.fields.items():
+                # print(f'{field_name}: {field.required}')
+                # print('-----------------------')
                 field.required = False
+                # print('-----------------------')
+                # print(f'{field_name}: {field.required}')
 
         meta = type("Meta", (), self.get_form_metafields())
         form = type(
@@ -217,6 +221,10 @@ class Table_View(ReadPermMixin, TemplateView):
         Genera los campos Meta del formulario
         :return:  Los campos Meta del formulario
         """
+        
+        if self.model == models.User:
+            return {"model": self.model, "fields": ["password", "is_superuser", "username", "first_name", "last_name", "email", "is_staff", "groups", "user_permissions", "date_joined", "is_active"]}
+        
         return {"model": self.model, "fields": "__all__"}
 
     def get_values(self) -> QuerySet:
@@ -241,7 +249,7 @@ class Activos_Plaqueados_View(Table_View):
     title = "Activos plaqueados"
     id_field = "placa"
     defs_order = ["placa"]
-    exclude = ["tramites", ]
+    exclude = ["tramites_rel", "detalles_placa", "detalles_serie"]
 
     def get_form_fields(self) -> dict:
         return {"field_order": ["placa"]}
@@ -278,20 +286,37 @@ class Activos_No_Plaqueados_View(Table_View):
     model = models.Activos_No_Plaqueados
     title = "Activos no plaqueados"
     id_field = "serie"
-    defs_order = ["serie", "nombre"]
+    defs_order = ["serie"]
+    exclude = ["tramites_rel", "detalles_placa", "detalles_serie"]
 
     def get_form_fields(self) -> dict:
-        return {
-            "ubicacion": forms.ModelChoiceField(queryset=models.Ubicaciones.objects.all(), required=False),
-            "ubicacion_anterior": forms.ModelChoiceField(queryset=models.Ubicaciones.objects.all(), required=False),
-            "field_order": ["serie"],
+        return {"field_order": ["placa"]}
+        
+    def get_form_metafields(self) -> dict:
+        metafields = super().get_form_metafields()
+        metafields["widgets"] = {
+            "garantia": DateInput(
+                attrs={
+                    "type": "date",
+                    "placeholder": "yyyy-mm-dd (DOB)",
+                    "class": "date-form-input",
+                }
+            ),
+            "fecha_ingreso": DateInput(
+                attrs={
+                    "type": "date",
+                    "placeholder": "yyyy-mm-dd (DOB)",
+                    "class": "date-form-input",
+                }
+            ),
         }
+        return metafields
 
     def get_values(self) -> QuerySet:
-        return super().get_values().annotate(serie=F("serie"), tipo=F('tipo__nombre'), subtipo=F('subtipo__nombre'),
-                                              compra=F('compra__numero_orden_compra'), red=F('red__MAC'), 
-                                              ubicacion=F('ubicacion__ubicacion'), ubicacion_anterior=F('ubicacion_anterior__ubicacion'),
-                                              tramites=F('tramites__referencia'))
+        return super().get_values().annotate(tipo=F('tipo__nombre'), subtipo=F('subtipo__nombre'), 
+                                             ubicacion=F('ubicacion__ubicacion'), compra=F('compra__numero_orden_compra'),
+                                             red=F('red__MAC'), ubicacion_anterior=F('ubicacion_anterior__ubicacion'),
+                                             estado=F('estado__descripcion'))
 
 ##--Tipos
 class Tipo_View(Table_View):
@@ -302,7 +327,7 @@ class Tipo_View(Table_View):
 
 ##--Subtipos
 class Subtipo_View(Table_View):
-    target_view = "subtipo"
+    target_view = "subtipos"
     model = models.Subtipo
     title = "Subtipos de activos"
     exclude = ["activos_plaqueados", "activos_no_plaqueados"]
@@ -369,7 +394,7 @@ class Tramites_View(Table_View):
     add = False
     title = "Tramites"
     exclude = ["activos_plaqueados", "activos_no_plaqueados",
-               "traslados", "desecho", "taller"]
+               "traslados", "desecho", "taller", 'detalles_placa', 'detalles_serie']
     
     def get_values(self) -> QuerySet:
         return super().get_values().annotate(solicitante=F('solicitante__username'), remitente=F('remitente__nombre_completo'),
@@ -498,7 +523,7 @@ class Ubicaciones_View(Table_View):
     target_view = "ubicaciones"
     model = models.Ubicaciones
     title = "Ubicaciones"
-    exclude = ["activos_plaqueados", "plaqueados", "activos_no_plaqueados", "no_anterior"]
+    exclude = ["activos_plaqueados", "plaqueados", "activos_no_plaqueados", "no_plaqueados", "no_anterior"]
 
     def get_values(self) -> QuerySet:
         return super().get_queryset().values().annotate(custodio=F("custodio__nombre_completo"), unidades=F("unidades__nombre"), instalacion=F('instalacion__ubicacion'))
@@ -522,7 +547,7 @@ class User_View(Table_View):
                "is_superuser", "is_staff", "groups", "user_permissions"]
     exclude_data = True
     model = models.User
-    title = "Usuarios"        
+    title = "Usuarios"   
 
 #--Proveedores
 class Proveedores_Table_View(Table_View):
