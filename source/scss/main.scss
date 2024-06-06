@@ -1,0 +1,35 @@
+// Abstracts
+@import "abstracts/variables";
+@import "abstracts/mixins";
+@import "abstracts/functions";
+@import "abstracts/utils";
+@import "abstracts/animations";
+
+// Vendors
+@import "vendors/choices";
+@import "vendors/bootstrap";
+@import "vendors/tabulator";
+@import "vendors/sweetalert2";
+
+// Base
+@import "base/base";
+@import "base/typography";
+
+// Components
+@import "components/formulario";
+@import "components/table";
+@import "components/buttons";
+@import "components/report-table";
+@import "components/dropdown";
+@import "components/modal-detalle";
+
+// Layout
+@import "layout/header";
+@import "layout/topnav";
+@import "layout/sidebar";
+// Pages
+@import "pages/desecho";
+@import "pages/login";
+@import "pages/reportePlaqueados";
+@import "pages/traslados";
+@import "pages/taller";

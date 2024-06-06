@@ -1,0 +1,8 @@
+{% with "dropdown-toggle fs-6 dropdown-toggler" as class %}
+    {% if href %}
+        <a href="" class="{{ class }}" data-atic-toggle>{{ title }}</a>
+    {% else %}
+        <button class="{{ class }}" data-atic-toggle>{{ title }}</button>
+    {% endif %}
+{% endwith %}
+

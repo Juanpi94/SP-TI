@@ -1,0 +1,5 @@
+@use "sass:color";
+
+@function transparency($color, $alpha) {
+	@return color.change($color, $alpha: $alpha);
+}

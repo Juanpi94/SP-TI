@@ -1,0 +1,94 @@
+{% load static %}
+
+<nav class="navbar navbar-expand topbar mb-4 static-top shadow px-4 bg-dark justify-content-between"
+     data-bs-theme="dark">
+    <div class="d-flex align-items-center">
+        <button class="btn" type="button" id="side-menu-toggler">
+            <i class="bi bi-list fs-3 clr-white"></i>
+        </button>
+
+        <a href="{% url 'index' %}" class="navbar-brand">ATIC</a>
+    </div>
+
+    <!-- Sidebar Toggle (Topbar) -->
+    <button id="sidebarToggleTop"
+            class="btn btn-link d-md-none rounded-circle mr-3">
+
+    </button>
+    <!-- Topbar Search -->
+    <!--    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search position-relative">-->
+    <!--        <div class="input-group">-->
+    <!--            <input type="text"-->
+    <!--                   class="form-control bg-light border-1 small"-->
+    <!--                   placeholder="Buscar en atic..."-->
+    <!--                   aria-label="Search"-->
+    <!--                   aria-describedby="basic-addon2"-->
+    <!--                   id="nav-search-input"/>-->
+    <!--        </div>-->
+    <!--        <div class="search-result-container hidden">-->
+    <!--            <ul class="search-result-list">-->
+    <!--                <template id="search-item-template">-->
+    <!--                    <li class="search-result-item">-->
+    <!--                        <a href="#" class="result-link"></a>-->
+    <!--                    </li>-->
+    <!--                </template>-->
+    <!--            </ul>-->
+    <!--        </div>-->
+    <!--    </form>-->
+    <!-- Topbar Navbar -->
+    <ul class="navbar-nav ml-auto">
+        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+        <li class="nav-item dropdown no-arrow d-sm-none">
+            <a class="nav-link dropdown-toggle"
+               href="#"
+               id="searchDropdown"
+               role="button"
+               data-toggle="dropdown"
+               aria-haspopup="true"
+               aria-expanded="false">
+                <i class="fas fa-search fa-fw"></i>
+            </a>
+        </li>
+        <div class="topbar-divider d-none d-sm-block"></div>
+        <li class="nav-item mx-4 d-flex justify-content-center align-items-center">
+            {% if request.user.is_staff %}
+                <a class="text-decoration-none text-gray-400 fw-medium" href="{% url "admin:index" %}">
+                    Sitio Admin
+                </a>
+            {% endif %}
+        </li>
+
+        <!-- Nav Item - User Information -->
+        <li class="nav-item dropdown no-arrow me-5 pe-5">
+            <a class="nav-link dropdown-toggle"
+               href="#"
+               id="userDropdown"
+               role="button"
+               data-bs-toggle="dropdown"
+               aria-haspopup="true"
+               aria-expanded="false">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ user.username }}</span>
+
+            </a>
+            <!-- Dropdown - User Information -->
+            <ul class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="{% url "perfil" %}">
+
+                    Perfil
+                </a>
+                <a class="dropdown-item disabled" href="#">
+
+                    Configuraciones
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url "logout" %}">
+
+                    Logout
+                </a>
+            </ul>
+        </li>
+
+
+    </ul>
+</nav>

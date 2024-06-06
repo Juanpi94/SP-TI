@@ -1,0 +1,12 @@
+@use "../abstracts/variables" as vars;
+@import "tabulator-tables/dist/css/tabulator_materialize.min";
+
+.tabulator-row.tabulator-selected {
+  background-color: #66BB6A !important;
+  color: vars.$white !important;
+}
+
+.selection-cell input {
+  width: 1rem;
+  height: 1rem;
+}

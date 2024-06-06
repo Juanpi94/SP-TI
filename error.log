@@ -1,0 +1,318 @@
+2024-05-23 14:15:56,166 - api_views - 6624 - Unexpected error when reading excel file
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\scope.py", line 195, in resolve
+    return self.resolvers[key]
+  File "C:\Users\juang\.pyenv\pyenv-win\versions\3.10.11\lib\collections\__init__.py", line 986, in __getitem__
+    return self.__missing__(key)            # support subclasses that define __missing__
+  File "C:\Users\juang\.pyenv\pyenv-win\versions\3.10.11\lib\collections\__init__.py", line 978, in __missing__
+    raise KeyError(key)
+KeyError: 'Placa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\scope.py", line 206, in resolve
+    return self.temps[key]
+KeyError: 'Placa'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\api_views.py", line 84, in post
+    filtered_df = filtered_df.query('Placa != "S/P" and Placa != ""')
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\frame.py", line 4111, in query
+    res = self.eval(expr, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\frame.py", line 4240, in eval
+    return _eval(expr, inplace=inplace, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\eval.py", line 350, in eval
+    parsed_expr = Expr(expr, engine=engine, parser=parser, env=env)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 811, in __init__
+    self.terms = self.parse()
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 830, in parse
+    return self._visitor.visit(self.expr)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 421, in visit_Module
+    return self.visit(expr, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 424, in visit_Expr
+    return self.visit(node.value, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 750, in visit_BoolOp
+    return reduce(visitor, operands)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 743, in visitor
+    lhs = self._try_visit_binop(x)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 739, in _try_visit_binop
+    return self.visit(bop)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 723, in visit_Compare
+    return self.visit(binop)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 536, in visit_BinOp
+    op, op_class, left, right = self._maybe_transform_eq_ne(node)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 456, in _maybe_transform_eq_ne
+    left = self.visit(node.left, side="left")
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 549, in visit_Name
+    return self.term_type(node.id, self.env, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\ops.py", line 98, in __init__
+    self._value = self._resolve_name()
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\ops.py", line 115, in _resolve_name
+    res = self.env.resolve(self.local_name, is_local=self.is_local)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\scope.py", line 211, in resolve
+    raise UndefinedVariableError(key, is_local) from err
+pandas.core.computation.ops.UndefinedVariableError: name 'Placa' is not defined
+2024-05-23 14:16:14,466 - api_views - 6624 - Unexpected error when reading excel file
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\scope.py", line 195, in resolve
+    return self.resolvers[key]
+  File "C:\Users\juang\.pyenv\pyenv-win\versions\3.10.11\lib\collections\__init__.py", line 986, in __getitem__
+    return self.__missing__(key)            # support subclasses that define __missing__
+  File "C:\Users\juang\.pyenv\pyenv-win\versions\3.10.11\lib\collections\__init__.py", line 978, in __missing__
+    raise KeyError(key)
+KeyError: 'Placa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\scope.py", line 206, in resolve
+    return self.temps[key]
+KeyError: 'Placa'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\api_views.py", line 116, in post
+    filtered_df = filtered_df.query('Placa == "S/P" or Placa == ""')
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\frame.py", line 4111, in query
+    res = self.eval(expr, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\frame.py", line 4240, in eval
+    return _eval(expr, inplace=inplace, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\eval.py", line 350, in eval
+    parsed_expr = Expr(expr, engine=engine, parser=parser, env=env)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 811, in __init__
+    self.terms = self.parse()
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 830, in parse
+    return self._visitor.visit(self.expr)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 421, in visit_Module
+    return self.visit(expr, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 424, in visit_Expr
+    return self.visit(node.value, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 750, in visit_BoolOp
+    return reduce(visitor, operands)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 743, in visitor
+    lhs = self._try_visit_binop(x)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 739, in _try_visit_binop
+    return self.visit(bop)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 723, in visit_Compare
+    return self.visit(binop)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 536, in visit_BinOp
+    op, op_class, left, right = self._maybe_transform_eq_ne(node)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 456, in _maybe_transform_eq_ne
+    left = self.visit(node.left, side="left")
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 549, in visit_Name
+    return self.term_type(node.id, self.env, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\ops.py", line 98, in __init__
+    self._value = self._resolve_name()
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\ops.py", line 115, in _resolve_name
+    res = self.env.resolve(self.local_name, is_local=self.is_local)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\scope.py", line 211, in resolve
+    raise UndefinedVariableError(key, is_local) from err
+pandas.core.computation.ops.UndefinedVariableError: name 'Placa' is not defined
+2024-05-23 14:40:40,504 - api_views - 8936 - Unexpected error when reading excel file
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\scope.py", line 195, in resolve
+    return self.resolvers[key]
+  File "C:\Users\juang\.pyenv\pyenv-win\versions\3.10.11\lib\collections\__init__.py", line 986, in __getitem__
+    return self.__missing__(key)            # support subclasses that define __missing__
+  File "C:\Users\juang\.pyenv\pyenv-win\versions\3.10.11\lib\collections\__init__.py", line 978, in __missing__
+    raise KeyError(key)
+KeyError: 'Placa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\scope.py", line 206, in resolve
+    return self.temps[key]
+KeyError: 'Placa'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\api_views.py", line 116, in post
+    filtered_df = filtered_df.query('Placa == "S/P" or Placa == ""')
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\frame.py", line 4111, in query
+    res = self.eval(expr, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\frame.py", line 4240, in eval
+    return _eval(expr, inplace=inplace, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\eval.py", line 350, in eval
+    parsed_expr = Expr(expr, engine=engine, parser=parser, env=env)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 811, in __init__
+    self.terms = self.parse()
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 830, in parse
+    return self._visitor.visit(self.expr)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 421, in visit_Module
+    return self.visit(expr, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 424, in visit_Expr
+    return self.visit(node.value, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 750, in visit_BoolOp
+    return reduce(visitor, operands)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 743, in visitor
+    lhs = self._try_visit_binop(x)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 739, in _try_visit_binop
+    return self.visit(bop)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 723, in visit_Compare
+    return self.visit(binop)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 536, in visit_BinOp
+    op, op_class, left, right = self._maybe_transform_eq_ne(node)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 456, in _maybe_transform_eq_ne
+    left = self.visit(node.left, side="left")
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 549, in visit_Name
+    return self.term_type(node.id, self.env, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\ops.py", line 98, in __init__
+    self._value = self._resolve_name()
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\ops.py", line 115, in _resolve_name
+    res = self.env.resolve(self.local_name, is_local=self.is_local)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\scope.py", line 211, in resolve
+    raise UndefinedVariableError(key, is_local) from err
+pandas.core.computation.ops.UndefinedVariableError: name 'Placa' is not defined
+2024-05-23 14:40:52,855 - api_views - 8936 - Unexpected error when reading excel file
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\scope.py", line 195, in resolve
+    return self.resolvers[key]
+  File "C:\Users\juang\.pyenv\pyenv-win\versions\3.10.11\lib\collections\__init__.py", line 986, in __getitem__
+    return self.__missing__(key)            # support subclasses that define __missing__
+  File "C:\Users\juang\.pyenv\pyenv-win\versions\3.10.11\lib\collections\__init__.py", line 978, in __missing__
+    raise KeyError(key)
+KeyError: 'Placa'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\scope.py", line 206, in resolve
+    return self.temps[key]
+KeyError: 'Placa'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\api_views.py", line 84, in post
+    filtered_df = filtered_df.query('Placa != "S/P" and Placa != ""')
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\frame.py", line 4111, in query
+    res = self.eval(expr, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\frame.py", line 4240, in eval
+    return _eval(expr, inplace=inplace, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\eval.py", line 350, in eval
+    parsed_expr = Expr(expr, engine=engine, parser=parser, env=env)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 811, in __init__
+    self.terms = self.parse()
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 830, in parse
+    return self._visitor.visit(self.expr)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 421, in visit_Module
+    return self.visit(expr, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 424, in visit_Expr
+    return self.visit(node.value, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 750, in visit_BoolOp
+    return reduce(visitor, operands)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 743, in visitor
+    lhs = self._try_visit_binop(x)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 739, in _try_visit_binop
+    return self.visit(bop)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 723, in visit_Compare
+    return self.visit(binop)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 536, in visit_BinOp
+    op, op_class, left, right = self._maybe_transform_eq_ne(node)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 456, in _maybe_transform_eq_ne
+    left = self.visit(node.left, side="left")
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 415, in visit
+    return visitor(node, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\expr.py", line 549, in visit_Name
+    return self.term_type(node.id, self.env, **kwargs)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\ops.py", line 98, in __init__
+    self._value = self._resolve_name()
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\ops.py", line 115, in _resolve_name
+    res = self.env.resolve(self.local_name, is_local=self.is_local)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\.venv\lib\site-packages\pandas\core\computation\scope.py", line 211, in resolve
+    raise UndefinedVariableError(key, is_local) from err
+pandas.core.computation.ops.UndefinedVariableError: name 'Placa' is not defined
+2024-05-23 14:41:44,739 - api_views - 8936 - Unexpected error when reading excel file
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\api_views.py", line 94, in post
+    compras_summary = ImportModule.import_compras(compras_data, update)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\import_helper.py", line 278, in import_compras
+    assert len(row) == 11, "Se envió una cantidad incorrecta de datos " + str(
+AssertionError: Se envió una cantidad incorrecta de datos 10
+2024-05-27 14:05:14,501 - api_views - 13720 - Couldn't generate tramite
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\api_views.py", line 142, in post
+    activos_plaqueados = request.data.pop('activos_plaqueados')
+KeyError: 'activos_plaqueados'
+2024-05-27 19:23:43,000 - api_views - 5040 - Couldn't generate tramite
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\api_views.py", line 142, in post
+    activos_plaqueados = request.data.pop('activos_plaqueados')
+KeyError: 'activos_plaqueados'
+2024-05-27 19:29:38,023 - api_views - 16444 - Couldn't generate tramite
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\api_views.py", line 142, in post
+    activos_plaqueados = request.data.pop('activos_plaqueados')
+KeyError: 'activos_plaqueados'
+2024-05-27 19:34:51,491 - api_views - 12972 - Couldn't generate tramite
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\api_views.py", line 142, in post
+    activos_plaqueados = request.data.pop('activos_plaqueados')
+KeyError: 'activos_plaqueados'
+2024-05-28 21:10:34,777 - api_views - 12896 - Couldn't generate tramite
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\api_views.py", line 142, in post
+    activos_plaqueados = request.data.pop('activos_plaqueados')
+KeyError: 'activos_plaqueados'
+2024-05-28 21:10:55,939 - api_views - 12896 - Couldn't generate tramite
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\api_views.py", line 142, in post
+    activos_plaqueados = request.data.pop('activos_plaqueados')
+KeyError: 'activos_plaqueados'
+2024-05-28 21:10:59,936 - api_views - 12896 - Couldn't generate tramite
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\api_views.py", line 142, in post
+    activos_plaqueados = request.data.pop('activos_plaqueados')
+KeyError: 'activos_plaqueados'

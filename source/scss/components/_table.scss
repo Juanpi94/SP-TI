@@ -1,0 +1,41 @@
+#table-container {
+	margin-bottom: 4rem;
+	.dataTables_wrapper {
+		margin: 0 2rem 0 2rem;
+	}
+}
+
+.dt-button.disabled {
+	display: none;
+}
+table {
+	.sorting_disabled {
+		&::after,
+		&::before {
+			display: none !important;
+		}
+	}
+	tbody {
+		tr {
+			transition: background-color 250ms ease-in-out;
+			&:hover {
+				background-color: $gray-400 !important;
+			}
+		}
+	}
+	td {
+		font-size: 0.9rem;
+		border-right: 1px solid rgb(139, 139, 139);
+
+		&.select-column {
+			input {
+				margin: auto;
+				display: block;
+				width: 1rem;
+				height: 1rem;
+			}
+		}
+	}
+}
+
+ 

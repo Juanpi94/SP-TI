@@ -1,0 +1,83 @@
+{% load auth_extras %}
+{% load static %}
+{% with toggler="components/side-section-toggler.html" dropdownItem="components/side-section-dropdown-item.html" %}
+
+    <aside id="sidebar-menu" class="sidebar-wrapper pt-4">
+        <div class="sidebar-group">
+            <p class="sidebar-group-title ps-4">Plataforma</p>
+            <div class="sidebar-section ps-4">
+                {% include toggler with title="Activos" %}
+                <ul class="custom-dropdown-menu">
+                    {% include dropdownItem with text="Activos Plaqueados" href="activos_plaqueados" %}
+                    {% include dropdownItem with text="Activos No Plaqueados" href="activos_no_plaqueados" %}
+                    {% include dropdownItem with text="Tipos" href="tipo" %}
+                    {% include dropdownItem with text="Subtipos" href="subtipos" %}
+                    {% include dropdownItem with text="Compra" href="compra" %}
+                    {% include dropdownItem with text="Red" href="red" %}
+                </ul>
+            </div>
+
+            <div class="sidebar-section ps-4">
+                {% include toggler with title="Tramites" %}
+                <ul class="custom-dropdown-menu">
+                    {% include dropdownItem with text="Generar Traslado" href="generar_traslados" %}
+                    {% include dropdownItem with text="Generar Desecho" href="generar_desecho" %}
+                    {% include dropdownItem with text="Generar Envío a Taller" href="generar_taller" %}
+                    {% include dropdownItem with text="Ver Trámites" href="tramites" %}
+                </ul>
+            </div>
+
+            <div class="sidebar-section ps-4">
+                {% include toggler with title="Reportes" %}
+                <ul class="custom-dropdown-menu">
+                    {% include dropdownItem with text="Reporte General Plaqueados" href="reporte_plaqueados" %}
+                    {% include dropdownItem with text="Reporte General no Plaqueados" href="reporte_no_plaqueados" %}
+
+                    {% include dropdownItem with text="Reporte General Plaqueados con 2 años" href="reporte_plaqueados_2" %}
+                    {% include dropdownItem with text="Reporte General no Plaqueados con 2 años" href="reporte_no_plaqueados_2" %}
+
+                    {% include dropdownItem with text="Reporte General Plaqueados con 4 años" href="reporte_plaqueados_4" %}
+                    {% include dropdownItem with text="Reporte General no Plaqueados con 4 años" href="reporte_no_plaqueados_4" %}
+
+                </ul>
+            </div>
+        </div>
+        <span class="sidebar-group-divider"></span>
+
+        <div class="sidebar-group">
+            <p class="sidebar-group-title ps-4">Administración</p>
+            <div class="sidebar-section ps-4">
+                {% include toggler with title="Gestión" %}
+                <ul class="custom-dropdown-menu">
+                    {% include dropdownItem with text="Funcionarios" href="funcionarios" %}
+                    {% include dropdownItem with text="Ubicaciones" href="ubicaciones" %}
+                    {% include dropdownItem with text="Usuarios" href="user" %}
+                    {% include dropdownItem with text="Proveedores" href="proveedor" %}
+                    {% include dropdownItem with text="Unidades Universitarias" href="unidades" %}
+                </ul>
+            </div>
+            {% if request.user|can_write %}
+                <div class="sidebar-section ps-4">
+                    {% include toggler with title="Importar" %}
+                    <ul class="custom-dropdown-menu">
+                        {% include dropdownItem with text="Importar Reporte: Activos Plaqueados" href="importar_reporte_plaqueados" %}
+                        {% include dropdownItem with text="Importar Reporte: Activos no Plaqueados" href="importar_reporte_no_plaqueados" %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- #-------------# Area de Pruebas #-------------# -->
+        
+        
+
+        <!-- #-----------# Fin Area de Pruebas #-----------# -->
+
+        <span class="sidebar-group-divider"></span>
+        <div class="sidebar-footer ps-4">
+            
+        </div>
+
+    </aside>
+{% endwith %}
+<!-- End of Sidebar -->

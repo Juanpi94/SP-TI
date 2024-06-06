@@ -1,0 +1,40 @@
+<div class="modal fade" id="{{ modal_id }}" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">{{ modal_label }} <span class="text-lowercase">{{ title }}</span></h5>
+                <button type="button" class="close btn fs-3" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="{{ form_id }}" class="d-flex flex-column gap-2 mb-5">
+                    {% csrf_token %}
+                    <input type="hidden" name="user" value="{{ request.user.id }}"/>
+                    {% for field in form %}
+                        {{ field.errors }}
+
+                        {% if field.field.widget.input_type != "hidden" %}
+                            <label for="{{ field.id_for_label }}">
+                                {{ field.label }}
+                                {% if field.field.required %}
+                                    <span class="text-danger">*</span>
+                                {% endif %}
+                            </label>
+                            {{ field }}
+                            {% if field.help_text %}<p class="help form-text">{{ field.help_text|safe }}</p>{% endif %}
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                    {% endfor %}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button id="{{ form_id }}-btn" type="submit" class="btn btn-primary" data-bs-dismiss="modal" data-atic-action="submit">
+                    Enviar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

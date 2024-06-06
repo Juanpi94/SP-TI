@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="description" content="ATIC page"/>
+    <meta name="keywords" content="Administracion "/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="apple-touch-icon"
+          sizes="180x180"
+          href="{% static 'assets/favicons/apple-touch-icon.png' %}"/>
+    <link rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="{% static 'assets/favicons/favicon-32x32.png' %}"/>
+    <link rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="{% static 'assets/favicons/favicon-16x16.png' %}"/>
+    <link rel="manifest" href="{% static 'assets/site.webmanifest' %}"/>
+    
+    <title>
+        {% block title %}
+            ATIC
+        {% endblock title %}
+    </title>
+
+    <link rel="stylesheet"
+          type="text/css"
+          href="{% static 'css/main.css' %}"/>
+    {% block head %}
+    {% endblock head %}
+</head>
+{% if user.is_authenticated or request.path == "/login/" %}
+    <body>
+    {% block body %}
+        <div class="main-section">
+            <header class="main-header">
+                {% block header %}
+                    {% if request.path != "/login/" %}
+                        {% include "components/topnav.html" %}
+                    {% endif %}
+                {% endblock header %}
+            </header>
+
+            {% include "components/sidebar.html" %}
+            <main class="content">
+                {% block content %}
+                {% endblock content %}
+            </main>
+
+        </div>
+        <script src="{% static 'js/main.bundle.js' %}" defer></script>
+        {% block script %}
+        {% endblock script %}
+    {% endblock body %}
+    </body>
+{% endif %}
+</html>
