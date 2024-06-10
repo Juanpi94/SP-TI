@@ -60,7 +60,7 @@ class SubtipoSerializer(serializers.ModelSerializer):
 
 class TramitesSerializer(serializers.ModelSerializer):
     solicitante = serializers.SlugRelatedField(slug_field="id", queryset=User.objects.all())
-    recipiente = serializers.SlugRelatedField(slug_field="id", queryset=Funcionarios.objects.all())
+    destinatario = serializers.SlugRelatedField(slug_field="id", queryset=Funcionarios.objects.all())
     remitente = serializers.SlugRelatedField(slug_field="id", queryset=Funcionarios.objects.all())
     tipo = serializers.SlugRelatedField(slug_field="id", queryset=TiposTramites.objects.all())
     estado = serializers.SlugRelatedField(slug_field="id", queryset=TiposEstados.objects.all())

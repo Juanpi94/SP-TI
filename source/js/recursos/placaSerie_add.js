@@ -87,7 +87,7 @@ function addNoPlaqueados(serie, table, noPlaqueadoMap) {
             })
             .catch(error => console.error("Error al obtener datos de la API:", error));
     } else {
-        Swal.error({ text: "El activo ya se encuentra en la tabla", icon: "error" })
+        Swal.fire({ text: "La serie ya existe en la tabla", icon: "error" })
         return;
     }
 }

@@ -394,11 +394,11 @@ class Tramites_View(Table_View):
     add = False
     title = "Tramites"
     exclude = ["activos_plaqueados", "activos_no_plaqueados",
-               "traslados", "desecho", "taller", 'detalles_placa', 'detalles_serie']
+               "traslados", "desecho", "taller", 'detalles_placa', 'detalles_serie', 'detalleplacaubicacion', 'detalleserieubicacion' ]
     
     def get_values(self) -> QuerySet:
         return super().get_values().annotate(solicitante=F('solicitante__username'), remitente=F('remitente__nombre_completo'),
-                                             recipiente=F('recipiente__nombre_completo'), tipo=F('tipo__nombre'),
+                                             destinatario=F('destinatario__nombre_completo'), tipo=F('tipo__nombre'),
                                              estado=F('estado__nombre'))
 
 #--Ver traslados
@@ -523,7 +523,9 @@ class Ubicaciones_View(Table_View):
     target_view = "ubicaciones"
     model = models.Ubicaciones
     title = "Ubicaciones"
-    exclude = ["activos_plaqueados", "plaqueados", "activos_no_plaqueados", "no_plaqueados", "no_anterior"]
+    exclude = ["activos_plaqueados", "plaqueados", "activos_no_plaqueados", "no_plaqueados", "no_anterior",
+               "ubicacion_actual_serie", "ubicacion_futura_serie", "ubicacion_actual_placa", 
+               "ubicacion_futura_placa"]
 
     def get_values(self) -> QuerySet:
         return super().get_queryset().values().annotate(custodio=F("custodio__nombre_completo"), unidades=F("unidades__nombre"), instalacion=F('instalacion__ubicacion'))

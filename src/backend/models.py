@@ -148,17 +148,35 @@ class TiposEstados(models.Model):
     class Meta:
         verbose_name_plural = "TiposEstados"
 
+class DetallePlacaUbicacion(models.Model):
+    tramite = models.ForeignKey('Tramites', on_delete=models.CASCADE)
+    detalles_placa = models.ForeignKey('Activos_Plaqueados', on_delete=models.CASCADE)
+    ubicacion_actual = models.ForeignKey(Ubicaciones, on_delete=models.CASCADE, related_name='ubicacion_actual_placa')
+    ubicacion_futura = models.ForeignKey(Ubicaciones, on_delete=models.CASCADE, related_name='ubicacion_futura_placa')
+    
+    class Meta:
+        verbose_name_plural = "Detalle Placa Ubicacion"
+    
+class DetalleSerieUbicacion(models.Model):
+    tramite = models.ForeignKey('Tramites', on_delete=models.CASCADE)
+    detalles_serie = models.ForeignKey(Activos_No_Plaqueados, on_delete=models.CASCADE)
+    ubicacion_actual = models.ForeignKey(Ubicaciones, on_delete=models.CASCADE, related_name='ubicacion_actual_serie')
+    ubicacion_futura = models.ForeignKey(Ubicaciones, on_delete=models.CASCADE, related_name='ubicacion_futura_serie')
+    
+    class Meta:
+        verbose_name_plural = "Detalle Serie Ubicacion"
+
 class Tramites(models.Model):
     referencia = models.CharField(max_length=120, unique=True)
     solicitante = models.ForeignKey(User, on_delete=models.DO_NOTHING) ## cambiarlo por Elaborado por
     remitente = models.ForeignKey("Funcionarios", on_delete=models.DO_NOTHING, related_name="+", null=True)
-    recipiente = models.ForeignKey("Funcionarios", on_delete=models.DO_NOTHING, related_name="+", null=True) ## cambiarlo por Destinatario
+    destinatario = models.ForeignKey("Funcionarios", on_delete=models.DO_NOTHING, related_name="+", null=True) ## cambiarlo por Destinatario
     tipo = models.ForeignKey(TiposTramites, on_delete=models.DO_NOTHING)
     estado = models.ForeignKey(TiposEstados, on_delete=models.DO_NOTHING)
     detalles = models.CharField(max_length=200) ## Detalles concatena todos los activos relacionados plaqueados y no
     # obervaciones = models.CharField(max_length=500) ## Observaciones del tramite
-    detalles_placa = models.ManyToManyField(to=Activos_Plaqueados, related_name='detalles_placa', null=True, blank=True)
-    detalles_serie = models.ManyToManyField(to=Activos_No_Plaqueados, related_name='detalles_serie', null=True, blank=True)
+    detalles_placa = models.ManyToManyField(to=Activos_Plaqueados, through='DetallePlacaUbicacion', related_name='detalles_placa')
+    detalles_serie = models.ManyToManyField(to=Activos_No_Plaqueados, through='DetalleSerieUbicacion', related_name='detalles_serie')
     fecha = models.DateField(default=now)
 
     def __str__(self) -> str:

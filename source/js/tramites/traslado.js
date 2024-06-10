@@ -12,30 +12,21 @@ const plaqueadosMap = new Map();
 const noPlaqueadosMap = new Map();
 var table = null;
 
-const tramiteSelect = new Choices("#id_tramite", {
-    allowHTML: true
-});
+const createChoicesInstance = (id, options) => {
+    const element = document.querySelector(id);
+    if (element && ['text', 'select-one', 'select-multiple'].includes(element.type)) {
+        return new Choices(id, options);
+    } else {
+        console.error(`Element with id ${id} doesn't exist or is not of the correct type.`);
+        return null;
+    }
+}
 
-const toSelect = new Choices("#id_recipiente", {
-    classNames: { containerOuter: "choices col-4 me-3" },
-    itemSelectText: "select",
-    allowHTML: true
-});
-const fromSelect = new Choices("#id_remitente", {
-    classNames: { containerOuter: "choices col-4" },
-    itemSelectText: "select",
-    allowHTML: true
-});
-
-const selectPlaca = new Choices("#id_placa", {
-    classNames: { containerOuter: "choices form-select" },
-    allowHTML: true
-});
-
-const selectSerie = new Choices("#id_serie", {
-    classNames: { containerOuter: "choices form-select" },
-    allowHTML: true
-});
+const tramiteSelect = createChoicesInstance("#id_tramite", { allowHTML: true });
+const toSelect = createChoicesInstance("#id_destinatario", { classNames: { containerOuter: "choices col-4 me-3" }, itemSelectText: "select", allowHTML: true });
+const fromSelect = createChoicesInstance("#id_remitente", { classNames: { containerOuter: "choices col-4" }, itemSelectText: "select", allowHTML: true });
+const selectPlaca = createChoicesInstance("#id_placa", { classNames: { containerOuter: "choices form-select" }, allowHTML: true });
+const selectSerie = createChoicesInstance("#id_serie", { classNames: { containerOuter: "choices form-select" }, allowHTML: true });
 
 const consecutivoTextfield = document.getElementById("id_consecutivo")
 const fechaField = document.getElementById("id_fecha")
@@ -148,8 +139,7 @@ loadInfo.addEventListener("click", () => {
         //Se encarga de traer el elemento no plaqueado y agregarlo en el espacio asignado
         addNoPlaqueados(selectSerie, table, noPlaqueadosMap);
 
-    }
-    ).catch((error) => {
+    }).catch((error) => {
         Swal.fire({
             icon: 'error',
             title: 'Error al cargar la información',
@@ -199,11 +189,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     table.on("renderComplete", () => {
         for (let [_, choice] of plaqueadosMap.entries()) {
-            choice._addEventListeners()
+            // choice._addEventListeners()
         }
 
         for (let [_, choice] of noPlaqueadosMap.entries()) {
-            choice._addEventListeners()
+            // choice._addEventListeners()
         }
     });
 
@@ -217,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let addButtonTraslados = document.getElementById("add-traslado");
     addButtonTraslados.addEventListener("click", () => {
         let detalles = detallesField.value
-        let recipiente = parseInt(fromSelect.getValue().value);
+        let destinatario = parseInt(fromSelect.getValue().value);
         let remitente = parseInt(toSelect.getValue().value);
         let solicitante = 1 //Cambiar por el usuario logueado
         let fecha = fechaField.value
@@ -239,7 +229,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let tramiteData = {
             referencia: consecutivo,
-            recipiente,
+            destinatario,
             remitente,
             solicitante,
             fecha,

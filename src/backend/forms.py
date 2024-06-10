@@ -8,7 +8,7 @@ attrs_col = {"class": "col"}
 
 # class TramitesForm(ModelForm):
 #     remitente = ModelChoiceField(queryset=Funcionarios.objects.all(), to_field_name="nombre_completo", required=False)
-#     recipiente = ModelChoiceField(queryset=Funcionarios.objects.all(), to_field_name="nombre_completo", required=False)
+#     destinatario = ModelChoiceField(queryset=Funcionarios.objects.all(), to_field_name="nombre_completo", required=False)
 #     solicitante = ModelChoiceField(queryset=User.objects.all(), to_field_name="username")
 #     detalles = ModelChoiceField(queryset=Activos_Plaqueados.objects.all(), to_field_name="Placas")
     
@@ -82,7 +82,7 @@ class TramitesExportForm(Form):
     opciones = [(f.id, f.nombre_completo) for f in funcionarios]
     opciones.insert(0, ('', '--Seleccione--'))  # Add empty option at the beginning
     
-    recipiente = ChoiceField(choices=opciones, label="Para:", widget=Select(attrs=attrs_col))
+    destinatario = ChoiceField(choices=opciones, label="Para:", widget=Select(attrs=attrs_col))
     remitente = ChoiceField(choices=opciones, label="De:", widget=Select(attrs=attrs_col))
     
     motivo = CharField(widget=Textarea(attrs={"class": "textarea p-2"}), label="Motivo o Observaciones")
