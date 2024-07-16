@@ -15,5 +15,8 @@
         "Plaqueados",
         "serie"
     ],
-    "cSpell.language": "es,en,en-US,es-ES"
+    "cSpell.language": "es,en,en-US,es-ES",
+    "[python]": {
+        "editor.defaultFormatter": null
+    }
 }

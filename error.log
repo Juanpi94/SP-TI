@@ -1,0 +1,14 @@
+2024-06-15 17:03:04,729 - api_views - 7744 - Unexpected error when reading excel file
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\api_views.py", line 94, in post
+    compras_summary = ImportModule.import_compras(compras_data, update)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\import_helper.py", line 278, in import_compras
+    assert len(row) == 11, "Se envió una cantidad incorrecta de datos " + str(
+AssertionError: Se envió una cantidad incorrecta de datos 10
+2024-07-11 16:07:35,802 - api_views - 21524 - Unexpected error when reading excel file
+Traceback (most recent call last):
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\api_views.py", line 94, in post
+    compras_summary = ImportModule.import_compras(compras_data, update)
+  File "C:\Users\juang\OneDrive\Documentos\TI - Projects\ATIC-UCR\src\backend\import_helper.py", line 278, in import_compras
+    assert len(row) == 11, "Se envió una cantidad incorrecta de datos " + str(
+AssertionError: Se envió una cantidad incorrecta de datos 10

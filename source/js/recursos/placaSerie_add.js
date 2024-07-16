@@ -21,16 +21,20 @@ function addPlaqueados(placa, table, plaqueadoMap) {
 
                 let tableData = {
                     placa: data1.placa,
-                    serie: data1.serie
+                    serie: data1.serie,
+                    descripcion: data1.observacion,
+                    marca: data1.marca,
+                    modelo: data1.modelo,
                 }
 
                 // Hacer la segunda solicitud GET aquí
-                return axios.get("http://127.0.0.1:8000/api/ubicaciones/" + data1.ubicacion_anterior)
+                return axios.get("http://127.0.0.1:8000/api/ubicaciones/" + data1.ubicacion)
                     .then(response2 => {
                         // Manejar la respuesta de la segunda solicitud aquí
                         let data2 = response2.data;
                         // Agregar los datos de la segunda respuesta a tableData
                         tableData.ubicacion_actual = data2.ubicacion;
+                        tableData.ubicacion_actual_id = data2.id;
 
                         return tableData;
                     });
@@ -39,7 +43,12 @@ function addPlaqueados(placa, table, plaqueadoMap) {
                 // Agregar los datos filtrados a la tabla
                 table.addData(tableData).then(() => {
                     const select = new Choices("#select-" + tableData.placa, { allowHTML: true });
-                    plaqueadoMap.set(tableData.placa, select);
+                    plaqueadoMap.set(tableData.placa, {
+                        serie: tableData.serie,
+                        ubicacion_actual: tableData.ubicacion_actual,
+                        ubicacion_actual_id: tableData.ubicacion_actual_id,
+                        select
+                    });
                 });
             })
             .catch(error => console.error("Error al obtener datos de la API:", error));
@@ -64,7 +73,10 @@ function addNoPlaqueados(serie, table, noPlaqueadoMap) {
                 let data1 = response1.data;
 
                 let tableData = {
-                    serie: data1.serie
+                    serie: data1.serie,
+                    descripcion: data1.observacion,
+                    marca: data1.marca,
+                    modelo: data1.modelo,
                 }
 
                 // Hacer la segunda solicitud GET aquí
@@ -74,6 +86,7 @@ function addNoPlaqueados(serie, table, noPlaqueadoMap) {
                         let data2 = response2.data;
                         // Agregar los datos de la segunda respuesta a tableData
                         tableData.ubicacion_actual = data2.ubicacion;
+                        tableData.ubicacion_actual_id = data2.id;
 
                         return tableData;
                     });
@@ -82,7 +95,11 @@ function addNoPlaqueados(serie, table, noPlaqueadoMap) {
                 // Agregar los datos filtrados a la tabla
                 table.addData(tableData).then(() => {
                     const select = new Choices("#select-" + tableData.serie, { allowHTML: true });
-                    noPlaqueadoMap.set(tableData.serie, select)
+                    noPlaqueadoMap.set(tableData.serie, {
+                        ubicacion_actual: tableData.ubicacion_actual,
+                        ubicacion_actual_id: tableData.ubicacion_actual_id,
+                        select
+                    });
                 });
             })
             .catch(error => console.error("Error al obtener datos de la API:", error));

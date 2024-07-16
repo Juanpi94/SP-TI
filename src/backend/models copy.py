@@ -8,33 +8,31 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
-
 class Tipo(models.Model):
-    nombre = models.CharField(max_length=120, null=False, unique=True)
+    nombre = models.CharField(unique=True, max_length=120, null=False)
     detalle = models.CharField(max_length=200, blank=True)
 
-    def __str__(self) -> str:
-        return self.nombre.__str__()
+    def __str__(self):
+        return self.nombre
 
     class Meta:
         verbose_name_plural = "Tipos"
 
 class Subtipo(models.Model):
-    nombre = models.CharField(max_length=120, null=False, unique=True)
+    nombre = models.CharField(unique=True, max_length=120, null=False)
     detalle = models.CharField(max_length=200, blank=True)
 
-    def __str__(self) -> str:
-        return self.nombre.__str__()
+    def __str__(self):
+        return self.nombre
 
     class Meta:
         verbose_name_plural = "Subtipos"
 
 class Estados(models.Model):
-    nombre = models.CharField(max_length=20, verbose_name="Nombre")
-    descripcion = models.CharField(max_length=40, verbose_name="Descripción")
+    descripcion = models.CharField(unique=True, max_length=40, verbose_name="Descripción")
     
-    def __str__(self) -> str:
-        return self.descripcion.__str__()
+    def __str__(self):
+        return self.descripcion
 
     class Meta:
         verbose_name_plural = "Estados"
@@ -58,23 +56,23 @@ class Partida(models.Model):
 
 ## Acomodar orden segun el documento inventario de activos 
 class AbstractActivo(models.Model):
-    nombre = models.CharField(max_length=120, verbose_name="Nombre", blank=False, null=False)
-    tipo = models.ForeignKey(Tipo, on_delete=models.SET_NULL, null=True, verbose_name="Tipo")
-    subtipo = models.ForeignKey(Subtipo, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Subtipo")
-    modelo = models.CharField(max_length=200, verbose_name="Modelo", blank=True)
-    marca = models.CharField(max_length=200, verbose_name="Marca", blank=True)
-    valor_colones = models.DecimalField(max_digits=12, decimal_places=2)
-    valor_dolares = models.DecimalField(max_digits=12, decimal_places=2)
-    garantia = models.DateField(null=True, verbose_name="Garantia")
-    fecha_registro = models.DateField(auto_now_add=True, verbose_name="Fecha de Registro", null=True)
-    fecha_ingreso = models.DateField(null=True, verbose_name="Fecha de Ingreso")
     observacion = models.CharField(max_length=500, blank=True, null=True, verbose_name="Observación")
-    categoria = models.ForeignKey(Categoria, on_delete=models.DO_NOTHING, default=1 , verbose_name="Categoria")
-    compra = models.ForeignKey("Compra", on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Compra")
+    nombre = models.CharField(max_length=120, verbose_name="Nombre", blank=False, null=False)
+    marca = models.CharField(max_length=200, verbose_name="Marca")
+    valor_colones = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    valor_dolares = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    modelo = models.CharField(max_length=200, verbose_name="Modelo")
+    garantia = models.DateField(verbose_name="Garantia", blank=True, null=True)
+    fecha_ingreso = models.DateField(verbose_name="Fecha de Ingreso", blank=True, null=True)
+    fecha_registro = models.DateField(auto_now_add=True, verbose_name="Fecha de Registro")
+    categoria = models.ForeignKey(Categoria, on_delete=models.DO_NOTHING, null=True, blank=True, verbose_name="Categoria")
+    tipo = models.ForeignKey(Tipo, on_delete=models.DO_NOTHING, verbose_name="Tipo")
+    subtipo = models.ForeignKey(Subtipo, on_delete=models.DO_NOTHING, verbose_name="Subtipo")
+    compra = models.ForeignKey("Compra", on_delete=models.DO_NOTHING, blank=True, null=True, verbose_name="Compra")
+    partida = models.ForeignKey(Partida, on_delete=models.DO_NOTHING) 
     red = models.ForeignKey(to="Red", on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Red")
-    ubicacion = models.ForeignKey(to="Ubicaciones", on_delete=models.DO_NOTHING, blank=True, null=True, verbose_name="Ubicación")
-    estado = models.ForeignKey(Estados, on_delete=models.DO_NOTHING, verbose_name="Estados", default='1')
-    partida = models.ForeignKey(Partida, on_delete=models.DO_NOTHING, default=1)
+    ubicacion = models.ForeignKey(to="Ubicaciones", on_delete=models.DO_NOTHING, verbose_name="Ubicación")
+    estado = models.ForeignKey(Estados, on_delete=models.DO_NOTHING, verbose_name="Estados", default=11)
 
     class Meta:
         abstract = True
@@ -101,9 +99,9 @@ class Activos_No_Plaqueados(AbstractActivo):
         return self.serie
 
 class Funcionarios(models.Model):
-    cedula = models.CharField(max_length=120)
-    nombre_completo = models.CharField(max_length=500, unique=True)
-    correo_institucional = models.EmailField(max_length=254, unique=True)
+    cedula = models.CharField(max_length=120, unique=True)
+    nombre_completo = models.CharField(max_length=120)
+    correo_institucional = models.CharField(max_length=120, unique=True)
     correo_personal = models.CharField(max_length=120, null=True, blank=True)
     telefono_oficina = models.CharField(max_length=120, null=True, blank=True)
     telefono_personal = models.CharField(max_length=120, null=True, blank=True)
@@ -113,6 +111,7 @@ class Funcionarios(models.Model):
 
     def __str__(self):
         return self.nombre_completo
+#End Model Funcionarios
 
 class Instalaciones(models.Model):
     ubicacion = models.CharField(max_length=120, unique=True)
@@ -192,7 +191,7 @@ class Tramites(models.Model):
     tipo = models.ForeignKey(TiposTramites, on_delete=models.DO_NOTHING)
     estado = models.ForeignKey(TiposEstados, on_delete=models.DO_NOTHING)
     detalles = models.CharField(max_length=200) ## Detalles concatena todos los activos relacionados plaqueados y no
-    obervaciones = models.CharField(max_length=500, null=True) ## Conflicto con este campo
+    obervaciones = models.CharField(max_length=500) ## Conflicto con este campo
     detalles_placa = models.ManyToManyField(to=Activos_Plaqueados, through='DetallePlacaUbicacion', related_name='detalles_placa')
     detalles_serie = models.ManyToManyField(to=Activos_No_Plaqueados, through='DetalleSerieUbicacion', related_name='detalles_serie')
     fecha = models.DateField(default=now)
@@ -238,7 +237,7 @@ class Compra(models.Model):
     class Meta:
         verbose_name_plural = "Compras"
 
-class Red(models.Model): #Puede ser nulo
+class Red(models.Model):
     MAC = models.CharField(max_length=45, unique=True)
     IP = models.CharField(max_length=20, blank=True, default="")
     IP6 = models.CharField(max_length=40, blank=True, default="")
@@ -253,7 +252,7 @@ class Red(models.Model): #Puede ser nulo
 class Proveedor(models.Model):
     nombre = models.CharField(max_length=230, unique=True)
     telefono = models.CharField(max_length=16)
-    correo = models.CharField(max_length=120)
+    correo = models.CharField(max_length=100) ## se cambió de emailfield por charfield
 
     def __str__(self) -> str:
         return self.nombre
@@ -261,7 +260,7 @@ class Proveedor(models.Model):
     class Meta:
         verbose_name_plural = "Proveedores"
 
-class Unidades(models.Model): ## Coordinacion?
+class Unidades(models.Model):
     codigo = models.CharField(max_length=5, primary_key=True)
     nombre = models.CharField(max_length=120, null=True)
     coordinador = models.ForeignKey(to=Funcionarios, on_delete=models.SET_NULL, null=True)
@@ -277,5 +276,3 @@ class Unidades(models.Model): ## Coordinacion?
 
 
 #-----------# Fin Area de Pruebas #-----------#
-        
-

@@ -36,9 +36,8 @@ class TallerSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class RedSerializer(serializers.ModelSerializer):
-    placa = serializers.StringRelatedField(source="activos_plaqueados_set.last.placa", default="")
-    serie = serializers.StringRelatedField(source="activos_no_plaqueados_set.last.serie", default="")
-
+    # placa = serializers.StringRelatedField(source="activos_plaqueados_set.last.placa", default="")
+    # serie = serializers.StringRelatedField(source="activos_no_plaqueados_set.last.serie", default="")
     class Meta:
         model = Red
         fields = "__all__"
@@ -59,7 +58,7 @@ class SubtipoSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class TramitesSerializer(serializers.ModelSerializer):
-    solicitante = serializers.SlugRelatedField(slug_field="id", queryset=User.objects.all())
+    elaborado_por = serializers.SlugRelatedField(slug_field="id", queryset=User.objects.all())
     destinatario = serializers.SlugRelatedField(slug_field="id", queryset=Funcionarios.objects.all())
     remitente = serializers.SlugRelatedField(slug_field="id", queryset=Funcionarios.objects.all())
     tipo = serializers.SlugRelatedField(slug_field="id", queryset=TiposTramites.objects.all())
@@ -155,6 +154,36 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'email', 'groups', 'password', 'first_name', 'last_name', 'is_superuser',
                   'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions']
+        
+class InstalacionesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Instalaciones
+        fields = "__all__"
+    
+class TiposTramitesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TiposTramites
+        fields = "__all__"
+
+class TiposEstadosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TiposEstados
+        fields = "__all__"
+
+class EstadosSerializer(serializers.ModelSerializer): 
+    class Meta:
+        model = Estados
+        fields = "__all__"
+
+class CategoriaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categoria
+        fields = "__all__"
+        
+class PartidaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Partida
+        fields = "__all__"
         
 
 #-----------# serializers funcionando #-----------#

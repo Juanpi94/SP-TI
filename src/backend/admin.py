@@ -77,24 +77,38 @@ class TiposTramitesAdmin(admin.ModelAdmin):
 class TiposEstadosAdmin(admin.ModelAdmin):
     pass
 
+class InstalacionesAdmin(admin.ModelAdmin):
+    pass
 
-admin.site.register(Ubicaciones, UbicacionesAdmin)
-admin.site.register(Funcionarios, FuncionariosAdmin)
-admin.site.register(Tipo, TiposAdmin)
-admin.site.register(Unidades, UnidadesAdmin)
-admin.site.register(Proveedor, ProveedoresAdmin)
+class CategoriaAdmin(admin.ModelAdmin):
+    pass
+
+class PartidasAdmin(admin.ModelAdmin):
+    pass
+
+class EstadosAdmin(admin.ModelAdmin):
+    pass
+
 admin.site.register(Red, RedAdmin)
+admin.site.register(Tipo, TiposAdmin)
 admin.site.register(Compra, CompraAdmin)
 admin.site.register(Taller, TallerAdmin)
+admin.site.register(Estados, EstadosAdmin)
 admin.site.register(Desecho, DesechoAdmin)
+admin.site.register(Partida, PartidasAdmin)
+admin.site.register(Subtipo, SubtiposAdmin)
+admin.site.register(Unidades, UnidadesAdmin)
 admin.site.register(Tramites, TramitesAdmin)
+admin.site.register(Categoria, CategoriaAdmin)
+admin.site.register(Proveedor, ProveedoresAdmin)
 admin.site.register(Permissions, PermissionAdmin)
+admin.site.register(Ubicaciones, UbicacionesAdmin)
+admin.site.register(TiposEstados, TiposEstadosAdmin)
+admin.site.register(Funcionarios, FuncionariosAdmin)
+admin.site.register(TiposTramites, TiposTramitesAdmin)
+admin.site.register(Instalaciones, InstalacionesAdmin)
 admin.site.register(Activos_Plaqueados, ActivosPlaqueadosAdmin)
 admin.site.register(Activos_No_Plaqueados, ActivosNoPlaqueadosAdmin)
-admin.site.register(Subtipo, SubtiposAdmin)
-admin.site.register(Estados, EstadosAdmin)
-admin.site.register(TiposTramites, TiposTramitesAdmin)
-admin.site.register(TiposEstados, TiposEstadosAdmin)
 
 #-------------# Area de Pruebas #-------------#
 

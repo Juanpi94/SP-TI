@@ -15,7 +15,7 @@ urlpatterns = [
     # PLATAFORMA
     ## Activos
     path("tipo/", views.Tipo_View.as_view(), name="tipo"),
-    path("red/", views.Red_Table_View.as_view(), name="red"),
+    path("red/", views.Red_View.as_view(), name="red"),
     path("compra/", views.Compra_View.as_view(), name="compra"),
     path("subtipos/", views.Subtipo_View.as_view(), name="subtipos"),
     path("activos_plaqueados/", views.Activos_Plaqueados_View.as_view(), name="activos_plaqueados"),
@@ -23,7 +23,7 @@ urlpatterns = [
     
     ## Tramites
     path("tramites/", views.Tramites_View.as_view(), name="tramites"),
-    path("traslados/", views.Traslados_Table_View.as_view(), name="traslados"),
+    path("traslados/", views.Traslados_View.as_view(), name="traslados"),
     path("generar/taller/", views.Taller_View.as_view(), name="generar_taller"),
     path("generar/desecho/", views.Desecho_View.as_view(), name="generar_desecho"),
     path("generar/traslados/", views.Generar_Traslado_View.as_view(), name="generar_traslados"),
@@ -39,16 +39,23 @@ urlpatterns = [
     # ADMINISTRACION
     ## Gestion
     path("user/", views.User_View.as_view(), name="user"),
-    path("unidades/", views.Unidades_Table_View.as_view(), name="unidades"),
+    path("unidades/", views.Unidades_View.as_view(), name="unidades"),
     path("ubicaciones/", views.Ubicaciones_View.as_view(), name="ubicaciones"),
     path("funcionarios/", views.Funcionarios_View.as_view(), name="funcionarios"),
-    path("proveedor/", views.Proveedores_Table_View.as_view(), name="proveedor"),
+    path("proveedor/", views.Proveedores_View.as_view(), name="proveedor"),
     
     # Importar
+    path("importar/general/", views.importar_inventario_general.as_view(), name="importar_inventario_general"),
     path("importar/reporte-plaqueados/", views.Importar_Reporte_Plaqueados.as_view(), name="importar_reporte_plaqueados"),
     path("importar/reporte-no-plaqueados/", views.Importar_Reporte_No_Plaqueados.as_view(), name="importar_reporte_no_plaqueados"),
     
-    #-------------# Area de Pruebas #-------------#   
+    path("partidas/", views.Partida_View.as_view(), name="partidas"),
+    path("categorias/", views.Categoria_View.as_view(), name="categorias"),
+    path("estados/", views.Estados_View.as_view(), name="estados"),
+    path("instalaciones/", views.Instalaciones_View.as_view(), name="instalaciones"),
+
+    
+    #-------------# Area de Pruebas #-------------# 
     
     # path('editData/<int:codigo>/', views.EditUnidadView.as_view(), name='editData'),
     path('<str:model_name>/<int:primary_key>/edit/', views.EditGenericView.as_view(), name='editData'),
@@ -63,8 +70,7 @@ apiurlpatterns = [
     path("importar/reporte-plaqueados", api_views.ImportarReportePlaqueados.as_view(), name="api-importar-reporte-plaqueados"),
     path("importar/reporte-no-plaqueados", api_views.ImportarReporteNoPlaqueados.as_view(), name="api-importar-reporte-no-plaqueados"),
     path("exportar/", api_views.ExportarHojaDeCalculo.as_view()),
-    path("auth/change_password/", api_views.ChangePasswordView.as_view()),
-    
+    path("auth/change_password/", api_views.ChangePasswordView.as_view()),    
     
 #-------------# Area de Pruebas #-------------#   
 

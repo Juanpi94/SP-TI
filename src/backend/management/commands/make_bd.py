@@ -3,7 +3,6 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.management import call_command
 from django.core.management.color import Style
 
-
 class Command(BaseCommand):
     def handle(self, *args, **options):
         # Configuración de la conexión
@@ -25,13 +24,14 @@ class Command(BaseCommand):
         if cursor.fetchone():
             # La base de datos existe, borramos y creamos de nuevo
             cursor.execute("DROP DATABASE {}".format(database))
-            cursor.execute("CREATE DATABASE {}".format(database))
+            cursor.execute("CREATE DATABASE {} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci".format(database))
         else:
             # La base de datos no existe, creamos una nueva
-            cursor.execute("CREATE DATABASE {}".format(database))
+            cursor.execute("CREATE DATABASE {} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci".format(database))
 
         # Cerrar la conexión
         cnx.close()
 
         call_command('makemigrations')
         call_command('migrate')
+        call_command('seed', '--flush')
