@@ -19,13 +19,6 @@ class RedReportSerializer(serializers.ModelSerializer):
         model = Red
         fields = "__all__"
 
-#-------------# Area de Pruebas #-------------#
-
-
-
-#-----------# Fin Area de Pruebas #-----------#
-
-
 #-----------# serializers funcionando #-----------#
 
 class TallerSerializer(serializers.ModelSerializer):
@@ -125,6 +118,8 @@ class PlaqueadosSerializer(serializers.ModelSerializer):
     ubicacion = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
     estado = serializers.SlugRelatedField(slug_field="id", queryset=Estados.objects.all())
     ubicacion_anterior = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
+    categoria = serializers.SlugRelatedField(slug_field="nombre", queryset=Categoria.objects.all())
+    partida = serializers.SlugRelatedField(slug_field="codigo", queryset=Partida.objects.all())
     
     class Meta:
         model = Activos_Plaqueados
@@ -138,6 +133,9 @@ class NoPlaqueadosSerializer(serializers.ModelSerializer):
     ubicacion = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
     estado = serializers.SlugRelatedField(slug_field="id", queryset=Estados.objects.all())
     ubicacion_anterior = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
+    categoria = serializers.SlugRelatedField(slug_field="nombre", queryset=Categoria.objects.all())
+    partida = serializers.SlugRelatedField(slug_field="codigo", queryset=Partida.objects.all())
+
 
     class Meta:
         model = Activos_No_Plaqueados

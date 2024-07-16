@@ -249,7 +249,7 @@ class Activos_Plaqueados_View(Table_View):
     title = "Activos plaqueados"
     id_field = "placa"
     defs_order = ["placa"]
-    exclude = ["tramites_rel", "detalles_placa", "detalles_serie"]
+    exclude = ["tramites_rel", "detalles_placa", "detalles_serie", "detalleplacaubicacion"]
 
     def get_form_fields(self) -> dict:
         return {"field_order": ["placa"]}
@@ -257,20 +257,8 @@ class Activos_Plaqueados_View(Table_View):
     def get_form_metafields(self) -> dict:
         metafields = super().get_form_metafields()
         metafields["widgets"] = {
-            "garantia": DateInput(
-                attrs={
-                    "type": "date",
-                    "placeholder": "yyyy-mm-dd (DOB)",
-                    "class": "date-form-input",
-                }
-            ),
-            "fecha_ingreso": DateInput(
-                attrs={
-                    "type": "date",
-                    "placeholder": "yyyy-mm-dd (DOB)",
-                    "class": "date-form-input",
-                }
-            ),
+            "garantia": DateInput( attrs={ "type": "date", "placeholder": "yyyy-mm-dd (DOB)", "class": "date-form-input", } ),
+            "fecha_ingreso": DateInput( attrs={ "type": "date", "placeholder": "yyyy-mm-dd (DOB)", "class": "date-form-input", } ),
         }
         return metafields
 
@@ -278,7 +266,7 @@ class Activos_Plaqueados_View(Table_View):
         return super().get_values().annotate(tipo=F('tipo__nombre'), subtipo=F('subtipo__nombre'), 
                                              ubicacion=F('ubicacion__ubicacion'), compra=F('compra__numero_orden_compra'),
                                              red=F('red__MAC'), ubicacion_anterior=F('ubicacion_anterior__ubicacion'),
-                                             estado=F('estado__descripcion'))
+                                             estado=F('estado__descripcion'), categoria=F('categoria__nombre'), partida=F('partida__codigo'))
 
 ##--Activos No Plaqueados
 class Activos_No_Plaqueados_View(Table_View):
@@ -295,20 +283,8 @@ class Activos_No_Plaqueados_View(Table_View):
     def get_form_metafields(self) -> dict:
         metafields = super().get_form_metafields()
         metafields["widgets"] = {
-            "garantia": DateInput(
-                attrs={
-                    "type": "date",
-                    "placeholder": "yyyy-mm-dd (DOB)",
-                    "class": "date-form-input",
-                }
-            ),
-            "fecha_ingreso": DateInput(
-                attrs={
-                    "type": "date",
-                    "placeholder": "yyyy-mm-dd (DOB)",
-                    "class": "date-form-input",
-                }
-            ),
+            "garantia": DateInput( attrs={ "type": "date", "placeholder": "yyyy-mm-dd (DOB)", "class": "date-form-input", } ),
+            "fecha_ingreso": DateInput( attrs={ "type": "date", "placeholder": "yyyy-mm-dd (DOB)", "class": "date-form-input", } ),
         }
         return metafields
 
@@ -348,7 +324,7 @@ class Red_View(Table_View):
     target_view = "red"
     model = models.Red
     title = "Red Plaqueados"
-    exclude = ["activos_plaqueados", "activos_no_plaqueados,"]  
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]  
     
 class Categoria_View(Table_View):
     target_view = "categoria"
