@@ -56,13 +56,31 @@ class Partida(models.Model):
     def __str__(self):
         return self.codigo
 
+class Marcas(models.Model):
+    nombre = models.CharField(max_length=120, null=False, unique=True)
+
+    def __str__(self) -> str:
+        return self.nombre.__str__()
+
+    class Meta:
+        verbose_name_plural = "Marcas"
+
+class Modelos(models.Model):
+    nombre = models.CharField(max_length=120, null=False, unique=True)
+
+    def __str__(self) -> str:
+        return self.nombre.__str__()
+
+    class Meta:
+        verbose_name_plural = "Modelos"
+
 ## Acomodar orden segun el documento inventario de activos 
 class AbstractActivo(models.Model):
     nombre = models.CharField(max_length=120, verbose_name="Nombre", blank=False, null=False)
     tipo = models.ForeignKey(Tipo, on_delete=models.SET_NULL, null=True, verbose_name="Tipo")
     subtipo = models.ForeignKey(Subtipo, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Subtipo")
-    modelo = models.CharField(max_length=200, verbose_name="Modelo", blank=True)
-    marca = models.CharField(max_length=200, verbose_name="Marca", blank=True)
+    modelo = models.ForeignKey(Modelos, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Modelo")
+    marca = models.ForeignKey(Marcas, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Marca")
     valor_colones = models.DecimalField(max_digits=12, decimal_places=2)
     valor_dolares = models.DecimalField(max_digits=12, decimal_places=2)
     garantia = models.DateField(null=True, verbose_name="Garantia")
@@ -262,7 +280,7 @@ class Proveedor(models.Model):
         verbose_name_plural = "Proveedores"
 
 class Unidades(models.Model): ## Coordinacion?
-    codigo = models.CharField(max_length=5, primary_key=True)
+    codigo = models.CharField(max_length=10, primary_key=True)
     nombre = models.CharField(max_length=120, null=True)
     coordinador = models.ForeignKey(to=Funcionarios, on_delete=models.SET_NULL, null=True)
 

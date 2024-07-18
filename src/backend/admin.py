@@ -89,12 +89,20 @@ class PartidasAdmin(admin.ModelAdmin):
 class EstadosAdmin(admin.ModelAdmin):
     pass
 
+class ModelosAdmin(admin.ModelAdmin):
+    pass
+
+class MarcasAdmin(admin.ModelAdmin):
+    pass
+
 admin.site.register(Red, RedAdmin)
 admin.site.register(Tipo, TiposAdmin)
 admin.site.register(Compra, CompraAdmin)
 admin.site.register(Taller, TallerAdmin)
+admin.site.register(Marcas, MarcasAdmin)
 admin.site.register(Estados, EstadosAdmin)
 admin.site.register(Desecho, DesechoAdmin)
+admin.site.register(Modelos, ModelosAdmin)
 admin.site.register(Partida, PartidasAdmin)
 admin.site.register(Subtipo, SubtiposAdmin)
 admin.site.register(Unidades, UnidadesAdmin)

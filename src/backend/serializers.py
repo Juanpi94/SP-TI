@@ -118,8 +118,10 @@ class PlaqueadosSerializer(serializers.ModelSerializer):
     ubicacion = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
     estado = serializers.SlugRelatedField(slug_field="id", queryset=Estados.objects.all())
     ubicacion_anterior = serializers.SlugRelatedField(slug_field="id", queryset=Ubicaciones.objects.all())
-    categoria = serializers.SlugRelatedField(slug_field="nombre", queryset=Categoria.objects.all())
+    categoria = serializers.SlugRelatedField(slug_field="id", queryset=Categoria.objects.all())
     partida = serializers.SlugRelatedField(slug_field="codigo", queryset=Partida.objects.all())
+    marca = serializers.SlugRelatedField(slug_field="id", queryset=Marcas.objects.all())
+    modelo = serializers.SlugRelatedField(slug_field="id", queryset=Modelos.objects.all())
     
     class Meta:
         model = Activos_Plaqueados
@@ -183,6 +185,15 @@ class PartidaSerializer(serializers.ModelSerializer):
         model = Partida
         fields = "__all__"
         
+class ModelosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Modelos
+        fields = "__all__"
+
+class MarcasSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Marcas
+        fields = "__all__"
 
 #-----------# serializers funcionando #-----------#
 
@@ -193,6 +204,8 @@ class PlaqueadosReportSerializer(serializers.ModelSerializer):
     tipo = serializers.StringRelatedField(read_only=True)
     subtipo = serializers.StringRelatedField(read_only=True)
     compra = CompraSerializer(read_only=True)
+    marca = serializers.StringRelatedField(read_only=True)
+    modelo = serializers.StringRelatedField(read_only=True)
     red = RedReportSerializer(read_only=True)
 
     class Meta:

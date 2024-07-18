@@ -278,6 +278,14 @@ class PartidaApiViewset(AuthMixin, ModelViewSet):
 class EstadosApiViewset(AuthMixin, ModelViewSet):
     queryset = mdls.Estados.objects.all()
     serializer_class = EstadosSerializer
+    
+class ModelosApiViewset(AuthMixin, ModelViewSet):
+    queryset = mdls.Modelos.objects.all()
+    serializer_class = ModelosSerializer
+    
+class MarcasApiViewset(AuthMixin, ModelViewSet):
+    queryset = mdls.Marcas.objects.all()
+    serializer_class = MarcasSerializer
 
 #-------------# (AuthMixin, ModelViewSet) #-------------#
 

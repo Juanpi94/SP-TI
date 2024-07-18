@@ -22,6 +22,8 @@ api_router.register(r"funcionarios", FuncionariosApiViewset, "funcionarios")
 
 api_router.register(r"estados", EstadosApiViewset, "estados")
 api_router.register(r"partidas", PartidaApiViewset, "partidas")
+api_router.register(r"modelos", ModelosApiViewset, "modelos")
+api_router.register(r"marcas", MarcasApiViewset, "marcas")
 api_router.register(r"categorias", CategoriaApiViewset, "categorias")
 api_router.register(r"instalaciones", InstalacionesApiViewset, "instalaciones")
 

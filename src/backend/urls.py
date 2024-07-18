@@ -52,6 +52,8 @@ urlpatterns = [
     path("partidas/", views.Partida_View.as_view(), name="partidas"),
     path("categorias/", views.Categoria_View.as_view(), name="categorias"),
     path("estados/", views.Estados_View.as_view(), name="estados"),
+    path("modelos/", views.Modelos_View.as_view(), name="modelos"),
+    path("marcas/", views.Marcas_View.as_view(), name="marcas"),
     path("instalaciones/", views.Instalaciones_View.as_view(), name="instalaciones"),
 
     

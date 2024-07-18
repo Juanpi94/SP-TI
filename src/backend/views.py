@@ -266,7 +266,8 @@ class Activos_Plaqueados_View(Table_View):
         return super().get_values().annotate(tipo=F('tipo__nombre'), subtipo=F('subtipo__nombre'), 
                                              ubicacion=F('ubicacion__ubicacion'), compra=F('compra__numero_orden_compra'),
                                              red=F('red__MAC'), ubicacion_anterior=F('ubicacion_anterior__ubicacion'),
-                                             estado=F('estado__descripcion'), categoria=F('categoria__nombre'), partida=F('partida__codigo'))
+                                             estado=F('estado__descripcion'), categoria=F('categoria__nombre'), partida=F('partida__codigo'),
+                                             marca=F('marca__nombre'), modelo=F('modelo__nombre'))
 
 ##--Activos No Plaqueados
 class Activos_No_Plaqueados_View(Table_View):
@@ -337,6 +338,18 @@ class Partida_View(Table_View):
     model = models.Partida
     title = "Partidas"
     exclude = ["activos_plaqueados", "activos_no_plaqueados"]  
+
+class Modelos_View(Table_View):
+    target_view = "modelos"
+    model = models.Modelos
+    title = "Modelos"
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
+    
+class Marcas_View(Table_View):
+    target_view = "marcas"
+    model = models.Marcas
+    title = "Marcas"
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
 
 ##---- Fin Plataforma/Activos ----##
 
