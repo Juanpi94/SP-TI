@@ -84,44 +84,34 @@ function informeDeActivos(informe_errores) {
 		// Crear un nuevo libro de trabajo
 		const wb = XLSX.utils.book_new();
 
-		// Función para ajustar el ancho de las columnas
-		function ajustarAnchoColumnas(ws) {
-			const colAnchos = [];
-			const datos = XLSX.utils.sheet_to_json(ws, { header: 1 });
-			if (datos.length > 0) {
-				const encabezados = datos[0];
-				encabezados.forEach((encabezado, i) => {
-					const maxLongitud = encabezado.length;
-					colAnchos[i] = { wch: maxLongitud + 2 }; // Añadir un poco de espacio extra
-				});
-			}
-			ws['!cols'] = colAnchos;
-		}
-
-		// Función para aplicar estilos a la primera fila
-		function aplicarEstilosPrimeraFila(ws) {
-			const range = XLSX.utils.decode_range(ws['!ref']);
-			for (let C = range.s.c; C <= range.e.c; ++C) {
-				const cell_address = XLSX.utils.encode_cell({ r: 0, c: C });
-				if (!ws[cell_address]) continue;
-				ws[cell_address].s = {
-					font: { bold: true, sz: 12 }, // Negrita y tamaño de fuente 12
-					alignment: { horizontal: "center", vertical: "center" }, // Centrado
-					fill: { fgColor: { rgb: "FFFF00" } } // Fondo amarillo
-				};
-			}
-		}
-
 		// Recorrer el objeto informe_errores
 		informe_errores.forEach((informe) => {
 			for (const [nombreHoja, datos] of Object.entries(informe)) {
 				if (datos && datos.length > 0) {
 					// Convertir los datos a un formato de hoja de trabajo
 					const ws = XLSX.utils.json_to_sheet(datos);
+
 					// Ajustar el ancho de las columnas
-					ajustarAnchoColumnas(ws);
+					const colWidths = datos.reduce((acc, row) => {
+						Object.keys(row).forEach((key, i) => {
+							const value = row[key] ? row[key].toString().length : 10;
+							acc[i] = Math.max(acc[i] || 10, value);
+						});
+						return acc;
+					}, []);
+					ws['!cols'] = colWidths.map(w => ({ wch: w }));
+
 					// Aplicar estilos a la primera fila
-					aplicarEstilosPrimeraFila(ws);
+					const range = XLSX.utils.decode_range(ws['!ref']);
+					for (let C = range.s.c; C <= range.e.c; ++C) {
+						const cell_address = XLSX.utils.encode_cell({ r: 0, c: C });
+						if (!ws[cell_address]) continue;
+						ws[cell_address].s = {
+							font: { bold: true },
+							alignment: { horizontal: "center" }
+						};
+					}
+
 					// Añadir la hoja de trabajo al libro con el nombre correspondiente
 					XLSX.utils.book_append_sheet(wb, ws, nombreHoja);
 				}
@@ -172,6 +162,16 @@ document.getElementById('loadData').addEventListener('click', () => {
 	// Lee el archivo
 	const reader = new FileReader();
 	reader.onload = (event) => {
+
+		// Muestra un mensaje de carga
+		Swal.fire({
+			title: "Cargando datos",
+			html: "Por favor, espera mientras se cargan los datos...",
+			didOpen: () => {
+				Swal.showLoading();
+			}
+		});
+
 		const workbook = XLSX.read(event.target.result, { type: 'array' });
 
 		// Selecciona la hoja de trabajo deseada
@@ -466,10 +466,11 @@ document.getElementById('loadData').addEventListener('click', () => {
 		let est_data = [];
 		let exclu_est = [];
 		pos = 1;
-		columDatas['Estado'].forEach(element => {
+		columDatas['Estado'].forEach((element, index) => {
+			const descEstado = columDatas['Descripción Estado'][index];
 			if (element != undefined && element != "" && element != null) {
 				if (!est_data.some(item => format_text(item.nombre) === format_text(element))) {
-					est_data.push({ nombre: element, descripcion: element });
+					est_data.push({ nombre: element, descripcion: descEstado });
 				}
 			} else {
 				exclu_est.push({ posicion: pos + 1, estado_invalido: "Estado no valido [" + element + "]" });
@@ -524,6 +525,11 @@ document.getElementById('loadData').addEventListener('click', () => {
 		// -------------- Guardar Ubicaciones -------------- //
 		let ubi_data = [];
 		let exclu_ubi = [];
+
+		const baseTime = 250; // Tiempo base en milisegundos
+		const timePerItem = 40; // Tiempo adicional por cada elemento en milisegundos
+		const delay = baseTime + (rowData.length * timePerItem);
+
 		setTimeout(() => {
 			axios.get(`/api/instalaciones/`).then((response) => {
 				const instalaciones_list = response.data;
@@ -537,7 +543,7 @@ document.getElementById('loadData').addEventListener('click', () => {
 						let coordinador_pending = funcionarios_list.find(funcionario => funcionario.nombre_completo === 'por definir');
 						let unidad_pending = unidades_list.find(unidad => unidad.nombre === 'Sin unidad');
 						if (ubi_data.length === 0) {
-							ubi_data.push({ ubicacion: "Sin ubicación", instalacion: 1, custodio: coordinador_pending.id , unidades: unidad_pending.codigo });
+							ubi_data.push({ ubicacion: "Sin ubicación", instalacion: 1, custodio: coordinador_pending.id, unidades: unidad_pending.codigo });
 						}
 
 						for (let x = 1; x < rowData.length; x++) {
@@ -591,13 +597,13 @@ document.getElementById('loadData').addEventListener('click', () => {
 			}).then(() => {
 				console.log('Ubicaciones terminado con exito');
 			});
-		}, 8000);
+		}, delay);
 		// -------------- Fin de Guardar Ubicaciones -------------- //
 
 		// -------------- Tiempo de espera para evitar errores -------------- //
 		setTimeout(() => {
 			// Esperando 4 segundos para evitar errores
-		}, 8000);
+		}, 4000);
 		// -------------- Fin Tiempo de espera para evitar errores -------------- //
 
 		// -------------- Guardar Activos -------------- //
@@ -727,96 +733,96 @@ document.getElementById('loadData').addEventListener('click', () => {
 				for (let s = 0; s < full_data.length; s++) {
 					// Verifica si la garantia es valida
 					if (full_data[s].garantia === null) {
-						let addInfoData = exclu_act.find(item => item.placa === full_data[s].placa);
+						let addInfoData = exclu_act.find(item => item.posicion === s + 2 && item.placa === full_data[s].placa);
 						if (addInfoData) {
 							addInfoData.fecha_garantia_invalida = "Fecha de garantia no valida";
 						} else {
-							exclu_act.push({ posicion: s + 1, placa: full_data[s].placa, fecha_garantia_invalida: "Fecha de garantia no valida" });
+							exclu_act.push({ posicion: s + 2, placa: full_data[s].placa, fecha_garantia_invalida: "Fecha de garantia no valida" });
 						}
 					}
 					// Verifica si la fecha de registro es valida
 					if (full_data[s].fecha_registro === null) {
-						let addInfoData = exclu_act.find(item => item.placa === full_data[s].placa);
+						let addInfoData = exclu_act.find(item => item.posicion === s + 2 && item.placa === full_data[s].placa);
 						if (addInfoData) {
 							addInfoData.fecha_registro_invalida = "Fecha de registro no valida";
 						} else {
-							exclu_act.push({ posicion: s + 1, placa: full_data[s].placa, fecha_registro_invalida: "Fecha de registro no valida" });
+							exclu_act.push({ posicion: s + 2, placa: full_data[s].placa, fecha_registro_invalida: "Fecha de registro no valida" });
 						}
 					}
 					// Verifica si la fecha de ingreso es valida
 					if (full_data[s].fecha_ingreso === null) {
-						let addInfoData = exclu_act.find(item => item.placa === full_data[s].placa);
+						let addInfoData = exclu_act.find(item => item.posicion === s + 2 && item.placa === full_data[s].placa);
 						if (addInfoData) {
 							addInfoData.fecha_ingreso_invalida = "Fecha de ingreso no valida";
 						} else {
-							exclu_act.push({ posicion: s + 1, placa: full_data[s].placa, fecha_ingreso_invalida: "Fecha de ingreso no valida" });
+							exclu_act.push({ posicion: s + 2, placa: full_data[s].placa, fecha_ingreso_invalida: "Fecha de ingreso no valida" });
 						}
 					}
 					// Verifica si la categoria es valida
 					if (full_data[s].categoria == -1 && typeof full_data[s].categoria != "number") {
-						let addInfoData = exclu_act.find(item => item.posicion === s + 1);
+						let addInfoData = exclu_act.find(item => item.posicion === s + 2);
 						if (addInfoData) {
 							addInfoData.categoria_invalida = "Categoria no valida";
 						} else {
-							exclu_act.push({ posicion: s + 1, placa: full_data[s].placa, categoria_invalida: "Categoria no valida" });
+							exclu_act.push({ posicion: s + 2, placa: full_data[s].placa, categoria_invalida: "Categoria no valida" });
 						}
 					}
 					// Verifica si la serie es valida
 					if (full_data[s].serie == null || full_data[s].serie == undefined || full_data[s].serie == "") {
-						let addInfoData = exclu_act.find(item => item.posicion === s + 1);
+						let addInfoData = exclu_act.find(item => item.posicion === s + 2);
 						if (addInfoData) {
 							addInfoData.serie_invalida = "Serie no valida";
 						} else {
-							exclu_act.push({ posicion: s + 1, placa: full_data[s].placa, serie_invalida: "Serie no valida" });
+							exclu_act.push({ posicion: s + 2, placa: full_data[s].placa, serie_invalida: "Serie no valida" });
 						}
 					}
 					// Verifica si el tipo es valido
 					if (full_data[s].tipo == -1 && typeof full_data[s].tipo != "number") {
-						let addInfoData = exclu_act.find(item => item.posicion === s + 1);
+						let addInfoData = exclu_act.find(item => item.posicion === s + 2);
 						if (addInfoData) {
 							addInfoData.tipo_invalido = "Tipo no valido";
 						} else {
-							exclu_act.push({ posicion: s + 1, placa: full_data[s].placa, tipo_invalido: "Tipo no valido" });
+							exclu_act.push({ posicion: s + 2, placa: full_data[s].placa, tipo_invalido: "Tipo no valido" });
 						}
 					}
 					// verifica si el subtipo es valido
 					if (full_data[s].subtipo == -1 && typeof full_data[s].subtipo != "number") {
-						let addInfoData = exclu_act.find(item => item.posicion === s + 1);
+						let addInfoData = exclu_act.find(item => item.posicion === s + 2);
 						if (addInfoData) {
 							addInfoData.subtipo_invalido = "Subtipo no valido";
 						} else {
-							exclu_act.push({ posicion: s + 1, placa: full_data[s].placa, subtipo_invalido: "Subtipo no valido" });
+							exclu_act.push({ posicion: s + 2, placa: full_data[s].placa, subtipo_invalido: "Subtipo no valido" });
 						}
 					}
 					// Verifica si el modelo es valido
 					if (full_data[s].modelo == null || full_data[s].modelo == undefined || full_data[s].modelo == "" || full_data[s].modelo == -1) {
-						let addInfoData = exclu_act.find(item => item.posicion === s + 1);
+						let addInfoData = exclu_act.find(item => item.posicion === s + 2);
 						if (addInfoData) {
 							addInfoData.modelo_invalido = "Modelo no valido";
 						} else {
-							exclu_act.push({ posicion: s + 1, placa: full_data[s].placa, modelo_invalido: "Modelo no valido" });
+							exclu_act.push({ posicion: s + 2, placa: full_data[s].placa, modelo_invalido: "Modelo no valido" });
 						}
 					}
 					// Verifica si la marca es valida
 					if (full_data[s].marca == null || full_data[s].marca == undefined || full_data[s].marca == "" || full_data[s].marca == -1) {
-						let addInfoData = exclu_act.find(item => item.posicion === s + 1);
+						let addInfoData = exclu_act.find(item => item.posicion === s + 2);
 						if (addInfoData) {
 							addInfoData.marca_invalida = "Marca no valida";
 						} else {
-							exclu_act.push({ posicion: s + 1, placa: full_data[s].placa, marca_invalida: "Marca no valida" });
+							exclu_act.push({ posicion: s + 2, placa: full_data[s].placa, marca_invalida: "Marca no valida" });
 						}
 					}
 					if (full_data[s].valor_colones >= 0.0 || full_data[s].valor_dolares >= 0.0) {
 						// Al menos uno de los valores es mayor a 0.0, considerado válido
 					} else {
 						// Ambos valores son 0.0 o inválidos
-						let addInfoData = exclu_act.find(item => item.posicion === s + 1);
+						let addInfoData = exclu_act.find(item => item.posicion === s + 2);
 						if (addInfoData) {
 							addInfoData.valor_colones_invalido = "Valor en colones no valido";
 							addInfoData.valor_dolares_invalido = "Valor en dólares no valido";
 						} else {
 							exclu_act.push({
-								posicion: s + 1,
+								posicion: s + 2,
 								placa: full_data[s].placa,
 								valor_colones_invalido: "Valor en colones no valido",
 								valor_dolares_invalido: "Valor en dólares no valido"
@@ -825,11 +831,11 @@ document.getElementById('loadData').addEventListener('click', () => {
 					}
 					// Verifica si los estados son validos
 					if (full_data[s].estado == -1 && typeof full_data[s].estado != "number") {
-						let addInfoData = exclu_act.find(item => item.posicion === s + 1);
+						let addInfoData = exclu_act.find(item => item.posicion === s + 2);
 						if (addInfoData) {
 							addInfoData.estado_invalido = "Estado no valido";
 						} else {
-							exclu_act.push({ posicion: s + 1, placa: full_data[s].placa, estado_invalido: "Estado no valido" });
+							exclu_act.push({ posicion: s + 2, placa: full_data[s].placa, estado_invalido: "Estado no valido" });
 						}
 					}
 				}
@@ -866,7 +872,8 @@ document.getElementById('loadData').addEventListener('click', () => {
 					'Informe ubicaciones': exclu_ubi,
 					'Informe activos': exclu_act
 				});
-				console.log(informe_errores);
+
+				Swal.close();
 
 				// Llamar a la función para descargar el informe
 				informeDeActivos(informe_errores);
@@ -876,7 +883,7 @@ document.getElementById('loadData').addEventListener('click', () => {
 					text: "Se ha generado un informe con los datos no válidos",
 				});
 			});
-		}, 9000);
+		}, delay + 500);
 		// -------------- Fin de Guardar Activos -------------- //
 	};
 

@@ -31,10 +31,10 @@ class Subtipo(models.Model):
 
 class Estados(models.Model):
     nombre = models.CharField(max_length=20, verbose_name="Nombre")
-    descripcion = models.CharField(max_length=40, verbose_name="Descripción")
+    descripcion = models.CharField(max_length=100, verbose_name="Descripción")
     
     def __str__(self) -> str:
-        return self.descripcion.__str__()
+        return self.nombre.__str__()
 
     class Meta:
         verbose_name_plural = "Estados"
