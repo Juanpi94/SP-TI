@@ -254,6 +254,38 @@ class ProveedorApiViewset(AuthMixin, ModelViewSet):
 class UnidadesApiViewset(AuthMixin, ModelViewSet):
     queryset = mdls.Unidades.objects.all()
     serializer_class = UnidadesSerializer
+    
+class InstalacionesApiViewset(AuthMixin, ModelViewSet):
+    queryset = mdls.Instalaciones.objects.all()
+    serializer_class = InstalacionesSerializer
+
+class TiposTramitesApiViewset(AuthMixin, ModelViewSet):
+    queryset = mdls.TiposTramites.objects.all()
+    serializer_class = TiposTramitesSerializer
+    
+class TiposEstadosApiViewset(AuthMixin, ModelViewSet):
+    queryset = mdls.TiposEstados.objects.all()
+    serializer_class = TiposEstadosSerializer
+
+class CategoriaApiViewset(AuthMixin, ModelViewSet):
+    queryset = mdls.Categoria.objects.all()
+    serializer_class = CategoriaSerializer
+
+class PartidaApiViewset(AuthMixin, ModelViewSet):
+    queryset = mdls.Partida.objects.all()
+    serializer_class = PartidaSerializer
+
+class EstadosApiViewset(AuthMixin, ModelViewSet):
+    queryset = mdls.Estados.objects.all()
+    serializer_class = EstadosSerializer
+    
+class ModelosApiViewset(AuthMixin, ModelViewSet):
+    queryset = mdls.Modelos.objects.all()
+    serializer_class = ModelosSerializer
+    
+class MarcasApiViewset(AuthMixin, ModelViewSet):
+    queryset = mdls.Marcas.objects.all()
+    serializer_class = MarcasSerializer
 
 #-------------# (AuthMixin, ModelViewSet) #-------------#
 

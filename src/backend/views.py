@@ -249,7 +249,7 @@ class Activos_Plaqueados_View(Table_View):
     title = "Activos plaqueados"
     id_field = "placa"
     defs_order = ["placa"]
-    exclude = ["tramites_rel", "detalles_placa", "detalles_serie"]
+    exclude = ["tramites_rel", "detalles_placa", "detalles_serie", "detalleplacaubicacion"]
 
     def get_form_fields(self) -> dict:
         return {"field_order": ["placa"]}
@@ -257,20 +257,8 @@ class Activos_Plaqueados_View(Table_View):
     def get_form_metafields(self) -> dict:
         metafields = super().get_form_metafields()
         metafields["widgets"] = {
-            "garantia": DateInput(
-                attrs={
-                    "type": "date",
-                    "placeholder": "yyyy-mm-dd (DOB)",
-                    "class": "date-form-input",
-                }
-            ),
-            "fecha_ingreso": DateInput(
-                attrs={
-                    "type": "date",
-                    "placeholder": "yyyy-mm-dd (DOB)",
-                    "class": "date-form-input",
-                }
-            ),
+            "garantia": DateInput( attrs={ "type": "date", "placeholder": "yyyy-mm-dd (DOB)", "class": "date-form-input", } ),
+            "fecha_ingreso": DateInput( attrs={ "type": "date", "placeholder": "yyyy-mm-dd (DOB)", "class": "date-form-input", } ),
         }
         return metafields
 
@@ -278,7 +266,8 @@ class Activos_Plaqueados_View(Table_View):
         return super().get_values().annotate(tipo=F('tipo__nombre'), subtipo=F('subtipo__nombre'), 
                                              ubicacion=F('ubicacion__ubicacion'), compra=F('compra__numero_orden_compra'),
                                              red=F('red__MAC'), ubicacion_anterior=F('ubicacion_anterior__ubicacion'),
-                                             estado=F('estado__descripcion'))
+                                             estado=F('estado__descripcion'), categoria=F('categoria__nombre'), partida=F('partida__codigo'),
+                                             marca=F('marca__nombre'), modelo=F('modelo__nombre'))
 
 ##--Activos No Plaqueados
 class Activos_No_Plaqueados_View(Table_View):
@@ -295,20 +284,8 @@ class Activos_No_Plaqueados_View(Table_View):
     def get_form_metafields(self) -> dict:
         metafields = super().get_form_metafields()
         metafields["widgets"] = {
-            "garantia": DateInput(
-                attrs={
-                    "type": "date",
-                    "placeholder": "yyyy-mm-dd (DOB)",
-                    "class": "date-form-input",
-                }
-            ),
-            "fecha_ingreso": DateInput(
-                attrs={
-                    "type": "date",
-                    "placeholder": "yyyy-mm-dd (DOB)",
-                    "class": "date-form-input",
-                }
-            ),
+            "garantia": DateInput( attrs={ "type": "date", "placeholder": "yyyy-mm-dd (DOB)", "class": "date-form-input", } ),
+            "fecha_ingreso": DateInput( attrs={ "type": "date", "placeholder": "yyyy-mm-dd (DOB)", "class": "date-form-input", } ),
         }
         return metafields
 
@@ -344,11 +321,35 @@ class Compra_View(Table_View):
         return super().get_values().annotate(id=F("numero_orden_compra"), proveedor=F('proveedor__nombre'))
  
 ##--Red   
-class Red_Table_View(Table_View):
+class Red_View(Table_View):
     target_view = "red"
     model = models.Red
     title = "Red Plaqueados"
-    exclude = ["activos_plaqueados", "activos_no_plaqueados"]    
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]  
+    
+class Categoria_View(Table_View):
+    target_view = "categoria"
+    model = models.Categoria
+    title = "Categorias"
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
+    
+class Partida_View(Table_View):
+    target_view = "partida"
+    model = models.Partida
+    title = "Partidas"
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]  
+
+class Modelos_View(Table_View):
+    target_view = "modelos"
+    model = models.Modelos
+    title = "Modelos"
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
+    
+class Marcas_View(Table_View):
+    target_view = "marcas"
+    model = models.Marcas
+    title = "Marcas"
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
 
 ##---- Fin Plataforma/Activos ----##
 
@@ -394,15 +395,15 @@ class Tramites_View(Table_View):
     add = False
     title = "Tramites"
     exclude = ["activos_plaqueados", "activos_no_plaqueados",
-               "traslados", "desecho", "taller", 'detalles_placa', 'detalles_serie']
+               "traslados", "desecho", "taller", 'detalles_placa', 'detalles_serie', 'detalleplacaubicacion', 'detalleserieubicacion' ]
     
     def get_values(self) -> QuerySet:
-        return super().get_values().annotate(solicitante=F('solicitante__username'), remitente=F('remitente__nombre_completo'),
-                                             recipiente=F('recipiente__nombre_completo'), tipo=F('tipo__nombre'),
+        return super().get_values().annotate(elaborado_por=F('elaborado_por__username'), remitente=F('remitente__nombre_completo'),
+                                             destinatario=F('destinatario__nombre_completo'), tipo=F('tipo__nombre'),
                                              estado=F('estado__nombre'))
 
 #--Ver traslados
-class Traslados_Table_View(Table_View):
+class Traslados_View(Table_View):
     target_view = "traslados"
     title = "Traslados"
     
@@ -523,13 +524,15 @@ class Ubicaciones_View(Table_View):
     target_view = "ubicaciones"
     model = models.Ubicaciones
     title = "Ubicaciones"
-    exclude = ["activos_plaqueados", "plaqueados", "activos_no_plaqueados", "no_plaqueados", "no_anterior"]
+    exclude = ["activos_plaqueados", "plaqueados", "activos_no_plaqueados", "no_plaqueados", "no_anterior",
+               "ubicacion_actual_serie", "ubicacion_futura_serie", "ubicacion_actual_placa", 
+               "ubicacion_futura_placa"]
 
     def get_values(self) -> QuerySet:
         return super().get_queryset().values().annotate(custodio=F("custodio__nombre_completo"), unidades=F("unidades__nombre"), instalacion=F('instalacion__ubicacion'))
     
 #--Unidades
-class Unidades_Table_View(Table_View):
+class Unidades_View(Table_View):
     target_view = "unidades"
     title = "Unidades Universitarias"
     model = models.Unidades
@@ -550,7 +553,7 @@ class User_View(Table_View):
     title = "Usuarios"   
 
 #--Proveedores
-class Proveedores_Table_View(Table_View):
+class Proveedores_View(Table_View):
     target_view = "proveedor"
     title = "Proveedores"
     model = models.Proveedor
@@ -558,6 +561,20 @@ class Proveedores_Table_View(Table_View):
     exclude = 'compra'
 
 ##---- Fin de Administracion/Gestión ----##
+
+#--Instalaciones
+class Instalaciones_View(Table_View):
+    target_view = "instalaciones"
+    title = "Instalaciones"
+    model = models.Instalaciones
+    exclude = ["ubicaciones"]
+    
+#--Estados
+class Estados_View(Table_View):
+    target_view = "estados"
+    title = "Estados"
+    model = models.Estados
+    exclude = ["activos_plaqueados", "activos_no_plaqueados"]
 
 #----------------------------------------------------------------------------------------
 
@@ -581,12 +598,17 @@ class ImportTemplateView(TemplateView):
 #--Encargado de importar datos de reportes plaqueados desde un excel
 class Importar_Reporte_Plaqueados(WritePermMixin, ImportTemplateView):
     template_name = "importar/reportePlaqueados.html"
+    
+class importar_inventario_general(WritePermMixin, ImportTemplateView):
+    template_name = "importar/importeGeneral.html"
 
 #--Encargado de importar datos de reportes no plaqueados desde un excel
 class Importar_Reporte_No_Plaqueados(WritePermMixin, ImportTemplateView):
     template_name = "importar/reporteNoPlaqueados.html"
 
 ##---- Fin de Administracion/Importar ----##
+
+
 
 #----------------------------------------------------------------------------------------
 

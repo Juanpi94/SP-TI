@@ -8,8 +8,8 @@ attrs_col = {"class": "col"}
 
 # class TramitesForm(ModelForm):
 #     remitente = ModelChoiceField(queryset=Funcionarios.objects.all(), to_field_name="nombre_completo", required=False)
-#     recipiente = ModelChoiceField(queryset=Funcionarios.objects.all(), to_field_name="nombre_completo", required=False)
-#     solicitante = ModelChoiceField(queryset=User.objects.all(), to_field_name="username")
+#     destinatario = ModelChoiceField(queryset=Funcionarios.objects.all(), to_field_name="nombre_completo", required=False)
+#     elaborado_por = ModelChoiceField(queryset=User.objects.all(), to_field_name="username")
 #     detalles = ModelChoiceField(queryset=Activos_Plaqueados.objects.all(), to_field_name="Placas")
     
 #     class Meta:
@@ -75,18 +75,18 @@ class TramitesExportForm(Form):
     tramite = ModelChoiceField(queryset=Tramites.objects.all(), empty_label="--seleccione tramite a cargar", label=None, widget=Select(attrs={'class': 'col-12 tramite-select'}))
     consecutivo = CharField(label="Consecutivo:", max_length=100, widget=TextInput(attrs={"class": "form-input"}))
     fecha = DateField(widget=DatePickerInput(attrs={"class": "form-input"}))
-    solicitante = ModelChoiceField(queryset=User.objects.all(), empty_label="--Solicitante--", label="Solicitante:", widget=Select(attrs=attrs_col), to_field_name="username")
+    elaborado_por = ModelChoiceField(queryset=User.objects.all(), empty_label="--Solicitante--", label="Solicitante:", widget=Select(attrs=attrs_col), to_field_name="username")
     destino = ModelChoiceField(queryset=Ubicaciones.objects.all(), empty_label="--seleccionar ubicación", label=None, widget=Select(attrs={'class': 'col destino-select'}))
     
     funcionarios = Funcionarios.objects.all()
     opciones = [(f.id, f.nombre_completo) for f in funcionarios]
     opciones.insert(0, ('', '--Seleccione--'))  # Add empty option at the beginning
     
-    recipiente = ChoiceField(choices=opciones, label="Para:", widget=Select(attrs=attrs_col))
+    destinatario = ChoiceField(choices=opciones, label="Para:", widget=Select(attrs=attrs_col))
     remitente = ChoiceField(choices=opciones, label="De:", widget=Select(attrs=attrs_col))
     
     motivo = CharField(widget=Textarea(attrs={"class": "textarea p-2"}), label="Motivo o Observaciones")
-    placa = ModelChoiceField(queryset=Activos_Plaqueados.objects.all(), empty_label="--placa", label="Placa:", to_field_name="placa", widget=Select(attrs=attrs_col))
+    placa = ModelChoiceField(queryset=Activos_Plaqueados.objects.all(), empty_label="--plac a", label="Placa:", to_field_name="placa", widget=Select(attrs=attrs_col))
     serie = SerieChoiceField(queryset=Activos_No_Plaqueados.objects.all(), empty_label="--serie", label="Serie:", to_field_name="serie", widget=Select(attrs=attrs_col))
 
 ## Encargado de generar el formulario para Generar desechos
