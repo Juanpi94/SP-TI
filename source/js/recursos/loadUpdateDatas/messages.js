@@ -90,7 +90,7 @@ function updateDeactivated() {
 function notUpdateData() {
     Swal.fire({
         icon: "info",
-        title: "Sin datos para actualizar la base de datos",
+        title: "Sin datos para actualizar",
         text: "No se encontraron datos para actualizar",
     });
 }
