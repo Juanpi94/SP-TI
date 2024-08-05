@@ -28,7 +28,7 @@ class TrasladosAdmin(admin.ModelAdmin):
     pass
 
 
-class UnidadesAdmin(admin.ModelAdmin):
+class CoordinacionesAdmin(admin.ModelAdmin):
     pass
 
 
@@ -105,7 +105,6 @@ admin.site.register(Desecho, DesechoAdmin)
 admin.site.register(Modelos, ModelosAdmin)
 admin.site.register(Partida, PartidasAdmin)
 admin.site.register(Subtipo, SubtiposAdmin)
-admin.site.register(Unidades, UnidadesAdmin)
 admin.site.register(Tramites, TramitesAdmin)
 admin.site.register(Categoria, CategoriaAdmin)
 admin.site.register(Proveedor, ProveedoresAdmin)
@@ -115,6 +114,7 @@ admin.site.register(TiposEstados, TiposEstadosAdmin)
 admin.site.register(Funcionarios, FuncionariosAdmin)
 admin.site.register(TiposTramites, TiposTramitesAdmin)
 admin.site.register(Instalaciones, InstalacionesAdmin)
+admin.site.register(Coordinaciones, CoordinacionesAdmin)
 admin.site.register(Activos_Plaqueados, ActivosPlaqueadosAdmin)
 admin.site.register(Activos_No_Plaqueados, ActivosNoPlaqueadosAdmin)
 

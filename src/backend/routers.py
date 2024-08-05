@@ -15,7 +15,7 @@ api_router.register(r"desecho", DesechoApiViewset, "desecho")
 api_router.register(r"tramites", TramitesApiViewset, "tramites")
 
 api_router.register(r"user", UserApiViewset, "user")
-api_router.register(r"unidades", UnidadesApiViewset, "unidades")
+api_router.register(r"coordinaciones", CoordinacionesApiViewset, "coordinaciones")
 api_router.register(r"proveedor", ProveedorApiViewset, "proveedor")
 api_router.register(r"ubicaciones", UbicacionesApiViewset, "ubicaciones")
 api_router.register(r"funcionarios", FuncionariosApiViewset, "funcionarios")

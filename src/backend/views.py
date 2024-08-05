@@ -517,7 +517,7 @@ class Funcionarios_View(Table_View):
     model = models.Funcionarios
     title = "Funcionarios"
     
-    exclude = ['ubicaciones', 'unidades']
+    exclude = ['ubicaciones', 'coordinaciones']
     
 #--Ubicaciones
 class Ubicaciones_View(Table_View):
@@ -529,13 +529,13 @@ class Ubicaciones_View(Table_View):
                "ubicacion_futura_placa"]
 
     def get_values(self) -> QuerySet:
-        return super().get_queryset().values().annotate(custodio=F("custodio__nombre_completo"), unidades=F("unidades__nombre"), instalacion=F('instalacion__ubicacion'))
+        return super().get_queryset().values().annotate(custodio=F("custodio__nombre_completo"), coordinacion=F("coordinacion__nombre"), instalacion=F('instalacion__ubicacion'))
     
-#--Unidades
-class Unidades_View(Table_View):
-    target_view = "unidades"
-    title = "Unidades Universitarias"
-    model = models.Unidades
+#--Coordinaciones
+class Coordinaciones_View(Table_View):
+    target_view = "coordinaciones"
+    title = "Coordinaciones Universitarias"
+    model = models.Coordinaciones
     id_field = "codigo"
     
     exclude = 'ubicaciones'

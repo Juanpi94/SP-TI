@@ -64,7 +64,7 @@ class AbstractActivo(models.Model):
     modelo = models.CharField(max_length=200, verbose_name="Modelo")
     garantia = models.DateField(verbose_name="Garantia", blank=True, null=True)
     fecha_ingreso = models.DateField(verbose_name="Fecha de Ingreso", blank=True, null=True)
-    fecha_registro = models.DateField(auto_now_add=True, verbose_name="Fecha de Registro")
+    fecha_registro = models.DateField(verbose_name="Fecha de Registro")
     categoria = models.ForeignKey(Categoria, on_delete=models.DO_NOTHING, null=True, blank=True, verbose_name="Categoria")
     tipo = models.ForeignKey(Tipo, on_delete=models.DO_NOTHING, verbose_name="Tipo")
     subtipo = models.ForeignKey(Subtipo, on_delete=models.DO_NOTHING, verbose_name="Subtipo")
