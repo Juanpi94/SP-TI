@@ -55,14 +55,15 @@
                     {% include dropdownItem with text="Ubicaciones" href="ubicaciones" %}
                     {% include dropdownItem with text="Usuarios" href="user" %}
                     {% include dropdownItem with text="Proveedores" href="proveedor" %}
-                    {% include dropdownItem with text="Unidades Universitarias" href="unidades" %}
+                    {% include dropdownItem with text="Coordinaciones Universitarias" href="coordinaciones" %}
                 </ul>
             </div>
             {% if request.user|can_write %}
                 <div class="sidebar-section ps-4">
                     {% include toggler with title="Importar" %}
                     <ul class="custom-dropdown-menu">
-                        {% include dropdownItem with text="Importar inventario general" href="importar_inventario_general" %}
+                        {% include dropdownItem with text="Importar Activos Plaqueados" href="importar_activos_plaqueados" %}
+                        {% include dropdownItem with text="Importar Activos No Plaqueados" href="importar_activos_no_plaqueados" %}
                         {% include dropdownItem with text="Importar Reporte: Activos Plaqueados" href="importar_reporte_plaqueados" %}
                         {% include dropdownItem with text="Importar Reporte: Activos no Plaqueados" href="importar_reporte_no_plaqueados" %}
                     </ul>

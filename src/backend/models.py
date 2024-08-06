@@ -84,7 +84,7 @@ class AbstractActivo(models.Model):
     valor_colones = models.DecimalField(max_digits=12, decimal_places=2)
     valor_dolares = models.DecimalField(max_digits=12, decimal_places=2)
     garantia = models.DateField(null=True, verbose_name="Garantia")
-    fecha_registro = models.DateField(auto_now_add=True, verbose_name="Fecha de Registro", null=True)
+    fecha_registro = models.DateField(verbose_name="Fecha de Registro", null=True)
     fecha_ingreso = models.DateField(null=True, verbose_name="Fecha de Ingreso")
     observacion = models.CharField(max_length=500, blank=True, null=True, verbose_name="Observación")
     categoria = models.ForeignKey(Categoria, on_delete=models.DO_NOTHING, default=1 , verbose_name="Categoria")
@@ -145,7 +145,7 @@ class Ubicaciones(models.Model):
     ubicacion = models.CharField(max_length=120, unique=True)
     instalacion = models.ForeignKey(Instalaciones, on_delete=models.DO_NOTHING)
     custodio = models.ForeignKey(Funcionarios, on_delete=models.DO_NOTHING)
-    unidades = models.ForeignKey(to="Unidades", on_delete=models.SET_NULL, null=True)
+    coordinacion = models.ForeignKey('Coordinaciones', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.ubicacion
@@ -279,7 +279,7 @@ class Proveedor(models.Model):
     class Meta:
         verbose_name_plural = "Proveedores"
 
-class Unidades(models.Model): ## Coordinacion?
+class Coordinaciones(models.Model):
     codigo = models.CharField(max_length=10, primary_key=True)
     nombre = models.CharField(max_length=120, null=True)
     coordinador = models.ForeignKey(to=Funcionarios, on_delete=models.SET_NULL, null=True)
@@ -288,7 +288,7 @@ class Unidades(models.Model): ## Coordinacion?
         return self.nombre
 
     class Meta:
-        verbose_name_plural = "Unidades"
+        verbose_name_plural = "Coordinaciones"
         
 #-------------# Area de Pruebas #-------------#
 

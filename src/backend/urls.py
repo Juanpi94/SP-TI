@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.contrib.auth.decorators import login_required
 from backend import views
 from backend import api_views
@@ -39,13 +39,14 @@ urlpatterns = [
     # ADMINISTRACION
     ## Gestion
     path("user/", views.User_View.as_view(), name="user"),
-    path("unidades/", views.Unidades_View.as_view(), name="unidades"),
+    path("coordinaciones/", views.Coordinaciones_View.as_view(), name="coordinaciones"),
     path("ubicaciones/", views.Ubicaciones_View.as_view(), name="ubicaciones"),
     path("funcionarios/", views.Funcionarios_View.as_view(), name="funcionarios"),
     path("proveedor/", views.Proveedores_View.as_view(), name="proveedor"),
     
     # Importar
-    path("importar/general/", views.importar_inventario_general.as_view(), name="importar_inventario_general"),
+    path("importar/activos/plaqueados/", views.importar_activos_plaqueados.as_view(), name="importar_activos_plaqueados"),
+    path("importar/activos/no_plaqueados/", views.importar_activos_no_plaqueados.as_view(), name="importar_activos_no_plaqueados"),
     path("importar/reporte-plaqueados/", views.Importar_Reporte_Plaqueados.as_view(), name="importar_reporte_plaqueados"),
     path("importar/reporte-no-plaqueados/", views.Importar_Reporte_No_Plaqueados.as_view(), name="importar_reporte_no_plaqueados"),
     
@@ -59,7 +60,6 @@ urlpatterns = [
     
     #-------------# Area de Pruebas #-------------# 
     
-    # path('editData/<int:codigo>/', views.EditUnidadView.as_view(), name='editData'),
     path('<str:model_name>/<int:primary_key>/edit/', views.EditGenericView.as_view(), name='editData'),
     
     #-----------# Fin Area de Pruebas #-----------#

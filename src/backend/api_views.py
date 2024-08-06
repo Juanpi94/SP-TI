@@ -11,6 +11,7 @@ from backend.serializers import *
 from django.http import FileResponse, HttpResponseServerError
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -222,14 +223,32 @@ class TallerApiViewset(AuthMixin, ModelViewSet):
 class FuncionariosApiViewset(AuthMixin, ModelViewSet):
     queryset = mdls.Funcionarios.objects.all()
     serializer_class = FuncionariosSerializer
+    
+    @action(detail=False, methods=['get'], url_path='name/(?P<nombre>[^/]+)')
+    def by_name(self, request, nombre=None):
+        funcionario = self.queryset.filter(nombre_completo__icontains=nombre)
+        serializer = self.get_serializer(funcionario, many=True)
+        return Response(serializer.data)
 
 class TipoApiViewset(AuthMixin, ModelViewSet):
     queryset = mdls.Tipo.objects.all()
     serializer_class = TipoSerializer
+    
+    @action(detail=False, methods=['get'], url_path='name/(?P<nombre>[^/]+)')
+    def by_name(self, request, nombre=None):
+        tipos = self.queryset.filter(nombre__icontains=nombre)
+        serializer = self.get_serializer(tipos, many=True)
+        return Response(serializer.data)
 
 class SubtipoApiViewSet(AuthMixin, ModelViewSet):
     queryset = mdls.Subtipo.objects.all()
     serializer_class = SubtipoSerializer
+    
+    @action(detail=False, methods=['get'], url_path='name/(?P<nombre>[^/]+)')
+    def by_name(self, request, nombre=None):
+        subTipos = self.queryset.filter(nombre__icontains=nombre)
+        serializer = self.get_serializer(subTipos, many=True)
+        return Response(serializer.data)
 
 class UbicacionesApiViewset(AuthMixin, ModelViewSet):
     queryset = mdls.Ubicaciones.objects.all()
@@ -250,10 +269,16 @@ class RedApiViewset(AuthMixin, ModelViewSet):
 class ProveedorApiViewset(AuthMixin, ModelViewSet):
     queryset = mdls.Proveedor.objects.all()
     serializer_class = ProveedorSerializer
+    
+    @action(detail=False, methods=['get'], url_path='name/(?P<nombre>[^/]+)')
+    def by_name(self, request, nombre=None):
+        proveedor = self.queryset.filter(nombre__icontains=nombre)
+        serializer = self.get_serializer(proveedor, many=True)
+        return Response(serializer.data)
 
-class UnidadesApiViewset(AuthMixin, ModelViewSet):
-    queryset = mdls.Unidades.objects.all()
-    serializer_class = UnidadesSerializer
+class CoordinacionesApiViewset(AuthMixin, ModelViewSet):
+    queryset = mdls.Coordinaciones.objects.all()
+    serializer_class = CoordinacionesSerializer
     
 class InstalacionesApiViewset(AuthMixin, ModelViewSet):
     queryset = mdls.Instalaciones.objects.all()
@@ -270,18 +295,42 @@ class TiposEstadosApiViewset(AuthMixin, ModelViewSet):
 class CategoriaApiViewset(AuthMixin, ModelViewSet):
     queryset = mdls.Categoria.objects.all()
     serializer_class = CategoriaSerializer
+    
+    @action(detail=False, methods=['get'], url_path='name/(?P<nombre>[^/]+)')
+    def by_name(self, request, nombre=None):
+        categoria = self.queryset.filter(nombre__icontains=nombre)
+        serializer = self.get_serializer(categoria, many=True)
+        return Response(serializer.data)
 
 class PartidaApiViewset(AuthMixin, ModelViewSet):
     queryset = mdls.Partida.objects.all()
     serializer_class = PartidaSerializer
+    
+    @action(detail=False, methods=['get'], url_path='code/(?P<code>[^/]+)')
+    def by_codigo(self, request, code=None):
+        partidas = self.queryset.filter(codigo__icontains=code)
+        serializer = self.get_serializer(partidas, many=True)
+        return Response(serializer.data)
 
 class EstadosApiViewset(AuthMixin, ModelViewSet):
     queryset = mdls.Estados.objects.all()
     serializer_class = EstadosSerializer
     
+    @action(detail=False, methods=['get'], url_path='name/(?P<nombre>[^/]+)')
+    def by_name(self, request, nombre=None):
+        tipos = self.queryset.filter(nombre__icontains=nombre)
+        serializer = self.get_serializer(tipos, many=True)
+        return Response(serializer.data)
+    
 class ModelosApiViewset(AuthMixin, ModelViewSet):
     queryset = mdls.Modelos.objects.all()
     serializer_class = ModelosSerializer
+    
+    @action(detail=False, methods=['get'], url_path='name/(?P<nombre>[^/]+)')
+    def by_name(self, request, nombre=None):
+        modelos = self.queryset.filter(nombre__icontains=nombre)
+        serializer = self.get_serializer(modelos, many=True)
+        return Response(serializer.data)
     
 class MarcasApiViewset(AuthMixin, ModelViewSet):
     queryset = mdls.Marcas.objects.all()
