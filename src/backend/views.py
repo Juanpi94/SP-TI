@@ -259,6 +259,7 @@ class Activos_Plaqueados_View(Table_View):
         metafields["widgets"] = {
             "garantia": DateInput( attrs={ "type": "date", "placeholder": "yyyy-mm-dd (DOB)", "class": "date-form-input", } ),
             "fecha_ingreso": DateInput( attrs={ "type": "date", "placeholder": "yyyy-mm-dd (DOB)", "class": "date-form-input", } ),
+            "fecha_registro": DateInput( attrs={ "type": "date", "placeholder": "yyyy-mm-dd (DOB)", "class": "date-form-input", } ),
         }
         return metafields
 
@@ -276,7 +277,7 @@ class Activos_No_Plaqueados_View(Table_View):
     title = "Activos no plaqueados"
     id_field = "serie"
     defs_order = ["serie"]
-    exclude = ["tramites_rel", "detalles_placa", "detalles_serie"]
+    exclude = ["tramites_rel", "detalles_placa", "detalles_serie", 'detalleserieubicacion']
 
     def get_form_fields(self) -> dict:
         return {"field_order": ["placa"]}
@@ -286,6 +287,7 @@ class Activos_No_Plaqueados_View(Table_View):
         metafields["widgets"] = {
             "garantia": DateInput( attrs={ "type": "date", "placeholder": "yyyy-mm-dd (DOB)", "class": "date-form-input", } ),
             "fecha_ingreso": DateInput( attrs={ "type": "date", "placeholder": "yyyy-mm-dd (DOB)", "class": "date-form-input", } ),
+            "fecha_registro": DateInput( attrs={ "type": "date", "placeholder": "yyyy-mm-dd (DOB)", "class": "date-form-input", } ),
         }
         return metafields
 
@@ -293,7 +295,8 @@ class Activos_No_Plaqueados_View(Table_View):
         return super().get_values().annotate(tipo=F('tipo__nombre'), subtipo=F('subtipo__nombre'), 
                                              ubicacion=F('ubicacion__ubicacion'), compra=F('compra__numero_orden_compra'),
                                              red=F('red__MAC'), ubicacion_anterior=F('ubicacion_anterior__ubicacion'),
-                                             estado=F('estado__descripcion'))
+                                             estado=F('estado__descripcion'), categoria=F('categoria__nombre'), partida=F('partida__codigo'),
+                                             marca=F('marca__nombre'), modelo=F('modelo__nombre'))
 
 ##--Tipos
 class Tipo_View(Table_View):
@@ -599,8 +602,11 @@ class ImportTemplateView(TemplateView):
 class Importar_Reporte_Plaqueados(WritePermMixin, ImportTemplateView):
     template_name = "importar/reportePlaqueados.html"
     
-class importar_inventario_general(WritePermMixin, ImportTemplateView):
-    template_name = "importar/importeGeneral.html"
+class importar_activos_plaqueados(WritePermMixin, ImportTemplateView):
+    template_name = "importar/importeActivosPlaqueados.html"
+    
+class importar_activos_no_plaqueados(WritePermMixin, ImportTemplateView):
+    template_name = "importar/importeActivosNoPlaqueados.html"
 
 #--Encargado de importar datos de reportes no plaqueados desde un excel
 class Importar_Reporte_No_Plaqueados(WritePermMixin, ImportTemplateView):

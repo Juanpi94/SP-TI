@@ -45,7 +45,8 @@ urlpatterns = [
     path("proveedor/", views.Proveedores_View.as_view(), name="proveedor"),
     
     # Importar
-    path("importar/general/", views.importar_inventario_general.as_view(), name="importar_inventario_general"),
+    path("importar/activos/plaqueados/", views.importar_activos_plaqueados.as_view(), name="importar_activos_plaqueados"),
+    path("importar/activos/no_plaqueados/", views.importar_activos_no_plaqueados.as_view(), name="importar_activos_no_plaqueados"),
     path("importar/reporte-plaqueados/", views.Importar_Reporte_Plaqueados.as_view(), name="importar_reporte_plaqueados"),
     path("importar/reporte-no-plaqueados/", views.Importar_Reporte_No_Plaqueados.as_view(), name="importar_reporte_no_plaqueados"),
     

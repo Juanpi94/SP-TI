@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}
-    Importar Activos No Plaqueados
-{% endblock title %}
 {% block content %}
     {% csrf_token %}
+
+    <section class="ps-4">
+        <h3>Importar Activos Plaqueados</h3>
+    </section>
     
     <section class="p-4 ms-6">
         <a href="{% get_media_prefix %}documents/plantilla de activos.ods"
@@ -19,14 +20,21 @@
                 Actualizar: Esta opción actualiza registros que ya existen en la base de datos, usar con precaución.
             </label>
         </div>
+        <div>
+            <p class="text-danger">
+                Nota: Al usar la opción de actualizar,
+                verifique que los datos en el documento sean los correctos,
+                ya que prioriza los datos del documento sobre los ya guardados 
+            </p>
+        </div>
         <div id="progress-bar">
             <div id="progress"></div>
             <div id="progress-text"></div>
           </div>
-        <button id="loadData" type="submit" class="btn btn-primary">Subir datos</button>
+        <button id="plaqueado" type="submit" class="btn btn-primary">Subir datos</button>
     </section>
 {% endblock content %}
 {% block script %}
-    <script type="application/javascript" src="{% static "js/generalImports.bundle.js" %}"></script>
+    <script type="application/javascript" src="{% static "js/importsActivos.bundle.js" %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 {% endblock script %}

@@ -79,6 +79,14 @@ function informeDeActivos(informe_errores) {
 	}
 }
 
+function getElementByIds(id1, id2) {
+	let element = document.getElementById(id1);
+	if (!element) {
+		element = document.getElementById(id2);
+	}
+	return element;
+}
+
 // Función para verificar si se activa la actualización de los datos
 document.getElementById('update-check').addEventListener('click', () => {
 	if (document.getElementById('update-check').checked) {
@@ -92,10 +100,15 @@ document.getElementById('update-check').addEventListener('click', () => {
 	}
 });
 
+// Función para decidir si es activo plaqueado o no plaqueado
+const loadDataElement = getElementByIds('plaqueado', 'noPlaqueado');
+
 // Evento de botón para cargar el archivo
-document.getElementById('loadData').addEventListener('click', () => {
+loadDataElement.addEventListener('click', () => {
 	// Obtiene el archivo seleccionado
 	const file = document.getElementById('fileData').files[0];
+
+	let activoSelect = loadDataElement.id;
 
 	if (!file) {
 		errFile();
@@ -887,380 +900,745 @@ document.getElementById('loadData').addEventListener('click', () => {
 		// -------------- Fin Tiempo de espera para evitar errores -------------- //
 
 		// -------------- Guardar Activos -------------- //
-		let full_data = []; // Lista con todos los datos sin verificar
-		let act_plac_data = []; // Lista con los valoes validos para enviar a la base de datos
-		let exclu_act = [];
-		let activo_list = [];
-		setTimeout(() => {
-			// Funcion para generar una lista con los datos de los activos antes de ser filtrados
-			async function activosPlaqueadosSave() {
-				activo_list = await axiosGetAll('activos_plaqueados');
+		if (activoSelect === 'plaqueados') {
+			let full_data = []; // Lista con todos los datos sin verificar
+			let act_plac_data = []; // Lista con los valoes validos para enviar a la base de datos
+			let exclu_act = [];
+			let activo_list = [];
+			setTimeout(() => {
+				// Funcion para generar una lista con los datos de los activos antes de ser filtrados
+				async function activosPlaqueadosSave() {
+					activo_list = await axiosGetAll('activos_plaqueados');
 
-				let tipo_list = await axiosGetAll('tipo');
-				let subtipo_list = await axiosGetAll('subtipos');
-				let categoria_list = await axiosGetAll('categorias');
-				let estado_list = await axiosGetAll('estados');
-				let marcas_list = await axiosGetAll('marcas');
-				let modelos_list = await axiosGetAll('modelos');
-				let red_list = await axiosGetAll('red');
-				let ubicacion_list = await axiosGetAll('ubicaciones');
-				let compra_list = await axiosGetAll('compra');
+					let tipo_list = await axiosGetAll('tipo');
+					let subtipo_list = await axiosGetAll('subtipos');
+					let categoria_list = await axiosGetAll('categorias');
+					let estado_list = await axiosGetAll('estados');
+					let marcas_list = await axiosGetAll('marcas');
+					let modelos_list = await axiosGetAll('modelos');
+					let red_list = await axiosGetAll('red');
+					let ubicacion_list = await axiosGetAll('ubicaciones');
+					let compra_list = await axiosGetAll('compra');
 
-				let red_pending = red_list.find(red => red.MAC.toLowerCase() === 'no aplica');
-				let ubicacion_pending = ubicacion_list.find(ubicacion => ubicacion.ubicacion.toLowerCase() === 'sin ubicación');
+					let red_pending = red_list.find(red => red.MAC.toLowerCase() === 'no aplica');
+					let ubicacion_pending = ubicacion_list.find(ubicacion => ubicacion.ubicacion.toLowerCase() === 'sin ubicación');
 
-				// Crea un objeto con los datos de los activos sin filtrar
-				columDatas['Placa'].forEach((element, pos) => {
-					let placa = String(element);
-					let tipo = columDatas['Tipo'][pos];
-					let marca = columDatas['Marca'][pos];
-					let serie = columDatas['Serie'][pos];
-					let modelo = columDatas['Modelo'][pos];
-					let nombre = marca + " " + modelo;
-					let estado = columDatas['Estado'][pos];
-					let subtipo = columDatas['Subtipo'][pos];
-					let ubicacion = columDatas['Ubicación'][pos];
-					let categoria = columDatas['Categoría'][pos];
-					let ubicacion_anterior = ubicacion_pending.id;
-					let partida = columDatas['Código Partida'][pos];
-					let compra = columDatas['Referencia de compra'][pos];
-					let observacion = columDatas['Observaciones de ingreso'][pos];
-					let red = columDatas['MAC'][pos] ? columDatas['MAC'][pos] : null;
-					let fecha_ingreso = dateValidate(columDatas['Fecha Ingreso'][pos]);
-					let fecha_registro = dateValidate(columDatas['Fecha Registro'][pos]);
-					let valor_colones = String(floatClearValor(columDatas['Valor Colones'][pos]));
-					let valor_dolares = String(floatClearValor(columDatas['Valor Dolares'][pos]));
-					let garantia = dateValidate(columDatas['Vencimiento de Garantía'][pos]);
+					// Crea un objeto con los datos de los activos sin filtrar
+					columDatas['Placa'].forEach((element, pos) => {
+						let placa = String(element);
+						let tipo = columDatas['Tipo'][pos];
+						let marca = columDatas['Marca'][pos];
+						let serie = columDatas['Serie'][pos];
+						let modelo = columDatas['Modelo'][pos];
+						let nombre = marca + " " + modelo;
+						let estado = columDatas['Estado'][pos];
+						let subtipo = columDatas['Subtipo'][pos];
+						let ubicacion = columDatas['Ubicación'][pos];
+						let categoria = columDatas['Categoría'][pos];
+						let ubicacion_anterior = ubicacion_pending.id;
+						let partida = columDatas['Código Partida'][pos];
+						let compra = columDatas['Referencia de compra'][pos];
+						let observacion = columDatas['Observaciones de ingreso'][pos];
+						let red = columDatas['MAC'][pos] ? columDatas['MAC'][pos] : null;
+						let fecha_ingreso = dateValidate(columDatas['Fecha Ingreso'][pos]);
+						let fecha_registro = dateValidate(columDatas['Fecha Registro'][pos]);
+						let valor_colones = String(floatClearValor(columDatas['Valor Colones'][pos]));
+						let valor_dolares = String(floatClearValor(columDatas['Valor Dolares'][pos]));
+						let garantia = dateValidate(columDatas['Vencimiento de Garantía'][pos]);
 
-					// Agrega el id del tipo
-					const tipoObj = tipo_list.find(item => format_text(item.nombre) === format_text(tipo));
-					const id_tipo = tipoObj ? tipoObj.id : null;
+						// Agrega el id del tipo
+						const tipoObj = tipo_list.find(item => format_text(item.nombre) === format_text(tipo));
+						const id_tipo = tipoObj ? tipoObj.id : null;
 
-					//Agrega el id del subtipo
-					const subtipoObj = subtipo_list.find(item => format_text(item.nombre) === format_text(subtipo));
-					const id_subtipo = subtipoObj ? subtipoObj.id : null;
+						//Agrega el id del subtipo
+						const subtipoObj = subtipo_list.find(item => format_text(item.nombre) === format_text(subtipo));
+						const id_subtipo = subtipoObj ? subtipoObj.id : null;
 
-					// Agrega el id de la categoria
-					const categoriaObj = categoria_list.find(item => format_text(item.nombre) === format_text(categoria));
-					const id_categoria = categoriaObj ? categoriaObj.id : null;
+						// Agrega el id de la categoria
+						const categoriaObj = categoria_list.find(item => format_text(item.nombre) === format_text(categoria));
+						const id_categoria = categoriaObj ? categoriaObj.id : null;
 
-					// Agrega el id del estado
-					const estadoObj = estado_list.find(item => format_text(item.nombre) === format_text(estado));
-					const id_estado = estadoObj ? estadoObj.id : null;
+						// Agrega el id del estado
+						const estadoObj = estado_list.find(item => format_text(item.nombre) === format_text(estado));
+						const id_estado = estadoObj ? estadoObj.id : null;
 
-					// Agrega el id de la marca
-					const marcaObj = marcas_list.find(item => format_text(item.nombre) === format_text(marca));
-					const id_marca = marcaObj ? marcaObj.id : null;
+						// Agrega el id de la marca
+						const marcaObj = marcas_list.find(item => format_text(item.nombre) === format_text(marca));
+						const id_marca = marcaObj ? marcaObj.id : null;
 
-					// Agrega el id del modelo
-					const modeloObj = modelos_list.find(item => format_text(item.nombre) === format_text(modelo));
-					const id_modelo = modeloObj ? modeloObj.id : null;
+						// Agrega el id del modelo
+						const modeloObj = modelos_list.find(item => format_text(item.nombre) === format_text(modelo));
+						const id_modelo = modeloObj ? modeloObj.id : null;
 
-					// Agrega el id de la ubicacion
-					const ubicacionObj = ubicacion_list.find(item => format_text(item.ubicacion) === format_text(ubicacion));
-					const id_ubicacion = ubicacionObj ? ubicacionObj.id : null;
+						// Agrega el id de la ubicacion
+						const ubicacionObj = ubicacion_list.find(item => format_text(item.ubicacion) === format_text(ubicacion));
+						const id_ubicacion = ubicacionObj ? ubicacionObj.id : null;
 
-					// Agrega el id de la red
-					const redObj = red_list.find(item => item.MAC === red);
-					const id_red = redObj ? redObj.id : red_pending.id;
+						// Agrega el id de la red
+						const redObj = red_list.find(item => item.MAC === red);
+						const id_red = redObj ? redObj.id : red_pending.id;
 
-					// Agrega el id de la compra
-					const compraObj = compra_list.find(item => item.numero_orden_compra === format_text(compra));
-					const id_compra = compraObj ? compraObj.id : null;
+						// Agrega el id de la compra
+						const compraObj = compra_list.find(item => item.numero_orden_compra === format_text(compra));
+						const id_compra = compraObj ? compraObj.id : null;
 
-					full_data.push({
-						placa, serie, ubicacion_anterior, nombre, tipo: id_tipo,
-						subtipo: id_subtipo, modelo: id_modelo, marca: id_marca, valor_colones,
-						valor_dolares, garantia, fecha_registro, fecha_ingreso,
-						observacion, categoria: id_categoria, compra: id_compra, red: id_red,
-						ubicacion: id_ubicacion, estado: id_estado, partida
+						full_data.push({
+							placa, serie, ubicacion_anterior, nombre, tipo: id_tipo,
+							subtipo: id_subtipo, modelo: id_modelo, marca: id_marca, valor_colones,
+							valor_dolares, garantia, fecha_registro, fecha_ingreso,
+							observacion, categoria: id_categoria, compra: id_compra, red: id_red,
+							ubicacion: id_ubicacion, estado: id_estado, partida
 
+						});
 					});
-				});
 
-				// Verifica los datos invalidos para generar el informe de errores
-				full_data.forEach((activo, pos) => {
-					// verifica si la placa es valida
-					if (!validateType(activo.placa)) {
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.placa_invalida = "Placa no valida";
+					// Verifica los datos invalidos para generar el informe de errores
+					full_data.forEach((activo, pos) => {
+						// verifica si la placa es valida
+						if (!validateType(activo.placa)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.placa_invalida = "Placa no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, placa: activo.placa, placa_invalida: "Placa no valida" });
+							}
+						}
+						// Verifica si la garantia es valida
+						if (!validateType(activo.garantia)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.fecha_garantia_invalida = "Fecha de garantia no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, placa: activo.placa, fecha_garantia_invalida: "Fecha de garantia no valida" });
+							}
+						}
+						// Verifica si la fecha de registro es valida
+						if (!validateType(activo.fecha_registro)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.fecha_registro_invalida = "Fecha de registro no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, placa: activo.placa, fecha_registro_invalida: "Fecha de registro no valida" });
+							}
+						}
+						// Verifica si la fecha de ingreso es valida
+						if (!validateType(activo.fecha_ingreso)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.fecha_ingreso_invalida = "Fecha de ingreso no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, placa: activo.placa, fecha_ingreso_invalida: "Fecha de ingreso no valida" });
+							}
+						}
+						// Verifica si la categoria es valida
+						if (!validateType(activo.categoria)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.categoria_invalida = "Categoria no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, placa: activo.placa, categoria_invalida: "Categoria no valida" });
+							}
+						}
+						// Verifica si la serie es valida
+						if (!validateType(activo.serie)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.serie_invalida = "Serie no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, placa: activo.placa, serie_invalida: "Serie no valida" });
+							}
+						}
+						// Verifica si el tipo es valido
+						if (!validateType(activo.tipo)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.tipo_invalido = "Tipo no valido";
+							} else {
+								exclu_act.push({ posicion: pos + 2, placa: activo.placa, tipo_invalido: "Tipo no valido" });
+							}
+						}
+						// verifica si el subtipo es valido
+						if (!validateType(activo.subtipo)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.subtipo_invalido = "Subtipo no valido";
+							} else {
+								exclu_act.push({ posicion: pos + 2, placa: activo.placa, subtipo_invalido: "Subtipo no valido" });
+							}
+						}
+						// Verifica si el modelo es valido
+						if (!validateType(activo.modelo)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.modelo_invalido = "Modelo no valido";
+							} else {
+								exclu_act.push({ posicion: pos + 2, placa: activo.placa, modelo_invalido: "Modelo no valido" });
+							}
+						}
+						// Verifica si la marca es valida
+						if (!validateType(activo.marca)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.marca_invalida = "Marca no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, placa: activo.placa, marca_invalida: "Marca no valida" });
+							}
+						}
+						// verifica si el valor es valido
+						if (activo.valor_colones >= 0.0 || activo.valor_dolares >= 0.0) {
+							// Al menos uno de los valores es mayor a 0.0, considerado válido
 						} else {
-							exclu_act.push({ posicion: pos + 2, placa: activo.placa, placa_invalida: "Placa no valida" });
+							// Ambos valores son 0.0 o inválidos
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.valor_colones_invalido = "Valor en colones no valido";
+								addInfoData.valor_dolares_invalido = "Valor en dólares no valido";
+							} else {
+								exclu_act.push({
+									posicion: pos + 2,
+									placa: activo.placa,
+									valor_colones_invalido: "Valor en colones no valido",
+									valor_dolares_invalido: "Valor en dólares no valido"
+								});
+							}
 						}
-					}
-					// Verifica si la garantia es valida
-					if (!validateType(activo.garantia)) {
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.fecha_garantia_invalida = "Fecha de garantia no valida";
-						} else {
-							exclu_act.push({ posicion: pos + 2, placa: activo.placa, fecha_garantia_invalida: "Fecha de garantia no valida" });
+						// Verifica si la red es valida
+						if (!validateType(activo.red)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.red_invalida = "Red no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, placa: activo.placa, red_invalida: "Red no valida" });
+							}
 						}
-					}
-					// Verifica si la fecha de registro es valida
-					if (!validateType(activo.fecha_registro)) {
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.fecha_registro_invalida = "Fecha de registro no valida";
-						} else {
-							exclu_act.push({ posicion: pos + 2, placa: activo.placa, fecha_registro_invalida: "Fecha de registro no valida" });
+						// Verifica si la ubicacion es valida
+						if (!validateType(activo.ubicacion)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.ubicacion_invalida = "Ubicacion no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, placa: activo.placa, ubicacion_invalida: "Ubicacion no valida" });
+							}
 						}
-					}
-					// Verifica si la fecha de ingreso es valida
-					if (!validateType(activo.fecha_ingreso)) {
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.fecha_ingreso_invalida = "Fecha de ingreso no valida";
-						} else {
-							exclu_act.push({ posicion: pos + 2, placa: activo.placa, fecha_ingreso_invalida: "Fecha de ingreso no valida" });
+						// Verifica si el estado es valido
+						if (!validateType(activo.estado)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.estado_invalido = "Estado no valido";
+							} else {
+								exclu_act.push({ posicion: pos + 2, placa: activo.placa, estado_invalido: "Estado no valido" });
+							}
 						}
-					}
-					// Verifica si la categoria es valida
-					if (!validateType(activo.categoria)) {
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.categoria_invalida = "Categoria no valida";
-						} else {
-							exclu_act.push({ posicion: pos + 2, placa: activo.placa, categoria_invalida: "Categoria no valida" });
+						// Verifica si la partida es valida
+						if (!validateType(activo.partida)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.partida_invalida = "Partida no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, placa: activo.placa, partida_invalida: "Partida no valida" });
+							}
 						}
-					}
-					// Verifica si la serie es valida
-					if (!validateType(activo.serie)) {
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.serie_invalida = "Serie no valida";
-						} else {
-							exclu_act.push({ posicion: pos + 2, placa: activo.placa, serie_invalida: "Serie no valida" });
+						// Verifica si la compra es valida
+						if (!validateType(activo.compra)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.compra_invalida = "Compra no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, placa: activo.placa, compra_invalida: "Compra no valida" });
+							}
 						}
-					}
-					// Verifica si el tipo es valido
-					if (!validateType(activo.tipo)) {
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.tipo_invalido = "Tipo no valido";
-						} else {
-							exclu_act.push({ posicion: pos + 2, placa: activo.placa, tipo_invalido: "Tipo no valido" });
-						}
-					}
-					// verifica si el subtipo es valido
-					if (!validateType(activo.subtipo)) {
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.subtipo_invalido = "Subtipo no valido";
-						} else {
-							exclu_act.push({ posicion: pos + 2, placa: activo.placa, subtipo_invalido: "Subtipo no valido" });
-						}
-					}
-					// Verifica si el modelo es valido
-					if (!validateType(activo.modelo)) {
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.modelo_invalido = "Modelo no valido";
-						} else {
-							exclu_act.push({ posicion: pos + 2, placa: activo.placa, modelo_invalido: "Modelo no valido" });
-						}
-					}
-					// Verifica si la marca es valida
-					if (!validateType(activo.marca)) {
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.marca_invalida = "Marca no valida";
-						} else {
-							exclu_act.push({ posicion: pos + 2, placa: activo.placa, marca_invalida: "Marca no valida" });
-						}
-					}
-					// verifica si el valor es valido
-					if (activo.valor_colones >= 0.0 || activo.valor_dolares >= 0.0) {
-						// Al menos uno de los valores es mayor a 0.0, considerado válido
-					} else {
-						// Ambos valores son 0.0 o inválidos
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.valor_colones_invalido = "Valor en colones no valido";
-							addInfoData.valor_dolares_invalido = "Valor en dólares no valido";
-						} else {
-							exclu_act.push({
-								posicion: pos + 2,
-								placa: activo.placa,
-								valor_colones_invalido: "Valor en colones no valido",
-								valor_dolares_invalido: "Valor en dólares no valido"
-							});
-						}
-					}
-					// Verifica si la red es valida
-					if (!validateType(activo.red)) {
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.red_invalida = "Red no valida";
-						} else {
-							exclu_act.push({ posicion: pos + 2, placa: activo.placa, red_invalida: "Red no valida" });
-						}
-					}
-					// Verifica si la ubicacion es valida
-					if (!validateType(activo.ubicacion)) {
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.ubicacion_invalida = "Ubicacion no valida";
-						} else {
-							exclu_act.push({ posicion: pos + 2, placa: activo.placa, ubicacion_invalida: "Ubicacion no valida" });
-						}
-					}
-					// Verifica si el estado es valido
-					if (!validateType(activo.estado)) {
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.estado_invalido = "Estado no valido";
-						} else {
-							exclu_act.push({ posicion: pos + 2, placa: activo.placa, estado_invalido: "Estado no valido" });
-						}
-					}
-					// Verifica si la partida es valida
-					if (!validateType(activo.partida)) {
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.partida_invalida = "Partida no valida";
-						} else {
-							exclu_act.push({ posicion: pos + 2, placa: activo.placa, partida_invalida: "Partida no valida" });
-						}
-					}
-					// Verifica si la compra es valida
-					if (!validateType(activo.compra)) {
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.compra_invalida = "Compra no valida";
-						} else {
-							exclu_act.push({ posicion: pos + 2, placa: activo.placa, compra_invalida: "Compra no valida" });
-						}
-					}
-					// Verifica si la ubicacion anterior es valida
-					if (!validateType(activo.ubicacion_anterior)) {
-						let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
-						if (addInfoData) {
-							addInfoData.ubicacion_anterior_invalida = "Ubicacion anterior no valida";
-						} else {
-							exclu_act.push({ posicion: pos + 2, placa: activo.placa, ubicacion_anterior_invalida: "Ubicacion anterior no valida" });
-						}
-					}
-				});
-
-				// Filtra los datos validos de los activos 
-				// que no estan en la lista de excluidos
-				full_data.forEach(element => {
-					const existExcluAct = exclu_act.some(item => item.placa === element.placa);
-					if (!existExcluAct) {
-						act_plac_data.push(element);
-					}
-				});
-
-				// ----------------- Area de validación (update/upload) ----------------- //
-
-				// Funcion encargada de subir los activos a la base de datos
-				function uploadActivos() {
-					let listPush = [];
-					act_plac_data.forEach(element => {
-						if (!activo_list.some(item => item.placa === String(element.placa))) {
-							listPush.push(element);
-						}
-					});
-					if (listPush.length > 0) {
-						countUpd++;
-						postDatas('activos_plaqueados', listPush);
-					} else {
-						console.log('No hay Activos para cargar');
-					}
-				}
-
-				// Funcion encargada de actualizar los activos de la base de datos
-				function updateActivos() {
-					let updateActivos = [];
-					act_plac_data.forEach(element => {
-						let actBD = activo_list.find(item => item.placa === String(element.placa));
-						let serieSame = element.serie === actBD.serie;
-						let nombreSame = element.nombre === actBD.nombre;
-						let valorColSame = element.valor_colones === actBD.valor_colones;
-						let valorDolSame = element.valor_dolares === actBD.valor_dolares;
-						let garantiaSame = element.garantia === actBD.garantia;
-						let fechaRegSame = element.fecha_registro === actBD.fecha_registro;
-						let fechaIngSame = element.fecha_ingreso === actBD.fecha_ingreso;
-						let observacionSame = element.observacion === actBD.observacion;
-						let ubicacionAntSame = element.ubicacion_anterior === actBD.ubicacion_anterior;
-						let tipoSame = element.tipo === actBD.tipo;
-						let subtipoSame = element.subtipo === actBD.subtipo;
-						let modeloSame = element.modelo === actBD.modelo;
-						let marcaSame = element.marca === actBD.marca;
-						let redSame = element.red === actBD.red;
-						let ubicacionSame = element.ubicacion === actBD.ubicacion;
-						let estadoSame = element.estado === actBD.estado;
-						let partidaSame = element.partida === actBD.partida;
-						let compraSame = element.compra === actBD.compra;
-
-						if (!serieSame || !nombreSame || !valorColSame || !valorDolSame ||
-							!garantiaSame || !fechaRegSame || !fechaIngSame || !observacionSame ||
-							!ubicacionAntSame || !tipoSame || !subtipoSame || !modeloSame ||
-							!marcaSame || !redSame || !ubicacionSame || !estadoSame ||
-							!partidaSame || !compraSame) {
-							updateActivos.push(element);
+						// Verifica si la ubicacion anterior es valida
+						if (!validateType(activo.ubicacion_anterior)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.ubicacion_anterior_invalida = "Ubicacion anterior no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, placa: activo.placa, ubicacion_anterior_invalida: "Ubicacion anterior no valida" });
+							}
 						}
 					});
 
-					if (updateActivos.length > 0) {
-						countAct++;
-						updateActivos.forEach(async (element) => {
-							axiosPut('activos_plaqueados', element.placa, element);
-						}), console.log("Activos actualizados con éxito");
-					} else {
-						console.log("No hay activos para actualizar");
+					// Filtra los datos validos de los activos 
+					// que no estan en la lista de excluidos
+					full_data.forEach(element => {
+						const existExcluAct = exclu_act.some(item => item.placa === element.placa);
+						if (!existExcluAct) {
+							act_plac_data.push(element);
+						}
+					});
+
+					// ----------------- Area de validación (update/upload) ----------------- //
+
+					// Funcion encargada de subir los activos a la base de datos
+					function uploadActivos() {
+						let listPush = [];
+						act_plac_data.forEach(element => {
+							if (!activo_list.some(item => item.placa === String(element.placa))) {
+								listPush.push(element);
+							}
+						});
+						if (listPush.length > 0) {
+							countUpd++;
+							postDatas('activos_plaqueados', listPush);
+						} else {
+							console.log('No hay Activos para cargar');
+						}
 					}
-				}
 
-				// Verifica si se van a cargar o actualizar los activos
-				!check ? uploadActivos() : updateActivos();
+					// Funcion encargada de actualizar los activos de la base de datos
+					function updateActivos() {
+						let updateActivos = [];
+						act_plac_data.forEach(element => {
+							let actBD = activo_list.find(item => item.placa === String(element.placa));
+							let serieSame = element.serie === actBD.serie;
+							let nombreSame = element.nombre === actBD.nombre;
+							let valorColSame = element.valor_colones === actBD.valor_colones;
+							let valorDolSame = element.valor_dolares === actBD.valor_dolares;
+							let garantiaSame = element.garantia === actBD.garantia;
+							let fechaRegSame = element.fecha_registro === actBD.fecha_registro;
+							let fechaIngSame = element.fecha_ingreso === actBD.fecha_ingreso;
+							let observacionSame = element.observacion === actBD.observacion;
+							let ubicacionAntSame = element.ubicacion_anterior === actBD.ubicacion_anterior;
+							let tipoSame = element.tipo === actBD.tipo;
+							let subtipoSame = element.subtipo === actBD.subtipo;
+							let modeloSame = element.modelo === actBD.modelo;
+							let marcaSame = element.marca === actBD.marca;
+							let redSame = element.red === actBD.red;
+							let ubicacionSame = element.ubicacion === actBD.ubicacion;
+							let estadoSame = element.estado === actBD.estado;
+							let partidaSame = element.partida === actBD.partida;
+							let compraSame = element.compra === actBD.compra;
 
-				// ----------------- Fin de Area de validación (update/upload) ----------------- //
+							if (!serieSame || !nombreSame || !valorColSame || !valorDolSame ||
+								!garantiaSame || !fechaRegSame || !fechaIngSame || !observacionSame ||
+								!ubicacionAntSame || !tipoSame || !subtipoSame || !modeloSame ||
+								!marcaSame || !redSame || !ubicacionSame || !estadoSame ||
+								!partidaSame || !compraSame) {
+								updateActivos.push(element);
+							}
+						});
 
-			} activosPlaqueadosSave().then(() => {
-				// Genera una lista con los errores encontrados 
-				// para ser descargados como un archivo de excel
-				informe_errores.push({
-					'Informe tipos': exclu_tipo, 'Informe subtipos': exclu_subtipo, 'Informe proveedores': exclu_prov,
-					'Informe categorias': exclu_cat, 'Informe partidas': exclu_par, 'Informe modelos': exclu_mod,
-					'Informe marcas': exclu_mar, 'Informe compras': exclu_comp, 'Informe redes': exclu_red,
-					'Informe funcionarios': exclu_fun, 'Informe estados': exclu_est, 'Informe coordinaciones': exclu_uni,
-					'Informe ubicaciones': exclu_ubi, 'Informe activos': exclu_act
+						if (updateActivos.length > 0) {
+							countAct++;
+							updateActivos.forEach(async (element) => {
+								axiosPut('activos_plaqueados', element.placa, element);
+							}), console.log("Activos actualizados con éxito");
+						} else {
+							console.log("No hay activos para actualizar");
+						}
+					}
+
+					// Verifica si se van a cargar o actualizar los activos
+					!check ? uploadActivos() : updateActivos();
+
+					// ----------------- Fin de Area de validación (update/upload) ----------------- //
+
+				} activosPlaqueadosSave().then(() => {
+					// Genera una lista con los errores encontrados 
+					// para ser descargados como un archivo de excel
+					informe_errores.push({
+						'Informe tipos': exclu_tipo, 'Informe subtipos': exclu_subtipo, 'Informe proveedores': exclu_prov,
+						'Informe categorias': exclu_cat, 'Informe partidas': exclu_par, 'Informe modelos': exclu_mod,
+						'Informe marcas': exclu_mar, 'Informe compras': exclu_comp, 'Informe redes': exclu_red,
+						'Informe funcionarios': exclu_fun, 'Informe estados': exclu_est, 'Informe coordinaciones': exclu_uni,
+						'Informe ubicaciones': exclu_ubi, 'Informe activos': exclu_act
+					});
+
+					// Llamar a la función para descargar el informe
+					// informeDeActivos(informe_errores);
+
+					// Verifica si se cargaron o actualizaron los activos
+					// para mostrar un mensaje de éxito o error
+					if (check) {
+						if (countAct > 0) {
+							console.log('Datos actualizados');
+							Swal.close();
+							updateSuccess();
+						} else {
+							console.log('Sin datos para actualizar');
+							Swal.close();
+							notUpdateData();
+						}
+					}
+					else {
+						if (countUpd > 0) {
+							console.log('Datos cargados');
+							Swal.close();
+							loadSuccess();
+						} else {
+							console.log('Sin datos para cargar');
+							Swal.close();
+							noLoadDatas();
+						}
+					}
+
 				});
-
-				// Llamar a la función para descargar el informe
-				// informeDeActivos(informe_errores);
-
-				// Verifica si se cargaron o actualizaron los activos
-				// para mostrar un mensaje de éxito o error
-				if (check) {
-					if (countAct > 0) {
-						console.log('Datos actualizados');
-						Swal.close();
-						updateSuccess();
-					} else {
-						console.log('Sin datos para actualizar');
-						Swal.close();
-						notUpdateData();
-					}
-				}
-				else {
-					if (countUpd > 0) {
-						console.log('Datos cargados');
-						Swal.close();
-						loadSuccess();
-					} else {
-						console.log('Sin datos para cargar');
-						Swal.close();
-						noLoadDatas();
-					}
-				}
-
-			});
-		}, delay + 500);
+			}, delay + 500);
+		}
 		// -------------- Fin de Guardar Activos -------------- //
+
+		// -------------- Guardar Activos no plaqeuado -------------- //
+		if (activoSelect === 'noPlaqueado') {
+			let full_data = []; // Lista con todos los datos sin verificar
+			let act_no_plac_data = []; // Lista con los valoes validos para enviar a la base de datos
+			let exclu_act = [];
+			let activo_list = [];
+			setTimeout(() => {
+				async function activosNoPlaqueadosSave() {
+					activo_list = await axiosGetAll('activos_no_plaqueados');
+
+					let tipo_list = await axiosGetAll('tipo');
+					let subtipo_list = await axiosGetAll('subtipos');
+					let categoria_list = await axiosGetAll('categorias');
+					let estado_list = await axiosGetAll('estados');
+					let marcas_list = await axiosGetAll('marcas');
+					let modelos_list = await axiosGetAll('modelos');
+					let red_list = await axiosGetAll('red');
+					let ubicacion_list = await axiosGetAll('ubicaciones');
+					let compra_list = await axiosGetAll('compra');
+
+					let red_pending = red_list.find(red => red.MAC.toLowerCase() === 'no aplica');
+					let ubicacion_pending = ubicacion_list.find(ubicacion => ubicacion.ubicacion.toLowerCase() === 'sin ubicación');
+
+					// Crea un objeto con los datos de los activos sin filtrar
+					columDatas['Serie'].forEach((element, pos) => {
+						let serie = String(element);
+						let tipo = columDatas['Tipo'][pos];
+						let marca = columDatas['Marca'][pos];
+						let modelo = columDatas['Modelo'][pos];
+						let nombre = marca + " " + modelo;
+						let estado = columDatas['Estado'][pos];
+						let subtipo = columDatas['Subtipo'][pos];
+						let ubicacion = columDatas['Ubicación'][pos];
+						let categoria = columDatas['Categoría'][pos];
+						let ubicacion_anterior = ubicacion_pending.id;
+						let partida = columDatas['Código Partida'][pos];
+						let compra = columDatas['Referencia de compra'][pos];
+						let observacion = columDatas['Observaciones de ingreso'][pos];
+						let red = columDatas['MAC'][pos] ? columDatas['MAC'][pos] : null;
+						let fecha_ingreso = dateValidate(columDatas['Fecha Ingreso'][pos]);
+						let fecha_registro = dateValidate(columDatas['Fecha Registro'][pos]);
+						let valor_colones = String(floatClearValor(columDatas['Valor Colones'][pos]));
+						let valor_dolares = String(floatClearValor(columDatas['Valor Dolares'][pos]));
+						let garantia = dateValidate(columDatas['Vencimiento de Garantía'][pos]);
+
+						// Agrega el id del tipo
+						const tipoObj = tipo_list.find(item => format_text(item.nombre) === format_text(tipo));
+						const id_tipo = tipoObj ? tipoObj.id : null;
+
+						//Agrega el id del subtipo
+						const subtipoObj = subtipo_list.find(item => format_text(item.nombre) === format_text(subtipo));
+						const id_subtipo = subtipoObj ? subtipoObj.id : null;
+
+						// Agrega el id de la categoria
+						const categoriaObj = categoria_list.find(item => format_text(item.nombre) === format_text(categoria));
+						const id_categoria = categoriaObj ? categoriaObj.id : null;
+
+						// Agrega el id del estado
+						const estadoObj = estado_list.find(item => format_text(item.nombre) === format_text(estado));
+						const id_estado = estadoObj ? estadoObj.id : null;
+
+						// Agrega el id de la marca
+						const marcaObj = marcas_list.find(item => format_text(item.nombre) === format_text(marca));
+						const id_marca = marcaObj ? marcaObj.id : null;
+
+						// Agrega el id del modelo
+						const modeloObj = modelos_list.find(item => format_text(item.nombre) === format_text(modelo));
+						const id_modelo = modeloObj ? modeloObj.id : null;
+
+						// Agrega el id de la ubicacion
+						const ubicacionObj = ubicacion_list.find(item => format_text(item.ubicacion) === format_text(ubicacion));
+						const id_ubicacion = ubicacionObj ? ubicacionObj.id : null;
+
+						// Agrega el id de la red
+						const redObj = red_list.find(item => item.MAC === red);
+						const id_red = redObj ? redObj.id : red_pending.id;
+
+						// Agrega el id de la compra
+						const compraObj = compra_list.find(item => item.numero_orden_compra === format_text(compra));
+						const id_compra = compraObj ? compraObj.id : null;
+
+						full_data.push({
+							serie, ubicacion_anterior, nombre, tipo: id_tipo,
+							subtipo: id_subtipo, modelo: id_modelo, marca: id_marca, valor_colones,
+							valor_dolares, garantia, fecha_registro, fecha_ingreso,
+							observacion, categoria: id_categoria, compra: id_compra, red: id_red,
+							ubicacion: id_ubicacion, estado: id_estado, partida
+
+						});
+					});
+
+					// Verifica los datos invalidos para generar el informe de errores
+					full_data.forEach((noPlaqueado, pos) => {
+						// verifica si la serie es valida
+						if (!validateType(noPlaqueado.serie)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.serie_invalida = "Serie no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, serie: noPlaqueado.serie, serie_invalida: "Serie no valida" });
+							}
+						}
+						// Verifica si la garantia es valida
+						if (!validateType(noPlaqueado.garantia)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.fecha_garantia_invalida = "Fecha de garantia no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, serie: noPlaqueado.serie, fecha_garantia_invalida: "Fecha de garantia no valida" });
+							}
+						}
+						// Verifica si la fecha de registro es valida
+						if (!validateType(noPlaqueado.fecha_registro)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.fecha_registro_invalida = "Fecha de registro no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, serie: noPlaqueado.serie, fecha_registro_invalida: "Fecha de registro no valida" });
+							}
+						}
+						// Verifica si la fecha de ingreso es valida
+						if (!validateType(noPlaqueado.fecha_ingreso)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.fecha_ingreso_invalida = "Fecha de ingreso no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, serie: noPlaqueado.serie, fecha_ingreso_invalida: "Fecha de ingreso no valida" });
+							}
+						}
+						// Verifica si la categoria es valida
+						if (!validateType(noPlaqueado.categoria)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.categoria_invalida = "Categoria no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, serie: noPlaqueado.serie, categoria_invalida: "Categoria no valida" });
+							}
+						}
+						// Verifica si el tipo es valido
+						if (!validateType(noPlaqueado.tipo)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.tipo_invalido = "Tipo no valido";
+							} else {
+								exclu_act.push({ posicion: pos + 2, serie: noPlaqueado.serie, tipo_invalido: "Tipo no valido" });
+							}
+						}
+						// verifica si el subtipo es valido
+						if (!validateType(noPlaqueado.subtipo)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.subtipo_invalido = "Subtipo no valido";
+							} else {
+								exclu_act.push({ posicion: pos + 2, serie: noPlaqueado.serie, subtipo_invalido: "Subtipo no valido" });
+							}
+						}
+						// Verifica si el modelo es valido
+						if (!validateType(noPlaqueado.modelo)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.modelo_invalido = "Modelo no valido";
+							} else {
+								exclu_act.push({ posicion: pos + 2, serie: noPlaqueado.serie, modelo_invalido: "Modelo no valido" });
+							}
+						}
+						// Verifica si la marca es valida
+						if (!validateType(noPlaqueado.marca)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.marca_invalida = "Marca no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, serie: noPlaqueado.serie, marca_invalida: "Marca no valida" });
+							}
+						}
+						// verifica si el valor es valido
+						if (noPlaqueado.valor_colones >= 0.0 || noPlaqueado.valor_dolares >= 0.0) {
+							// Al menos uno de los valores es mayor a 0.0, considerado válido
+						} else {
+							// Ambos valores son 0.0 o inválidos
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.valor_colones_invalido = "Valor en colones no valido";
+								addInfoData.valor_dolares_invalido = "Valor en dólares no valido";
+							} else {
+								exclu_act.push({
+									posicion: pos + 2,
+									serie: noPlaqueado.serie,
+									valor_colones_invalido: "Valor en colones no valido",
+									valor_dolares_invalido: "Valor en dólares no valido"
+								});
+							}
+						}
+						// Verifica si la red es valida
+						if (!validateType(noPlaqueado.red)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.red_invalida = "Red no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, serie: noPlaqueado.serie, red_invalida: "Red no valida" });
+							}
+						}
+						// Verifica si la ubicacion es valida
+						if (!validateType(noPlaqueado.ubicacion)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.ubicacion_invalida = "Ubicacion no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, serie: noPlaqueado.serie, ubicacion_invalida: "Ubicacion no valida" });
+							}
+						}
+						// Verifica si el estado es valido
+						if (!validateType(noPlaqueado.estado)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.estado_invalido = "Estado no valido";
+							} else {
+								exclu_act.push({ posicion: pos + 2, serie: noPlaqueado.serie, estado_invalido: "Estado no valido" });
+							}
+						}
+						// Verifica si la partida es valida
+						if (!validateType(noPlaqueado.partida)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.partida_invalida = "Partida no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, serie: noPlaqueado.serie, partida_invalida: "Partida no valida" });
+							}
+						}
+						// Verifica si la compra es valida
+						if (!validateType(noPlaqueado.compra)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.compra_invalida = "Compra no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, serie: noPlaqueado.serie, compra_invalida: "Compra no valida" });
+							}
+						}
+						// Verifica si la ubicacion anterior es valida
+						if (!validateType(noPlaqueado.ubicacion_anterior)) {
+							let addInfoData = exclu_act.find(item => item.posicion === pos + 2);
+							if (addInfoData) {
+								addInfoData.ubicacion_anterior_invalida = "Ubicacion anterior no valida";
+							} else {
+								exclu_act.push({ posicion: pos + 2, serie: noPlaqueado.serie, ubicacion_anterior_invalida: "Ubicacion anterior no valida" });
+							}
+						}
+					});
+
+					// Filtra los datos validos de los activos 
+					// que no estan en la lista de excluidos
+					full_data.forEach(element => {
+						const existExcluAct = exclu_act.some(item => item.serie === element.serie);
+						if (!existExcluAct) {
+							act_no_plac_data.push(element);
+						}
+					});
+
+					// ----------------- Area de validación (update/upload) ----------------- //
+
+					// Funcion encargada de subir los activos a la base de datos
+					function uploadActivos() {
+						let listPush = [];
+						act_no_plac_data.forEach(element => {
+							if (!activo_list.some(item => item.serie === String(element.serie))) {
+								listPush.push(element);
+							}
+						});
+						if (listPush.length > 0) {
+							countUpd++;
+							postDatas('activos_no_plaqueados', listPush);
+						} else {
+							console.log('No hay Activos para cargar');
+						}
+					}
+
+					// Funcion encargada de actualizar los activos de la base de datos
+					function updateActivos() {
+						let updateActivos = [];
+						act_no_plac_data.forEach(element => {
+							let actBD = activo_list.find(item => item.serie === String(element.serie));
+							let serieSame = element.serie === actBD.serie;
+							let nombreSame = element.nombre === actBD.nombre;
+							let valorColSame = element.valor_colones === actBD.valor_colones;
+							let valorDolSame = element.valor_dolares === actBD.valor_dolares;
+							let garantiaSame = element.garantia === actBD.garantia;
+							let fechaRegSame = element.fecha_registro === actBD.fecha_registro;
+							let fechaIngSame = element.fecha_ingreso === actBD.fecha_ingreso;
+							let observacionSame = element.observacion === actBD.observacion;
+							let ubicacionAntSame = element.ubicacion_anterior === actBD.ubicacion_anterior;
+							let tipoSame = element.tipo === actBD.tipo;
+							let subtipoSame = element.subtipo === actBD.subtipo;
+							let modeloSame = element.modelo === actBD.modelo;
+							let marcaSame = element.marca === actBD.marca;
+							let redSame = element.red === actBD.red;
+							let ubicacionSame = element.ubicacion === actBD.ubicacion;
+							let estadoSame = element.estado === actBD.estado;
+							let partidaSame = element.partida === actBD.partida;
+							let compraSame = element.compra === actBD.compra;
+
+							if (!serieSame || !nombreSame || !valorColSame || !valorDolSame ||
+								!garantiaSame || !fechaRegSame || !fechaIngSame || !observacionSame ||
+								!ubicacionAntSame || !tipoSame || !subtipoSame || !modeloSame ||
+								!marcaSame || !redSame || !ubicacionSame || !estadoSame ||
+								!partidaSame || !compraSame) {
+								updateActivos.push(element);
+							}
+						});
+
+						if (updateActivos.length > 0) {
+							countAct++;
+							updateActivos.forEach(async (element) => {
+								axiosPut('activos_no_plaqueados', element.serie, element);
+							}), console.log("Activos actualizados con éxito");
+						} else {
+							console.log("No hay activos para actualizar");
+						}
+					}
+
+					// Verifica si se van a cargar o actualizar los activos
+					!check ? uploadActivos() : updateActivos();
+				} activosNoPlaqueadosSave().then(() => {
+					// Genera una lista con los errores encontrados 
+					// para ser descargados como un archivo de excel
+					informe_errores.push({
+						'Informe tipos': exclu_tipo, 'Informe subtipos': exclu_subtipo, 'Informe proveedores': exclu_prov,
+						'Informe categorias': exclu_cat, 'Informe partidas': exclu_par, 'Informe modelos': exclu_mod,
+						'Informe marcas': exclu_mar, 'Informe compras': exclu_comp, 'Informe redes': exclu_red,
+						'Informe funcionarios': exclu_fun, 'Informe estados': exclu_est, 'Informe coordinaciones': exclu_uni,
+						'Informe ubicaciones': exclu_ubi, 'Informe activos': exclu_act
+					});
+
+					// Llamar a la función para descargar el informe
+					// informeDeActivos(informe_errores);
+
+					// Verifica si se cargaron o actualizaron los activos
+					// para mostrar un mensaje de éxito o error
+					if (check) {
+						if (countAct > 0) {
+							console.log('Datos actualizados');
+							Swal.close();
+							updateSuccess();
+						} else {
+							console.log('Sin datos para actualizar');
+							Swal.close();
+							notUpdateData();
+						}
+					}
+					else {
+						if (countUpd > 0) {
+							console.log('Datos cargados');
+							Swal.close();
+							loadSuccess();
+						} else {
+							console.log('Sin datos para cargar');
+							Swal.close();
+							noLoadDatas();
+						}
+					}
+				});
+			}, delay + 500);
+		}
+		// -------------- Fin de Guardar Activos no plaqeuado -------------- //
 	};
 
 	reader.readAsArrayBuffer(file);
