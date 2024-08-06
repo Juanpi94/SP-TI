@@ -184,6 +184,11 @@ loadDataElement.addEventListener('click', () => {
 				}
 			});
 
+			// if (!check) {
+
+			// 	postDatas('subtipos', subtipo_data);
+			// }
+
 			!check ? postDatas('subtipos', subtipo_data) : console.log("Subtipos no aplica para actualizar");
 		} subtiposSave();
 		// -------------- Fin de Guardar SubTipo -------------- //
@@ -900,7 +905,7 @@ loadDataElement.addEventListener('click', () => {
 		// -------------- Fin Tiempo de espera para evitar errores -------------- //
 
 		// -------------- Guardar Activos -------------- //
-		if (activoSelect === 'plaqueados') {
+		if (activoSelect === 'plaqueado') {
 			let full_data = []; // Lista con todos los datos sin verificar
 			let act_plac_data = []; // Lista con los valoes validos para enviar a la base de datos
 			let exclu_act = [];
@@ -1245,7 +1250,7 @@ loadDataElement.addEventListener('click', () => {
 					});
 
 					// Llamar a la función para descargar el informe
-					// informeDeActivos(informe_errores);
+					informeDeActivos(informe_errores);
 
 					// Verifica si se cargaron o actualizaron los activos
 					// para mostrar un mensaje de éxito o error
@@ -1609,7 +1614,7 @@ loadDataElement.addEventListener('click', () => {
 					});
 
 					// Llamar a la función para descargar el informe
-					// informeDeActivos(informe_errores);
+					informeDeActivos(informe_errores);
 
 					// Verifica si se cargaron o actualizaron los activos
 					// para mostrar un mensaje de éxito o error
