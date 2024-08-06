@@ -226,8 +226,14 @@ async function initializeTable() {
     function highlightRow(row) {
         const data = row.getData();
         console.log(data);
-        if (data.tramite.estado !== undefined && data.tramite.estado !== "Finalizado") {
+        if (data.tramite.estado !== undefined && data.tramite.estado !== "Pendiente") {
             row.getElement().classList.add("bg-light-red");
+        }
+        if (data.tramite.estado !== undefined && data.tramite.estado !== "Aceptado") {
+            row.getElement().classList.add("bg-light-yellow");
+        }
+        if (data.tramite.estado !== undefined && data.tramite.estado !== "En Proceso") {
+            row.getElement().classList.add("bg-light-blue");
         }
     }
 
