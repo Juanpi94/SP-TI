@@ -58,6 +58,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin"
+
 ROOT_URLCONF = 'atic.urls'
 
 LOG_FILE_NAME = "../{0}" if DEBUG else "/ATIC-LOGS/{0}"

@@ -22,11 +22,11 @@ const createChoicesInstance = (id, options) => {
     }
 }
 
-const tramiteSelect = createChoicesInstance("#id_tramite", { allowHTML: true });
-const toSelect = createChoicesInstance("#id_destinatario", { classNames: { containerOuter: "choices col-4 me-3" }, itemSelectText: "select", allowHTML: true });
-const fromSelect = createChoicesInstance("#id_remitente", { classNames: { containerOuter: "choices col-4" }, itemSelectText: "select", allowHTML: true });
-const selectPlaca = createChoicesInstance("#id_placa", { classNames: { containerOuter: "choices form-select" }, allowHTML: true });
-const selectSerie = createChoicesInstance("#id_serie", { classNames: { containerOuter: "choices form-select" }, allowHTML: true });
+const tramiteSelect = createChoicesInstance("#id_tramite", { allowHTML: false });
+const toSelect = createChoicesInstance("#id_destinatario", { classNames: { containerOuter: "choices col-4 me-3" }, itemSelectText: "select", allowHTML: false });
+const fromSelect = createChoicesInstance("#id_remitente", { classNames: { containerOuter: "choices col-4" }, itemSelectText: "select", allowHTML: false });
+const selectPlaca = createChoicesInstance("#id_placa", { classNames: { containerOuter: "choices form-select" }, allowHTML: false });
+const selectSerie = createChoicesInstance("#id_serie", { classNames: { containerOuter: "choices form-select" }, allowHTML: false });
 
 const consecutivoTextfield = document.getElementById("id_consecutivo")
 const fechaField = document.getElementById("id_fecha")
