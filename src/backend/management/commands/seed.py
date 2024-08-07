@@ -115,6 +115,6 @@ class Command(BaseCommand):
 
             # Management
             User.objects.create_superuser(
-                username="admin", email="Admin@gmail.com", password="AdminPassword") #password="AdminPassword"
+                username="admin", email="Admin@gmail.com", password="root") #password="AdminPassword"
             self.write(self.style.SUCCESS(
                 "Se creó super usuario admin"))
