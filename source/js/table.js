@@ -108,12 +108,12 @@ const editChoices = []
 let fieldChoice = null;
 
 addForm.querySelectorAll("select").forEach(element => {
-    let choicesConfig = Object.assign({}, _config.choicesJS, { allowHTML: true });
+    let choicesConfig = Object.assign({}, _config.choicesJS, { allowHTML: false });
     addChoices.push(new Choices(element, choicesConfig));
 });
 
 editForm.querySelectorAll("select").forEach(element => {
-    let choicesConfig = Object.assign({}, _config.choicesJS, { allowHTML: true });
+    let choicesConfig = Object.assign({}, _config.choicesJS, { allowHTML: false });
     editChoices.push(new Choices(element, choicesConfig));
 });
 
@@ -141,7 +141,7 @@ function init_listeners() {
         return { value: def.field, label: def.title }
     }).filter(choice => choice !== null)
 
-    fieldChoice = new Choices(document.querySelector("#select-field-input"), { choices, shouldSort: false, allowHTML: true });
+    fieldChoice = new Choices(document.querySelector("#select-field-input"), { choices, shouldSort: false, allowHTML: false });
 
     //Add button listeners
     buttons["deselect"].addEventListener("click", onDeselectAll)

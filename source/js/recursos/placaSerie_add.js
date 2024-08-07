@@ -42,7 +42,7 @@ function addPlaqueados(placa, table, plaqueadoMap) {
             .then(tableData => {
                 // Agregar los datos filtrados a la tabla
                 table.addData(tableData).then(() => {
-                    const select = new Choices("#select-" + tableData.placa, { allowHTML: true });
+                    const select = new Choices("#select-" + tableData.placa, { allowHTML: false });
                     plaqueadoMap.set(tableData.placa, {
                         serie: tableData.serie,
                         ubicacion_actual: tableData.ubicacion_actual,
@@ -94,7 +94,7 @@ function addNoPlaqueados(serie, table, noPlaqueadoMap) {
             .then(tableData => {
                 // Agregar los datos filtrados a la tabla
                 table.addData(tableData).then(() => {
-                    const select = new Choices("#select-" + tableData.serie, { allowHTML: true });
+                    const select = new Choices("#select-" + tableData.serie, { allowHTML: false });
                     noPlaqueadoMap.set(tableData.serie, {
                         ubicacion_actual: tableData.ubicacion_actual,
                         ubicacion_actual_id: tableData.ubicacion_actual_id,
