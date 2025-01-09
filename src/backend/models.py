@@ -189,6 +189,7 @@ class DetallePlacaUbicacion(models.Model):
     detalles_placa = models.ForeignKey('Activos_Plaqueados', on_delete=models.CASCADE)
     ubicacion_actual = models.ForeignKey(Ubicaciones, on_delete=models.CASCADE, related_name='ubicacion_actual_placa')
     ubicacion_futura = models.ForeignKey(Ubicaciones, on_delete=models.CASCADE, related_name='ubicacion_futura_placa')
+    estado = models.IntegerField(default=1) # 1 pendiente - 0 concluido
     
     class Meta:
         verbose_name_plural = "Detalle Placa Ubicacion"
@@ -198,6 +199,7 @@ class DetalleSerieUbicacion(models.Model):
     detalles_serie = models.ForeignKey(Activos_No_Plaqueados, on_delete=models.CASCADE)
     ubicacion_actual = models.ForeignKey(Ubicaciones, on_delete=models.CASCADE, related_name='ubicacion_actual_serie')
     ubicacion_futura = models.ForeignKey(Ubicaciones, on_delete=models.CASCADE, related_name='ubicacion_futura_serie')
+    estado = models.IntegerField(default=1) # 1 pendiente - 0 concluido
     
     class Meta:
         verbose_name_plural = "Detalle Serie Ubicacion"
@@ -209,10 +211,7 @@ class Tramites(models.Model):
     destinatario = models.ForeignKey("Funcionarios", on_delete=models.DO_NOTHING, related_name="+", null=True)
     tipo = models.ForeignKey(TiposTramites, on_delete=models.DO_NOTHING)
     estado = models.ForeignKey(TiposEstados, on_delete=models.DO_NOTHING)
-    detalles = models.CharField(max_length=200) ## Detalles concatena todos los activos relacionados plaqueados y no
-    obervaciones = models.CharField(max_length=500, null=True) ## Conflicto con este campo
-    detalles_placa = models.ManyToManyField(to=Activos_Plaqueados, through='DetallePlacaUbicacion', related_name='detalles_placa')
-    detalles_serie = models.ManyToManyField(to=Activos_No_Plaqueados, through='DetalleSerieUbicacion', related_name='detalles_serie')
+    obervaciones = models.CharField(max_length=900, null=True)
     fecha = models.DateField(default=now)
 
     def __str__(self) -> str:   
@@ -221,9 +220,22 @@ class Tramites(models.Model):
     class Meta:
         verbose_name_plural = "Tramites"
 
+class Traslados (models.Model):
+    destino = models.ForeignKey(Ubicaciones, on_delete=models.DO_NOTHING)
+    tramite = models.ForeignKey(Tramites, on_delete=models.DO_NOTHING)
+    detalle = models.CharField(max_length=120, null=True, blank=True)
+    fecha = models.DateField()
+    
+    def __str__(self) -> str:
+        return self.tramite.referencia
+    
+    class Meta:
+        verbose_name_plural = "Traslados"
+
 class Desecho(models.Model):
     tramite = models.ForeignKey(to=Tramites, on_delete=models.CASCADE)
-
+    fecha = models.DateField()
+    
     def __str__(self):
         return self.tramite.referencia
 
@@ -271,7 +283,7 @@ class Red(models.Model): #Puede ser nulo
 class Proveedor(models.Model):
     nombre = models.CharField(max_length=230, unique=True)
     telefono = models.CharField(max_length=16)
-    correo = models.CharField(max_length=120)
+    correo = models.CharField(max_length=220)
 
     def __str__(self) -> str:
         return self.nombre

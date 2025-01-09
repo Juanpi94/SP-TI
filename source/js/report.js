@@ -1,5 +1,6 @@
 import { TabulatorFull as Tabulator } from "tabulator-tables";
 import _config from "./_config";
+import { format } from "datetime";
 
 // Función para obtener el mapa de modelos desde la base de datos
 async function fetchModeloMap() {
@@ -12,13 +13,19 @@ async function fetchModeloMap() {
     return modeloMap;
 }
 
-async function fetchUbicacionMap() {
+async function fetchUbicacionMap(des="ubicacion") {
     const response = await fetch('/api/ubicaciones'); // Ajusta la URL según tu API
     const data = await response.json();
     const ubicacionMap = {};
-    data.forEach(ubicacion => {
-        ubicacionMap[ubicacion.id] = ubicacion.ubicacion;
-    });
+    if (des === "ubicacion"){
+        data.forEach(ubicacion => {
+            ubicacionMap[ubicacion.id] = ubicacion.ubicacion;
+        });
+    } else if (des === "custodio") {
+        data.forEach(ubicacion => {
+            ubicacionMap[ubicacion.id] = ubicacion.custodio;
+        });
+    }
     return ubicacionMap;
 }
 
@@ -72,15 +79,27 @@ async function fetchCustodioMap() {
     return custodioMap;
 }
 
+async function fetchCompraMap() {
+    const response = await fetch('/api/compra'); // Ajusta la URL según tu API
+    const data = await response.json();
+    const compraMap = {};
+    data.forEach(compra => {
+        compraMap[compra.numero_orden_compra] = compra.numero_orden_compra;
+    });
+    return compraMap;
+}
+
 // Función para inicializar la tabla
 async function initializeTable() {
     const modeloMap = await fetchModeloMap();
     const ubicacionMap = await fetchUbicacionMap();
+    const custodioUbicacionMap = await fetchUbicacionMap("custodio");
     const tipoMap = await fetchTipoMap();
     const subtipoMap = await fetchSubtipoMap();
     const marcaMap = await fetchMarcaMap();
     const estadoMap = await fetchEstadoMap();
     const custodioMap = await fetchCustodioMap();
+    const compraMap = await fetchCompraMap();
 
     const colDefinitions = [
         {
@@ -177,22 +196,46 @@ async function initializeTable() {
                     }
                 },
                 {
-                    field: "ubicaciones.custodio_id",
+                    field: "ubicacion_id",
                     title: "Custodio",
-                    
+                    formatter: function (cell) {
+                        // Obtiene el ID de la ubicación
+                        const id = cell.getValue();
+                        // Retorna el valor correspondiente del mapa
+                        const cust = custodioUbicacionMap[id]
+                        return custodioMap[cust] || "Desconocido";
+                    }
                 },
             ]
         },
         {
             title: "Tramites", columns: [
-                { field: "tramite.tipo", title: "Tipo de tramite" },
+                { 
+                    field: "tramite.tipo", 
+                    title: "Tipo de tramite",
+                    formatter: function (cell) {
+                        // Obtiene el ID de la ubicación
+                        const id = cell.getValue();
+                        // Retorna el valor correspondiente del mapa
+                        
+                    }
+                },
                 { field: "tramite.estado", title: "Estado de tramite" },
             ]
         },
         {
-            title: "Compra",
-            columns: [
-                { field: "compra.numero_orden_compra", title: "Orden de Compra" },
+            title: "Compra", columns: [
+                { 
+                    field: "compra_id", 
+                    title: "Orden de Compra",
+                    formatter: function (cell) {
+                        // Obtiene el ID de la ubicación
+                        const id = cell.getValue();
+                        // Retorna el valor correspondiente del mapa
+                        return compraMap[id] || "Desconocido";
+                    }
+                    
+                },
                 { field: "compra.origen_presupuesto", title: "Origen del presupuesto" },
                 { field: "compra.decision_inicial", title: "Decisión Inicial" },
                 { field: "compra.numero_solicitud", title: "Numero de Solicitud" },
@@ -225,7 +268,7 @@ async function initializeTable() {
 
     function highlightRow(row) {
         const data = row.getData();
-        console.log(data);
+        // console.log(data);
         if (data.tramite.estado !== undefined && data.tramite.estado !== "Pendiente") {
             row.getElement().classList.add("bg-light-red");
         }
