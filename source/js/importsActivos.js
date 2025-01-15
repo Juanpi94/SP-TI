@@ -168,7 +168,7 @@ loadDataElement.addEventListener('click', () => {
                 }
                 return value;
             });
-        } console.log(columDatas);
+        } //console.log(columDatas);
 
 		// -------------- Guardar Tipo -------------- //
 		let tipo_data = [];
@@ -959,9 +959,7 @@ loadDataElement.addEventListener('click', () => {
 						let fecha_ingreso = dateValidate(columDatas['Fecha Ingreso'][pos]);
 						let fecha_registro = dateValidate(columDatas['Fecha Registro'][pos]);
 						let valor_colones = parseFloat(columDatas['Valor Colones'][pos]).toFixed(2);
-                        console.log(typeof valor_colones, valor_colones);
 						let valor_dolares = parseFloat(columDatas['Valor Dolares'][pos]).toFixed(2);
-                        console.log(typeof valor_dolares, valor_dolares);
 						let garantia = dateValidate(columDatas['Vencimiento de Garantía'][pos]);
 
 						// Agrega el id del tipo
@@ -1103,7 +1101,7 @@ loadDataElement.addEventListener('click', () => {
 							}
 						}
 						// verifica si el valor es valido
-						if (activo.valor_colones >= 0.0 || activo.valor_dolares >= 0.0) {
+						if (activo.valor_colones >= 0 || activo.valor_dolares >= 0) {
 							// Al menos uno de los valores es mayor a 0.0, considerado válido
 						} else {
 							// Ambos valores son 0.0 o inválidos
@@ -1336,8 +1334,8 @@ loadDataElement.addEventListener('click', () => {
 						let red = columDatas['MAC'][pos] ? columDatas['MAC'][pos] : null;
 						let fecha_ingreso = dateValidate(columDatas['Fecha Ingreso'][pos]);
 						let fecha_registro = dateValidate(columDatas['Fecha Registro'][pos]);
-						let valor_colones = String(floatClearValor(columDatas['Valor Colones'][pos]));
-						let valor_dolares = String(floatClearValor(columDatas['Valor Dolares'][pos]));
+						let valor_colones = parseFloat(columDatas['Valor Colones'][pos]).toFixed(2);
+						let valor_dolares = parseFloat(columDatas['Valor Dolares'][pos]).toFixed(2);
 						let garantia = dateValidate(columDatas['Vencimiento de Garantía'][pos]);
 
 						// Agrega el id del tipo
@@ -1470,7 +1468,7 @@ loadDataElement.addEventListener('click', () => {
 							}
 						}
 						// verifica si el valor es valido
-						if (noPlaqueado.valor_colones >= 0.0 || noPlaqueado.valor_dolares >= 0.0) {
+						if (noPlaqueado.valor_colones >= 0 || noPlaqueado.valor_dolares >= 0) {
 							// Al menos uno de los valores es mayor a 0.0, considerado válido
 						} else {
 							// Ambos valores son 0.0 o inválidos
