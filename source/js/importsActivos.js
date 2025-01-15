@@ -126,21 +126,49 @@ loadDataElement.addEventListener('click', () => {
 			updateDatas(); // Mensaje de actualización de datos...
 		}
 
-		const workbook = XLSX.read(event.target.result, { type: 'array' });
+		const workbook = XLSX.read(event.target.result, {
+            type: 'array',
+            cellDates: true, // Interpretar celdas como fechas si tienen formato de fecha
+        });
+    
+        // Selecciona la hoja de trabajo deseada
+        const sheet = workbook.Sheets['Activos General'] || workbook.Sheets['Activos_General'];
+    
+        // Configuración para leer datos en formato JSON
+        const rowData = XLSX.utils.sheet_to_json(sheet, {
+            header: 1, // Mantener el formato de matriz
+            raw: false, // Permitir conversión automática de fechas
+        });
+    
+        for (let i = 0; i < rowData[0].length; i++) {
+            // Convierte los datos en un array
+            const data = rowData.map((row) => row[i]);
+    
+            // Asignar valores al objeto, manejando fechas y símbolos correctamente
+            columDatas[data[0]] = data.slice(1).map((value) => {
+                if (typeof value === 'string') {
+                    if (value.includes("$") || value.includes("₡")) {
+                        // Borra los espcios en blanco
+                        value = value.replace(/\s/g, '');
 
-		// Selecciona la hoja de trabajo deseada
-		const sheet = workbook.Sheets['Activos General'];
+                        // Eliminar símbolos $ y ₡ si existen
+                        value = value.replace(/[$₡]/g, '');
 
-		// Obtiene todos los datos en formato JSON
-		const rowData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+                        // Reemplazar comas por puntos
+                        value = value.replace(/,/g, '.');
 
-		for (let i = 0; i < rowData[0].length; i++) {
-			// Convierte los datos en un array
-			const data = rowData.map((row) => row[i]);
-
-			// Asignamos todos los valores a la columna
-			columDatas[data[0]] = data.slice(1);
-		} // console.log(columDatas);
+                        return value;
+                    }
+    
+                    // Formatear fecha dd/mm/yyyy a YYYY-MM-DD
+                    if (/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+                        const [day, month, year] = value.split('/');
+                        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                    }
+                }
+                return value;
+            });
+        } console.log(columDatas);
 
 		// -------------- Guardar Tipo -------------- //
 		let tipo_data = [];
@@ -183,11 +211,6 @@ loadDataElement.addEventListener('click', () => {
 					}
 				}
 			});
-
-			// if (!check) {
-
-			// 	postDatas('subtipos', subtipo_data);
-			// }
 
 			!check ? postDatas('subtipos', subtipo_data) : console.log("Subtipos no aplica para actualizar");
 		} subtiposSave();
@@ -499,12 +522,12 @@ loadDataElement.addEventListener('click', () => {
 					if (!red_list.some(item => item.MAC === element)) {
 						if (!red_data.some(item => item.MAC === element)) {
 							if (!validateType(columDatas['IP'][pos])) {
-								columDatas['IP'][pos] = "por definir";
+								columDatas['IP'][pos] = "Por definir";
 							}
 							if (!validateType(columDatas['IP Switch'][pos])) {
-								columDatas['IP Switch'][pos] = "por definir";
+								columDatas['IP Switch'][pos] = "Por definir";
 							}
-							red_data.push({ MAC: element, IP: columDatas['IP'][pos], IP_switch: columDatas['IP Switch'][pos], IP6: "por definir" });
+							red_data.push({ MAC: element, IP: columDatas['IP'][pos], IP_switch: columDatas['IP Switch'][pos], IP6: "Por definir" });
 						}
 					}
 				}
@@ -560,13 +583,13 @@ loadDataElement.addEventListener('click', () => {
 		async function funcionariosSave() {
 			fun_list = await axiosGetAll('funcionarios');
 
-			if (fun_list.length === 0 || !fun_list.some(item => item.nombre_completo === 'por definir')) {
+			if (fun_list.length === 0 || !fun_list.some(item => item.nombre_completo === 'Por definir')) {
 				fun_data.push({
-					cedula: 'por definir', nombre_completo: 'por definir',
-					correo_institucional: 'por_definir@gmail.com', correo_personal: 'por definir',
+					cedula: 'Por definir', nombre_completo: 'Por definir',
+					correo_institucional: 'por_definir@ucr.ac.cr', correo_personal: 'por_definir@gmail.com',
 					telefono_oficina: tel_format('12345678'), telefono_personal: tel_format('12345678')
 				});
-			} // Agregar el campo de por definir si no hay datos
+			} // Agregar el campo de Por definir si no hay datos
 
 			columDatas['Custodio'].forEach((element, pos) => {
 				let correo = columDatas['Correo institucional'][pos] ? columDatas['Correo institucional'][pos] : 'correo' + (pos + 2) + '@gmail.com';
@@ -575,10 +598,10 @@ loadDataElement.addEventListener('click', () => {
 						// if (!fun_list.some(item => item.nombre_completo === element)) {
 						if (!fun_data.some(item => item.nombre_completo === element)) {
 							fun_data.push({
-								cedula: 'por definir',
+								cedula: 'Por definir',
 								nombre_completo: element.trim(),
 								correo_institucional: correo,
-								correo_personal: 'por definir',
+								correo_personal: 'Por definir',
 								telefono_oficina: tel_format('12345678'),
 								telefono_personal: tel_format('12345678'),
 							});
@@ -731,7 +754,7 @@ loadDataElement.addEventListener('click', () => {
 			coordinacion_list = await axiosGetAll('coordinaciones');
 
 			const funcionarios_list = await axiosGetAll('funcionarios');
-			let coordinador_pending = funcionarios_list.find(funcionario => funcionario.nombre_completo === 'por definir');
+			let coordinador_pending = funcionarios_list.find(funcionario => funcionario.nombre_completo === 'Por definir');
 			if (uni_data.length === 0 && coordinacion_list.length === 0) {
 				uni_data.push({ codigo: "99999", nombre: "Sin coordinación", coordinador: coordinador_pending.id });
 			}
@@ -745,6 +768,9 @@ loadDataElement.addEventListener('click', () => {
 				} else {
 					if (!uni_data.some(item => item.codigo === element)) {
 						let id_coordinador = funcionarios_list.find(funcionario => funcionario.nombre_completo === coordinador)?.id ?? -1;
+                        if (id_coordinador === -1) {
+                            id_coordinador = coordinador_pending.id;
+                        }
 						uni_data.push({ codigo: element, nombre, coordinador: id_coordinador });
 					}
 				}
@@ -754,7 +780,6 @@ loadDataElement.addEventListener('click', () => {
 				let listPush = [];
 				uni_data.forEach(async (coordinacion) => {
 					if (!coordinacion_list.some(item => item.codigo === String(coordinacion.codigo))) {
-						console.log(coordinacion);
 						listPush.push(coordinacion);
 					}
 				});
@@ -811,7 +836,7 @@ loadDataElement.addEventListener('click', () => {
 				let funcionarios_list = await axiosGetAll('funcionarios');
 				let coordinaciones_list = await axiosGetAll('coordinaciones');
 
-				let coordinador_pending = funcionarios_list.find(funcionario => funcionario.nombre_completo === 'por definir');
+				let coordinador_pending = funcionarios_list.find(funcionario => funcionario.nombre_completo === 'Por definir');
 				let coordinacion_pending = coordinaciones_list.find(coordinacion => coordinacion.nombre === 'Sin coordinación');
 
 				// Agregar el campo de Sin ubicación si no hay datos
@@ -827,24 +852,10 @@ loadDataElement.addEventListener('click', () => {
 
 					if (validateType(ubicacion)) {
 						if (!ubi_data.some(item => format_text(item.ubicacion) === format_text(ubicacion))) {
-							let id_instalacion = -1;
-							let id_custodio = -1;
-							let id_coordinacion = -1;
+							let id_instalacion = instalaciones_list.find(item => item.ubicacion === instalacion)?.id ?? -1;
+							let id_custodio = funcionarios_list.find(item => item.nombre_completo === custodio)?.id ?? -1;
+							let id_coordinacion = coordinaciones_list.find(item => item.nombre === coordinacion)?.codigo ?? -1;
 
-							const instalacionFound = instalaciones_list.find(item => item.ubicacion === instalacion);
-							if (instalacionFound) {
-								id_instalacion = instalacionFound.id;
-							}
-
-							const custodioFound = funcionarios_list.find(item => item.nombre_completo === custodio);
-							if (custodioFound) {
-								id_custodio = custodioFound.id;
-							}
-
-							const coordinacionFound = coordinaciones_list.find(item => item.nombre === coordinacion);
-							if (coordinacionFound) {
-								id_coordinacion = coordinacionFound.codigo;
-							}
 							ubi_data.push({
 								ubicacion,
 								instalacion: id_instalacion,
@@ -947,8 +958,10 @@ loadDataElement.addEventListener('click', () => {
 						let red = columDatas['MAC'][pos] ? columDatas['MAC'][pos] : null;
 						let fecha_ingreso = dateValidate(columDatas['Fecha Ingreso'][pos]);
 						let fecha_registro = dateValidate(columDatas['Fecha Registro'][pos]);
-						let valor_colones = String(floatClearValor(columDatas['Valor Colones'][pos]));
-						let valor_dolares = String(floatClearValor(columDatas['Valor Dolares'][pos]));
+						let valor_colones = parseFloat(columDatas['Valor Colones'][pos]).toFixed(2);
+                        console.log(typeof valor_colones, valor_colones);
+						let valor_dolares = parseFloat(columDatas['Valor Dolares'][pos]).toFixed(2);
+                        console.log(typeof valor_dolares, valor_dolares);
 						let garantia = dateValidate(columDatas['Vencimiento de Garantía'][pos]);
 
 						// Agrega el id del tipo
@@ -1184,7 +1197,7 @@ loadDataElement.addEventListener('click', () => {
 						});
 						if (listPush.length > 0) {
 							countUpd++;
-							postDatas('activos_plaqueados', listPush);
+							//postDatas('activos_plaqueados', listPush);
 						} else {
 							console.log('No hay Activos para cargar');
 						}

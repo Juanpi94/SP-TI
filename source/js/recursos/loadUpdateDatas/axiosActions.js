@@ -71,5 +71,4 @@ function postDatas(endpoint, listDatas) {
 
 // ------------------------ Fin de Publicaciones de axios ------------------------ //
 
-
 export { postDatas, axiosPut, axiosGetAll, axiosGetOne };
