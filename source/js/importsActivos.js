@@ -1195,7 +1195,7 @@ loadDataElement.addEventListener('click', () => {
 						});
 						if (listPush.length > 0) {
 							countUpd++;
-							//postDatas('activos_plaqueados', listPush);
+							postDatas('activos_plaqueados', listPush);
 						} else {
 							console.log('No hay Activos para cargar');
 						}
